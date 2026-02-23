@@ -1,0 +1,16 @@
+// prisma/schema/pdfs.prisma
+
+model Pdf {
+    id String @id @default(uuid())
+    name String // 原始檔名
+    fileId  String @unique // MinIO / Tus ID (關鍵關聯)
+
+    // 建立與 User 的關聯
+    uploaderId String // 外鍵欄位
+    uploader   User   @relation(fields: [uploaderId], references: [id])
+
+    posts Post[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

@@ -245,7 +245,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             { loadedModelsCount === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                     <p className="text-gray-500 bg-black/20 px-4 py-2 rounded-lg backdrop-blur-sm">
-                        請從左側上傳並選取 IFC 或 FRAG 模型
+                        請上傳並載入IFC模型
                     </p>
                 </div>
             )}

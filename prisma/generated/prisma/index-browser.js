@@ -143,6 +143,15 @@ exports.Prisma.ModelScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PdfScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  fileId: 'fileId',
+  uploaderId: 'uploaderId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PostScalarFieldEnum = {
   id: 'id',
   shortId: 'shortId',
@@ -153,7 +162,6 @@ exports.Prisma.PostScalarFieldEnum = {
   keywords: 'keywords',
   coverImage: 'coverImage',
   images: 'images',
-  pdfIds: 'pdfIds',
   uploaderId: 'uploaderId',
   relatedPosts: 'relatedPosts',
   permission: 'permission',
@@ -203,6 +211,7 @@ exports.Role = exports.$Enums.Role = {
 exports.Prisma.ModelName = {
   Account: 'Account',
   Model: 'Model',
+  Pdf: 'Pdf',
   Post: 'Post',
   User: 'User'
 };

@@ -16,7 +16,7 @@ model Post {
   // 關聯到 Model (3D 檔案)
   models Model[]
 
-  pdfIds String[]
+  pdfIds Pdf[]
   // pdf Pdf @relation(fields: [pdfId], references: [id])
   uploaderId String
   uploader   User   @relation(fields: [uploaderId], references: [id])

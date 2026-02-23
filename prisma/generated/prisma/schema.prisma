@@ -65,6 +65,23 @@ model Model {
   updatedAt DateTime @updatedAt
 }
 
+// prisma/schema/pdfs.prisma
+
+model Pdf {
+  id     String @id @default(uuid())
+  name   String // 原始檔名
+  fileId String @unique // MinIO / Tus ID (關鍵關聯)
+
+  // 建立與 User 的關聯
+  uploaderId String // 外鍵欄位
+  uploader   User   @relation(fields: [uploaderId], references: [id])
+
+  posts Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // prisma/schema/post.prisma
 
 model Post {
@@ -83,10 +100,10 @@ model Post {
   // 關聯到 Model (3D 檔案)
   models Model[]
 
-  pdfIds     String[]
+  pdfIds     Pdf[]
   // pdf Pdf @relation(fields: [pdfId], references: [id])
   uploaderId String
-  uploader   User     @relation(fields: [uploaderId], references: [id])
+  uploader   User   @relation(fields: [uploaderId], references: [id])
 
   // 相關文章 ID (簡易關聯)
   relatedPosts String[]
@@ -132,6 +149,8 @@ model User {
 
   // 一個使用者可以擁有多個模型
   models Model[]
+
+  pdfs Pdf[]
 
   posts     Post[]
   // 對應 timestamps: true

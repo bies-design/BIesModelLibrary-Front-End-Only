@@ -15,7 +15,7 @@ import { create3DPost } from '@/lib/actions/post.action';
 
 // 定義檔案項目介面
 export interface FileItem {
-    id: string;
+    dbId: string;
     file: File;
     type: '3d' | 'pdf';
     name: string;
@@ -25,6 +25,7 @@ export interface FileItem {
 const Upload = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [step, setStep] = useState(1);
+    const [postType, setPostType] = useState<'2D' | '3D'>('3D');
     const [uploadedFiles, setUploadedFiles] = useState<FileItem[]>([]);
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
     const [loadedFiles, setLoadedFiles] = useState<FileItem[]>([]);
@@ -121,8 +122,8 @@ const Upload = () => {
             // 這裡之後會從 MetadataForm 取得資料
         });
 
-        if (!selectedFile) {
-            alert("請選擇一個主要模型！");
+        if (loadedFiles.length === 0) {
+            alert("請載入至少一個模型！");
             return;
         }
 
@@ -152,13 +153,14 @@ const Upload = () => {
             });
 
             console.log("2. 圖片上傳完成，寫入資料庫...", { coverKey, imageKeys });
-            console.warn("選中模型ID為",selectedFile.id);
+            console.warn("選中模型ID為",loadedFiles);
+
             // C. 呼叫 Server Action 寫入 DB
             const result = await create3DPost({
                 metadata: metadata,
                 coverImageKey: coverKey,
                 imageKeys: imageKeys,
-                modelIds: loadedFiles.map(file => file.id), // 使用者選中模型的資料庫ID
+                modelIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
             });
 
             if (result.success) {
@@ -229,10 +231,18 @@ const Upload = () => {
                     {/* 根據步驟與檔案類型渲染內容 */}
                     <div className='rounded-lg w-full h-full overflow-hidden relative'>
                         <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                                    {(!selectedFile || selectedFile.type === '3d') ? (
-                                        <Viewer3D ref={viewerRef} allFiles={uploadedFiles} file={selectedFile?.file} onIFCProcessingChange={handleIFCProcessingChange} />
+                                    {(postType === '3D') ? (
+                                        <Viewer3D 
+                                            ref={viewerRef} 
+                                            allFiles={uploadedFiles} 
+                                            file={selectedFile?.file} 
+                                            onIFCProcessingChange={handleIFCProcessingChange} 
+                                        />
                                     ) : (
-                                        <PDFViewer ref={pdfRef} file={selectedFile.file} />
+                                        <PDFViewer 
+                                            ref={pdfRef} 
+                                            file={selectedFile?.file || null} 
+                                        />
                                     )}
                         </div>
                         <div className={`absolute left-2 top-[5%] h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
@@ -240,7 +250,9 @@ const Upload = () => {
                                         getComponents={() => viewerRef.current?.getComponents() || null}
                                         onFilesChange={setUploadedFiles}
                                         onSelectFile={setSelectedFile}
-                                        selectedFileId={selectedFile?.id || null}
+                                        selectedFileId={selectedFile?.dbId || null}
+                                        loadedFiles={loadedFiles}
+                                        setLoadedFiles={setLoadedFiles}
                                         onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
                                         onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
                                         onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
@@ -251,6 +263,8 @@ const Upload = () => {
                                             return null;
                                         }}
                                         onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
+                                        postType={postType}
+                                        setPostType={setPostType}
                                     />
                         </div>
                         {step === 2 && (

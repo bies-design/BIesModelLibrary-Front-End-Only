@@ -190,7 +190,7 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
                 />
               ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500">
-              等待檔案上傳...
+              等待pdf檔案上傳...
             </div>
           )}
         </div>

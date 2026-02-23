@@ -45,7 +45,9 @@ export async function create3DPost(params: CreatePostParams) {
             models:{
                 connect: modelIds.map(id => ({ id }))
             },
-            pdfIds: params.pdfIds,
+            pdfIds: {
+                connect: modelIds.map(id => ({ id }))
+            },
             uploaderId: session.user.id,
             
             permission: params.metadata.permission,
