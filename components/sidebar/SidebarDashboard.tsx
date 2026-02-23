@@ -18,7 +18,7 @@ const SidebarDashboard = ({ currentSelect, onSelect }: SidebarDashboardProps) =>
     const {data:session} = useSession();
     const router = useRouter();
     return (
-        <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className="w-[32dvh] px-5 py-10 flex flex-col justify-between h-full">
+        <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className=" px-5 py-10 flex flex-col justify-between h-full">
             <div className='flex flex-col items-center gap-5'>
                 <Image
                     height={70}
