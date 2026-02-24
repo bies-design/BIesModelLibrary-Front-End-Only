@@ -17,7 +17,7 @@ const SidebarUpload = ({ currentStep,onNext,onBack }: SidebarUploadProps) => {
         router.push('/'); // 這會執行 Client-side 導航，保持 Context 存活
     };
     return (
-        <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className="w-[32dvh] px-5 py-8 flex flex-col shadow-[inset_0_0_20px_rgba(255,255,255,0.1)] justify-between h-full">
+        <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className="w-full h-full px-5 py-8 flex flex-col shadow-[inset_0_0_20px_rgba(255,255,255,0.1)] justify-between">
             <div className=''>
                 <h2 className="text-2xl font-bold text-white">Model Card Creator</h2>
                 <p className="text-gray-400 text-sm mt-2">Follow the steps to create your own model card</p>
