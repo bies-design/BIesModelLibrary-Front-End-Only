@@ -46,7 +46,7 @@ const Settings = (props: Props) => {
                         </div>
                         <Button 
                             variant="flat" 
-                            className="ml-auto bg-[#3F3F46] hover:bg-default-200 text-default-600 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                            className="ml-auto hover-lift bg-[#3F3F46] hover:bg-default-200 text-default-600 shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                             startContent={<Upload size={16} />}
                         >
                             Upload a new icon

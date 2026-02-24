@@ -9,20 +9,22 @@ import { connect } from "http2";
 import { FileItem } from "@/app/(uploadAndDashboard)/upload/page";
 
 interface CreatePostParams {
+    postType: '2D' | '3D';
     metadata: Metadata;
     coverImageKey: string | null;
     imageKeys: string[];
     modelIds?: string[];
     pdfIds?: string[];
 }
-
-export async function create3DPost(params: CreatePostParams) {
+// This is for both 3d and 2d post
+export async function createPost(params: CreatePostParams) {
     const shortId = nanoid(10);
     const session = await auth();
     if (!session?.user?.id) {
         return { success: false, error: "Unauthorized" };
     }
     const { 
+        postType,
         metadata, 
         coverImageKey, 
         imageKeys, 
@@ -37,7 +39,7 @@ export async function create3DPost(params: CreatePostParams) {
             title: params.metadata.title,
             category: params.metadata.category,
             description: params.metadata.description,
-            type:"3D",
+            type:postType,
             keywords: params.metadata.keywords,            
             coverImage: params.coverImageKey!,
             images: params.imageKeys,
@@ -45,8 +47,8 @@ export async function create3DPost(params: CreatePostParams) {
             models:{
                 connect: modelIds.map(id => ({ id }))
             },
-            pdfIds: {
-                connect: modelIds.map(id => ({ id }))
+            pdfIds:{
+                connect: pdfIds.map(id => ({id}))
             },
             uploaderId: session.user.id,
             

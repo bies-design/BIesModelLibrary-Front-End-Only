@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
-import { create3DPost } from '@/lib/actions/post.action';
+import { createPost } from '@/lib/actions/post.action';
 
 // 定義檔案項目介面
 export interface FileItem {
@@ -155,21 +155,38 @@ const Upload = () => {
             console.log("2. 圖片上傳完成，寫入資料庫...", { coverKey, imageKeys });
             console.warn("選中模型ID為",loadedFiles);
 
-            // C. 呼叫 Server Action 寫入 DB
-            const result = await create3DPost({
-                metadata: metadata,
-                coverImageKey: coverKey,
-                imageKeys: imageKeys,
-                modelIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
-            });
-
-            if (result.success) {
-                console.log("✅ 建立成功！");
-                router.push('/?status=success');
-            } else {
-                throw new Error(result.error);
+            // C. 呼叫 Server Action 寫入 DB 
+            // 分為2D/3D post 上傳邏輯分割 
+            if(postType === '3D'){
+                const result = await createPost({
+                    postType:'3D',
+                    metadata: metadata,
+                    coverImageKey: coverKey,
+                    imageKeys: imageKeys,
+                    modelIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
+                });
+                if (result.success) {
+                    console.log("✅ 建立成功！");
+                    router.push('/?status=success');
+                } else {
+                    throw new Error(result.error);
+                }
             }
-
+            if(postType ==='2D'){
+                const result = await createPost({
+                    postType:'2D',
+                    metadata: metadata,
+                    coverImageKey: coverKey,
+                    imageKeys: imageKeys,
+                    pdfIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
+                });
+                if (result.success) {
+                    console.log("✅ 建立成功！");
+                    router.push('/?status=success');
+                } else {
+                    throw new Error(result.error);
+                }
+            }
         } catch (error) {
             console.error("建立失敗:", error);
             alert("建立失敗，請稍後再試");
@@ -211,7 +228,7 @@ const Upload = () => {
             
         <div className='flex w-full h-screen gap-4 p-2 '>
             {/* 左側步驟導覽列 */}
-            <div className='relative max-w-[275px] min-w-[200px] w-[20dvw] overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] shrink-0'>
+            <div className='relative max-w-[275px] min-w-[200px] w-[20dvw] overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)]'>
                 <SidebarBlobs/>
                 {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
                 <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
