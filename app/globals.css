@@ -50,7 +50,7 @@ html, body {
       /* 使用偽元素注入雜訊 */
       &::before {
         content: "";
-        @apply absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none z-0;
+        @apply absolute rounded-2xl inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none z-0;
       }
     }
     .blob1 {

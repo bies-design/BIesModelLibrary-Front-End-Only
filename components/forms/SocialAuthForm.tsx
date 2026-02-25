@@ -2,7 +2,7 @@
 import React from 'react'
 import Image from 'next/image';
 import {signIn} from "next-auth/react"
-import { addToast, Toast } from '@heroui/react';
+import { addToast } from '@heroui/react';
 const SocialAuthForm = () => {
     const handleSignIn = async (provider :"google") => {
         try{

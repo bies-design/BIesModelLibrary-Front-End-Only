@@ -93,8 +93,8 @@ const Home = () => {
           <HeroAnimation/>
       </div>
       
-      <div className='mx-auto flex flex-col items-center gap-6 mt-10 border-4 border-red-500 w-[90%]'>
-        <div className='sm:flex max-sm:grid max-sm:grid-flow-row max-sm:grid-cols-4 gap-10 items-center w-[95%] border-3 h-35'>
+      <div className='mx-auto flex flex-col items-center gap-6 mt-10 w-[90%]'>
+        <div className='sm:flex max-sm:grid max-sm:grid-flow-row max-sm:grid-cols-4 gap-10 items-center w-[95%] h-35'>
           {/* buttons query */}
           {itemsQuery.map((item) => {
             const isSelected = isSelectId === item.id;
@@ -125,7 +125,7 @@ const Home = () => {
           })}
         </div>
         {/* Newest Hottest query buttoms */}
-          <div className='flex justify-start border-4 w-[95%]'>
+          <div className='flex justify-start w-[95%]'>
             <div className='flex px-[8px] py-[8px] gap-[16px] h-[60px] rounded-lg border-1.5 '>
               <button key="Newest" onClick={()=>{setIsQueryArrange("Newest")}} 
                 className={`hover-lift px-[16px] py-[8px] rounded-lg text-sm hover:cursor-pointer ${isQueryArrange === "Newest" ? "bg-primary":""}`}><p>Newest</p></button>
@@ -133,9 +133,9 @@ const Home = () => {
                 className={`hover-lift px-[16px] py-[8px] rounded-lg text-sm hover:cursor-pointer ${isQueryArrange === "Hottest" ? "bg-primary":""}`}>Hottest</button>
             </div>
           </div>
-          <div className='overflow-hidden w-[95%] border-3 border-green-500'>
+          <div className='w-[95%]'>
             {/* 分割容器成3等份 */}
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center border-3 border-yellow-500'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center'>
               {posts.map((post)=>(
                 <PostCard 
                   key={post.id}

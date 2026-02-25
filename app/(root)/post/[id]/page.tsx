@@ -42,41 +42,9 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                 {/* ================= 左側：主要內容區 ================= */}
                 <div className="flex flex-col gap-8 min-w-0">
                 
-                    {/* 1. 媒體展示區 (大圖/Viewer + 縮圖) - 未來可抽成 Client Component */}
-                    <div className="flex flex-col gap-4">
-                        {/* 主要大圖/Viewer 區塊 */}
-                        <div className="w-full aspect-video bg-[#27272A] rounded-xl overflow-hidden relative shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#3F3F46]">
-                        {/* 這裡先放封面圖，之後我們會把它升級成可以切換 3D Viewer 的組件 */}
-                        <Image 
-                            src={`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images/${post.coverImage}`}
-                            alt={post.title}
-                            fill
-                            className="object-cover"
-                            unoptimized={true}
-                        />
-                        <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2 text-xs font-medium">
-                            {post.type === '3D' ? 
-                                (<div className='flex gap-1'><Rotate3D size={16}/><p>3D</p></div>):
-                                (<div className='flex gap-1'><File size={16}/><p>2D</p></div>)
-                            }
-                        </div>
-                        </div>
-
-                        {/* 縮圖輪播區 */}
-                        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                            {/* 封面縮圖 */}
-                            <div className="max-w-[120px] min-w-[80px] w-[10dvw] aspect-video bg-[#27272A] rounded-lg border-2 border-[#D70036] overflow-hidden relative shrink-0 cursor-pointer">
-                                <Image src={`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images/${post.coverImage}`} alt="thumb" fill className="object-cover" unoptimized />
-                            </div>
-                            {/* 額外圖片縮圖 (如果有) */}
-                            {post.images?.map((imgStr: string, idx: number) => (
-                                <div key={idx} className="max-w-[120px] min-w-[80px] w-[10dvw] aspect-video bg-[#27272A] rounded-lg border border-[#3F3F46] hover:border-white/50 overflow-hidden relative shrink-0 cursor-pointer transition">
-                                    <Image src={`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images/${imgStr}`} alt={`thumb-${idx}`} fill className="object-cover" unoptimized />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
+                    {/* 1. 媒體展示區 (大圖/Viewer + 縮圖)*/}
+                    <MediaGallery post={post}/>
+                
                     {/* 2. 描述區塊 (Description) */}
                     <div className="mt-4">
                         <h2 className="text-xl text-white mb-4">Description</h2>
@@ -86,22 +54,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                     </div>
 
                     {/* 3. 留言區塊 (Comments) - 預留位 */}
-                    <div className="mt-8 pt-8">
-                        <h2 className="text-xl text-white mb-6">Comments <span className="text-[#A1A1AA] text-base font-normal">(0)</span></h2>
-                        <div className="flex gap-4 items-center">
-                            <div className="w-10 h-10 rounded-full bg-gray-600 shrink-0 overflow-hidden relative">
-                                {/* 使用者大頭貼 */}
-                            </div>
-                            <input 
-                                type="text" 
-                                placeholder="Come and comment now" 
-                                className="flex-1 bg-[#27272A] border border-[#3F3F46] rounded-full px-6 py-3 text-sm focus:outline-none focus:border-[#D70036] transition"
-                            />
-                            <button className="bg-[#D70036] hover:bg-[#b0002c] text-white px-6 py-3 rounded-full text-sm font-medium transition">
-                                Post
-                            </button>
-                        </div>
-                    </div>
+                    <CommentSection/>
                     {/* 4.關聯模型區塊 */}
                     <div className="mt-8 pt-8">
                         <h2 className="flex items-center gap-3 text-xl text-white mb-6">
@@ -177,14 +130,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
 
                         {/* 操作按鈕 */}
                         <div className="flex flex-col gap-3">
-                            <button className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]">
-                                <Download size={18} />
-                                Download
-                            </button>
-                            <button className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
-                                <Share2 size={18} />
-                                Share Link
-                            </button>
+                            <ActionButtons post={post}/>
                         </div>
 
                         {/* 詳細資料表 */}
