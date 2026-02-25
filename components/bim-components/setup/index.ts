@@ -4,7 +4,7 @@ import { createWorld, setupFragmentsManager, setupHighlighter, setupIfcLoader, s
 export const setupComponents = async()=>{
     const components = new OBC.Components();
     
-    const {world,viewport} = createWorld(components);
+    const {world,viewport,resizeObserver} = createWorld(components);
 
     setupIfcLoader(components);
     setupFragmentsManager(components,world);
@@ -12,5 +12,5 @@ export const setupComponents = async()=>{
     setupItemsFinder(components);
 
     components.init();
-    return {components,viewport};
+    return {components,viewport,resizeObserver};
 }

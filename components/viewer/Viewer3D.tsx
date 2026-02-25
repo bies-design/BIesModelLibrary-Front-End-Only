@@ -155,19 +155,22 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     // Initialize BIM Engine (only on client side)
     useEffect(() => {
         let isMounted = true;
+        let currentResizeObserver: ResizeObserver | null = null;
 
         const initViewer = async () => {
             if (!containerRef.current) return;
 
             // 呼叫 .ts 模組中的標準 setup
-            const { components, viewport } = await setupComponents();
+            const { components, viewport, resizeObserver } = await setupComponents();
             
             if(!isMounted){
                 components.dispose();
+                resizeObserver?.disconnect();
                 return;
             }
             
             componentsRef.current = components;
+            currentResizeObserver = resizeObserver;
             // 將 BUI Viewport (Web Component) 掛載到 React 容器
             containerRef.current.appendChild(viewport);
         };
@@ -177,7 +180,24 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
         return () => {
             isMounted = false;
 
+            if (currentResizeObserver) {
+                currentResizeObserver.disconnect();
+                console.log("ResizeObserver disconnected");
+            }
+
             if (componentsRef.current) {
+                const worlds = componentsRef.current.get(OBC.Worlds);
+                for (const world of worlds.list.values()) {
+                    if (world.renderer instanceof OBC.SimpleRenderer) {
+                        // 🌟 官方認證的 DOM 存取：renderer.three.domElement
+                        const canvas = world.renderer.three.domElement;
+                        
+                        // 移除畫布的父元素 (即我們創建的原生 div viewport)
+                        if (canvas.parentElement) {
+                            canvas.parentElement.remove();
+                        }
+                    }
+                }
                 componentsRef.current.dispose();
                 componentsRef.current = null;
                 console.warn("Viewer Component unmounted")
