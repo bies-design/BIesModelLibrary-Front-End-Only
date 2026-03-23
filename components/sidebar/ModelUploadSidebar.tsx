@@ -31,7 +31,8 @@ import {
   Loader2,
   ChevronRight,
   BrushCleaning,
-  ChevronDown
+  ChevronDown,
+  Computer
 } from 'lucide-react';
 import * as OBC from "@thatopen/components"
 import { useUpload } from "@/context/UploadContext";
@@ -85,9 +86,39 @@ const ModelUploadSidebar = ({
   const [modelToDelete, setModelToDelete] = useState<string | null>(null);//暫存「當前要刪除的模型Name」
   const [modelIdToDelete, setModelIdToDelete] = useState<string | null>(null);//暫存「當前要刪除的模型id」
   const [isLoadedModelsExpanded, setIsLoadedModelsExpanded] = useState<boolean>(true);
-  const [isLoadedExpanded, setIsLoadedExpanded] = useState(true);
-  const [isCloudExpanded, setIsCloudExpanded] = useState(true);
+  const [isLoadedExpanded, setIsLoadedExpanded] = useState<boolean>(true);
+  const [isCloudExpanded, setIsCloudExpanded] = useState<boolean>(true);
+  const [isPdfExpanded, setIsPdfExpandeded] = useState<boolean>(true);
 
+  // 之後需要調到更外層
+  const [processMode, setProcessMode] = useState<'cloud' | 'local'>('cloud');
+
+  const handlePostTypeChange = (key: React.Key) => {
+    const newType = key as "2D" | "3D";
+    // 如果點擊的是當前的模式，就什麼都不做
+    if (newType === postType) return;
+
+    console.log(`切換至 ${newType} 模式，開始清空前一個模式的暫存資料...`);
+
+    // 1. 清除場景中的 3D 模型 (包含 Loaded 跟 Uploaded 裡面的)
+    const allFilesToClear = [...loadedFiles, ...files];
+    allFilesToClear.forEach((item) => {
+      if (item.type === '3d' && onDeleteModel) {
+        const modelId = item.name.replace(/\.(ifc|frag)$/i, "");
+        onDeleteModel(modelId);
+      }
+    });
+
+    // 2. 清空所有前端 State
+    setLoadedFiles([]);        // 清空已載入
+    setFiles([]);              // 清空本地上傳
+    onFilesChange([]);         // 通知父層清空
+    onSelectFile(null);        // 清空選取
+    setCompletedModels([]);    // 清空雲端庫存快取
+
+    // 3. 執行切換
+    setPostType(newType);
+  }
   // 撈取model資料
   const fetchUserModels = async () => {
     if(postType === '2D') return;
@@ -121,8 +152,9 @@ const ModelUploadSidebar = ({
     }
   };
   useEffect(() => {
+    if(postType === "2D") return;
     fetchUserModels();
-  }, []); // 空陣列代表只在掛載時執行一次
+  }, [postType]); // 空陣列代表只在掛載時執行一次
   // 處理檔案上傳邏輯
   const handleFiles = (uploadedFiles: FileList | null) => {
     if (!uploadedFiles) return;
@@ -137,17 +169,22 @@ const ModelUploadSidebar = ({
       // 我們只上傳 IFC 檔案 (根據你的需求)
       if (extension === 'ifc') {
         try {
-          uppy.addFile({
-            name: file.name, // 使用檔名作為識別
-            type: file.type,
-            data: file,      // 傳入原始 File 物件
-            source: 'Local',
-          });
-          console.log(`[Uppy] 檔案 ${file.name} 已加入上傳佇列`);
-        } catch (err) {
-          // Uppy 如果遇到重複檔案會報錯，這裡攔截避免影響 UI
-          console.warn(`[Uppy] 無法加入檔案 (可能已存在):`, err);
-        }
+            uppy.addFile({
+              name: file.name, // 使用檔名作為識別
+              type: file.type,
+              data: file,      // 傳入原始 File 物件
+              source: 'Local',
+            });
+            console.log(`[Uppy] 檔案 ${file.name} 已加入上傳佇列`);
+          } catch (err) {
+            // Uppy 如果遇到重複檔案會報錯，這裡攔截避免影響 UI
+            console.warn(`[Uppy] 無法加入檔案 (可能已存在):`, err);
+          }
+        // if(processMode === 'cloud'){
+          
+        // }else{
+        //   console.log(`[Local Mode] 檔案 ${file.name} 跳過雲端上傳，僅交由本地瀏覽器解析`);
+        // }
       }
 
       return {
@@ -274,8 +311,7 @@ const ModelUploadSidebar = ({
 
   }
   // 移除檔案以及模型
-  const removeFile = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const removeFile = (id: string) => {
 
     const fileToDelete: FileItem | undefined = files.find(f =>f.dbId === id);
 
@@ -290,6 +326,7 @@ const ModelUploadSidebar = ({
     if (selectedFileId === id) {
       onSelectFile(updatedFiles.length > 0 ? updatedFiles[0] : null);
     }
+    console.log("PDF刪除完成",updatedFiles)
   };
 
   // 拖放處理
@@ -336,7 +373,7 @@ const ModelUploadSidebar = ({
             aria-label="Select Post Type" 
             variant="flat"
             // 綁定選取事件，呼叫傳入的 setPostType
-            onAction={(key) => setPostType(key as "2D" | "3D")}
+            onAction={(key) =>handlePostTypeChange(key)}
             // 根據當前狀態高亮選中的項目
             selectedKeys={postType}
             selectionMode="single"
@@ -365,7 +402,34 @@ const ModelUploadSidebar = ({
 
       {/* 上傳區域 (Importing) */}
       <div className="p-4">
-        <p className="text-[#A1A1AA] font-inter text-xs mb-2 uppercase">Importing</p>
+        <div className="flex justify-between items-center mb-3">
+          <p className="text-[#A1A1AA] font-inter text-xs uppercase">Importing</p>
+        </div>
+        {/* 處理模式切換器 僅在上傳3D post時出現*/}
+        {/* {postType === "3D" && 
+          <div className="flex bg-[#27272A] rounded-lg p-1 mb-3 shadow-[inset_0px_1px_3px_rgba(0,0,0,0.5)]">
+            <button 
+              onClick={() => setProcessMode('cloud')}
+              className={`flex-1 text-xs py-1.5 rounded-md transition-all duration-200 flex items-center justify-center gap-2 ${
+                processMode === 'cloud' 
+                ? 'bg-[#D70036] text-white shadow-md' 
+                : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <CloudDownload size={14} /> Cloud Process
+            </button>
+            <button 
+              onClick={() => setProcessMode('local')}
+              className={`flex-1 text-xs py-1.5 rounded-md transition-all duration-200 flex items-center justify-center gap-2 ${
+                processMode === 'local' 
+                ? 'bg-[#D70036] text-white shadow-md' 
+                : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <Computer size={14} /> Local Process
+            </button>
+          </div>
+        } */}
         <div 
           onDragOver={onDragOver}
           onDrop={onDrop}
@@ -392,202 +456,295 @@ const ModelUploadSidebar = ({
 
       {/* 列表 */}
       <div className="flex-grow overflow-y-auto p-4 border-t border-[#FFFFFF1A]">
-        {/* CLOUD MODELS (雲端庫存) */}
-        <div className='flex flex-col mb-2'>
-          <div 
-            className="flex items-center justify-between cursor-pointer px-2 mb-2 group"
-            onClick={() => setIsCloudExpanded(!isCloudExpanded)}
-          >
-            <p className="font-inter text-[#A1A1AA] text-xs uppercase group-hover:text-white transition-colors">
-              Cloud {postType} Models ({cloudModels.length})
-            </p>
-            <div className="flex items-center gap-2">
-              <Tooltip content={`Refresh`} placement='bottom'>
-                <button onClick={(e) => { e.stopPropagation(); fetchUserModels(); }} className="text-[#A1A1AA] hover:text-white">
-                  <RefreshCw size={14} />
-                </button>
-              </Tooltip>
-              <ChevronDown size={14} className={`text-[#A1A1AA] transition-transform duration-300 ${isCloudExpanded ? "rotate-180" : "rotate-0"}`} />
+        {postType === "3D" ? (
+          <div>
+            {/* CLOUD MODELS (雲端庫存) */}
+            <div className='flex flex-col mb-2'>
+              <div 
+                className="flex items-center justify-between cursor-pointer px-2 mb-2 group"
+                onClick={() => setIsCloudExpanded(!isCloudExpanded)}
+              >
+                <p className="font-inter text-[#A1A1AA] text-xs uppercase group-hover:text-white transition-colors">
+                  Cloud {postType} Models ({cloudModels.length})
+                </p>
+                <div className="flex items-center gap-2">
+                  <Tooltip content={`Refresh`} placement='bottom' color='default'>
+                    <button onClick={(e) => { e.stopPropagation(); fetchUserModels(); }} className="text-[#A1A1AA] hover:text-white">
+                      <RefreshCw size={14} />
+                    </button>
+                  </Tooltip>
+                  <ChevronDown size={14} className={`text-[#A1A1AA] transition-transform duration-300 ${isCloudExpanded ? "rotate-180" : "rotate-0"}`} />
+                </div>
+              </div>
+
+              <div className={`grid transition-all duration-300 ease-in-out ${isCloudExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden flex flex-col gap-2 px-1">
+                  {isLoading ? (
+                    <div className="flex justify-center p-2"><Spinner size="sm" /></div>
+                  ) : cloudModels.length === 0 ? (
+                    <p className="text-gray-600 text-[10px] italic text-center py-2">Library is empty</p>
+                  ) : (
+                    cloudModels.map((item)=>(
+                      <div 
+                        key={item.id}
+                        className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                          selectedFileId === item.id
+                          ? 'bg-[#D70036] text-white shadow-lg' 
+                          : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
+                        }`}
+                      >
+                        {item.type === '3d' ? <Box width={20} height={20} className='shrink-0'/> : <FileText size={20} />}
+                        <Tooltip content={`${item.name}`} placement='bottom'>
+                          <span className="text-sm truncate flex-grow">                    
+                              {item.name}
+                          </span>
+                        </Tooltip>
+                        {item.name === loadingModelId ? (<Loader2 size={16}/>)
+                        :( 
+                          <>
+                            <Tooltip content={`Load model`} placement='bottom'>
+                              <button
+                                onClick={(e) => downloadAndLoadFrag(item.id,item.fileId,item.name, e)}
+                                aria-label={`Load ${item.name}`}
+                                className={`${item.type === 'pdf' ? "hidden":null} text-gray-300 hover:text-white`}
+                                >
+                                <CloudDownload size={16}/>
+                              </button>
+                            </Tooltip>
+                              <Dropdown
+                                placement='right-start'
+                              >
+                                <DropdownTrigger>
+                                  <div className='flex'>
+                                    <Tooltip content="More Options" placement="bottom">
+                                      <button>
+                                        <ChevronRight size={16} className="shrink-0" />
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                </DropdownTrigger>  
+                                <DropdownMenu 
+                                  aria-label='more options' 
+                                  variant='flat'
+                                  itemClasses={{
+                                    base:"text-black dark:text-white",
+                                  }}
+                                >
+                                  <DropdownItem 
+                                    key="Delete From Storage" 
+                                    onPress={() => openDeleteModal(item.name,item.fileId)} 
+                                    endContent={<Trash2 size={20} className='text-danger'/>}
+                                    color="danger"
+                                    classNames={{
+                                      title:"text-danger",
+                                    }}
+                                  >
+                                    Delete From Storage
+                                  </DropdownItem>
+                                </DropdownMenu>
+                              </Dropdown>
+                          </>
+                        )  
+                        }
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* LOADED MODELS (已在場景中) */}
+            <div className="flex flex-col">
+              <div 
+                className="flex items-center justify-between cursor-pointer px-2 mb-2 group"
+                onClick={() => setIsLoadedExpanded(!isLoadedExpanded)}
+              >
+                <p className="font-inter text-[#A1A1AA] text-xs uppercase group-hover:text-white transition-colors">
+                  Loaded {postType} Models ({loadedFiles.length})
+                </p>
+                <div className="flex items-center gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); onFocusAllModel(); }} className="text-[#A1A1AA] hover:text-white">
+                    <Focus size={14} />
+                  </button>
+                  <ChevronDown size={14} className={`text-[#A1A1AA] transition-transform duration-300 ${isLoadedExpanded ? "rotate-180" : "rotate-0"}`} />
+                </div>
+              </div>
+              
+              {/* 動態折疊容器 */}
+              <div className={`grid transition-all duration-300 ease-in-out ${isLoadedExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden flex flex-col gap-2 px-1">
+                  {loadedFiles.length === 0 ? (
+                    <p className="text-gray-600 text-[10px] italic text-center py-2">No models in scene</p>
+                  ) : (
+                    loadedFiles.map((item)=>(
+                      <div 
+                        key={item.dbId}
+                        onClick={() => {
+
+                          const isPdf = item.name.toLowerCase().endsWith('.pdf');
+
+                          onSelectFile({
+                            dbId:item.dbId,
+                            // 騙術：給它一個同名的空檔案 (內容是空陣列 [])
+                            file: new File([], item.name, { type: 'application/octet-stream' }),
+                            type: isPdf ? 'pdf' : '3d',
+                            name:item.name,
+                            fileid:item.fileid,
+                          })
+                        }
+                      }
+                        className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                          selectedFileId === item.dbId
+                          ? 'bg-[#D70036] text-white shadow-lg' 
+                          : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
+                        }`}
+                      >
+                        {item.type === '3d' ? <Box width={20} height={20} className='shrink-0'/> : <FileText size={20} />}
+                        <Tooltip content={`${item.name}`} placement='bottom'>
+                          <span className="text-sm truncate flex-grow">                    
+                              {item.name}
+                          </span>
+                        </Tooltip>
+                        {item.name === loadingModelId ? (<Loader2 size={16}/>)
+                        :( 
+                          <>
+                            <Tooltip content={`Focus`} placement='bottom'>
+                              <button
+                                onClick={(e) => focusModel(item.name, e)}
+                                aria-label={`Focus ${item.name}`}
+                                className={`${item.type === 'pdf' ? "hidden":null} text-gray-300 hover:text-white`}
+                                >
+                                <Focus size={16}/>
+                              </button>
+                            </Tooltip>
+                              <Dropdown
+                                placement='right-start'
+                              >
+                                <DropdownTrigger>
+                                  <div className='flex'>
+                                    <Tooltip content="More Options" placement="bottom">
+                                      <button>
+                                        <ChevronRight size={16} className="shrink-0" />
+                                      </button>
+                                    </Tooltip>
+                                  </div>
+                                </DropdownTrigger>  
+                                <DropdownMenu 
+                                  aria-label='more options' 
+                                  variant='flat'
+                                  itemClasses={{
+                                    base:"text-black dark:text-white",
+                                  }}
+                                >
+                                  <DropdownItem 
+                                    key="Remove From Scene" 
+                                    onPress={() => removeModelFromScene(item.name)} 
+                                    endContent={<BrushCleaning size={20}/>}
+                                  >
+                                    Remove From Scene
+                                  </DropdownItem>
+                                </DropdownMenu>
+                              </Dropdown>
+                          </>
+                        )  
+                        }
+                      </div>
+                    )) // 這裡傳入 true 代表已載入
+                  )}
+                </div>
+              </div>
             </div>
           </div>
+        ):(
+          <div className="flex flex-col">
+            {/* 列出PDF*/}
+            <div 
+              className="flex items-center justify-between cursor-pointer px-2 mb-2 group"
+              onClick={() => setIsPdfExpandeded(!isPdfExpanded)}
+            >
+              <p className="font-inter text-[#A1A1AA] text-xs uppercase group-hover:text-white transition-colors">
+                Loaded Files ({files.length})
+              </p>
+              <div className="flex items-center gap-2">
+                <ChevronDown size={14} className={`text-[#A1A1AA] transition-transform duration-300 ${isLoadedExpanded ? "rotate-180" : "rotate-0"}`} />
+              </div>
+            </div>
+            
+            {/* 動態折疊容器 */}
+            <div className={`grid transition-all duration-300 ease-in-out ${isPdfExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+              <div className="overflow-hidden flex flex-col gap-2 px-1">
+                {files.length === 0 ? (
+                  <p className="text-gray-600 text-[10px] italic text-center py-2">No models in scene</p>
+                ) : (
+                  files.map((item)=>(
+                    <div 
+                      key={item.dbId}
+                      onClick={() => {
 
-          <div className={`grid transition-all duration-300 ease-in-out ${isCloudExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-            <div className="overflow-hidden flex flex-col gap-2 px-1">
-              {isLoading ? (
-                <div className="flex justify-center p-2"><Spinner size="sm" /></div>
-              ) : cloudModels.length === 0 ? (
-                <p className="text-gray-600 text-[10px] italic text-center py-2">Library is empty</p>
-              ) : (
-                cloudModels.map((item)=>(
-                  <div 
-                    key={item.id}
-                    className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
-                      selectedFileId === item.id
-                      ? 'bg-[#D70036] text-white shadow-lg' 
-                      : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
-                    }`}
-                  >
-                    {item.type === '3d' ? <Box width={20} height={20} className='shrink-0'/> : <FileText size={20} />}
-                    <Tooltip content={`${item.name}`} placement='bottom'>
-                      <span className="text-sm truncate flex-grow">                    
-                          {item.name}
-                      </span>
-                    </Tooltip>
-                    {item.name === loadingModelId ? (<Loader2 size={16}/>)
-                    :( 
-                      <>
-                        <Tooltip content={`Load model`} placement='bottom'>
-                          <button
-                            onClick={(e) => downloadAndLoadFrag(item.id,item.fileId,item.name, e)}
-                            aria-label={`Load ${item.name}`}
-                            className={`${item.type === 'pdf' ? "hidden":null} text-gray-300 hover:text-white`}
+                        const isPdf = item.name.toLowerCase().endsWith('.pdf');
+
+                        console.log("檔案在這裡",item);
+                        onSelectFile({
+                          dbId:item.dbId,
+                          // 騙術：給它一個同名的空檔案 (內容是空陣列 [])
+                          file: item.file,
+                          type: isPdf ? 'pdf' : '3d',
+                          name:item.name,
+                          fileid:item.fileid,
+                        })
+                      }
+                    }
+                      className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                        selectedFileId === item.dbId
+                        ? 'bg-[#D70036] text-white shadow-lg' 
+                        : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
+                      }`}
+                    >
+                      {item.type === '3d' ? <Box width={20} height={20} className='shrink-0'/> : <FileText size={20} />}
+                      <Tooltip content={`${item.name}`} placement='bottom'>
+                        <span className="text-sm truncate flex-grow">                    
+                            {item.name}
+                        </span>
+                      </Tooltip>
+                        <>
+                            <Dropdown
+                              placement='right-start'
                             >
-                            <CloudDownload size={16}/>
-                          </button>
-                        </Tooltip>
-                          <Dropdown
-                            placement='right-start'
-                          >
-                            <DropdownTrigger>
-                              <div className='flex'>
-                                <Tooltip content="More Options" placement="bottom">
-                                  <button>
-                                    <ChevronRight size={16} className="shrink-0" />
-                                  </button>
-                                </Tooltip>
-                              </div>
-                            </DropdownTrigger>  
-                            <DropdownMenu 
-                              aria-label='more options' 
-                              variant='flat'
-                              itemClasses={{
-                                base:"text-black dark:text-white",
-                              }}
-                            >
-                              <DropdownItem 
-                                key="Delete From Storage" 
-                                onPress={() => openDeleteModal(item.name,item.fileId)} 
-                                endContent={<Trash2 size={20} className='text-danger'/>}
-                                color="danger"
-                                classNames={{
-                                  title:"text-danger",
+                              <DropdownTrigger>
+                                <div className='flex'>
+                                  <Tooltip content="More Options" placement="bottom">
+                                    <button>
+                                      <ChevronRight size={16} className="shrink-0" />
+                                    </button>
+                                  </Tooltip>
+                                </div>
+                              </DropdownTrigger>  
+                              <DropdownMenu 
+                                aria-label='more options' 
+                                variant='flat'
+                                itemClasses={{
+                                  base:"text-black dark:text-white",
                                 }}
                               >
-                                Delete From Storage
-                              </DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                      </>
-                    )  
-                    }
-                  </div>
-                ))
-              )}
+                                <DropdownItem 
+                                  key="Remove PDF" 
+                                  onPress={(e) => removeFile(item.dbId)} 
+                                  endContent={<BrushCleaning size={20}/>}
+                                >
+                                  Remove PDF
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                        </>
+                    </div>
+                  )) // 這裡傳入 true 代表已載入
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        {/* LOADED MODELS (已在場景中) */}
-        <div className="flex flex-col">
-          <div 
-            className="flex items-center justify-between cursor-pointer px-2 mb-2 group"
-            onClick={() => setIsLoadedExpanded(!isLoadedExpanded)}
-          >
-            <p className="font-inter text-[#A1A1AA] text-xs uppercase group-hover:text-white transition-colors">
-              Loaded {postType} Models ({loadedFiles.length})
-            </p>
-            <div className="flex items-center gap-2">
-              <button onClick={(e) => { e.stopPropagation(); onFocusAllModel(); }} className="text-[#A1A1AA] hover:text-white">
-                <Focus size={14} />
-              </button>
-              <ChevronDown size={14} className={`text-[#A1A1AA] transition-transform duration-300 ${isLoadedExpanded ? "rotate-180" : "rotate-0"}`} />
-            </div>
-          </div>
-          
-          {/* 動態折疊容器 */}
-          <div className={`grid transition-all duration-300 ease-in-out ${isLoadedExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-            <div className="overflow-hidden flex flex-col gap-2 px-1">
-              {loadedFiles.length === 0 ? (
-                <p className="text-gray-600 text-[10px] italic text-center py-2">No models in scene</p>
-              ) : (
-                loadedFiles.map((item)=>(
-                  <div 
-                    key={item.dbId}
-                    onClick={() => {
-
-                      const isPdf = item.name.toLowerCase().endsWith('.pdf');
-
-                      onSelectFile({
-                        dbId:item.dbId,
-                        // 騙術：給它一個同名的空檔案 (內容是空陣列 [])
-                        file: new File([], item.name, { type: 'application/octet-stream' }),
-                        type: isPdf ? 'pdf' : '3d',
-                        name:item.name,
-                        fileid:item.fileid,
-                      })
-                    }
-                  }
-                    className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
-                      selectedFileId === item.dbId
-                      ? 'bg-[#D70036] text-white shadow-lg' 
-                      : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
-                    }`}
-                  >
-                    {item.type === '3d' ? <Box width={20} height={20} className='shrink-0'/> : <FileText size={20} />}
-                    <Tooltip content={`${item.name}`} placement='bottom'>
-                      <span className="text-sm truncate flex-grow">                    
-                          {item.name}
-                      </span>
-                    </Tooltip>
-                    {item.name === loadingModelId ? (<Loader2 size={16}/>)
-                    :( 
-                      <>
-                        <Tooltip content={`Focus`} placement='bottom'>
-                          <button
-                            onClick={(e) => focusModel(item.name, e)}
-                            aria-label={`Focus ${item.name}`}
-                            className={`${item.type === 'pdf' ? "hidden":null} text-gray-300 hover:text-white`}
-                            >
-                            <Focus size={16}/>
-                          </button>
-                        </Tooltip>
-                          <Dropdown
-                            placement='right-start'
-                          >
-                            <DropdownTrigger>
-                              <div className='flex'>
-                                <Tooltip content="More Options" placement="bottom">
-                                  <button>
-                                    <ChevronRight size={16} className="shrink-0" />
-                                  </button>
-                                </Tooltip>
-                              </div>
-                            </DropdownTrigger>  
-                            <DropdownMenu 
-                              aria-label='more options' 
-                              variant='flat'
-                              itemClasses={{
-                                base:"text-black dark:text-white",
-                              }}
-                            >
-                              <DropdownItem 
-                                key="Remove From Scene" 
-                                onPress={() => removeModelFromScene(item.name)} 
-                                endContent={<BrushCleaning size={20}/>}
-                              >
-                                Remove From Scene
-                              </DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                      </>
-                    )  
-                    }
-                  </div>
-                )) // 這裡傳入 true 代表已載入
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+        )}
+    </div>
+        
+      
       {/* 二次確認刪除模型 */}
       <Modal 
         isOpen={isOpen} 

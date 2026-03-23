@@ -13,8 +13,8 @@ export default function MediaGallery({ post }: { post: any }) {
     const minioUrl = process.env.NEXT_PUBLIC_S3_ENDPOINT;
 
     const getActiveImageUrl = () => {
-        if (activeSource === 'cover') return `${minioUrl}/images/${post.coverImage}`;
-        if (typeof activeSource === 'number') return `${minioUrl}/images/${post.images[activeSource]}`;
+        if (activeSource === 'cover') return `${post.coverImage}`;
+        if (typeof activeSource === 'number') return `${post.images[activeSource]}`;
         return ""; // 3D 模式下不顯示 Image
     };
 
@@ -86,7 +86,7 @@ export default function MediaGallery({ post }: { post: any }) {
                 )}
                 {/* 圖片縮圖 */}
                 <div onClick={() => setActiveSource('cover')} className={`w-[120px] shrink-0 aspect-video relative rounded-lg border-2 ${activeSource === 'cover' ? 'border-[#D70036]' : 'border-transparent'}`}>
-                    <Image src={`${minioUrl}/images/${post.coverImage}`} alt="thumb" fill className="object-contain bg-black/60 rounded-md" unoptimized />
+                    <Image src={post.coverImage} alt="thumb" fill className="object-contain bg-black/60 rounded-md" unoptimized />
                 </div>
                 {post.images?.map((imgKey: string, index: number) => (
                     <div 
@@ -95,7 +95,7 @@ export default function MediaGallery({ post }: { post: any }) {
                         className={`w-[120px] shrink-0 aspect-video relative rounded-lg border-2 cursor-pointer transition ${activeSource === index ? 'border-[#D70036]' : 'border-transparent'}`}
                     >
                         <Image 
-                            src={`${minioUrl}/images/${imgKey}`} 
+                            src={imgKey} 
                             alt={`thumb-${index}`} 
                             fill 
                             className="object-contain rounded-md bg-black/60" 

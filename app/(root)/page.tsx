@@ -68,9 +68,21 @@ const Home = () => {
   return (
     <div className='mt-20'>
       <div className="flex flex-col items-center gap-8">
-        <Image src="/icons/GOMOREonly.svg" width={300} height={300} alt="GoMore Logo" className=""/>
-        <Image src="/Connect More, Achieve More.svg" width={500 } height={500 } alt="Slogan" className="invert dark:invert-0"/>
-        <p className="text-[#5B5B5B] dark:text-[#BEBEBE] text-[17px] font-almarai">Build a 3D Model Community--Share Knowledge,Connect Partners</p>
+        <Image 
+          src="/icons/GOMOREonly.svg" 
+          width={300} 
+          height={300} 
+          alt="GoMore Logo" 
+          className="w-full max-w-[200px] md:max-w-[300px] 2xl:max-w-[500px] h-auto"
+        />
+        <Image 
+          src="/Connect More, Achieve More.svg" 
+          width={500} 
+          height={500} 
+          alt="Slogan" 
+          className="invert dark:invert-0 w-full max-w-[300px] md:max-w-[500px] 2xl:max-w-[750px] h-auto"
+        />
+        <p className="text-[#5B5B5B] dark:text-[#BEBEBE] text-lg md:text-xl 2xl:text-2xl font-almarai">Build a 3D Model Community--Share Knowledge,Connect Partners</p>
         <div className='flex gap-5'>
           {status === "unauthenticated" && (<a href="/sign-up">  
             <button className='hover-lift hover:cursor-pointer relative shadow-[inset_0_1px_2px_#ffffffbf] font-inter font-semibold text-white text-sm px-4 py-2 rounded-lg'
@@ -135,7 +147,7 @@ const Home = () => {
           </div>
           <div className='w-[95%]'>
             {/* 分割容器成3等份 */}
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center'>
+            <div className='flex flex-wrap gap-6 max-sm:justify-center items-center'>
               {posts.map((post)=>(
                 <PostCard 
                   key={post.id}

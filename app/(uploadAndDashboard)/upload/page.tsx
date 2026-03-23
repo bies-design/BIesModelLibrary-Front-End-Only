@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
+import { createPdfRecord } from '@/lib/actions/pdf.action';
 import { createPost } from '@/lib/actions/post.action';
 
 // 定義檔案項目介面
@@ -122,10 +123,11 @@ const Upload = () => {
             // 這裡之後會從 MetadataForm 取得資料
         });
 
-        if (loadedFiles.length === 0) {
-            alert("請載入至少一個模型！");
-            return;
-        }
+        // !!等等回來修改 3d post跟2D post邏輯
+        // if (loadedFiles.length === 0 ) {
+        //     alert("請載入至少一個模型！");
+        //     return;
+        // }
 
         setIsSubmitting(true);
 
@@ -173,12 +175,51 @@ const Upload = () => {
                 }
             }
             if(postType ==='2D'){
+                // 1.上傳pdf到minio 2.將pdf寫入資料庫
+                const dbPdfIds: string[] = [];
+
+                for(const file of uploadedFiles){
+                    try{
+                        // 將uploadedFiles裡面的pdf檔案上傳到minio
+                        const formData = new FormData();
+                        formData.append("file",file.file);
+
+                        const uploadRes = await fetch("/api/pdfs",{method:"POST",body: formData});
+                        if (!uploadRes.ok) throw new Error(`PDF ${file.name} 上傳 MinIO 失敗`);
+
+                        const uploadData = await uploadRes.json();
+                        const minioFileId = uploadData.key;
+                        // 將minio fileKey 以及pdf資訊寫入pg pdf schema
+                        const dbRecord = await createPdfRecord({
+                            name: file.name,
+                            fileId: minioFileId,
+                        })
+
+                        if (!dbRecord.success || !dbRecord.id) {
+                            throw new Error(`PDF ${file.name} 寫入資料庫失敗: ${dbRecord.error}`);
+                        }
+
+                        dbPdfIds.push(dbRecord.id);
+                        console.log(`✅ ${file.name} 上傳並建檔成功，DB_ID: ${dbRecord.id}`);
+                    }catch (error){
+                        console.error(error);
+                        // 這裡可以決定要 throw Error 中斷整個流程，還是 continue 繼續傳下一個
+                        throw new Error(`處理檔案 ${file.name} 時發生錯誤，中止發布`);
+                    }
+                }
+                
+                if (dbPdfIds.length === 0) {
+                    throw new Error("沒有成功上傳任何 PDF 檔案");
+                }
+
+                console.log("4. 所有 PDF 處理完畢，準備建立 Post，關聯的 IDs:", dbPdfIds);
+                // 將資料庫中這次上傳的pdf dbId跟post做關聯
                 const result = await createPost({
                     postType:'2D',
                     metadata: metadata,
                     coverImageKey: coverKey,
                     imageKeys: imageKeys,
-                    pdfIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
+                    pdfIds: dbPdfIds, // 使用者選中模型的資料庫ID
                 });
                 if (result.success) {
                     console.log("✅ 建立成功！");

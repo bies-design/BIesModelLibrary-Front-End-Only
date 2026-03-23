@@ -7,6 +7,7 @@ import * as Frags from "@thatopen/fragments";
 import { setupComponents } from '../bim-components';
 import { FileItem } from '@/app/(uploadAndDashboard)/upload/page';
 import * as THREE from 'three';
+import * as WEBIFC from 'web-ifc';
 
 export interface Viewer3DRef {
     getComponents: () => OBC.Components | null;
@@ -17,6 +18,92 @@ export interface Viewer3DRef {
     exportModelFrag: (modelId: string) => Promise<ArrayBuffer | null>;
     deleteModel: (modelId: string) => void;
 }
+// 材質萃取器
+export const extractMaterialsFromIFC = (webIfc: WEBIFC.IfcAPI, modelID: number): Record<string, string> => {
+    const elementMaterialMap: Record<string, string> = {};
+
+    try {
+        // 1. 取得所有「材質關聯」的 ID (IfcRelAssociatesMaterial)
+        const relMaterialIDs = webIfc.GetLineIDsWithType(modelID, WEBIFC.IFCRELASSOCIATESMATERIAL);
+
+        // 遍歷所有的關聯紀錄
+        for (let i = 0; i < relMaterialIDs.size(); i++) {
+            const relID = relMaterialIDs.get(i);
+            const relData = webIfc.GetLine(modelID, relID);
+            
+            // 確保有關聯的材質與對象
+            if (!relData.RelatingMaterial || !relData.RelatedObjects) continue;
+
+            // 2. 取得材質節點
+            const materialNodeID = relData.RelatingMaterial.value;
+            console.log("expressID: ",materialNodeID);
+            const materialNode = webIfc.GetLine(modelID, materialNodeID);
+            
+            let materialNames: string[] = [];
+
+            // 3. 判斷材質節點類型並提取名稱 (處理你用 Python 發現的巢狀結構)
+            if (materialNode.type === WEBIFC.IFCMATERIAL) {
+                // [情況 A] 單一材質
+                materialNames.push(materialNode.Name?.value || "Unnamed Material");
+            } else if (materialNode.type === WEBIFC.IFCMATERIALLAYERSET) {
+                // [情況 B] 材質層集 (IfcMaterialLayerSet)
+                const layers = materialNode.MaterialLayers;
+                if (layers && Array.isArray(layers)) {
+                for (const layerRef of layers) {
+                    const layerNode = webIfc.GetLine(modelID, layerRef.value);
+                    if (layerNode.Material) {
+                    const actualMat = webIfc.GetLine(modelID, layerNode.Material.value);
+                    materialNames.push(actualMat.Name?.value || "Unnamed Layer");
+                    }
+                }
+                }
+            } else if (materialNode.type === WEBIFC.IFCMATERIALLAYERSETUSAGE) {
+                // [情況 C] 材質層集使用 (IfcMaterialLayerSetUsage) -> 先找 Set 再找 Layer
+                const layerSetNode = webIfc.GetLine(modelID, materialNode.ForLayerSet.value);
+                const layers = layerSetNode.MaterialLayers;
+                if (layers && Array.isArray(layers)) {
+                for (const layerRef of layers) {
+                    const layerNode = webIfc.GetLine(modelID, layerRef.value);
+                    if (layerNode.Material) {
+                    const actualMat = webIfc.GetLine(modelID, layerNode.Material.value);
+                    materialNames.push(actualMat.Name?.value || "Unnamed Layer");
+                    }
+                }
+                }
+            } else if (materialNode.type === WEBIFC.IFCMATERIALLIST) {
+                // [情況 D] 材質列表 (IfcMaterialList)
+                const materials = materialNode.Materials;
+                if (materials && Array.isArray(materials)) {
+                    for (const matRef of materials) {
+                    const mat = webIfc.GetLine(modelID, matRef.value);
+                    materialNames.push(mat.Name?.value || "Unnamed List Material");
+                    }
+                }
+            }
+
+            // 將陣列組合成一個字串 (例如: "油漆, 混凝土, 隔熱層")
+            const finalMaterialName = materialNames.length > 0 ? materialNames.join(", ") : "Unnamed Material";
+
+            // 4. 將抓到的材質名稱，綁定給所有關聯的 3D 物件 (利用 GlobalId)
+            const relatedObjects = relData.RelatedObjects;
+            for (let j = 0; j < relatedObjects.length; j++) {
+                const objID = relatedObjects[j].value;
+                const objData = webIfc.GetLine(modelID, objID);
+                
+                // 確保該物件擁有 GlobalId (IfcRoot 的子類別才會有)
+                if (objData.GlobalId) {
+                elementMaterialMap[objData.GlobalId.value] = finalMaterialName;
+                }
+            }
+        }
+        
+        return elementMaterialMap;
+
+    } catch (error) {
+        console.error("萃取材質失敗:", error);
+        return {};
+    }
+};
 
 interface Viewer3DProps {
     allFiles: FileItem[];
@@ -238,6 +325,15 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
                     const extension = fileItem.name.split('.').pop()?.toLowerCase();
 
                     if (extension === 'ifc') {
+                        
+                        // const unit8Array = new Uint8Array(buffer);
+                        // const wasmModelId = await ifcLoader.readIfcFile(unit8Array);
+                        // const materialMapping = extractMaterialsFromIFC(ifcLoader.webIfc, wasmModelId);
+                        
+                        // console.log(`[材質萃取成功] ${fileItem.name}:`, materialMapping);
+                        // ifcLoader.cleanUp();
+
+                        // await ifcLoader.load(unit8Array,true,modelId);
                         console.log(`[Viewer3D] 收到 IFC 檔案 ${fileItem.name}，跳過前端載入，等待後端轉檔為 FRAG。`);
                     } 
                     else if (extension === 'frag') {

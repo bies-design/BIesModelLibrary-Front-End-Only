@@ -1,5 +1,8 @@
 "use server";
 
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3Client } from "../s3";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth"; // 你的 auth 設定
 import { Metadata } from "@/components/forms/MetadataForm";
@@ -97,13 +100,41 @@ export const getPostsByScroll = async (
             },
         });
 
+        // 將資料庫撈出來的 coverImage (Object Key) 轉換成 MinIO Presigned URL
+        const postsWithSignedUrls = await Promise.all(
+            posts.map(async (post) => {
+                let signedCoverImage = post.coverImage;
+                
+                // 如果該筆資料有 coverImage，就向 MinIO 請求簽名網址
+                if (post.coverImage) {
+                    try {
+                        
+                        const command = new GetObjectCommand({
+                            Bucket: "images", // 依照你錯誤訊息顯示的 Bucket 名稱
+                            Key: post.coverImage,
+                        });
+                        // 產生 1 小時 (3600 秒) 有效的臨時公開網址
+                        signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+                    } catch (signError) {
+                        console.error(`Failed to sign URL for image ${post.coverImage}:`, signError);
+                        // 若簽名失敗，保留原本的值或可在此處替換為預設的 Placeholder 圖片路徑
+                    }
+                }
+
+                return {
+                    ...post,
+                    coverImage: signedCoverImage // 替換為可直接讀取的完整 URL
+                };
+            })
+        );
+
         // 2. 查詢資料總數 (用來判斷是否還有下一頁)
         const totalPosts = await prisma.post.count({ where: whereCondition });
         const hasMore = skip + posts.length < totalPosts;
 
         return { 
             success: true, 
-            data: posts, 
+            data: postsWithSignedUrls, 
             hasMore: hasMore 
         };
     } catch (error) {
@@ -180,7 +211,52 @@ export const getPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
-        return { success: true, data: post };
+        let signedCoverImage = post.coverImage;
+        if(signedCoverImage){
+            try{
+                const command = new GetObjectCommand({
+                    Bucket:"images",
+                    Key:post.coverImage,
+                })
+                signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+            }catch(signError){
+                console.error(`Failed to sign URL for post detail image ${post.coverImage}:`, signError);
+            }
+            
+        }
+
+        let signedImagesArray: string[] = [];
+        if (post.images && Array.isArray(post.images) && post.images.length > 0) {
+            signedImagesArray = await Promise.all(
+                post.images.map(async (imageKey) => {
+                    try {
+                        // 一樣套用防呆機制，確保拿到純檔名
+                        let cleanUrl = imageKey.trim();
+                        const objectKey = cleanUrl.split('/').pop() || cleanUrl;
+
+                        const command = new GetObjectCommand({
+                            Bucket: "images", // 假設這些附圖也放在 images bucket
+                            Key: objectKey,
+                        });
+                        
+                        // 回傳這張單一圖片的簽名網址
+                        return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+                    } catch (error) {
+                        console.error(`Failed to sign array image ${imageKey}:`, error);
+                        // 如果這張圖簽名失敗，回傳原本的值，避免影響其他正常的圖片
+                        return imageKey; 
+                    }
+                })
+            );
+        }
+        return { 
+            success: true, 
+            data: {
+                ...post,
+                coverImage: signedCoverImage,
+                images: signedImagesArray
+            }
+        };
     } catch (error) {
         console.error("Failed to fetch post detail:", error);
         return { success: false, error: "Database error" };

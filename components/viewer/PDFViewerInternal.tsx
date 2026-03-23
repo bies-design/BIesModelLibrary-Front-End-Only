@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState, ReactElement, forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { useMemo, useCallback, useEffect, useState, ReactElement, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Worker, Viewer, ProgressBar, RotateDirection, Plugin ,PluginOnCanvasLayerRender} from '@react-pdf-viewer/core';
 import { domToCanvas } from 'modern-screenshot';
 import { defaultLayoutPlugin, ToolbarProps, ToolbarSlot } from '@react-pdf-viewer/default-layout';
@@ -65,10 +65,22 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRendering, setIsRendering] = useState<boolean>(false);
 
+  // 將事件函式用 useCallback 緩存，確保記憶體位址不變
+  const handleRenderCanvasStart = useCallback(() => {
+    setIsRendering(true);
+  }, []);
+
+  const handleRenderingComplete = useCallback(() => {
+    setTimeout(() => {
+      setIsRendering(false);
+    }, 100);
+  }, []);
+
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     sidebarTabs: () => [],
     renderToolbar,
   });
+
   //  監聽渲染完成的 Plugin
   // 這裡完全符合 index.d.ts 中的 Plugin 介面定義
   const renderingListenerPlugin: Plugin = {
@@ -83,31 +95,24 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
     takeScreenshot: async () => {
       if (!containerRef.current) return null;
       try {
-        // 擷取 Viewer 容器的內容
-        const canvas = await domToCanvas(containerRef.current, {
-          quality: 1,
-          scale: 2, // 提高解析度
-        });
-        return canvas.toDataURL('image/png');
-      } catch (error) {
-        console.error("PDF Screenshot failed:", error);
-        return null;
-      }
+      // 🌟 改為尋找第一頁的 Canvas 或 Page Container
+      // .rpv-core__page-layer 是 react-pdf-viewer 渲染單頁的預設 class
+      const firstPageElement = containerRef.current.querySelector('.rpv-core__page-layer') as HTMLElement;
+      
+      const targetElement = firstPageElement || containerRef.current; // 如果找不到，退回截整個畫面
+
+      const canvas = await domToCanvas(targetElement, {
+        quality: 1,
+        scale: 2,
+      });
+      return canvas.toDataURL('image/png');
+    } catch (error) {
+      console.error("PDF Screenshot failed:", error);
+      return null;
+    }
     }
   }));
 
-  // 當開始任何耗時操作時，鎖定 UI
-  const handleRenderCanvasStart = () => {
-    setIsRendering(true);
-  }
-  
-  // 當 Canvas 渲染完成，解鎖 UI
-  const handleRenderingComplete = () => {
-    // 給一個極短的延遲，確保視覺上已經穩定
-    setTimeout(() => {
-      setIsRendering(false);
-    },100);
-  }
   //安全網：如果 unknown error 導致沒有觸發 complete，3秒後強制解鎖，避免永久卡死
   useEffect(() => {
     let safetyTimer: NodeJS.Timeout;

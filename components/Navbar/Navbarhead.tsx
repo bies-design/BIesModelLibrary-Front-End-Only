@@ -51,21 +51,22 @@ export default function Navbarhead() {
 
       {/* 這是新的外層容器，負責畫邊框 */}
       <div className={`
-      w-full max-w-5xl 
+      w-[90vw] 
       bg-white dark:bg-black 
       rounded-2xl 
       transition-all duration-300
       flex flex-col
-      overflow-hidden
+      overflow-hidden 2xl:px-10
       shadow-[inset_0px_-2px_4px_0px_#00000040,inset_0px_2px_1px_1px_#FFFFFF26,0px_2px_30px_0px_#00000038,0px_0px_15px_0px_#0000000F]
       `}>
 
         <Navbar
+        maxWidth="full"
         isBordered={false}
         isBlurred={false}
         className="bg-transparent"
         classNames={{ 
-          wrapper:"px-4"
+          wrapper:"px-10 2xl:px-5"
         }}
       >
           <NavbarContent justify="start">

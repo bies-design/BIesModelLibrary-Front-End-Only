@@ -18,11 +18,11 @@ const Settings = (props: Props) => {
     const {data:session} = useSession();
     
     const userData = {
-        name: session?.user?.name || "Junior Garcia",
-        email: session?.user?.email || "GomoreTest@gmail.com",
+        name: session?.user?.name || "",
+        email: session?.user?.email || "",
         role: "Free User",
-        userId: "sadw123dasqwe",
-        image: session?.user?.image || "https://i.pravatar.cc/150?u=a042581f4e29026704d", 
+        userId: session?.user.id,
+        image: session?.user?.image, 
     };
 
     return (
@@ -37,8 +37,10 @@ const Settings = (props: Props) => {
                     <label className="text-sm text-foreground-700">Profile</label>
                     <div className="flex items-center gap-4 p-1">
                         <Avatar 
-                            src={userData.image} 
+                            src={userData.image || ''} 
+                            name={userData.name || ""}
                             className="w-10 h-10 text-large" 
+                            showFallback
                         />
                         <div className="flex flex-col">
                             <span className="font-medium text-lg">{userData.name}</span>

@@ -27,8 +27,18 @@ export default function ActionButtons({ post }: { post: any }) {
 
             // 呼叫我們剛剛寫的 API
             const res = await fetch(`/api/download/${fileId}?filename=${encodeURIComponent(finalFileName)}`);
+
+            // 檢查是否為Unauthorized
+            if (res.status === 401) {
+                addToast({
+                    description: "請先登入後再進行下載",
+                    color: "warning" 
+                });
+                return; // 中斷後續邏輯
+            }
+
             if (!res.ok) throw new Error("Failed to get URL");
-            
+
             const data = await res.json();
             
             if (data.url) {
@@ -47,9 +57,10 @@ export default function ActionButtons({ post }: { post: any }) {
             }
         } catch (error) {
             addToast({
-                description: "Download failed. Please try again.",
+                description: "下載失敗，請稍後再試。",
                 color: "danger"
             });
+            console.error("Download Error:", error);
         } finally {
             setIsGenerating(null);
         }
