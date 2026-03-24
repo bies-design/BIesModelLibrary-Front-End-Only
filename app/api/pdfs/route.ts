@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { s3Client } from "@/lib/s3"; // 你之前設定好的 s3 client
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 
 export async function POST(req:NextRequest) {
@@ -39,3 +39,4 @@ export async function POST(req:NextRequest) {
         return NextResponse.json({ error: "Upload failed" }, { status: 500 });
     }
 }
+

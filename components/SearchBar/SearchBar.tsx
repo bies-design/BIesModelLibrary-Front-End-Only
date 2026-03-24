@@ -18,7 +18,7 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
             <Input
                 aria-label="Search 3D models"
                 classNames={{
-                    base: "w-full sm:max-w-[433px] h-10",
+                    base: "w-full max-w-[433px] lg:max-w-[400px] xl:max-w-[600px] h-10 transition-all duration-300",
                     mainWrapper: "h-full",
                     input: `text-small  ${isDark ? "text-red-500" : "text-black"}`,
                     inputWrapper:

@@ -11,7 +11,7 @@ import React from 'react'
 const SetLanguageButton = () => {
     const [locale, setLocale] = React.useState<"en-US" | "zh-CN">("en-US");
     return (
-    <NavbarItem>
+    <NavbarItem className='hidden sm:flex'>
         <Dropdown>
         <DropdownTrigger>
             <Button

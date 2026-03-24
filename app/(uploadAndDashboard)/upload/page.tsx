@@ -123,11 +123,15 @@ const Upload = () => {
             // 這裡之後會從 MetadataForm 取得資料
         });
 
-        // !!等等回來修改 3d post跟2D post邏輯
-        // if (loadedFiles.length === 0 ) {
-        //     alert("請載入至少一個模型！");
-        //     return;
-        // }
+        // 
+        if(postType === '3D' && loadedFiles.length === 0) {
+            alert("請載入至少一個模型!");
+            return;
+        }
+        if(postType === '2D' && uploadedFiles.length === 0) {
+            alert("請至少載入一個PDF!");
+            return;
+        }
 
         setIsSubmitting(true);
 
@@ -269,7 +273,7 @@ const Upload = () => {
             
         <div className='flex w-full h-screen gap-4 p-2 '>
             {/* 左側步驟導覽列 */}
-            <div className='relative max-w-[275px] min-w-[200px] w-[20dvw] overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)]'>
+            <div className='relative max-w-[300px] min-w-[250px] w-[20vw] overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)]'>
                 <SidebarBlobs/>
                 {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
                 <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>

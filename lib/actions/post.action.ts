@@ -1,12 +1,15 @@
 "use server";
 
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "../s3";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth"; // 你的 auth 設定
 import { Metadata } from "@/components/forms/MetadataForm";
 import { nanoid } from "nanoid";
+import { revalidatePath } from "next/cache";
+import { success } from "zod";
+import { error } from "console";
 
 
 interface CreatePostParams {
@@ -249,12 +252,13 @@ export const getPostDetail = async (shortId: string) => {
                 })
             );
         }
+        
         return { 
             success: true, 
             data: {
                 ...post,
                 coverImage: signedCoverImage,
-                images: signedImagesArray
+                images: signedImagesArray,
             }
         };
     } catch (error) {
@@ -262,3 +266,130 @@ export const getPostDetail = async (shortId: string) => {
         return { success: false, error: "Database error" };
     }
 };
+
+// Delete 2D post and its related pdf files on db and minio
+export async function delete2DPost(postId: string) {
+    try{
+        // 1. 查詢該貼文，並帶出關聯的 PDF 資料
+        const post = await prisma.post.findUnique({
+            where:{id:postId},
+            include:{pdfIds:true}
+        });
+
+        if(!post){
+            return { success: false, error: "找不到該貼文" };
+        }
+
+        const s3DeletePromises: Promise<void>[] = [];
+
+        // ==========================================
+        // 清理圖片 (Cover Image & Additional Images)
+        // ==========================================
+        const imageKeysToDelete: string[] = [];
+        if(post.coverImage){
+            imageKeysToDelete.push(post.coverImage);
+        }
+        if(post.images && post.images.length > 0){
+            imageKeysToDelete.push(...post.images);
+        }
+        imageKeysToDelete.forEach((key) => {
+            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: key});
+            s3DeletePromises.push(
+                s3Client.send(command)
+                    .then(() => console.log(`minio圖片已刪除: ${key}`))
+                    .catch(err => console.log(`minio圖片刪除失敗: ${key}`,err))
+            )
+        })
+
+        // ==========================================
+        // 清理 PDF (實體檔案 & 資料庫紀錄)
+        // ==========================================
+        if (post.pdfIds && post.pdfIds.length > 0) {
+            // 建立 PDF 實體檔案刪除任務
+            post.pdfIds.forEach((pdf) => {
+                if (pdf.fileId) {
+                    const command = new DeleteObjectCommand({ Bucket: process.env.S3_PDF_BUCKET, Key: pdf.fileId });
+                    s3DeletePromises.push(
+                        s3Client.send(command)
+                            .then(() => console.log(`MinIO PDF 已刪除: ${pdf.fileId}`))
+                            .catch(err => console.error(`MinIO PDF 刪除失敗: ${pdf.fileId}`, err))
+                    );
+                }
+            });
+            
+            // 從資料庫中刪除這些 Pdf 紀錄
+            const pdfDbIds = post.pdfIds.map(pdf => pdf.id);
+            await prisma.pdf.deleteMany({
+                where: {
+                    id: { in: pdfDbIds }
+                }
+            });
+        }
+        // ==========================================
+        // 等待所有 MinIO 刪除任務完成，再刪除貼文
+        // ==========================================
+        await Promise.all(s3DeletePromises);
+
+        // 5. 最後刪除貼文本身
+        await prisma.post.delete({
+            where: { id: postId }
+        });
+
+
+        // 刪除後更新首頁或列表頁的快取
+        revalidatePath("/");
+        return{ success:true };
+    }catch(e){
+        console.error("刪除貼文失敗",e);
+        return {success: false, error:"刪除失敗"};
+    }
+}
+
+export async function delete3DPost(postId: string) {
+    try{
+        const post = await prisma.post.findUnique({
+            where:{id:postId},
+        });
+        
+        if(!post){
+            return { success: false, error: "找不到該貼文" };
+        }
+
+        const s3DeletePromises: Promise<void>[] = [];
+
+        // ==========================================
+        // 清理圖片 (Cover Image & Additional Images)
+        // ==========================================
+        const imageKeysToDelete: string[] = [];
+        if(post.coverImage){
+            imageKeysToDelete.push(post.coverImage);
+        }
+        if(post.images && post.images.length > 0){
+            imageKeysToDelete.push(...post.images);
+        }
+        imageKeysToDelete.forEach((key) => {
+            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: key});
+            s3DeletePromises.push(
+                s3Client.send(command)
+                    .then(() => console.log(`minio圖片已刪除: ${key}`))
+                    .catch(err => console.log(`minio圖片刪除失敗: ${key}`,err))
+            )
+        })
+
+        // ==========================================
+        // 等待所有 MinIO 刪除任務完成，再刪除貼文
+        // ==========================================
+        await Promise.all(s3DeletePromises);
+
+        await prisma.post.delete({
+            where: { id:postId }
+        });
+
+        // 刪除後更新首頁或列表頁的快取
+        revalidatePath("/");
+        return{ success:true };
+    }catch(e){
+        console.error("刪除貼文失敗",e);
+        return {success: false, error:"刪除失敗"};
+    }
+}

@@ -47,11 +47,11 @@ export default function Navbarhead() {
   if (!mounted) return null; // Avoid SSR issues
 
   return (
-    <nav className="w-full flex justify-center px-4 mt-4">
+    <nav className="sticky top-4 z-50 w-full flex justify-center px-4 mt-4">
 
       {/* 這是新的外層容器，負責畫邊框 */}
       <div className={`
-      w-[90vw] 
+      w-[80vw] 
       bg-white dark:bg-black 
       rounded-2xl 
       transition-all duration-300
@@ -69,8 +69,8 @@ export default function Navbarhead() {
           wrapper:"px-10 2xl:px-5"
         }}
       >
-          <NavbarContent justify="start">
-            <NavbarBrand className="mr-4">
+          <NavbarContent justify="start" className="hidden sm:flex">
+            <NavbarBrand className="hidden sm:flex mr-4">
               <Link href="/">
                 <Image src={getLogoSrc(isDark)} width={120}height={120}alt="GoMore Logo"></Image>
               </Link>
@@ -103,7 +103,7 @@ export default function Navbarhead() {
             </NavbarContent>
           </NavbarContent>
 
-          <NavbarContent justify="center">
+          <NavbarContent justify="center" className="grow">
             {/* Search box 區塊 */}
             <SearchBar isMenuOpen={isMegaMenuOpen} onToggle={()=>setIsMegaMenuOpen(!isMegaMenuOpen)}/>
               

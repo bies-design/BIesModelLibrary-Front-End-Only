@@ -3,15 +3,22 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
+import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
+import PDFViewer from '../viewer/PDFViewer';
 import { Rotate3D, FileText, Loader2 } from 'lucide-react';
 
+type activeSourceType = 'cover' | '3D' | number | `pdf-${number}`;
+
 export default function MediaGallery({ post }: { post: any }) {
-    const [activeSource, setActiveSource] = useState<'cover' | '3D' | number>('cover');
+    const [activeSource, setActiveSource] = useState<activeSourceType>('cover');
     const viewerRef = useRef<Viewer3DRef>(null);
-    const [is3DLoading, setIs3DLoading] = useState(false);
+    const pdfRef = useRef<PDFViewerRef>(null);
+    const [is3DLoading, setIs3DLoading] = useState<boolean>(false);
 
-    const minioUrl = process.env.NEXT_PUBLIC_S3_ENDPOINT;
+    const [pdfFile, setPdfFile] = useState<File | null>(null);
+    const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
 
+    console.log("pdfIds",post.pdfIds);
     const getActiveImageUrl = () => {
         if (activeSource === 'cover') return `${post.coverImage}`;
         if (typeof activeSource === 'number') return `${post.images[activeSource]}`;
@@ -51,6 +58,31 @@ export default function MediaGallery({ post }: { post: any }) {
         }, 100);
     };
 
+    const handleLoadPdf = async (index: number, pdfItem: any) => {
+        const pdfSourceKey = `pdf-${index}` as activeSourceType;
+        if (activeSource === pdfSourceKey) return; // 如果已經是當前 PDF 就不動
+
+        setActiveSource(pdfSourceKey);
+        setPdfFile(null); // 切換時先清空舊的，避免閃爍舊畫面
+        setIsPdfLoading(true);
+
+        try {
+            // 呼叫我們剛才寫好的 API
+            const response = await fetch(`/api/pdfs/${pdfItem.fileId}`);
+            if (!response.ok) throw new Error("PDF 抓取失敗");
+
+            const blob = await response.blob();
+            // 將 Blob 包裝成 File 物件，這樣 PDFViewer 裡面的 `instanceof File` 判斷就能成立
+            const fileObj = new File([blob], pdfItem.name || `document-${index}.pdf`, { type: "application/pdf" });
+            
+            setPdfFile(fileObj);
+        } catch (error) {
+            console.error("載入 PDF 失敗:", error);
+        } finally {
+            setIsPdfLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col gap-4">
             {/* 主展示區 */}
@@ -68,7 +100,15 @@ export default function MediaGallery({ post }: { post: any }) {
                             </div>
                         )}
                     </div>
-                ) : (
+                ) : typeof activeSource === 'string' && activeSource.startsWith('pdf-') ? (
+                    // ====== PDF Viewer ======
+                    <div className="relative w-full h-full bg-white/5 flex items-center justify-center">
+                        <PDFViewer 
+                            ref={pdfRef} 
+                            file={pdfFile} 
+                        />
+                    </div>
+                ):(
                     <Image 
                         src={getActiveImageUrl()}
                         alt="Preview" fill className="object-contain object-center bg-bla" unoptimized 
@@ -84,6 +124,21 @@ export default function MediaGallery({ post }: { post: any }) {
                         <Rotate3D className="text-white" />
                     </div>
                 )}
+                {post.pdfIds?.map((pdfItem: any, index: number) => {
+                    const pdfSourceKey = `pdf-${index}` as activeSourceType;
+                    return (
+                        <div 
+                            key={pdfSourceKey}
+                            onClick={() => handleLoadPdf(index, pdfItem)} 
+                            className={`w-[120px] shrink-0 aspect-video rounded-lg border-2 flex flex-col items-center justify-center bg-black/40 cursor-pointer transition ${activeSource === pdfSourceKey ? 'border-[#D70036]' : 'border-transparent'}`}
+                        >
+                            <FileText className="text-white mb-1" size={24} />
+                            <span className="text-xs text-white/70 truncate w-full px-2 text-center">
+                                {pdfItem.name || `PDF ${index + 1}`}
+                            </span>
+                        </div>
+                    );
+                })}
                 {/* 圖片縮圖 */}
                 <div onClick={() => setActiveSource('cover')} className={`w-[120px] shrink-0 aspect-video relative rounded-lg border-2 ${activeSource === 'cover' ? 'border-[#D70036]' : 'border-transparent'}`}>
                     <Image src={post.coverImage} alt="thumb" fill className="object-contain bg-black/60 rounded-md" unoptimized />

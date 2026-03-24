@@ -1,32 +1,49 @@
 // components/post/ActionButtons.tsx
 "use client";
-import React from 'react';
-import { Download, Share2, FileCode, FileText, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, Share2, FileCode, FileText, Loader2,Trash2 } from 'lucide-react';
 import { 
     Modal, 
     ModalContent, 
     ModalHeader, 
     ModalBody, 
+    ModalFooter,
     Button, 
     useDisclosure,
     addToast 
 } from "@heroui/react";
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { delete2DPost, delete3DPost } from '@/lib/actions/post.action';
 
 export default function ActionButtons({ post }: { post: any }) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [isGenerating, setIsGenerating] = React.useState<string | null>(null);
+    const {data: session} = useSession();
+    const router = useRouter();
+    // 管理兩個不同的 Modal 狀態
+    const { isOpen: isDownloadOpen, onOpen: onDownloadOpen, onOpenChange: onDownloadChange } = useDisclosure();
+    const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteChange } = useDisclosure();
 
+    const [isGenerating, setIsGenerating] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+    const isOwner = session?.user.id === post.uploaderId;
+    
     // 處理 Presigned URL 下載邏輯
     const handleGetDownloadUrl = async (fileId: string, fileName: string) => {
         try {
             setIsGenerating(fileId); // 顯示該檔案正在準備中
             
-            const finalFileName = fileName.toLowerCase().endsWith('.ifc') 
-            ? fileName 
-            : `${fileName}.ifc`;
+            // 1. 判斷檔案類型
+            const isPdf = fileName.toLocaleLowerCase().endsWith('.pdf');
+            const fileType = isPdf ? 'pdf' : 'ifc';
 
-            // 呼叫我們剛剛寫的 API
-            const res = await fetch(`/api/download/${fileId}?filename=${encodeURIComponent(finalFileName)}`);
+            // 2. 處理檔名 (如果不是 PDF 也不是 IFC 結尾，就預設補上 .ifc)
+            const finalFileName = (isPdf || fileName.toLowerCase().endsWith('.ifc'))
+                ? fileName 
+                : `${fileName}.ifc`;
+
+            // 3. 呼叫 API，加上 type 參數讓後端知道要去哪個 Bucket 拿
+            const res = await fetch(`/api/download/${fileId}?filename=${encodeURIComponent(finalFileName)}&type=${fileType}`);
 
             // 檢查是否為Unauthorized
             if (res.status === 401) {
@@ -74,11 +91,37 @@ export default function ActionButtons({ post }: { post: any }) {
             shouldShowTimeoutProgress:true,
         })
     };
+    const handleDeletePost = async() => {
+        
+        try{
+            setIsDeleting(true);
+            const result = await (post.type === '3D' ? delete3DPost(post.id) : delete2DPost(post.id));    
+
+            if(result.success){
+                addToast({
+                    description:"貼文已成功刪除!",
+                    color:"success"
+                });
+                onDeleteChange();
+                router.push('/');
+            }else{
+                throw new Error("刪除失敗");
+            }
+        }catch(e){
+            addToast({
+                description:"刪除貼文失敗，請稍後再試!",
+                color:"danger"
+            });
+            console.error(e);
+        }finally{
+            setIsDeleting(false);
+        } 
+    }
 
     return (
         <div className="flex flex-col gap-3">
             <button 
-                onClick={onOpen} 
+                onClick={onDownloadOpen} 
                 className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
             >
                 <Download size={18} /> Download
@@ -86,11 +129,19 @@ export default function ActionButtons({ post }: { post: any }) {
             <button onClick={handleShare} className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
                 <Share2 size={18} /> Share Link
             </button>
+            {isOwner && (
+                <button 
+                    onClick={onDeleteOpen} 
+                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition mt-4 border border-red-500/20"
+                >
+                    <Trash2 size={18} /> Delete Post
+                </button>
+            )}
 
             {/* 下載清單 Modal */}
             <Modal 
-                isOpen={isOpen} 
-                onOpenChange={onOpenChange} 
+                isOpen={isDownloadOpen} 
+                onOpenChange={onDownloadChange} 
                 backdrop="blur"
                 placement="center"
                 className="dark text-white"
@@ -150,6 +201,35 @@ export default function ActionButtons({ post }: { post: any }) {
                             </div>
                         )}
                     </ModalBody>
+                </ModalContent>
+            </Modal>
+            {/* 二次確認刪除 Modal */}
+            <Modal 
+                isOpen={isDeleteOpen} 
+                onOpenChange={onDeleteChange}
+                backdrop="blur"
+                className="dark text-white bg-[#18181B] border border-[#27272A]"
+            >
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1 text-danger">Warning</ModalHeader>
+                            <ModalBody>
+                                <p className="text-gray-300">
+                                    Are you sure you want to delete this post? <br/>
+                                    This action cannot be undone. All associated files and data will be removed from this post.
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="default" variant="light" onPress={onClose} isDisabled={isDeleting}>
+                                    Cancel
+                                </Button>
+                                <Button color="danger" onPress={handleDeletePost} isLoading={isDeleting}>
+                                    {isDeleting ? "Deleting..." : "Delete Post"}
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
                 </ModalContent>
             </Modal>
         </div>

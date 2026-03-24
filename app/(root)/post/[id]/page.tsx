@@ -11,6 +11,7 @@ import CommentSection from '@/components/post/CommentSection';
 
 export default async function PostDetailPage({ params }:{ params:Promise<{ id:string }> }) {
     const { id } = await params;
+    // 在這邊把preaAssingedimage url傳入
     const result = await getPostDetail(id);
 
     // 如果找不到貼文，導向 404 頁面
