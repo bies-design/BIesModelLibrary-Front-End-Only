@@ -16,6 +16,13 @@ interface SidebarDashboardProps {
 
 const SidebarDashboard = ({ currentSelect, onSelect }: SidebarDashboardProps) => {
     const {data:session} = useSession();
+    const getImageUrl = (imageVal: string | null | undefined) => {
+        if(!imageVal) return "";
+        if(imageVal.startsWith("http")) return imageVal;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+    };
+    const userImage = getImageUrl(session?.user.image);
+
     const router = useRouter();
     return (
         <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className=" px-5 py-10 flex flex-col justify-between h-full">
@@ -29,12 +36,13 @@ const SidebarDashboard = ({ currentSelect, onSelect }: SidebarDashboardProps) =>
                 />
                 <div className='flex gap-2 items-center'>
                     {session && 
-                    <Avatar                       
-                        className=""   
-                        name={session.user?.name || ""}
-                        size="lg"
-                        src={session.user?.image || ""}
-                        showFallback/>
+                        <Avatar                       
+                            className=""   
+                            name={session.user?.name || ""}
+                            size="lg"
+                            src={userImage || ""}
+                            showFallback
+                        />
                     }
                     <div className='flex flex-col gap'>
                         <p className='font-inter font-light text-[#ECEDEE]'>{session?.user?.name}</p>

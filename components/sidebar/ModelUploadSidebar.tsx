@@ -440,7 +440,7 @@ const ModelUploadSidebar = ({
             <FileUp size={32} className="text-white" />
           </div>
           <p className="text-white text-xs text-center">
-            Drop your files here or <span className="text-[#D70036] hover:underline">browse</span>
+            Drop your {postType === '3D' ? '3D files': "PDF files"} here or <span className="text-[#D70036] hover:underline">browse</span>
           </p>
           <input
             type="file"
@@ -448,7 +448,7 @@ const ModelUploadSidebar = ({
             aria-label="Upload 3D models or PDF files"
             className="hidden"
             multiple
-            accept=".ifc,.frag,.pdf"
+            accept={postType === '3D' ? ".ifc,.frag":".pdf"}
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>

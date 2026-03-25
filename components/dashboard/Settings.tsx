@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import { useSession } from 'next-auth/react';
-import { Input, Button, Avatar, User } from "@heroui/react"; // 如果你是舊版 NextUI，請改為 @nextui-org/react
-import { Copy, Upload, PenLine, RotateCw } from 'lucide-react'; 
+import { updateUserName, getAvatarUploadUrl, updateUserImage, updateUserPassword } from '@/lib/actions/user.action';
+import { Input, Button, Avatar, User, Modal, ModalContent, ModalHeader ,ModalBody, ModalFooter, useDisclosure, addToast } from "@heroui/react"; // 如果你是舊版 NextUI，請改為 @nextui-org/react
+import { Copy, Upload, PenLine, RotateCw, Currency } from 'lucide-react'; 
+import { UpdatePasswordSchema } from '@/lib/validations';
 
 const GoogleIcon = () => (
     <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -13,20 +15,217 @@ const GoogleIcon = () => (
 );
 
 type Props = {}
+export interface passwordsType {
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string,
+};
 
 const Settings = (props: Props) => {
-    const {data:session} = useSession();
+    const {data:session, update} = useSession();
+    // Name State
+    const [name, setName] = useState<string>(session?.user.name || "");
+    const [isSavingName, setIsSavingName] = useState<boolean>(false);
+    // Avatar State & Ref
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState<boolean>(false);
+    // password
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    const initialPasswords: passwordsType = { currentPassword: "", newPassword: "", confirmPassword: "" };
+    const [passwords, setPasswords] = useState<passwordsType>(initialPasswords);
+
+    // 存放每個欄位的專屬錯誤 (對應底部的紅字)
+    const [pwdErrors, setPwdErrors] = useState<Record<string, string>>({});
+    // 存放送出後伺服器回傳的錯誤 (例如：舊密碼輸入錯誤)
+    const [serverError, setServerError] = useState<string | null>(null);
+
+    const [isUpdatingPwdUI, setIsUpdatingPwdUI] = useState<boolean>(false);
+    const isUpdatingPwdLock = useRef(false);
+
+    const handlePwdInputChange = (field: keyof typeof passwords, value: string) => {
+        const newValues = { ...passwords, [field]: value };
+        setPasswords(newValues);
+        setServerError(null); // 開始打字就清空伺服器錯誤
+
+        // 用 Zod 跑一次全表單驗證
+        const result = UpdatePasswordSchema.safeParse(newValues);
+        const allErrors: Record<string, string> = {};
+        
+        if (!result.success) {
+            result.error.issues.forEach(issue => {
+                const path = issue.path[0] as string;
+                if (!allErrors[path]) allErrors[path] = issue.message;
+            });
+        }
+
+        // 只更新「目前正在輸入」的欄位錯誤，或是連帶更新 confirmPassword
+        setPwdErrors(prev => {
+            const next = { ...prev };
+            
+            if (allErrors[field]) {
+                next[field] = allErrors[field];
+            } else {
+                delete next[field];
+            }
+
+            // 連動防呆：如果正在改 newPassword，要順便檢查 confirmPassword 匹配狀態
+            if (field === 'newPassword' || field === 'confirmPassword') {
+                if (allErrors.confirmPassword) {
+                    next.confirmPassword = allErrors.confirmPassword;
+                } else {
+                    delete next.confirmPassword;
+                }
+            }
+            return next;
+        });
+    };
+
+    // 當 Modal 關閉時，清空所有輸入框和錯誤訊息
+    const handleModalClose = () => {
+        setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        setPwdErrors({});
+        setServerError(null);
+        onClose();
+    };
+
+    const isButtonDisabled = 
+        Object.keys(pwdErrors).length > 0 || 
+        !passwords.currentPassword || 
+        !passwords.newPassword || 
+        !passwords.confirmPassword;
+
+    const handlePasswordSubmit = async () => {
+        if (isUpdatingPwdLock.current) return;
+
+        // 送出前做最後一次全面驗證
+        const result = UpdatePasswordSchema.safeParse(passwords);
+        if (!result.success) {
+            const finalErrors: Record<string, string> = {};
+            result.error.issues.forEach(issue => {
+                const path = issue.path[0] as string;
+                if (!finalErrors[path]) finalErrors[path] = issue.message;
+            });
+            setPwdErrors(finalErrors);
+            return; // 有錯就擋下，不發送 API
+        }
+
+        isUpdatingPwdLock.current = true;
+        setIsUpdatingPwdUI(true);
+
+        try {
+            const apiResult = await updateUserPassword({
+                currentPassword: passwords.currentPassword,
+                newPassword: passwords.newPassword,
+                confirmPassword: passwords.confirmPassword
+            });
+
+            if (apiResult.success) {
+                addToast({ description: "Password updated successfully!", color: "success" });
+                handleModalClose();
+            } else {
+                // 如果是 current password 錯誤，就把它塞給 pwdErrors
+                if (apiResult.type === "current password" && apiResult.error) {
+                    setPwdErrors(prev => ({ 
+                        ...prev, 
+                        currentPassword: apiResult.error 
+                    }));
+                } else {
+                    // 如果是其他錯誤 (例如伺服器壞掉、無權限)，就顯示在最上方的通用錯誤區
+                    setServerError(apiResult.error || "unknown error");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            setServerError("Failed to update password. Please try again.");
+        } finally {
+            isUpdatingPwdLock.current = false;
+            setIsUpdatingPwdUI(false);
+        }
+    };
+
+    const handleAvatarUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if(!file) return;
+
+        // avatar image can't exceed 5mb
+        if(file.size > 5 * 1024 * 1024){
+            alert("File size must be less than 5MB");
+            return;
+        }
+
+        setIsUploadingAvatar(true);
+        try{
+            // get upload url and public image url
+            const urlResult = await getAvatarUploadUrl(file.name, file.type);
+            if(!urlResult.success || ! urlResult.signedUrl || !urlResult.imageKey){
+                throw new Error(urlResult.error);
+            }
+            // PUT image to minio
+            const uploadRes = await fetch(urlResult.signedUrl, {
+                method: "PUT",
+                body: file,
+                headers:{"Content-Type": file.type}
+            });
+
+            if(!uploadRes.ok) throw new Error("Failed to upload image to S3");
+            // upadate db
+            const dbResult = await updateUserImage(urlResult.imageKey);
+            if(!dbResult.success) throw new Error(dbResult.error);
+
+            // update session
+            await update({image: urlResult.imageKey});
+            addToast({ description: "Profile icon updated!", color: "success" });
+        }catch(error){
+            console.error("錯誤在這",error);
+            alert("Failed to update profile icon.");
+        } finally {
+            setIsUploadingAvatar(false);
+            // 清空 input，確保使用者選同一張照片也能觸發 onChange
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    }
     
+    const handleSaveName = async() => {
+        // 如果名字沒改或是空的 擋掉
+        if(name === session?.user.name || !name.trim()) return;
+
+        setIsSavingName(true);
+        const result = await updateUserName(name);
+
+        if(result.success) {
+            // 更新session裡面的名稱
+            await update({name:name});
+            addToast({description:"Update Name successful!", color:"success"});
+        }else{
+            alert(result.error || "Failed to update name");
+            setName(session?.user.name || "");
+        }
+        setIsSavingName(false);
+    }
+    const getImageUrl = (imageVal: string | null | undefined) => {
+        if(!imageVal) return "";
+        if(imageVal.startsWith("http")) return imageVal;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+    };
+
     const userData = {
         name: session?.user?.name || "",
         email: session?.user?.email || "",
         role: "Free User",
         userId: session?.user.id,
-        image: session?.user?.image, 
+        image: getImageUrl(session?.user.image), 
     };
+    
 
     return (
         <div className='w-full h-full font-inter flex flex-col gap-6'>
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleAvatarUpload} 
+                accept="image/png, image/jpeg, image/webp" 
+                className="hidden" 
+            />
             <div className=''>
                 <h1 className='text-3xl leading-9 font-bold'>Settings</h1>
                 <p className='text-sm text-[#A1A1AA]'>Customize settings, email preferences, and web appearance.</p>
@@ -48,8 +247,10 @@ const Settings = (props: Props) => {
                         </div>
                         <Button 
                             variant="flat" 
+                            isLoading={isUploadingAvatar}
+                            onPress={() => fileInputRef.current?.click()}
                             className="ml-auto hover-lift bg-[#3F3F46] hover:bg-default-200 text-default-600 shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
-                            startContent={<Upload size={16} />}
+                            startContent={!isUploadingAvatar && <Upload size={16} />}
                         >
                             Upload a new icon
                         </Button>
@@ -64,10 +265,10 @@ const Settings = (props: Props) => {
                             label="User ID"
                             labelPlacement="outside"
                             defaultValue={userData.userId}
-                            variant="bordered"
+                            variant="flat"
                             isReadOnly
                             classNames={{
-                                inputWrapper: "bg-default-50/50 hover:bg-default-100/50 transition-colors pr-1",
+                                inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] hover:bg-default-100/50 transition-colors pr-1",
                             }}
                         />
                         <Button 
@@ -82,17 +283,40 @@ const Settings = (props: Props) => {
                 </div>
 
                 {/* --- Row 2 Left: Name --- */}
-                <div>
+                <div className='flex gap-2 items-end'>
                     <Input
                         label="Name"
                         labelPlacement="outside"
                         placeholder="Enter your name"
-                        defaultValue={userData.name}
-                        variant="bordered"
+                        value={name}
+                        onValueChange={setName}
+                        onBlur={()=>{
+                            // 🌟 關鍵防禦機制：如果正在儲存中，絕對不要還原！
+                            setTimeout(() => {
+                                // 為了拿到最新鮮的 isSavingName 狀態，我們可以使用 callback 寫法
+                                setIsSavingName((currentlySaving) => {
+                                    if (!currentlySaving) {
+                                        // 只有在「沒有按儲存」的情況下點擊外面，才還原名字
+                                        setName(session?.user.name || "");
+                                    }
+                                    return currentlySaving;
+                                });
+                            }, 150);
+                        }}
+                        variant="flat"
                         classNames={{
-                            inputWrapper: "bg-default-50/50",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
+                    {name !== session?.user?.name && (
+                        <Button 
+                            color="primary" 
+                            isLoading={isSavingName}
+                            onPress={handleSaveName}
+                        >
+                            Save
+                        </Button>
+                    )}
                 </div>
 
                 {/* --- Row 2 Right: Role --- */}
@@ -101,10 +325,10 @@ const Settings = (props: Props) => {
                         label="Role"
                         labelPlacement="outside"
                         defaultValue={userData.role}
-                        variant="bordered"
+                        variant="flat"
                         isReadOnly
                         classNames={{
-                            inputWrapper: "bg-default-50/50 text-default-500",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-default-500",
                         }}
                     />
                 </div>
@@ -115,9 +339,9 @@ const Settings = (props: Props) => {
                         label="Email"
                         labelPlacement="outside"
                         defaultValue={userData.email}
-                        variant="bordered"
+                        variant="flat"
                         classNames={{
-                            inputWrapper: "bg-default-50/50",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
                 </div>
@@ -147,9 +371,10 @@ const Settings = (props: Props) => {
                         labelPlacement="outside"
                         type="password"
                         defaultValue="********"
-                        variant="bordered"
+                        variant="flat"
+                        isReadOnly
                         classNames={{
-                            inputWrapper: "bg-default-50/50",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
                 </div>
@@ -157,6 +382,7 @@ const Settings = (props: Props) => {
                 {/* --- Row 4 Right: Password Actions --- */}
                 <div className="flex items-end">
                     <Button 
+                        onPress={onOpen}
                         className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 justify-start px-4 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
                         startContent={<PenLine size={16} />}
@@ -166,6 +392,68 @@ const Settings = (props: Props) => {
                 </div>
             </div>
             
+            {/* 🌟 密碼修改 Modal */}
+            <Modal 
+                isOpen={isOpen} 
+                onOpenChange={(open) => {
+                    if(!open) handleModalClose();
+                }} 
+                placement="center"
+            >
+                <ModalContent>
+                    {() => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Change Password</ModalHeader>
+                            <ModalBody>
+                                {serverError && (
+                                    <div className="p-3 rounded-md bg-danger-50 text-danger text-sm border border-danger-200">
+                                        {serverError}
+                                    </div>
+                                )}
+                                <Input
+                                    label="Current Password"
+                                    placeholder="Enter your current password"
+                                    type="password"
+                                    variant="bordered"
+                                    value={passwords.currentPassword}
+                                    onValueChange={(val) => handlePwdInputChange('currentPassword', val)}
+                                    isInvalid={!!pwdErrors.currentPassword}
+                                    errorMessage={pwdErrors.currentPassword}
+                                />
+                                <Input
+                                    label="New Password"
+                                    placeholder="Enter your new password"
+                                    type="password"
+                                    variant="bordered"
+                                    value={passwords.newPassword}
+                                    onValueChange={(val) => handlePwdInputChange('newPassword', val)}
+                                    isInvalid={!!pwdErrors.newPassword}
+                                    errorMessage={pwdErrors.newPassword}
+                                />
+                                <Input
+                                    label="Confirm New Password"
+                                    placeholder="Confirm your new password"
+                                    type="password"
+                                    variant="bordered"
+                                    value={passwords.confirmPassword}
+                                    onValueChange={(val) => handlePwdInputChange('confirmPassword', val)}
+                                    isInvalid={!!pwdErrors.confirmPassword}
+                                    errorMessage={pwdErrors.confirmPassword}
+                                />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="flat" onPress={handleModalClose}>
+                                    Cancel
+                                </Button>
+                                <Button color="primary" isDisabled={isButtonDisabled} onPress={handlePasswordSubmit} isLoading={isUpdatingPwdUI}>
+                                    Update Password
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
         </div>
     );
 }

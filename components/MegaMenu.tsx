@@ -11,7 +11,7 @@ const filteredCard = selectedCategory === "ALL"
 return (
     // 這裡設計延伸區塊的樣式
     <div className="w-full p-6">
-        <div className="p-[2.5px] h-[50px] grid grid-cols-6 w-full h-15 gap-4 rounded-lg bg-[#80A4D7]/20 dark:bg-[#27272A] ">
+        <div className="p-[2.5px] h-[50px] grid grid-cols-5 w-full h-15 gap-4 rounded-lg bg-[#80A4D7]/20 dark:bg-[#27272A] ">
             {itemsQueryForALL.map((cat,index) => {
                 const isSelected = selectedCategory === cat.id;
                 return(

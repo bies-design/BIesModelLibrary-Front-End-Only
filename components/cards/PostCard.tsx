@@ -13,6 +13,7 @@ interface PostCardProps {
   coverImage:string;
   type:'2D' | '3D';
   title:string;
+  clickable?:boolean;
 }
 // 將父層傳入的參數解構出 selectedCategory
 const PostCard = ({
@@ -21,6 +22,8 @@ const PostCard = ({
   coverImage,
   type,
   title,
+  clickable = true
+
 }:PostCardProps) => {
   // const minioUrl =`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images`;
   // const imageUrl = `${minioUrl}/${coverImage}`;
@@ -28,8 +31,8 @@ const PostCard = ({
 
   return (
     <Tooltip content={title} placement='bottom'>
-      <div key={dbId} onClick={()=> router.push(`/post/${shortId}`)} className='hover-lift cursor-pointer w-[300px] h-[300px]'>
-        <Card className="w-full h-full flex-col pb-4 pt-4 pl-4 pr-4 bg-[#FFFFF4] dark:bg-[#3F3F46] shadow-[4px_4px_3px_rgba(0,0,0,0.5),inset_0px_5px_0px_rgba(255,255,255,1)] dark:shadow-[4px_4px_20px_rgba(0,0,0,0.32),4px_4px_20px_rgba(0,0,0,0.66),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
+      <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px]`}>
+        <Card className="w-full h-full flex-col pb-4 pt-4 pl-4 pr-4 bg-[#FFFFF4] dark:bg-[#3F3F46] shadow-[4px_4px_3px_rgba(0,0,0,0.5),inset_0px_5px_0px_rgba(255,255,255,1)] dark:shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
           <CardBody 
             className="py-0 px-0 rounded-[20px] relative items-center w-full shadow-[0px_3px_5px_1px_rgba(255,255,255,0.16),0px_-2px_2.5px_rgba(0,0,0,0.25)]">
               

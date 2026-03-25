@@ -120,7 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         },
         // 強制使用 DB 的資料 就算用OAuth 回傳時有gmail的照片跟名字
-        async jwt({token,user,trigger,account}){
+        async jwt({token,user,trigger,account,session}){
             if(user && trigger === "signIn"){
                 // 1. 如果是 Google 登入，user 物件是 Google 給的 (Shedy Moon)
                 // 2. 如果是 Credentials 登入，user 物件是資料庫給的 (原本的 userName)
@@ -138,6 +138,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.picture = dbUser.image; // 使用資料庫的 image (如果是空的就不會有圖)
                     token.role = dbUser.role;     // 連 role 也可以一起帶
                 } 
+            }
+            if(trigger === "update" && session){
+                
+                if(session.name){
+                    token.name = session.name;
+                }
+
+                if (session.image) {
+                    token.picture = session.image;
+                }
             }
             // 如果不是剛登入 (session check)，token 裡已經有我們上次存好的 dbUser 資料了，直接回傳即可
             return token;

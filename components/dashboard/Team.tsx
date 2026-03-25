@@ -93,9 +93,9 @@ const Team = (props: Props) => {
                         labelPlacement="outside"
                         type="text"
                         defaultValue="Gomore"
-                        variant="bordered"
+                        variant="flat"
                         classNames={{
-                            inputWrapper: "bg-default-50/50",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
                 </div>
@@ -105,9 +105,9 @@ const Team = (props: Props) => {
                         labelPlacement="outside"
                         type="text"
                         defaultValue="Enter UserID"
-                        variant="bordered"
+                        variant="flat"
                         classNames={{
-                            inputWrapper: "bg-default-50/50",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
                 </div>

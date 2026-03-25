@@ -1,6 +1,6 @@
 // app/post/[shortId]/page.tsx
 import React from 'react';
-import { getPostDetail } from '@/lib/actions/post.action';
+import { getPostDetail, getRelatedPostsByIds } from '@/lib/actions/post.action';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowDownToLine, ChevronRight, Dot, Download, File, Rotate3D, Share2, Star } from 'lucide-react';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
 import CommentSection from '@/components/post/CommentSection';
+import PostCard from '@/components/cards/PostCard';
 
 export default async function PostDetailPage({ params }:{ params:Promise<{ id:string }> }) {
     const { id } = await params;
@@ -20,6 +21,9 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
     }
 
     const post = result.data;
+
+    const relatedPostsResult = await getRelatedPostsByIds(post.relatedPosts || []);
+    const relatedPosts = relatedPostsResult.success ? relatedPostsResult.data : [];
 
     const formatDate = (date:Date): string =>{  
         return new Intl.DateTimeFormat('en-US', {
@@ -62,8 +66,21 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                             <p>Related models</p> 
                             <ChevronRight size={20} className='text-[#A1A1AA]'/>
                         </h2>
-                        <div className="flex gap-4 items-center">
-                            RelatedPostCard
+                        <div className="flex gap-4 items-center overflow-x-scroll p-5 rounded-2xl">
+                            {relatedPosts && relatedPosts.length > 0 ? (
+                                relatedPosts.map((relPost: any) => (
+                                    <PostCard 
+                                        key={relPost.id}
+                                        dbId={relPost.id}
+                                        shortId={relPost.shortId}
+                                        coverImage={relPost.coverImage}
+                                        type={relPost.type}
+                                        title={relPost.title}
+                                    />
+                                ))
+                            ):(
+                                <p className="text-[#A1A1AA] text-sm">No related models.</p>
+                            )}
                         </div>
                     </div>
                 </div>

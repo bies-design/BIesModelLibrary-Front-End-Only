@@ -45,7 +45,7 @@ const Upload = () => {
         description: "",
         permission: "standard",
         team: "",
-        associatedModel: ""
+        relatedPosts: []
     });
 
     const viewerRef = useRef<Viewer3DRef>(null);

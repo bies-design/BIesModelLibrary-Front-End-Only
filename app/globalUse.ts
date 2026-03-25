@@ -14,7 +14,7 @@ export const itemsQueryForALL =[
     {id:'Products',label:"Products",icon:Boxes},
     {id:'Elements',label:"Elements",icon:Box},
     {id:'2D Drawings',label:"2D Drawings",icon:FileBox},
-    {id:'Team',label:"Team",icon:Users},
+    // {id:'Team',label:"Team",icon:Users},
 ];
 
 export interface cardProps {

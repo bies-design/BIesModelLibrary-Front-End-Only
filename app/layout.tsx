@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 const RootLayout=async({children}: {children: React.ReactNode}) =>{
   const session = await auth(); // 獲取當前用戶的會話信息
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${almarai.variable} ${abeezee.variable} antialiased`}
       >

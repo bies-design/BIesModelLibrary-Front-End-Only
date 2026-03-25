@@ -15,9 +15,9 @@ import { Loader2 } from 'lucide-react';
 const Home = () => {
   const { data:session,status } = useSession();
   //for itemsQuery
-  const [isSelectId,setIsSelectId] = useState('ALL');
+  const [isSelectId, setIsSelectId] = useState('ALL');
   //for Newest Hottest Query
-  const [isQueryArrange,setIsQueryArrange] = useState('Newest')
+  const [isQueryArrange, setIsQueryArrange] = useState('Newest')
   const SearchParams = useSearchParams();
   const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -25,7 +25,8 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null); //ref 用來綁定底部的 DOM 元素
   const isIntersecting = useNativeInView(loadMoreRef, '400px');
-  
+  const searchKeyword = SearchParams.get('search') || '';
+
   useEffect(() => {
     if(SearchParams.get('status') === 'success'){
       alert("貼文上傳成功!");
@@ -37,7 +38,7 @@ const Home = () => {
 
   const fetchPosts = async (currentPage: number, isReset: boolean = false) => {
     setIsLoading(true);
-    const result = await getPostsByScroll(currentPage, 9, isSelectId, isQueryArrange);
+    const result = await getPostsByScroll(currentPage, 9, isSelectId, isQueryArrange, searchKeyword);
     
     if (result.success && result.data) {
       if (isReset) {
@@ -54,7 +55,7 @@ const Home = () => {
     setPage(1);
     setHasMore(true);
     fetchPosts(1, true);
-  }, [isSelectId, isQueryArrange]);
+  }, [isSelectId, isQueryArrange, searchKeyword]);
   
   // 監聽 isIntersecting 的變化來抓資料 達成無限下滑抓資料功能
   useEffect(() => {

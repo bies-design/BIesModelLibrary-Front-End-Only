@@ -43,4 +43,25 @@ export const SignUpSchema = z.object({
             message: "Password must contain at least one lowercase letter.",
         })
         .regex(/[0-9]/, { message: "Password must contain at least one number." }),
-    });
+});1
+
+// 1. 給修改名稱用的 Schema (直接重用 SignUpSchema 的 username 規則)
+export const UpdateNameSchema = z.object({
+    username: SignUpSchema.shape.username, 
+});
+
+// 2. 給修改密碼用的 Schema (包含新舊密碼比對)
+export const UpdatePasswordSchema = z.object({
+    currentPassword: z.string().min(1, { message: "Current password is required." }),
+    // 重用你寫好的超強密碼規則！
+    newPassword: SignUpSchema.shape.password, 
+    confirmPassword: z.string().min(1, { message: "Please confirm your new password." }),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New passwords don't match.",
+    path: ["confirmPassword"], // 錯誤訊息會綁定在 confirmPassword 欄位上
+});
+
+// 3. 給修改 Email 用的 Schema
+export const UpdateEmailSchema = z.object({
+    email: SignUpSchema.shape.email,
+});

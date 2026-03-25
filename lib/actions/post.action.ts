@@ -56,6 +56,7 @@ export async function createPost(params: CreatePostParams) {
             },
             uploaderId: session.user.id,
             
+            relatedPosts: params.metadata.relatedPosts,
             permission: params.metadata.permission,
             team: params.metadata.team === "none" ? null : params.metadata.team,
         },
@@ -74,14 +75,22 @@ export const getPostsByScroll = async (
     page: number = 1, 
     limit: number = 9,
     category: string = "ALL",
-    sortBy: string = "Newest"
+    sortBy: string = "Newest",
+    search: string = ""
 ) => {
     try {
         // 計算要跳過多少筆資料
         const skip = (page - 1) * limit;
         // 動態過濾條件 (Where)
-        const whereCondition = category === "ALL" ? {} : { category: category };
-
+        const whereCondition: any = {};
+        if(category !== "ALL") whereCondition.category = category;
+        if(search){
+            whereCondition.title = {
+                contains: search,
+                mode: "insensitive"
+            };
+        }
+        
         // 動態建立排序條件 (OrderBy)
         // 備註：假設你的 Hottest 是看瀏覽量(views)或按讚數，若無此欄位請自行替換
         const orderByCondition = sortBy === "Hottest" 
@@ -103,41 +112,49 @@ export const getPostsByScroll = async (
             },
         });
 
-        // 將資料庫撈出來的 coverImage (Object Key) 轉換成 MinIO Presigned URL
-        const postsWithSignedUrls = await Promise.all(
-            posts.map(async (post) => {
-                let signedCoverImage = post.coverImage;
+        // // 將資料庫撈出來的 coverImage (Object Key) 轉換成 MinIO Presigned URL
+        // const postsWithSignedUrls = await Promise.all(
+        //     posts.map(async (post) => {
+        //         let signedCoverImage = post.coverImage;
                 
-                // 如果該筆資料有 coverImage，就向 MinIO 請求簽名網址
-                if (post.coverImage) {
-                    try {
+        //         // 如果該筆資料有 coverImage，就向 MinIO 請求簽名網址
+        //         if (post.coverImage) {
+        //             try {
                         
-                        const command = new GetObjectCommand({
-                            Bucket: "images", // 依照你錯誤訊息顯示的 Bucket 名稱
-                            Key: post.coverImage,
-                        });
-                        // 產生 1 小時 (3600 秒) 有效的臨時公開網址
-                        signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-                    } catch (signError) {
-                        console.error(`Failed to sign URL for image ${post.coverImage}:`, signError);
-                        // 若簽名失敗，保留原本的值或可在此處替換為預設的 Placeholder 圖片路徑
-                    }
-                }
+        //                 const command = new GetObjectCommand({
+        //                     Bucket: "images", // 依照你錯誤訊息顯示的 Bucket 名稱
+        //                     Key: post.coverImage,
+        //                 });
+        //                 // 產生 1 小時 (3600 秒) 有效的臨時公開網址
+        //                 signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+        //             } catch (signError) {
+        //                 console.error(`Failed to sign URL for image ${post.coverImage}:`, signError);
+        //                 // 若簽名失敗，保留原本的值或可在此處替換為預設的 Placeholder 圖片路徑
+        //             }
+        //         }
 
-                return {
-                    ...post,
-                    coverImage: signedCoverImage // 替換為可直接讀取的完整 URL
-                };
-            })
-        );
-
+        //         return {
+        //             ...post,
+        //             coverImage: signedCoverImage // 替換為可直接讀取的完整 URL
+        //         };
+        //     })
+        // );
+        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioImageBucket = process.env.S3_IMAGES_BUCKET;
+        const postWithPublicUrls = posts.map((post) => {
+            return {
+                ...post,
+                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
+                :null
+            };
+        });
         // 2. 查詢資料總數 (用來判斷是否還有下一頁)
         const totalPosts = await prisma.post.count({ where: whereCondition });
         const hasMore = skip + posts.length < totalPosts;
 
         return { 
             success: true, 
-            data: postsWithSignedUrls, 
+            data: postWithPublicUrls, 
             hasMore: hasMore 
         };
     } catch (error) {
@@ -197,6 +214,53 @@ export const get2DPostDetail = async (shortId: string) => {
     }
 };
 
+export const getRelatedPostsByIds = async (postIds: string[]) => {
+    // 防呆：如果傳進來的陣列是空的，直接回傳空陣列，不要去吵資料庫
+    if (!postIds || postIds.length === 0) {
+        return { success: true, data: [] };
+    }
+
+    try {
+        // 1. 從資料庫中一次撈出所有符合 ID 的貼文
+        // (只需要拿渲染 PostCard 必備的欄位即可，節省頻寬)
+        const posts = await prisma.post.findMany({
+            where: {
+                id: {
+                    in: postIds // 使用 Prisma 的 'in' 操作符
+                }
+            },
+            select: {
+                id: true,         
+                shortId: true,   
+                title: true,      
+                coverImage: true, 
+                type: true,       
+            }
+        });
+
+        // 2. 將撈回來的 coverImage 轉換成 MinIO Presigned URL
+        // (這段邏輯跟你原本 getPostsByScroll 裡面做的一模一樣)
+        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioImageBucket = process.env.S3_IMAGES_BUCKET;
+        const postWithPublicUrls = posts.map((post) => {
+            return {
+                ...post,
+                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
+                :null
+            };
+        });
+
+        // 3. 回傳處理好的陣列
+        return { 
+            success: true, 
+            data: postWithPublicUrls 
+        };
+
+    } catch (error) {
+        console.error("Failed to fetch related posts by IDs:", error);
+        return { success: false, error: "Database error" };
+    }
+};
 // lib/actions/post.action.ts
 export const getPostDetail = async (shortId: string) => {
     try {
@@ -214,51 +278,23 @@ export const getPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
-        let signedCoverImage = post.coverImage;
-        if(signedCoverImage){
-            try{
-                const command = new GetObjectCommand({
-                    Bucket:"images",
-                    Key:post.coverImage,
-                })
-                signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-            }catch(signError){
-                console.error(`Failed to sign URL for post detail image ${post.coverImage}:`, signError);
-            }
-            
-        }
+        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioImageBucket = process.env.S3_IMAGES_BUCKET;
+        const publicCoverImageUrls = `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
 
-        let signedImagesArray: string[] = [];
+        let publicImagesArray: string[] = [];
         if (post.images && Array.isArray(post.images) && post.images.length > 0) {
-            signedImagesArray = await Promise.all(
-                post.images.map(async (imageKey) => {
-                    try {
-                        // 一樣套用防呆機制，確保拿到純檔名
-                        let cleanUrl = imageKey.trim();
-                        const objectKey = cleanUrl.split('/').pop() || cleanUrl;
-
-                        const command = new GetObjectCommand({
-                            Bucket: "images", // 假設這些附圖也放在 images bucket
-                            Key: objectKey,
-                        });
-                        
-                        // 回傳這張單一圖片的簽名網址
-                        return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-                    } catch (error) {
-                        console.error(`Failed to sign array image ${imageKey}:`, error);
-                        // 如果這張圖簽名失敗，回傳原本的值，避免影響其他正常的圖片
-                        return imageKey; 
-                    }
-                })
-            );
+            publicImagesArray = post.images.map((image) => {
+                return `${minioEndpoint}/${minioImageBucket}/${image}`;
+            })
         }
         
         return { 
             success: true, 
             data: {
                 ...post,
-                coverImage: signedCoverImage,
-                images: signedImagesArray,
+                coverImage: publicCoverImageUrls,
+                images: publicImagesArray,
             }
         };
     } catch (error) {
@@ -266,6 +302,7 @@ export const getPostDetail = async (shortId: string) => {
         return { success: false, error: "Database error" };
     }
 };
+
 
 // Delete 2D post and its related pdf files on db and minio
 export async function delete2DPost(postId: string) {

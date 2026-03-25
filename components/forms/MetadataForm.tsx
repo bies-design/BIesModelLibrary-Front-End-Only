@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useCallback, useRef,useEffect } from 'react';
-import { Chip, Input, Select, SelectItem, Textarea, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Slider } from "@heroui/react";
+import { useDisclosure, Chip, Input, Select, SelectItem, Textarea, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Slider } from "@heroui/react";
 import { Info, HelpCircle, FileUp, Inbox, X } from 'lucide-react';
 import Cropper from 'react-easy-crop'
 import getCroppedImg from '@/utils/cropImage';
 import Image from 'next/image';
+import RelatedPostsModal from '../modals/RelatedPostModal';
 
 export interface ImageFile {
   file: File;      // 原始檔案 (上傳用)
@@ -19,7 +20,7 @@ export interface Metadata {
   description: string;
   permission: string;
   team: string;
-  associatedModel: string;
+  relatedPosts: string[];
 }
 
 interface MetadataFormProps {
@@ -51,6 +52,20 @@ const MetadataForm = ({
   // --- 上傳相關 Ref 與 State ---
   const moreImagesInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [formRelatedPostIds, setFormRelatedPostIds] = useState<string[]>([]);
+
+  // 使用者在 Modal 點擊確認時，更新表單狀態
+  const handleRelatedPostsConfirm = (selectedIds: string[]) => {
+    setFormRelatedPostIds(selectedIds);
+    onMetadataChange({
+      ...metadata,
+      relatedPosts:selectedIds
+    });
+    console.log("準備存入資料庫的關聯 ID:", selectedIds);
+  };
 
   // 當元件卸載或圖片被移除時，釋放記憶體
   useEffect(() => {
@@ -423,10 +438,16 @@ const MetadataForm = ({
           >
             <SelectItem key="none">None</SelectItem>
           </Select>
-          <Button className="px-3 bg-[#3F3F46] shadow-[0px_0px_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-white">
+          <Button onPress={onOpen} className="px-3 bg-[#3F3F46] shadow-[0px_0px_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-white">
             Set Editor <Inbox size={25} className="w-[60%] h-[60%] ml-1" />
           </Button>
         </div>
+        <RelatedPostsModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          currentSelectedIds={formRelatedPostIds}
+          onConfirm={handleRelatedPostsConfirm}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

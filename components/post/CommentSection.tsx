@@ -6,9 +6,15 @@ import { Avatar, Input, Button, image } from '@heroui/react';
 
 export default function CommentSection() {
     const {data:session} = useSession();
+    
+    const getImageUrl = (imageVal: string | null | undefined) => {
+        if(!imageVal) return "";
+        if(imageVal.startsWith("http")) return imageVal;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+    };
     const userData = {
         name:session?.user.name,
-        image:session?.user.image,
+        image:getImageUrl(session?.user.image),
     }
     const [comment, setComment] = useState("");
 
