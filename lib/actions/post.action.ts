@@ -76,7 +76,8 @@ export const getPostsByScroll = async (
     limit: number = 9,
     category: string = "ALL",
     sortBy: string = "Newest",
-    search: string = ""
+    search: string = "",
+    scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" = "ALL"
 ) => {
     try {
         // 計算要跳過多少筆資料
@@ -91,6 +92,49 @@ export const getPostsByScroll = async (
             };
         }
         
+        if(scope !== "ALL"){
+            const session = await auth();
+            if(!session?.user.id){
+                return {success:false, error:"Unauthorized"};
+            }
+
+            switch(scope){
+                case "PERSONAL":
+                    whereCondition.uploaderId = session.user.id;
+                    break;
+                
+                case "TEAM":
+                    const userTeams = session.user.team || [];
+
+                    if(userTeams.length === 0){
+                        return{
+                            success: true, 
+                            data: [], 
+                            hasMore: false
+                        }
+                    }
+                    whereCondition.team = { in: userTeams };
+                    break;
+                
+                case "COLLECTION":
+                    const currentUser = await prisma.user.findUnique({
+                        where:{id: session.user.id},
+                        select:{ userCollection:true}
+                    });
+
+                    const collectionIds = currentUser?.userCollection || [];
+
+                    if (collectionIds.length === 0) {
+                        return { 
+                            success: true, 
+                            data: [], 
+                            hasMore: false 
+                        };
+                    }
+
+                    whereCondition.id = {in: collectionIds}
+            }
+        }
         // 動態建立排序條件 (OrderBy)
         // 備註：假設你的 Hottest 是看瀏覽量(views)或按讚數，若無此欄位請自行替換
         const orderByCondition = sortBy === "Hottest" 

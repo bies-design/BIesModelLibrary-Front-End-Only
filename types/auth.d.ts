@@ -8,8 +8,9 @@ declare module "next-auth" {
      */
     interface Session {
         user: {
-        id: string
-        role: string // 🔥 宣告這裡有 role
+        id: string;
+        role: string;
+        team?: string;
         } & DefaultSession["user"]
     }
 
@@ -18,7 +19,8 @@ declare module "next-auth" {
      * 這是 authorize 回傳的 user 物件型別
      */
     interface User {
-        role: string // 🔥 宣告這裡有 role
+        role: string; // 🔥 宣告這裡有 role
+        team?: string;
     }
 }
 
@@ -28,7 +30,8 @@ declare module "next-auth/jwt" {
      * 這是 token 物件的型別
      */
     interface JWT {
-        id: string
-        role: string // 🔥 宣告這裡有 role
+        id: string;
+        role: string; // 🔥 宣告這裡有 role
+        team?: string;
     }
 }

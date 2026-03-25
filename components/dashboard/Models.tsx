@@ -21,38 +21,59 @@ const Models = (props: Props) => {
     const loadMoreRef = useRef(null); 
     const isIntersecting = useNativeInView(loadMoreRef, '400px');
     const isFetchingRef = useRef(false);
+    const activeTabRef = useRef(activeTab);
     
-    const fetchModels = async (currentPage:number, isReset:boolean = false) => {
+    const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string) => {
         // 鎖定防護：如果正在抓取，直接阻擋
-        if (isFetchingRef.current) return;
+        if (!isReset && isFetchingRef.current) return;
         
         isFetchingRef.current = true; // 同步上鎖
         setIsLoading(true);           // 觸發 UI 畫面更新
 
-        try {
-        // 這裡將 activeTab 當作分類參數傳入，並預設以 Newest 排序
-        const result = await getPostsByScroll(currentPage, 9);
-        
-        if (result.success && result.data) {
-            if (isReset) {
-            setPosts(result.data);
-            } else {
-            setPosts((prev) => [...prev, ...result.data]);
-            }
-            setHasMore(result.hasMore ?? false);
+        // 如果是切換 Tab (isReset)，在發送 API 前先清空舊畫面！
+        // 這樣就算後端真的大當機，畫面上也不會殘留上一個 Tab 的資料
+        if (isReset) {
+            setPosts([]);
+            setHasMore(false);
         }
+
+        try {
+            const currentScope = activeTab.toUpperCase() as "PERSONAL" | "TEAM" | "COLLECTION";
+            // 這裡將 activeTab 當作分類參數傳入，並預設以 Newest 排序
+            const result = await getPostsByScroll(currentPage, 9,"ALL","Newest","",currentScope);
+            
+            if(currentScope === "TEAM") console.log()
+            // 資料回來後，檢查使用者是不是還停在這個 Tab！
+            if(activeTabRef.current === targetTab){
+                if (result.success && result.data) {
+                if (isReset) {
+                    setPosts(result.data);
+                } else {
+                    setPosts((prev) => [...prev, ...result.data]);
+                }
+                setHasMore(result.hasMore ?? false);
+            }
+            }
+            
         } catch (error) {
-        console.error("Failed to fetch models:", error);
+            console.error("Failed to fetch models:", error);
         } finally {
-        setIsLoading(false);           // 關閉 UI 轉圈圈
-        isFetchingRef.current = false; // 同步解鎖
+            // 只有當「這包資料」屬於「現在的 Tab」時，才解除轉圈圈狀態
+            if (activeTabRef.current === targetTab) {
+                setIsLoading(false);           // 關閉 UI 轉圈圈
+                isFetchingRef.current = false; // 同步解鎖
+            }
         }
     };
 
     useEffect(() => {
+        activeTabRef.current = activeTab;
+    }, [activeTab]);
+
+    useEffect(() => {
         setPage(1);
         setHasMore(true);
-        fetchModels(1, true);
+        fetchModels(1, true, activeTab);
     }, [activeTab]);
 
     // 監聽下滑到底部，觸發載入下一頁
@@ -61,9 +82,9 @@ const Models = (props: Props) => {
         if (isIntersecting && hasMore && !isFetchingRef.current) {
             const nextPage = page + 1;
             setPage(nextPage);
-            fetchModels(nextPage, false);
+            fetchModels(nextPage, false, activeTab);
         }
-    }, [isIntersecting, hasMore, page]);
+    }, [isIntersecting, hasMore, page, activeTab]);
 
     return (
         <div className="@container flex flex-col w-full h-full font-inter gap-4">

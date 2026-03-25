@@ -1,10 +1,12 @@
 // auth.ts
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import {prisma} from '@/lib/prisma';
 import { SignInSchema } from "@/lib/validations";
+
+
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     // Configure authentication providers
@@ -137,6 +139,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.name = dbUser.userName; // 使用資料庫的 userName
                     token.picture = dbUser.image; // 使用資料庫的 image (如果是空的就不會有圖)
                     token.role = dbUser.role;     // 連 role 也可以一起帶
+                    token.team = dbUser.team[0];
                 } 
             }
             if(trigger === "update" && session){
@@ -160,6 +163,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.name = token.name;
                 session.user.image = token.picture;
                 session.user.role = token.role;
+                session.user.team = token.team;
             }
             // 注意：原本 Mongoose 的 OAuth 再查詢邏輯可以簡化
             // 因為 JWT callback 已經把正確的 id 傳遞下來了，
