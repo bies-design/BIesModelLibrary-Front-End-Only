@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth"; // 請替換為你實際的 auth 路徑
 
 export async function POST(req: NextRequest) {

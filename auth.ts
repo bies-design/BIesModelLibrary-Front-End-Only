@@ -3,7 +3,7 @@ import NextAuth, { DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import {prisma} from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { SignInSchema } from "@/lib/validations";
 
 
@@ -139,7 +139,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.name = dbUser.userName; // 使用資料庫的 userName
                     token.picture = dbUser.image; // 使用資料庫的 image (如果是空的就不會有圖)
                     token.role = dbUser.role;     // 連 role 也可以一起帶
-                    token.team = dbUser.team[0];
+                    token.team = dbUser.team;
                 } 
             }
             if(trigger === "update" && session){

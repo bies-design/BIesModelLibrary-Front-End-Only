@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { SignUpSchema } from "@/lib/validations";
 import { success } from "zod";
 

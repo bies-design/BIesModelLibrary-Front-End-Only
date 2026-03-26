@@ -2,7 +2,7 @@
 
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { prisma } from "@/lib/prisma"; 
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth"; // 假設你有用 auth
 
 // 輔助函式：把 Stream 轉成 Buffer

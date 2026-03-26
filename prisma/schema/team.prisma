@@ -1,0 +1,13 @@
+model Team {
+    id          String       @id @default(cuid())
+    name        String       // 團隊名稱
+    description String?      // 團隊介紹
+    avatar      String?      // 團隊 Logo (存 MinIO 的檔名或路徑)
+    color       String?      // 團隊顏色 (標住在postcard上面)
+    // 關聯
+    members     TeamMember[] // 團隊成員與他們的權限
+    posts       Post[]       // 該團隊擁有的所有模型貼文
+    
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+}

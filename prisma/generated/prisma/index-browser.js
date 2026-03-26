@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.3.0
- * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
+ * Prisma Client JS version: 7.5.0
+ * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
  */
 Prisma.prismaVersion = {
-  client: "7.3.0",
-  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+  client: "7.5.0",
+  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -130,6 +130,16 @@ exports.Prisma.AccountScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  postId: 'postId',
+  userId: 'userId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ModelScalarFieldEnum = {
   id: 'id',
   shortId: 'shortId',
@@ -165,9 +175,27 @@ exports.Prisma.PostScalarFieldEnum = {
   uploaderId: 'uploaderId',
   relatedPosts: 'relatedPosts',
   permission: 'permission',
-  team: 'team',
+  teamId: 'teamId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TeamScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  avatar: 'avatar',
+  color: 'color',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TeamMemberScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  teamId: 'teamId',
+  userId: 'userId',
+  joinedAt: 'joinedAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -176,7 +204,6 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   role: 'role',
   image: 'image',
-  team: 'team',
   userCollection: 'userCollection',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -203,6 +230,13 @@ exports.ProcessStatus = exports.$Enums.ProcessStatus = {
   error: 'error'
 };
 
+exports.TeamRole = exports.$Enums.TeamRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  EDITOR: 'EDITOR',
+  VIEWER: 'VIEWER'
+};
+
 exports.Role = exports.$Enums.Role = {
   Free: 'Free',
   Pro: 'Pro'
@@ -210,9 +244,12 @@ exports.Role = exports.$Enums.Role = {
 
 exports.Prisma.ModelName = {
   Account: 'Account',
+  Comment: 'Comment',
   Model: 'Model',
   Pdf: 'Pdf',
   Post: 'Post',
+  Team: 'Team',
+  TeamMember: 'TeamMember',
   User: 'User'
 };
 

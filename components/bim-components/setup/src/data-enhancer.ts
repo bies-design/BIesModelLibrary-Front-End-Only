@@ -11,7 +11,7 @@ export const setupDataEnhancer = (components: OBC.Components) => {
             const json = await file.json();
             return json
         },
-        matcher: async(attrs:ItemData,data:any[])=>{
+        matcher: (attrs:ItemData,data:any[])=>{
             const categoryData = attrs._category
             if(!(categoryData && "value" in categoryData)) return null
             const category = categoryData.value

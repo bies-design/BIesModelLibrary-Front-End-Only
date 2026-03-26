@@ -4,6 +4,7 @@ import {
     Search, Check, Filter, ArrowUpDown, Edit2, Download, 
     Trash2, Box, Copy, Layers, Loader2
 } from 'lucide-react';
+import { Select,SelectItem } from '@heroui/react';
 import { getPostsByScroll } from '@/lib/actions/post.action';
 import { useNativeInView } from '@/hooks/useIntersectionObserver';
 import PostCard from '../cards/PostCard';
@@ -14,6 +15,13 @@ const Models = (props: Props) => {
     const [activeTab, setActiveTab] = useState<string>('Personal');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [inputValue, setInputValue] = useState("");
+
+    const [category, setCategory] = useState<string>("ALL");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    
+    const [isQueryArrange, setIsQueryArrange] = useState<string>('Newest');
+    
     const [posts, setPosts] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -23,7 +31,7 @@ const Models = (props: Props) => {
     const isFetchingRef = useRef(false);
     const activeTabRef = useRef(activeTab);
     
-    const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string) => {
+    const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string,currentSearch: string = searchQuery,currentCategory: string = category, currentSort:string = isQueryArrange) => {
         // 鎖定防護：如果正在抓取，直接阻擋
         if (!isReset && isFetchingRef.current) return;
         
@@ -40,7 +48,7 @@ const Models = (props: Props) => {
         try {
             const currentScope = activeTab.toUpperCase() as "PERSONAL" | "TEAM" | "COLLECTION";
             // 這裡將 activeTab 當作分類參數傳入，並預設以 Newest 排序
-            const result = await getPostsByScroll(currentPage, 9,"ALL","Newest","",currentScope);
+            const result = await getPostsByScroll(currentPage, 9, currentCategory, currentSort, currentSearch, currentScope);
             
             if(currentScope === "TEAM") console.log()
             // 資料回來後，檢查使用者是不是還停在這個 Tab！
@@ -68,13 +76,25 @@ const Models = (props: Props) => {
 
     useEffect(() => {
         activeTabRef.current = activeTab;
+        setCategory("ALL");
+        setInputValue("");
+        setIsQueryArrange("Newest");
     }, [activeTab]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSearchQuery(inputValue);
+        },300)
+
+        // if user type down in 300 ms then it restart
+        return () => clearTimeout(timer);
+    },[inputValue]);
 
     useEffect(() => {
         setPage(1);
         setHasMore(true);
-        fetchModels(1, true, activeTab);
-    }, [activeTab]);
+        fetchModels(1, true, activeTab, searchQuery, category, isQueryArrange);
+    }, [activeTab, category, searchQuery, isQueryArrange]);
 
     // 監聽下滑到底部，觸發載入下一頁
     useEffect(() => {
@@ -82,9 +102,23 @@ const Models = (props: Props) => {
         if (isIntersecting && hasMore && !isFetchingRef.current) {
             const nextPage = page + 1;
             setPage(nextPage);
-            fetchModels(nextPage, false, activeTab);
+            fetchModels(nextPage, false, activeTab, searchQuery, category, isQueryArrange);
         }
-    }, [isIntersecting, hasMore, page, activeTab]);
+    }, [isIntersecting, hasMore, page, activeTab, searchQuery, category, isQueryArrange]);
+
+    const handleCollectionToggle = (postId: string, newStatus: boolean) => {
+        if (activeTab === 'Collection' && !newStatus) {
+            // 情境 A：目前在「收藏」分頁，且使用者「取消收藏」
+            // 動作：瞬間從畫面上把這張卡片刪掉！(不用重新發 API，也不會重置分頁)
+            setPosts(prev => prev.filter(post => post.id !== postId));
+        } else {
+            // 情境 B：在 Personal 或 Team 分頁
+            // 動作：只更新該卡片的 isCollected 屬性，不移除卡片
+            setPosts(prev => prev.map(post => 
+                post.id === postId ? { ...post, isCollected: newStatus } : post
+            ));
+        }
+    };
 
     return (
         <div className="@container flex flex-col w-full h-full font-inter gap-4">
@@ -114,25 +148,54 @@ const Models = (props: Props) => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input 
                         type="text" 
-                        placeholder="Search+Enter" 
-                        className="w-full rounded-xl pl-9 pr-4 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm"
+                        placeholder="Search posts..."
+                        value={inputValue}
+                        onChange={(e) => {setInputValue(e.target.value)}} 
+                        className="w-full h-10 rounded-xl pl-9 pr-4 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm"
                     />
                 </div>
 
-                <button className="hover-lift p-3 bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
-                    <Check className="w-4 h-4" />
-                </button>
-
-                <button className="hover-lift flex items-center gap-2 px-3 py-2 bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
-                    <Filter className="w-4 h-4" /> Filter
-                </button>
-                <button className="hover-lift flex items-center gap-2 px-3 py-2 bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
-                    <ArrowUpDown className="w-4 h-4" /> Sort
-                </button>
+                <Select 
+                    aria-label="Choose a category : " 
+                    placeholder="Select a category"
+                    className="max-w-xs h-10"
+                    classNames={{
+                        trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
+                        listbox: "bg-[#27272A]", // 下拉選單整體的背景
+                        popoverContent: "bg-[#27272A] border-1 border-white/10", 
+                    }}
+                    selectedKeys={[category]}
+                    onChange={(e) => {
+                        const newCategory = e.target.value;
+                        setCategory(newCategory || "ALL");
+                    }}
+                >
+                    <SelectItem key="ALL" className="text-white">ALL</SelectItem>
+                    <SelectItem key="Buildings" className="text-white">Buildings</SelectItem>
+                    <SelectItem key="Products" className="text-white">Products</SelectItem>
+                    <SelectItem key="Elements" className="text-white">Elements</SelectItem>
+                    <SelectItem key="2D Drawings" className="text-white">2D Drawings</SelectItem>
+                </Select>
+                <Select 
+                    aria-label="order by : " 
+                    placeholder="order by"
+                    className="max-w-30 h-10"
+                    classNames={{
+                        trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
+                        listbox: "bg-[#27272A]", // 下拉選單整體的背景
+                        popoverContent: "bg-[#27272A] border-1 border-white/10", 
+                    }}
+                    selectedKeys={[isQueryArrange]}
+                    onChange={(e) => {
+                        const newQueryArrange = e.target.value;
+                        setIsQueryArrange(newQueryArrange || "Newest");
+                    }}
+                >
+                    <SelectItem key="Newest" className="text-white">Newest</SelectItem>
+                    <SelectItem key="Hottest" className="text-white">Hottest</SelectItem>
+                </Select>
                 <div className="h-6 w-[1px] bg-[#3F3F46] mx-1" />
-                <div className="px-3 py-2 bg-black/20 rounded-xl text-sm border border-transparent">
-                    {1} Selected
-                </div>
+                
 
                 <button className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm">
                     <Edit2 className="w-4 h-4" /> Actions
@@ -153,6 +216,8 @@ const Models = (props: Props) => {
                         coverImage={post.coverImage}
                         type={post.type}
                         title={post.title}
+                        isCollectedInitial={post.isCollected}
+                        onCollectionToggle={handleCollectionToggle}
                     />
                 ))}
             </div>

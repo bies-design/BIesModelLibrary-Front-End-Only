@@ -22,23 +22,37 @@ import { useNativeInView } from '@/hooks/useIntersectionObserver';
 
 // 假設你有一個 Server Action 或 API 可以撈取所有的 Posts
 // import { getAllPostsForSelection } from "@/lib/actions/post.action"; 
+export interface SelectedPost {
+    id: string;
+    title: string;
+}
 
 interface RelatedPostsModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    currentSelectedIds: string[];
-    onConfirm: (selectedIds: string[]) => void;
+    currentSelectedPosts: SelectedPost[];
+    onConfirm: (SelectedPost: SelectedPost[]) => void;
 }
 
-const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm }: RelatedPostsModalProps) => {
+
+
+const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedPosts, onConfirm }: RelatedPostsModalProps) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [category, setCategory] = useState<string>("ALL");
+    const [isQueryArrange, setIsQueryArrange] = useState<string>('Newest');
+    
     const [posts, setPosts] = useState<any[]>([]); // 儲存從資料庫撈回來的貼文
     const [isLoading, setIsLoading] = useState(false);
     
+    const isFetchingRef = useRef(false);
+    
     // 使用 Set 來管理選中的狀態，尋找與刪除的效能更好 (O(1))
-    const [selectedSet, setSelectedSet] = useState<Set<string>>(new Set(currentSelectedIds));
+    const [selectedIdSet, setSelectedIdSet] = useState<Set<string>>(
+        new Set(currentSelectedPosts.map(p => p.id))
+    );
 
+    const [selectedPostsList, setSelectedPostsList] = useState<SelectedPost[]>(currentSelectedPosts);
+    
     // for infinite scrolling
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -50,13 +64,15 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
     // 當 Modal 打開時，撈取資料並同步初始狀態
     useEffect(() => {
         if (isOpen) {
-            setSelectedSet(new Set(currentSelectedIds)); // 每次打開都重置為父層傳進來的狀態
+            setSelectedIdSet(new Set(currentSelectedPosts.map(p => p.id))); // 每次打開都重置為父層傳進來的狀態
+            setSelectedPostsList(currentSelectedPosts);
             setPage(1);
             setHasMore(true);
             setSearchQuery("");
             setCategory("ALL");
+            setIsQueryArrange("Newest");
         }
-    }, [isOpen]);
+    }, [isOpen, currentSelectedPosts]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -65,16 +81,25 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
         const timer = setTimeout(() => {
             setPage(1);
             setHasMore(true);
-            fetchPosts(1, true, searchQuery, category);
+            fetchPosts(1, true, searchQuery, category, isQueryArrange);
         }, 300); 
 
         return () => clearTimeout(timer);
-    }, [searchQuery, category, isOpen]);
+    }, [searchQuery, category, isQueryArrange, isOpen]);
 
-    const fetchPosts = async (currentPage: number, isReset: boolean = false, currentSearch: string = searchQuery,currentCategory: string = category) => {
+    const fetchPosts = async (currentPage: number, isReset: boolean = false, currentSearch: string = searchQuery,currentCategory: string = category, currentSort: string = isQueryArrange) => {
+        
+        if(!isReset && isFetchingRef.current) return;
+
+        isFetchingRef.current = true;
         setIsLoading(true);
+        if(isReset){
+            setPosts([]);
+            setHasMore(false);
+        }
+
         try {
-            const result = await getPostsByScroll(currentPage, 10, currentCategory, "Newest", currentSearch);
+            const result = await getPostsByScroll(currentPage, 10, currentCategory, currentSort, currentSearch, "ALL");
             if (result.success && result.data) {
                 if (isReset) {
                 setPosts(result.data);
@@ -93,27 +118,32 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
     // 監聽是否滾到底部，觸發載入下一頁
     useEffect(() => {
         if(!isOpen) return;
-        if (isIntersecting && hasMore && !isLoading) {
+        if (isIntersecting && hasMore && !isFetchingRef.current ) {
             const nextPage = page + 1;
             setPage(nextPage);
-            fetchPosts(nextPage, false, searchQuery,category);
+            fetchPosts(nextPage, false, searchQuery, category, isQueryArrange);
         }
-    }, [isIntersecting, hasMore, isLoading, isOpen]);
+    }, [isIntersecting, hasMore, isOpen, searchQuery, category, isQueryArrange]);
 
     // 處理 Checkbox 的勾選/取消
-    const handleToggleSelection = (id: string) => {
-        const newSet = new Set(selectedSet);
-        if (newSet.has(id)) {
-        newSet.delete(id);
+    const handleToggleSelection = (post: any) => {
+        const newIdSet = new Set(selectedIdSet);
+        let newList = [...selectedPostsList];
+
+        if (newIdSet.has(post.id)) {
+            newIdSet.delete(post.id);
+            newList = newList.filter((p) => p.id !== post.id);
         } else {
-        newSet.add(id);
+            newIdSet.add(post.id);
+            newList.push({ id: post.id, title: post.title });
         }
-        setSelectedSet(newSet);
+        setSelectedIdSet(newIdSet);
+        setSelectedPostsList(newList);
     };
 
     const handleConfirm = (onClose: () => void) => {
         // 將 Set 轉回 Array，傳給父層的表單狀態
-        onConfirm(Array.from(selectedSet));
+        onConfirm(selectedPostsList);
         onClose();
     };
 
@@ -137,34 +167,53 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
                         onValueChange={setSearchQuery}
                         startContent={<Search size={16} className="text-zinc-400" />}
                         classNames={{
-                            inputWrapper: "bg-[#27272A] hover:bg-[#3F3F46] focus-within:!bg-[#3F3F46]",
+                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] hover:bg-[#3F3F46] focus-within:!bg-[#3F3F46]",
                             input: "text-white"
                         }}
                     />
-
-                    <Select 
-                        label="Choose a category : " 
-                        labelPlacement="outside-left"
-                        placeholder="Select a category"
-                        className="max-w-xs"
-                        classNames={{
-                            label: "text-lg",
-                            trigger: " rounded-xl text-white data-[hover=true]:bg-gray-600",
-                            listbox: "bg-[#27272A]", // 下拉選單整體的背景
-                            popoverContent: "bg-[#27272A] border-1 border-white/10", 
-                        }}
-                        selectedKeys={[category]}
-                        onChange={(e) => {
-                            const newCategory = e.target.value;
-                            setCategory(newCategory || "ALL");
-                        }}
-                    >
-                        <SelectItem key="ALL" className="text-white data-[hover=true]:bg-primary">ALL</SelectItem>
-                        <SelectItem key="Buildings" className="text-white data-[hover=true]:bg-primary">Buildings</SelectItem>
-                        <SelectItem key="Products" className="text-white data-[hover=true]:bg-primary">Products</SelectItem>
-                        <SelectItem key="Elements" className="text-white data-[hover=true]:bg-primary">Elements</SelectItem>
-                        <SelectItem key="2D Drawings" className="text-white data-[hover=true]:bg-primary">2D Drawings</SelectItem>
-                    </Select>
+                    <div className="flex gap-2 ">
+                        <Select 
+                            label="Choose a category : " 
+                            labelPlacement="inside"
+                            placeholder="Select a category"
+                            className="max-w-xs"
+                            classNames={{
+                                trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
+                                listbox: "bg-[#27272A]", // 下拉選單整體的背景
+                                popoverContent: "bg-[#27272A] border-1 border-white/10", 
+                            }}
+                            selectedKeys={[category]}
+                            onChange={(e) => {
+                                const newCategory = e.target.value;
+                                setCategory(newCategory || "ALL");
+                            }}
+                        >
+                            <SelectItem key="ALL" className="text-white">ALL</SelectItem>
+                            <SelectItem key="Buildings" className="text-white">Buildings</SelectItem>
+                            <SelectItem key="Products" className="text-white">Products</SelectItem>
+                            <SelectItem key="Elements" className="text-white">Elements</SelectItem>
+                            <SelectItem key="2D Drawings" className="text-white">2D Drawings</SelectItem>
+                        </Select>
+                        <Select 
+                            label="order by : " 
+                            labelPlacement="inside"
+                            placeholder="order by"
+                            className="max-w-30 h-10"
+                            classNames={{
+                                trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
+                                listbox: "bg-[#27272A]", // 下拉選單整體的背景
+                                popoverContent: "bg-[#27272A] border-1 border-white/10", 
+                            }}
+                            selectedKeys={[isQueryArrange]}
+                            onChange={(e) => {
+                                const newQueryArrange = e.target.value;
+                                setIsQueryArrange(newQueryArrange || "Newest");
+                            }}
+                        >
+                            <SelectItem key="Newest" className="text-white">Newest</SelectItem>
+                            <SelectItem key="Hottest" className="text-white">Hottest</SelectItem>
+                        </Select>
+                    </div>
                     
                 </ModalHeader>
                 <ModalBody className="max-h-[500px] overflow-y-auto">
@@ -177,15 +226,15 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
                             {posts.map((post) => (
                                 <div 
                                     key={post.id}
-                                    onClick={() => handleToggleSelection(post.id)}
+                                    onClick={() => handleToggleSelection(post)}
                                     className={`relative flex items-center cursor-pointer transition-colors rounded-2xl
-                                        ${selectedSet.has(post.id) 
+                                        ${selectedIdSet.has(post.id) 
                                         ? 'bg-[#3F3F46]/50 border-primary' 
                                         : 'bg-[#27272A] border-transparent hover:border-zinc-600'}`}
                                 >
                                     <Checkbox 
-                                        isSelected={selectedSet.has(post.id)}
-                                        onValueChange={() => handleToggleSelection(post.id)}
+                                        isSelected={selectedIdSet.has(post.id)}
+                                        onValueChange={() => handleToggleSelection(post)}
                                         color="primary"
                                         className="shrink-0 absolute bottom-5.5 left-3 z-50"
                                     />
@@ -198,6 +247,7 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
                                         type={post.type}
                                         title={post.title}
                                         clickable={false}
+                                        isCollectedInitial={post.isCollected}
                                     />
                                 </div>
                             ))}
@@ -220,14 +270,14 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedIds, onConfirm
                 </ModalBody>
                 <ModalFooter className="flex justify-between items-center">
                 <span className="text-sm text-zinc-400">
-                    {selectedSet.size} model(s) selected
+                    {selectedIdSet.size} model(s) selected
                 </span>
                 <div className="flex gap-2">
-                    <Button variant="light" onPress={onClose} className="text-white">
-                    Cancel
+                    <Button variant="light" onPress={onClose} className="text-white shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
+                        Cancel
                     </Button>
-                    <Button color="primary" onPress={() => handleConfirm(onClose)}>
-                    Confirm Selection
+                    <Button color="primary" onPress={() => handleConfirm(onClose)} className="shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
+                        Confirm Selection
                     </Button>
                 </div>
                 </ModalFooter>

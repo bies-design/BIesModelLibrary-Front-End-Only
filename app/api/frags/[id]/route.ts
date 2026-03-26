@@ -1,7 +1,7 @@
 // src/app/api/models/[id]/frag/route.ts
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth"; // 假設你有 auth
 import { NextRequest, NextResponse } from "next/server";
 

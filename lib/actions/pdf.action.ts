@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma"; // 確保路徑指向你的 Prisma Client 實例
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
 

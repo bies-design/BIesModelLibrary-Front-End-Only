@@ -1,0 +1,21 @@
+model Comment {
+    id        String   @id @default(cuid())
+    content   String   // 留言內容
+
+    // 1. 關聯到貼文 (Post 被刪除時，留言一併刪除)
+    postId    String
+    post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    // 2. 關聯到留言作者 (User 被刪除時，留言一併刪除)
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // 3. 自我關聯：「回覆留言」功能
+    // parentId 為 null 代表是「主留言」；有值代表是「回覆別人的留言」
+    parentId  String?
+    parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+    replies   Comment[] @relation("CommentReplies")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

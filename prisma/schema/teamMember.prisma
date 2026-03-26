@@ -1,0 +1,25 @@
+enum TeamRole {
+    OWNER   // 建立者 (擁有最高權限，可刪除團隊)
+    ADMIN   // 管理員 (可邀請/踢除成員、編輯團隊資訊)
+    EDITOR  // 編輯者 (可上傳、編輯、刪除團隊內的模型)
+    VIEWER  // 瀏覽者 (僅能觀看，無法修改)
+}
+
+// 團隊與使用者的中介表 (用來記錄「誰」在「哪個團隊」是什麼「角色」)
+model TeamMember {
+    id        String   @id @default(cuid())
+    role      TeamRole @default(VIEWER)
+    
+    // 關聯到 Team
+    teamId    String
+    team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade) //若Team不在 則刪除整筆資料
+    
+    // 關聯到 User
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) //若User不在 則刪除整筆資料
+
+    joinedAt  DateTime @default(now())
+
+    // 確保同一個使用者不會在同一個團隊被重複加入兩次
+    @@unique([teamId, userId]) 
+}

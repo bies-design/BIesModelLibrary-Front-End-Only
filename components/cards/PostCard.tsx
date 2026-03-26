@@ -1,10 +1,11 @@
 'use client';
-import React from 'react'
-import {Card, CardBody, Tooltip, user} from "@heroui/react";
+import React,{useState} from 'react'
+import {Card, CardBody, toggle, Tooltip, user} from "@heroui/react";
 import Image from 'next/image';
-import { Rotate3D,File } from 'lucide-react';
+import { Rotate3D,File, Star } from 'lucide-react';
 import { card } from '@/app/globalUse';
 import { useRouter } from 'next/navigation';
+import { toggleCollection } from '@/lib/actions/post.action';
 
 //定義Props的type
 interface PostCardProps {
@@ -14,6 +15,8 @@ interface PostCardProps {
   type:'2D' | '3D';
   title:string;
   clickable?:boolean;
+  isCollectedInitial?:boolean;
+  onCollectionToggle?: (id: string, newIsCollected: boolean) => void;
 }
 // 將父層傳入的參數解構出 selectedCategory
 const PostCard = ({
@@ -22,12 +25,40 @@ const PostCard = ({
   coverImage,
   type,
   title,
-  clickable = true
-
+  clickable = true,
+  isCollectedInitial = false,
+  onCollectionToggle
 }:PostCardProps) => {
   // const minioUrl =`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images`;
   // const imageUrl = `${minioUrl}/${coverImage}`;
+  const [isCollected, setIsCollected] = useState<boolean>(isCollectedInitial);
+  // prevent over clicked
+  const [isToggling, setIsToggling] = useState(false);
   const router = useRouter();
+
+  const handleStarClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // 如果正在發 API，擋住連點
+    if(isToggling) return;
+
+    const nextStatus = !isCollected;
+    // (Optimistic UI)：先讓ui變色
+    setIsCollected(nextStatus);
+    setIsToggling(true);
+
+    //瞬間通知外層 (Models) 狀態改變了
+    if (onCollectionToggle) onCollectionToggle(dbId, nextStatus);
+
+    const result = await toggleCollection(dbId);
+
+    // 如果伺服器發生錯誤 (例如斷網)，把星星的顏色退回原本的狀態
+    if(!result.success){
+      setIsCollected(isCollected);
+      console.log(result.error);
+    }
+
+    setIsToggling(false);
+  };
 
   return (
     <Tooltip content={title} placement='bottom'>
@@ -93,18 +124,25 @@ const PostCard = ({
                 />
                 <p className='ml-1 font-medium text-black dark:text-[#E4E4E7] font-medium'><span className='hidden lg:inline'>Download</span></p>
               </button>
-              <Tooltip content={`Archive`} placement='bottom'>
+              
+              <svg width="0" height="0" style={{ position: 'absolute' }}>
+                <defs>
+                    <linearGradient id="star-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#FFF282" />
+                        <stop offset="100%" stopColor="#FFC837" />
+                    </linearGradient>
+                </defs>
+              </svg>
+              <Tooltip content={`Collection`} placement='bottom'>
                 <button
-                  onClick={(e)=>{e.stopPropagation(); console.log("Archive clicked");}}
-                  aria-label={`Archive ${title}`}
+                  onClick={handleStarClick}
+                  aria-label={`Collection ${title}`}
                   className='hover-lift bg-[#FFFFF4] dark:bg-[#52525B] rounded-lg px-2 py-1 shadow-[inset_0px_2px_5px_rgba(255,255,255,0.8),inset_0px_-1px_3px_rgba(0,0,0,0.8)] dark:shadow-[inset_0px_2px_1px_rgba(255,255,245,0.2),inset_0px_-2px_8px_rgba(0,0,0,0.4)]
                     active:shadow-sm'>
-                  <Image 
-                    className='invert dark:invert-0'
-                    src="/icons/ArchiveIcon.svg"
-                    alt="Archive Icon"
-                    width={16}
-                    height={16}
+                  <Star
+                    fill={isCollected ? 'url(#star-gradient)' : 'none'}
+                    stroke={isCollected ? 'none' : '#A1A1AA'}
+                    size={18}
                   />
                 </button>
               </Tooltip>

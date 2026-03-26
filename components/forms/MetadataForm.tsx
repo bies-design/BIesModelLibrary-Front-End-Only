@@ -7,6 +7,7 @@ import Cropper from 'react-easy-crop'
 import getCroppedImg from '@/utils/cropImage';
 import Image from 'next/image';
 import RelatedPostsModal from '../modals/RelatedPostModal';
+import { SelectedPost } from '../modals/RelatedPostModal';
 
 export interface ImageFile {
   file: File;      // 原始檔案 (上傳用)
@@ -20,7 +21,7 @@ export interface Metadata {
   description: string;
   permission: string;
   team: string;
-  relatedPosts: string[];
+  relatedPosts: SelectedPost[];
 }
 
 interface MetadataFormProps {
@@ -55,16 +56,13 @@ const MetadataForm = ({
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [formRelatedPostIds, setFormRelatedPostIds] = useState<string[]>([]);
-
   // 使用者在 Modal 點擊確認時，更新表單狀態
-  const handleRelatedPostsConfirm = (selectedIds: string[]) => {
-    setFormRelatedPostIds(selectedIds);
+  const handleRelatedPostsConfirm = (selectedPosts: {id:string, title:string}[]) => {
     onMetadataChange({
       ...metadata,
-      relatedPosts:selectedIds
+      relatedPosts:selectedPosts
     });
-    console.log("準備存入資料庫的關聯 ID:", selectedIds);
+    console.log("準備存入資料庫的關聯 ID:", selectedPosts);
   };
 
   // 當元件卸載或圖片被移除時，釋放記憶體
@@ -159,6 +157,7 @@ const MetadataForm = ({
     }
     e.target.value = ''; 
   };
+
 
   const handleUploadClick = () => {
     moreImagesInputRef.current?.click();
@@ -423,29 +422,40 @@ const MetadataForm = ({
       {/* Associated Model Set */}
       <div className="space-y-2">
         <label className="text-white text-sm flex items-center gap-2">
-          Associated model set <HelpCircle size={16} className="text-gray-400" />
+          Related model posts <HelpCircle size={16} className="text-gray-400" />
         </label>
         <div className="flex gap-2">
-          <Select
-            selectedKeys={metadata.associatedModel ? [metadata.associatedModel] : []}
-            onSelectionChange={(k) => handleSelectionChange('associatedModel', k)}
-            aria-label='Associated Model Select'
-            placeholder="None"
-            className="flex-grow "
-            classNames={{
-              trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
-            }}
-          >
-            <SelectItem key="none">None</SelectItem>
-          </Select>
+          <div className="flex-grow min-h-[40px] p-2 bg-[#18181B] rounded-xl shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D] flex flex-wrap gap-2 items-center">
+            
+            {metadata.relatedPosts.length === 0 ? (
+                // 狀態 1：尚未選擇任何東西
+                <span className="text-zinc-500 text-sm pl-2">None selected</span>
+            ) : (
+                // 狀態 2：顯示已選取的標籤
+                metadata.relatedPosts.map((post) => (
+                    <Chip 
+                        key={post.id} 
+                        variant="flat"
+                        classNames={{
+                            base: "bg-[#27272A] border-1 border-white/10",
+                            content: "text-white text-xs",
+                            closeButton: "text-zinc-400 hover:text-danger"
+                        }}
+                    >
+                        {/* ⚠️ 注意：這裡目前顯示 ID，建議你可以改成顯示 title (詳見下方說明) */}
+                        {post.title} 
+                    </Chip>
+                ))
+            )}
+        </div>
           <Button onPress={onOpen} className="px-3 bg-[#3F3F46] shadow-[0px_0px_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-white">
-            Set Editor <Inbox size={25} className="w-[60%] h-[60%] ml-1" />
+            Browse <Inbox size={25} className="w-[60%] h-[60%] ml-1" />
           </Button>
         </div>
         <RelatedPostsModal
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          currentSelectedIds={formRelatedPostIds}
+          currentSelectedPosts={metadata.relatedPosts}
           onConfirm={handleRelatedPostsConfirm}
         />
       </div>

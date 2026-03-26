@@ -15,9 +15,9 @@ import { Loader2 } from 'lucide-react';
 const Home = () => {
   const { data:session,status } = useSession();
   //for itemsQuery
-  const [isSelectId, setIsSelectId] = useState('ALL');
+  const [isSelectId, setIsSelectId] = useState<string>('ALL');
   //for Newest Hottest Query
-  const [isQueryArrange, setIsQueryArrange] = useState('Newest')
+  const [isQueryArrange, setIsQueryArrange] = useState<string>('Newest')
   const SearchParams = useSearchParams();
   const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -157,6 +157,7 @@ const Home = () => {
                   coverImage={post.coverImage}
                   type={post.type}
                   title={post.title}
+                  isCollectedInitial={post.isCollected}
                 />
                 ))}
             </div>  

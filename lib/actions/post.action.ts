@@ -3,7 +3,7 @@
 import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "../s3";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth"; // 你的 auth 設定
 import { Metadata } from "@/components/forms/MetadataForm";
 import { nanoid } from "nanoid";
@@ -38,28 +38,30 @@ export async function createPost(params: CreatePostParams) {
     try {
         // 寫入 PostgreSQL
         const newPost = await prisma.post.create({
-        data: {
-            shortId: shortId,
-            title: params.metadata.title,
-            category: params.metadata.category,
-            description: params.metadata.description,
-            type:postType,
-            keywords: params.metadata.keywords,            
-            coverImage: params.coverImageKey!,
-            images: params.imageKeys,
-            
-            models:{
-                connect: modelIds.map(id => ({ id }))
+            data: {
+                shortId: shortId,
+                title: params.metadata.title,
+                category: params.metadata.category,
+                description: params.metadata.description,
+                type:postType,
+                keywords: params.metadata.keywords,            
+                coverImage: params.coverImageKey!,
+                images: params.imageKeys,
+                
+                models:{
+                    connect: modelIds.map(id => ({ id }))
+                },
+                pdfIds:{
+                    connect: pdfIds.map(id => ({id}))
+                },
+                uploaderId: session.user.id,
+                
+                relatedPosts: params.metadata.relatedPosts.map(post => post.id),
+                permission: params.metadata.permission,
+                teamId: (!params.metadata.team || params.metadata.team === "none" || params.metadata.team.trim() === "")
+                        ? null
+                        : params.metadata.team,
             },
-            pdfIds:{
-                connect: pdfIds.map(id => ({id}))
-            },
-            uploaderId: session.user.id,
-            
-            relatedPosts: params.metadata.relatedPosts,
-            permission: params.metadata.permission,
-            team: params.metadata.team === "none" ? null : params.metadata.team,
-        },
         });
 
         return { success: true, postId: newPost.id };
@@ -80,6 +82,17 @@ export const getPostsByScroll = async (
     scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" = "ALL"
 ) => {
     try {
+        const session = await auth();
+        let userCollection: string[] = [];
+
+        if(session?.user.id){
+            const currentUser = await prisma.user.findUnique({
+                where: {id: session.user.id},
+                select: {userCollection:true}
+            });
+            userCollection = currentUser?.userCollection || [];
+        }
+
         // 計算要跳過多少筆資料
         const skip = (page - 1) * limit;
         // 動態過濾條件 (Where)
@@ -93,7 +106,6 @@ export const getPostsByScroll = async (
         }
         
         if(scope !== "ALL"){
-            const session = await auth();
             if(!session?.user.id){
                 return {success:false, error:"Unauthorized"};
             }
@@ -183,13 +195,14 @@ export const getPostsByScroll = async (
         //         };
         //     })
         // );
-        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
         const postWithPublicUrls = posts.map((post) => {
             return {
                 ...post,
                 coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
-                :null
+                :null,
+                isCollected: userCollection.includes(post.id)
             };
         });
         // 2. 查詢資料總數 (用來判斷是否還有下一頁)
@@ -265,6 +278,18 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
     }
 
     try {
+        const session = await auth();
+        let userCollection: string[] = [];
+
+        if(session?.user.id){
+            const currentUser = await prisma.user.findUnique({
+                where: {id: session.user.id},
+                select: {userCollection:true}
+            });
+            userCollection = currentUser?.userCollection || [];
+        }
+
+
         // 1. 從資料庫中一次撈出所有符合 ID 的貼文
         // (只需要拿渲染 PostCard 必備的欄位即可，節省頻寬)
         const posts = await prisma.post.findMany({
@@ -284,13 +309,14 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
 
         // 2. 將撈回來的 coverImage 轉換成 MinIO Presigned URL
         // (這段邏輯跟你原本 getPostsByScroll 裡面做的一模一樣)
-        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
         const postWithPublicUrls = posts.map((post) => {
             return {
                 ...post,
                 coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
-                :null
+                :null,
+                isCollected: userCollection.includes(post.id)
             };
         });
 
@@ -322,7 +348,7 @@ export const getPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
-        const minioEndpoint = process.env.S3_ENDPOINT;
+        const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
         const publicCoverImageUrls = `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
 
@@ -472,5 +498,41 @@ export async function delete3DPost(postId: string) {
     }catch(e){
         console.error("刪除貼文失敗",e);
         return {success: false, error:"刪除失敗"};
+    }
+}
+
+export async function toggleCollection(postId:string) {
+    try{
+        const session = await auth();
+        if(!session?.user.id) return {sucess:false, error:"Unauthorized"};
+
+        const user = await prisma.user.findUnique({
+            where: {id: session.user.id},
+            select: {userCollection: true}
+        });
+
+        if(!user) return {success:false, error:"User Not Found"};
+
+        const currentCollection = user.userCollection || [];
+        const isCurrentlyCollected = currentCollection.includes(postId);
+
+        let updateCollection;
+
+        if(isCurrentlyCollected){
+            updateCollection = currentCollection.filter(id => id !== postId);
+        }else{
+            updateCollection = [...currentCollection, postId];
+        }
+
+        await prisma.user.update({
+            where:{id: session.user.id},
+            data:{userCollection: updateCollection}
+        });
+
+        // 回傳成功，並告訴前端最終的狀態
+        return { success:true, isCollected: !isCurrentlyCollected};
+    } catch (error) {
+        console.error("Toggle collection error:", error);
+        return { success: false, error: "Failed to toggle collection" };
     }
 }

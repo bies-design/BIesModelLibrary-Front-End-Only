@@ -2,7 +2,7 @@
 
 import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 
 //get model list "string!!!!!! data" based on user id

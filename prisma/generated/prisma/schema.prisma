@@ -23,6 +23,28 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Comment {
+  id      String @id @default(cuid())
+  content String // 留言內容
+
+  // 1. 關聯到貼文 (Post 被刪除時，留言一併刪除)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // 2. 關聯到留言作者 (User 被刪除時，留言一併刪除)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 3. 自我關聯：「回覆留言」功能
+  // parentId 為 null 代表是「主留言」；有值代表是「回覆別人的留言」
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // prisma/schema/main.prisma
 
 generator client {
@@ -109,10 +131,54 @@ model Post {
   relatedPosts String[]
 
   permission String
-  team       String?
+
+  teamId String?
+  team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull) //當團隊解散所有的TeamMember會自動清空
+
+  comments Comment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  name        String // 團隊名稱
+  description String? // 團隊介紹
+  avatar      String? // 團隊 Logo (存 MinIO 的檔名或路徑)
+  color       String? // 團隊顏色 (標住在postcard上面)
+  // 關聯
+  members     TeamMember[] // 團隊成員與他們的權限
+  posts       Post[] // 該團隊擁有的所有模型貼文
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TeamRole {
+  OWNER // 建立者 (擁有最高權限，可刪除團隊)
+  ADMIN // 管理員 (可邀請/踢除成員、編輯團隊資訊)
+  EDITOR // 編輯者 (可上傳、編輯、刪除團隊內的模型)
+  VIEWER // 瀏覽者 (僅能觀看，無法修改)
+}
+
+// 團隊與使用者的中介表 (用來記錄「誰」在「哪個團隊」是什麼「角色」)
+model TeamMember {
+  id   String   @id @default(cuid())
+  role TeamRole @default(VIEWER)
+
+  // 關聯到 Team
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade) //若Team不在 則刪除整筆資料
+
+  // 關聯到 User
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) //若User不在 則刪除整筆資料
+
+  joinedAt DateTime @default(now())
+
+  // 確保同一個使用者不會在同一個團隊被重複加入兩次
+  @@unique([teamId, userId])
 }
 
 enum Role {
@@ -136,10 +202,7 @@ model User {
   // 對應 image: { type: String }
   image String?
 
-  // 對應 team: { type: [Schema.Types.ObjectId] }
-  // Postgres 支援字串陣列，這裡先用來存 ID。
-  // 若未來有 Team table，建議改成關聯 @relation
-  team String[]
+  teamMembers TeamMember[]
 
   // 對應 userCollection: { type: [Schema.Types.ObjectId] }
   userCollection String[]
@@ -153,7 +216,8 @@ model User {
   pdfs Pdf[]
 
   posts     Post[]
+  comments  Comment[]
   // 對應 timestamps: true
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

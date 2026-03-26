@@ -13,7 +13,7 @@ import { Loader2 } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
 import { createPdfRecord } from '@/lib/actions/pdf.action';
 import { createPost } from '@/lib/actions/post.action';
-
+import { SelectedPost } from '@/components/modals/RelatedPostModal';
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
@@ -114,16 +114,14 @@ const Upload = () => {
 
     // 處理最終建立邏輯
     const handleCreate = async () => {
-
         console.log("正在建立模型卡片...", {
             files: uploadedFiles,
             cover: coverImage,
             additionalImages: additionalImages,
-            metadata: metadata // 使用最新的 metadata 狀態
-            // 這裡之後會從 MetadataForm 取得資料
+            metadata: metadata 
         });
 
-        // 
+        // --- 0. 防呆驗證 ---
         if(postType === '3D' && loadedFiles.length === 0) {
             alert("請載入至少一個模型!");
             return;
@@ -136,68 +134,33 @@ const Upload = () => {
         setIsSubmitting(true);
 
         try {
-            console.log("1. 開始上傳圖片...");
+            let dbPdfIds: string[] = [];
+            let dbModelIds: string[] = [];
+
+            // --- 1. 優先處理核心檔案 (PDF 或 Models) ---
+            console.log("1. 處理核心檔案...");
             
-            // A. 上傳封面圖 (如果有)
-            let coverKey: string | null = null;
-            if (coverImage) {
-                coverKey = await uploadImageToMinIO(coverImage, "cover.png");
-            }
-
-            // B. 上傳額外圖片 (平行處理，加快速度)
-            const imageKeys: string[] = [];
-            const uploadPromises = additionalImages.map((img, index) => 
-                // 這裡傳入 img.preview (Blob URL) 或是 img.file (原始檔案) 都可以
-                // 既然我們已經存了 img.file，直接用 img.file 上傳最快，不用再 fetch blob
-                uploadFileDirectly(img.file) 
-            );
-
-            // 等待所有圖片上傳完成
-            const results = await Promise.all(uploadPromises);
-            results.forEach(key => {
-                if (key) imageKeys.push(key);
-            });
-
-            console.log("2. 圖片上傳完成，寫入資料庫...", { coverKey, imageKeys });
-            console.warn("選中模型ID為",loadedFiles);
-
-            // C. 呼叫 Server Action 寫入 DB 
-            // 分為2D/3D post 上傳邏輯分割 
-            if(postType === '3D'){
-                const result = await createPost({
-                    postType:'3D',
-                    metadata: metadata,
-                    coverImageKey: coverKey,
-                    imageKeys: imageKeys,
-                    modelIds: loadedFiles.map(file => file.dbId), // 使用者選中模型的資料庫ID
-                });
-                if (result.success) {
-                    console.log("✅ 建立成功！");
-                    router.push('/?status=success');
-                } else {
-                    throw new Error(result.error);
-                }
-            }
-            if(postType ==='2D'){
-                // 1.上傳pdf到minio 2.將pdf寫入資料庫
-                const dbPdfIds: string[] = [];
-
+            if (postType === '3D') {
+                // 3D 模型已經在前面步驟上傳並建檔完畢，這裡只要整理 ID 即可
+                dbModelIds = loadedFiles.map(file => file.dbId);
+                
+            } else if (postType === '2D') {
+                // 2D 必須先確保 PDF 都能成功上傳，否則直接中斷，不浪費時間傳圖片
                 for(const file of uploadedFiles){
-                    try{
-                        // 將uploadedFiles裡面的pdf檔案上傳到minio
+                    try {
                         const formData = new FormData();
-                        formData.append("file",file.file);
+                        formData.append("file", file.file);
 
-                        const uploadRes = await fetch("/api/pdfs",{method:"POST",body: formData});
+                        const uploadRes = await fetch("/api/pdfs", { method: "POST", body: formData });
                         if (!uploadRes.ok) throw new Error(`PDF ${file.name} 上傳 MinIO 失敗`);
 
                         const uploadData = await uploadRes.json();
                         const minioFileId = uploadData.key;
-                        // 將minio fileKey 以及pdf資訊寫入pg pdf schema
+                        
                         const dbRecord = await createPdfRecord({
                             name: file.name,
                             fileId: minioFileId,
-                        })
+                        });
 
                         if (!dbRecord.success || !dbRecord.id) {
                             throw new Error(`PDF ${file.name} 寫入資料庫失敗: ${dbRecord.error}`);
@@ -205,37 +168,59 @@ const Upload = () => {
 
                         dbPdfIds.push(dbRecord.id);
                         console.log(`✅ ${file.name} 上傳並建檔成功，DB_ID: ${dbRecord.id}`);
-                    }catch (error){
+                    } catch (error) {
                         console.error(error);
-                        // 這裡可以決定要 throw Error 中斷整個流程，還是 continue 繼續傳下一個
-                        throw new Error(`處理檔案 ${file.name} 時發生錯誤，中止發布`);
+                        throw new Error(`處理 PDF 檔案 ${file.name} 時發生錯誤，中止發布`);
                     }
                 }
-                
+
                 if (dbPdfIds.length === 0) {
                     throw new Error("沒有成功上傳任何 PDF 檔案");
                 }
-
-                console.log("4. 所有 PDF 處理完畢，準備建立 Post，關聯的 IDs:", dbPdfIds);
-                // 將資料庫中這次上傳的pdf dbId跟post做關聯
-                const result = await createPost({
-                    postType:'2D',
-                    metadata: metadata,
-                    coverImageKey: coverKey,
-                    imageKeys: imageKeys,
-                    pdfIds: dbPdfIds, // 使用者選中模型的資料庫ID
-                });
-                if (result.success) {
-                    console.log("✅ 建立成功！");
-                    router.push('/?status=success');
-                } else {
-                    throw new Error(result.error);
-                }
             }
+
+            // --- 2. 核心檔案安全過關後，才開始上傳圖片 ---
+            console.log("2. 核心檔案過關，開始上傳圖片...");
+            let coverKey: string | null = null;
+            if (coverImage) {
+                coverKey = await uploadImageToMinIO(coverImage, "cover.png");
+            }
+
+            const imageKeys: string[] = [];
+            if (additionalImages.length > 0) {
+                const uploadPromises = additionalImages.map(img => 
+                    uploadFileDirectly(img.file) 
+                );
+                const results = await Promise.all(uploadPromises);
+                results.forEach(key => {
+                    if (key) imageKeys.push(key);
+                });
+            }
+
+            // --- 3. 所有檔案都就緒，統一呼叫 Server Action 寫入 Post 資料庫 ---
+            console.log("3. 所有檔案就緒，準備寫入資料庫 Post...");
+            const result = await createPost({
+                postType: postType,
+                metadata: metadata,
+                coverImageKey: coverKey,
+                imageKeys: imageKeys,
+                modelIds: dbModelIds, // 3D 的陣列 (2D 時為空)
+                pdfIds: dbPdfIds,     // 2D 的陣列 (3D 時為空)
+            });
+
+            if (result.success) {
+                console.log("✅ 建立成功！");
+                router.push('/?status=success');
+            } else {
+                throw new Error(result.error);
+            }
+
         } catch (error) {
             console.error("建立失敗:", error);
-            alert("建立失敗，請稍後再試");
-            setIsSubmitting(false);
+            // 讓使用者知道具體死在哪一步
+            alert(error instanceof Error ? error.message : "建立失敗，請稍後再試");
+        } finally {
+            setIsSubmitting(false); // 記得加上 finally 來確保按鈕解鎖
         }
     };
 

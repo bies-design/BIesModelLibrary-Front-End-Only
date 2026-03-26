@@ -64,7 +64,7 @@ const store = new S3Store({
     s3ClientConfig:{
         bucket: process.env.S3_IFC_BUCKET!,
         region: process.env.S3_REGION,
-        endpoint: process.env.S3_ENDPOINT ,
+        endpoint: process.env.S3_ENDPOINT_SERVER ,
         credentials: {
             accessKeyId: process.env.S3_ACCESS_KEY!,
             secretAccessKey: process.env.S3_SECRET_KEY!,
@@ -189,7 +189,7 @@ app.all(/\/files.*/, (req: any, res: any) => {
 // 啟動伺服器
 server.listen(PORT, HOST, () => {
     console.log(`--------------------------------------------------`);
-    console.log(`📂 Connecting to MinIO at: ${process.env.S3_ENDPOINT}`);
+    console.log(`📂 Connecting to MinIO at: ${process.env.S3_ENDPOINT_SERVER}`);
     console.log(`📦 Target Bucket: ${process.env.S3_IFC_BUCKET }`);
     console.log(`🔗 Worker Webhook Target: ${WORKER_WEBHOOK_URL}`);
     console.log(`🚀 Tus Server + Socket running on http://localhost:${PORT}`);

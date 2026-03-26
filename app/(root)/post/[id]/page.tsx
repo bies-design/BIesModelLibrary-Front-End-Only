@@ -76,6 +76,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                                         coverImage={relPost.coverImage}
                                         type={relPost.type}
                                         title={relPost.title}
+                                        isCollectedInitial={relPost.isCollected}
                                     />
                                 ))
                             ):(

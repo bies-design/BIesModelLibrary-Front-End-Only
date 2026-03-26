@@ -205,7 +205,7 @@ const Settings = (props: Props) => {
     const getImageUrl = (imageVal: string | null | undefined) => {
         if(!imageVal) return "";
         if(imageVal.startsWith("http")) return imageVal;
-        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
     };
 
     const userData = {
@@ -414,38 +414,58 @@ const Settings = (props: Props) => {
                                     label="Current Password"
                                     placeholder="Enter your current password"
                                     type="password"
-                                    variant="bordered"
+                                    variant="flat"
                                     value={passwords.currentPassword}
                                     onValueChange={(val) => handlePwdInputChange('currentPassword', val)}
                                     isInvalid={!!pwdErrors.currentPassword}
                                     errorMessage={pwdErrors.currentPassword}
+                                    classNames={{
+                                        inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "
+                                    }}
                                 />
                                 <Input
                                     label="New Password"
                                     placeholder="Enter your new password"
                                     type="password"
-                                    variant="bordered"
+                                    variant="flat"
                                     value={passwords.newPassword}
                                     onValueChange={(val) => handlePwdInputChange('newPassword', val)}
                                     isInvalid={!!pwdErrors.newPassword}
                                     errorMessage={pwdErrors.newPassword}
+                                    classNames={{
+                                        inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "
+                                    }}
                                 />
                                 <Input
                                     label="Confirm New Password"
                                     placeholder="Confirm your new password"
                                     type="password"
-                                    variant="bordered"
+                                    variant="flat"
                                     value={passwords.confirmPassword}
                                     onValueChange={(val) => handlePwdInputChange('confirmPassword', val)}
                                     isInvalid={!!pwdErrors.confirmPassword}
                                     errorMessage={pwdErrors.confirmPassword}
+                                    classNames={{
+                                        inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "
+                                    }}
                                 />
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="flat" onPress={handleModalClose}>
+                                <Button 
+                                    color="danger" 
+                                    variant="flat" 
+                                    onPress={handleModalClose}
+                                    className='text-white hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                                >
                                     Cancel
                                 </Button>
-                                <Button color="primary" isDisabled={isButtonDisabled} onPress={handlePasswordSubmit} isLoading={isUpdatingPwdUI}>
+                                <Button 
+                                    color="primary" 
+                                    isDisabled={isButtonDisabled} 
+                                    onPress={handlePasswordSubmit} 
+                                    isLoading={isUpdatingPwdUI}
+                                    className='hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                                >
                                     Update Password
                                 </Button>
                             </ModalFooter>

@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "../prisma";
+import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
@@ -49,7 +49,7 @@ export async function getAvatarUploadUrl(fileName: string, contentType: string) 
     
     const fileExtension = fileName.split('.').pop();
     const fileKey = `${nanoid()}.${fileExtension}`;
-    const minioEndpoint = process.env.S3_ENDPOINT;
+    const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
     try{
         const command = new PutObjectCommand({
             Bucket: process.env.S3_IMAGES_BUCKET,
