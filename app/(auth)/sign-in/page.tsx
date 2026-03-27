@@ -24,7 +24,6 @@ const SignIn = () => {
 
         
         router.push('/');
-        router.refresh();
         return { success: true};       
       }}
     />
