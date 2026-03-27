@@ -49,6 +49,8 @@ S3_ENDPOINT_SERVER="你的儲存體伺服器網址"
 NEXT_PUBLIC_S3_ENDPOINT_SERVER="你的儲存體伺服器網址"
 NEXT_PUBLIC_S3_IMAGES_BUCKET="你的圖片Bucket名稱"
 
+```
+
 #本專案目前使用 Coolify 進行容器化部署，請注意以下伺服器與建置設定：
 
 1.Nixpacks 版本控制 (nixpacks.toml)
