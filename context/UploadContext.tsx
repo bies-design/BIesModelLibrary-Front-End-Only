@@ -44,7 +44,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         uppyInstance.use(Tus, {
-        endpoint: "http://100.103.58.19:3003/files/", // 指向你的 Tus Server
+        endpoint: process.env.NEXT_PUBLIC_TUS_URL, // 指向你的 Tus Server
         chunkSize: 5 * 1024 * 1024,
         retryDelays: [0, 1000, 3000, 5000],
         removeFingerprintOnSuccess: true,
@@ -55,7 +55,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 2. WebSocket 監聽 (處理轉檔通知)
     useEffect(() => {
-        const socket: Socket = io("http://100.103.58.19:3003");
+        const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
         socket.on("connect", () => {
         console.log("🔌 Socket connected");
