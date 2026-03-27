@@ -23,7 +23,7 @@ const SignIn = () => {
         }
 
         
-        router.push('/');
+        window.location.href = '/';
         return { success: true};       
       }}
     />
