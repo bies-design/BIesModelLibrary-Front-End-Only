@@ -83,14 +83,49 @@ export default function ActionButtons({ post }: { post: any }) {
         }
     };
     const handleShare = () => {
-        navigator.clipboard.writeText(window.location.href);
-        addToast({
-            description:"Link copied to clipboard!",
-            color:"success",
-            timeout:3000,
-            shouldShowTimeoutProgress:true,
-        })
+        // 直接在函式內部抓取當前的網址，避開 React Event 參數衝突
+        const textToCopy = window.location.href; 
+
+        // 成功時的提示框抽出，讓程式碼更乾淨
+        const showSuccessToast = () => {
+            addToast({
+                description: "Link copied to clipboard!",
+                color: "success",
+                timeout: 3000,
+                shouldShowTimeoutProgress: true,
+            });
+        };
+
+        // 檢查是否支援安全剪貼簿 API (需為 HTTPS 或 localhost)
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => showSuccessToast())
+                .catch(err => console.error('複製失敗:', err));
+        } else {
+            // HTTP 環境的降級備案 (傳統做法)
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            // 把輸入框藏起來
+            textArea.style.position = "absolute";
+            textArea.style.left = "-999999px";
+            document.body.prepend(textArea);
+            textArea.select();
+            try {
+                // 執行複製指令
+                document.execCommand('copy');
+                showSuccessToast();
+            } catch (error) {
+                console.error('複製失敗:', error);
+                addToast({
+                    description: "Failed to copy link",
+                    color: "danger",
+                });
+            } finally {
+                textArea.remove(); // 複製完記得刪除暫存的 DOM 元素
+            }
+        }
     };
+    
     const handleDeletePost = async() => {
         
         try{
