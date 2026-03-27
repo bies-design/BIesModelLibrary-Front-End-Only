@@ -51,7 +51,7 @@ export default function Navbarhead() {
         return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
     };
   
-  const userImage = getImageUrl(session?.user.image);
+  const userImage = getImageUrl(session?.user?.image);
 
   if (!mounted) return null; // Avoid SSR issues
 

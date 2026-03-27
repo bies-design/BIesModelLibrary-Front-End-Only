@@ -77,7 +77,7 @@ const Home = () => {
           className="w-full max-w-[200px] md:max-w-[300px] 2xl:max-w-[500px] h-auto"
         />
         <Image 
-          src="/Connect More, Achieve More.svg" 
+          src="/connect-more-achieve-more.svg" 
           width={500} 
           height={500} 
           alt="Slogan" 
