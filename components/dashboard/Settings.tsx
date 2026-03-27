@@ -313,6 +313,7 @@ const Settings = (props: Props) => {
                             color="primary" 
                             isLoading={isSavingName}
                             onPress={handleSaveName}
+                            className='hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
                         >
                             Save
                         </Button>
