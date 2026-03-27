@@ -51,12 +51,12 @@ NEXT_PUBLIC_S3_IMAGES_BUCKET="你的圖片Bucket名稱"
 
 ```
 
-#本專案目前使用 Coolify 進行容器化部署，請注意以下伺服器與建置設定：
+## 本專案目前使用 Coolify 進行容器化部署，請注意以下伺服器與建置設定：
 
 1.Nixpacks 版本控制 (nixpacks.toml)
 專案根目錄已配置 nixpacks.toml，強制鎖定 Node.js 版本（例如 Node 22 或 24），以避免 Coolify 預設環境與專案依賴產生衝突。請勿隨意刪除此檔案。
 
-#開發與維護避坑指南 (Gotchas)
+## 開發與維護避坑指南 (Gotchas)
 在接手或維護本專案時，請特別注意以下在不同作業系統與環境轉換時的常見問題：
 1. 檔案命名與 Linux 大小寫敏感
 資料夾/檔案名稱：Windows/Mac 對大小寫不敏感，但 Linux 伺服器非常嚴格。引入元件時請確保路徑大小寫完全一致（例如 Navbar 與 navbar 的差異會導致 Build 失敗）。
