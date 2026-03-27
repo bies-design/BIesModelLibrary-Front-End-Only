@@ -130,7 +130,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 // 為了確保一致性，我們在這裡統一查一次資料庫，拿到最準確的 User 資訊
                 // (雖然會多一次 DB 查詢，但只在登入時發生一次，效能影響很小)
                 const dbUser = await prisma.user.findUnique({
-                    where: {email : user.email!}
+                    where: {email : user.email!},
+                    include: {
+                        teamMembers: {
+                            select: {
+                                role:true,
+                                team:{
+                                    select:{
+                                        id:true,
+                                        name:true
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
 
                 if(dbUser){
@@ -139,7 +152,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.name = dbUser.userName; // 使用資料庫的 userName
                     token.picture = dbUser.image; // 使用資料庫的 image (如果是空的就不會有圖)
                     token.role = dbUser.role;     // 連 role 也可以一起帶
-                    token.team = dbUser.team;
+                    token.team = dbUser.teamMembers.map(team => ({
+                        id: team.team.id,
+                        name: team.team.name,
+                        role: team.role
+                    })) || [];//if teamMembers does't exist
                 } 
             }
             if(trigger === "update" && session){

@@ -1,6 +1,12 @@
 import NextAuth,{DefaultSession} from "next-auth";
 import {JWT} from "next-auth/jwt"
 
+export type SessionTeam = {
+    id:string;
+    name:string;
+    role:string;
+}
+
 declare module "next-auth" {
     /**
      * 擴充 Session 介面
@@ -10,7 +16,7 @@ declare module "next-auth" {
         user: {
         id: string;
         role: string;
-        team?: string[];
+        team?: SessionTeam[];
         } & DefaultSession["user"]
     }
 
@@ -20,7 +26,7 @@ declare module "next-auth" {
      */
     interface User {
         role: string; // 🔥 宣告這裡有 role
-        team?: string[];
+        team?: SessionTeam[];
     }
 }
 
@@ -32,6 +38,6 @@ declare module "next-auth/jwt" {
     interface JWT {
         id: string;
         role: string; // 🔥 宣告這裡有 role
-        team?: string[];
+        team?: SessionTeam[];
     }
 }
