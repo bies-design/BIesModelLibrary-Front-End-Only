@@ -9,7 +9,7 @@ import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
 import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2,Menu,X } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
 import { createPdfRecord } from '@/lib/actions/pdf.action';
 import { createPost } from '@/lib/actions/post.action';
@@ -24,8 +24,9 @@ export interface FileItem {
 }
 
 const Upload = () => {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [step, setStep] = useState(1);
+    const [isMobileStepNavOpen, setIsMobileStepNavOpen] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [step, setStep] = useState<number>(1);
     const [postType, setPostType] = useState<'2D' | '3D'>('3D');
     const [uploadedFiles, setUploadedFiles] = useState<FileItem[]>([]);
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
@@ -256,9 +257,23 @@ const Upload = () => {
         {/* 全螢幕遮罩：當 isIFCProcessing 為 true 時顯示 */}
         {/* {IFCProcessingStatus.isIFCProcessing && ( */}
             
-        <div className='flex w-full h-screen gap-4 p-2 '>
+        <div className='flex w-full h-screen gap-4 p-2 relative overflow-hidden'>
+
+            <button 
+                onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
+                className="md:hidden absolute bottom-5 left-5 z-50 p-2 rounded-lg text-white bg-[#3F3F46] transition-all duration-300 shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] transition-transform active:scale-95"
+            >
+                {isMobileStepNavOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
             {/* 左側步驟導覽列 */}
-            <div className='relative max-w-[300px] min-w-[250px] w-[20vw] overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)]'>
+            <div className={`
+                z-40 overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
+                /* 📱 手機版設定：絕對定位、根據狀態滑出或隱藏 */
+                absolute top-[5%] left-2 h-[90%] w-[250px] 
+                ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-[120%]"}
+                /* 💻 電腦版設定 (md 以上)：恢復相對定位，取消隱藏，乖乖待在左邊 */
+                md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0
+            `}>
                 <SidebarBlobs/>
                 {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
                 <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
@@ -278,41 +293,41 @@ const Upload = () => {
                     {/* 根據步驟與檔案類型渲染內容 */}
                     <div className='rounded-lg w-full h-full overflow-hidden relative'>
                         <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                                    {(postType === '3D') ? (
-                                        <Viewer3D 
-                                            ref={viewerRef} 
-                                            allFiles={uploadedFiles} 
-                                            file={selectedFile?.file} 
-                                            onIFCProcessingChange={handleIFCProcessingChange} 
-                                        />
-                                    ) : (
-                                        <PDFViewer 
-                                            ref={pdfRef} 
-                                            file={selectedFile?.file || null} 
-                                        />
-                                    )}
+                            {(postType === '3D') ? (
+                                <Viewer3D 
+                                    ref={viewerRef} 
+                                    allFiles={uploadedFiles} 
+                                    file={selectedFile?.file} 
+                                    onIFCProcessingChange={handleIFCProcessingChange} 
+                                />
+                            ) : (
+                                <PDFViewer 
+                                    ref={pdfRef} 
+                                    file={selectedFile?.file || null} 
+                                />
+                            )}
                         </div>
-                        <div className={`absolute left-2 top-[5%] h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
-                                    <ModelUploadSidebar 
-                                        getComponents={() => viewerRef.current?.getComponents() || null}
-                                        onFilesChange={setUploadedFiles}
-                                        onSelectFile={setSelectedFile}
-                                        selectedFileId={selectedFile?.dbId || null}
-                                        loadedFiles={loadedFiles}
-                                        setLoadedFiles={setLoadedFiles}
-                                        onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
-                                        onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
-                                        onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
-                                        onExportModelFrag={async (modelId) => {
-                                            if (viewerRef.current) {
-                                                return viewerRef.current.exportModelFrag(modelId);
-                                            }
-                                            return null;
-                                        }}
-                                        onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
-                                        postType={postType}
-                                        setPostType={setPostType}
-                                    />
+                        <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
+                            <ModelUploadSidebar 
+                                getComponents={() => viewerRef.current?.getComponents() || null}
+                                onFilesChange={setUploadedFiles}
+                                onSelectFile={setSelectedFile}
+                                selectedFileId={selectedFile?.dbId || null}
+                                loadedFiles={loadedFiles}
+                                setLoadedFiles={setLoadedFiles}
+                                onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
+                                onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
+                                onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
+                                onExportModelFrag={async (modelId) => {
+                                    if (viewerRef.current) {
+                                        return viewerRef.current.exportModelFrag(modelId);
+                                    }
+                                    return null;
+                                }}
+                                onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
+                                postType={postType}
+                                setPostType={setPostType}
+                            />
                         </div>
                         {step === 2 && (
                             <div className='w-full h-full flex items-center justify-center text-white relative pointer-events-none'>
