@@ -59,19 +59,19 @@ NEXT_PUBLIC_S3_IMAGES_BUCKET="你的圖片Bucket名稱"
 ## 開發與維護避坑指南 (Gotchas)
 在接手或維護本專案時，請特別注意以下在不同作業系統與環境轉換時的常見問題：
 1. 檔案命名與 Linux 大小寫敏感
-`資料夾/檔案名稱：Windows/Mac 對大小寫不敏感，但 Linux 伺服器非常嚴格。引入元件時請確保路徑大小寫完全一致（例如 Navbar 與 navbar 的差異會導致 Build 失敗）。`
+> 資料夾/檔案名稱：Windows/Mac 對大小寫不敏感，但 Linux 伺服器非常嚴格。引入元件時請確保路徑大小寫完全一致（例如 Navbar 與 navbar 的差異會導致 Build 失敗）。
 
-`靜態資源 (Images/SVGs)：放在 public/ 內的圖片檔名嚴禁使用空白或特殊符號（如逗號）。請一律使用小寫中線命名（Kebab-case，例如 connect-more.svg），否則在正式環境會發生 404 找不到圖片的錯誤。`
+> 靜態資源 (Images/SVGs)：放在 public/ 內的圖片檔名嚴禁使用空白或特殊符號（如逗號）。請一律使用小寫中線命名（Kebab-case，例如 connect-more.svg），否則在正式環境會發生 404 找不到圖片的錯誤。
 
 2. PDF.js Web Worker 版本衝突
-`本專案依賴 @react-pdf-viewer，其底層 API 版本必須與 Web Worker 版本完全一致。`
+> 本專案依賴 @react-pdf-viewer，其底層 API 版本必須與 Web Worker 版本完全一致。
 
-`在 package.json 中，pdfjs-dist 的版本號已被鎖死（移除 ^ 符號）。請勿隨意更新此套件，以免引發 The API version does not match the Worker version 錯誤導致白畫面。`
+> 在 package.json 中，pdfjs-dist 的版本號已被鎖死（移除 ^ 符號）。請勿隨意更新此套件，以免引發 The API version does not match the Worker version 錯誤導致白畫面。
 
 3. 剪貼簿 API 與 HTTPS 安全限制
-`「複製分享連結」功能使用了 navigator.clipboard.writeText API，該 API 僅在 HTTPS 或 localhost 環境下生效。`
+> 「複製分享連結」功能使用了 navigator.clipboard.writeText API，該 API 僅在 HTTPS 或 localhost 環境下生效。
 
-`目前已實作降級備案（Fallback to document.execCommand）以支援 HTTP 開發環境。若正式上線，建議配置 SSL 憑證 (HTTPS)。`
+> 目前已實作降級備案（Fallback to document.execCommand）以支援 HTTP 開發環境。若正式上線，建議配置 SSL 憑證 (HTTPS)。
 
 4. 測試環境連線 (Tailscale)
-`開發與測試網址若使用內部 IP（如 100.x.x.x），請確認當前設備（含手機端測試）皆已連入公司的 Tailscale VPN，否則會出現 ERR_CONNECTION_TIMED_OUT。`
+> 開發與測試網址若使用內部 IP（如 100.x.x.x），請確認當前設備（含手機端測試）皆已連入公司的 Tailscale VPN，否則會出現 ERR_CONNECTION_TIMED_OUT。
