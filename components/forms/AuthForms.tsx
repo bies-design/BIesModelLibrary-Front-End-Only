@@ -203,7 +203,7 @@ return (
                     aria-label={isVisible ? "Hide password" : "Show password"}
                     className="focus:outline-none"
                 >
-                    {!isVisible ? <EyeOff className="size={20}" /> : <Eye className="size={20}" />}
+                    {!isVisible ? <EyeOff className="text-black dark:text-white" size={20} /> : <Eye className="text-black dark:text-white" size={20}/>}
                 </button>
                 ) : null
             }
