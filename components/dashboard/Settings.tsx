@@ -274,6 +274,7 @@ const Settings = (props: Props) => {
                             variant="flat"
                             isReadOnly
                             classNames={{
+                                label:"text-white",
                                 inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] hover:bg-default-100/50 transition-colors pr-1",
                             }}
                         />
@@ -311,6 +312,7 @@ const Settings = (props: Props) => {
                         }}
                         variant="flat"
                         classNames={{
+                            label:"text-white",
                             inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
@@ -335,6 +337,7 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
+                            label:"text-white",
                             inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-default-500",
                         }}
                     />
@@ -348,6 +351,7 @@ const Settings = (props: Props) => {
                         defaultValue={userData.email}
                         variant="flat"
                         classNames={{
+                            label:"text-white",
                             inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
@@ -381,6 +385,7 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
+                            label:"text-white",
                             inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
                         }}
                     />
