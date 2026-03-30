@@ -121,7 +121,7 @@ const Models = (props: Props) => {
     };
 
     return (
-        <div className="@container flex flex-col w-full h-full font-inter gap-4">
+        <div className="@container text-white flex flex-col w-full h-full font-inter gap-4">
             {/* 標題 */}
             <h1 className="text-3xl font-bold text-white">Models</h1>
 

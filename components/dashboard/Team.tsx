@@ -84,7 +84,7 @@ const Team = (props: Props) => {
     );
 
     return (
-        <div className='flex flex-col w-full h-full font-inter gap-4'>
+        <div className='flex text-white flex-col w-full h-full font-inter gap-4'>
             <h1 className="text-3xl font-bold text-white">Team Members</h1>
             <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-8'>
                 <div>

@@ -218,7 +218,7 @@ const Settings = (props: Props) => {
     
 
     return (
-        <div className='w-full h-full font-inter flex flex-col gap-6'>
+        <div className='w-full text-white h-full font-inter flex flex-col gap-6'>
             <input 
                 type="file" 
                 ref={fileInputRef} 

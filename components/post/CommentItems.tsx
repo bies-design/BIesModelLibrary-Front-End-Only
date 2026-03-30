@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { Avatar, Button } from '@heroui/react';
+import { Avatar, Button, addToast } from '@heroui/react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Edit2, Trash2, Check, X } from 'lucide-react';
 import { ReplyingToUser } from './CommentSection';
 import { updateComment, deleteComment } from '@/lib/actions/comment.action';
 
@@ -17,60 +17,132 @@ interface CommentItemProps {
 }
 
 export default function CommentItem({ comment, depth = 0, postAuthorId, onReplyClick, currentUserId, onRefresh }: CommentItemProps) {
-    
-    const [isEditing, setIsEditing] = useState(false);
     // 限制巢狀深度，避免 UI 縮進過頭（例如最多縮排 3 層，之後就不再縮排）
     const canIndent = depth < 3;
+
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editContent, setEditContent] = useState<string>(comment.content);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const isOwner = currentUserId === comment.user.id;
 
     const handleReply = () => {
         onReplyClick({
             parentCommentId: comment.id,
             userName: comment.user.userName,
         });
-    }
+    };
+
     const getImageUrl = (imageVal: string | null | undefined) => {
         if(!imageVal) return "";
         if(imageVal.startsWith("http")) return imageVal;
         return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
     };
+
     const commentData = {
         image:getImageUrl(comment.user.image),
-    }
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editContent.trim() || editContent === comment.content) {
+            setIsEditing(false);
+            return;
+        }
+        setIsLoading(true);
+        const res = await updateComment(comment.id, currentUserId!, editContent);
+        if (res.success) {
+            addToast({ description: "編輯成功", color: "success" });
+            setIsEditing(false);
+            onRefresh(); // 刷新畫面
+        } else {
+            addToast({ description: res.error || "編輯失敗", color: "danger" });
+        }
+        setIsLoading(false);
+    };
+
+    const handleDelete = async () => {
+        if (!confirm("確定要刪除這則留言嗎？(底下的回覆也會一併刪除!)")) return;
+        
+        setIsLoading(true);
+        const res = await deleteComment(comment.id, currentUserId!);
+        if (res.success) {
+            addToast({ description: "刪除成功", color: "success" });
+            onRefresh(); // 刷新畫面
+        } else {
+            addToast({ description: res.error || "刪除失敗", color: "danger" });
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <div className={`mt-6 ${canIndent && depth > 0 ? 'ml-10 border-l-2 border-[#3F3F46] pl-4' : ''}`}>
+        <div className={`mt-6 ${canIndent && depth > 0 ? 'ml-2 md:ml-10 border-l-2 border-[#3F3F46] pl-4' : ''}`}>
         <div className="flex gap-3">
             <Avatar 
                 src={commentData.image || ""} 
                 size="sm"
+                className='shrink-0'
                 showFallback
             />
             <div className="flex-1">
-            <div className="flex items-center gap-2">
+            <div className="relative flex items-center gap-2">
                 <span className="text-white text-sm font-medium">{comment.user.userName}</span>
                 {comment.user.id === postAuthorId && (
-                    <span className="bg-[#3F3F46] text-white text-[10px] px-1.5 py-0.5 rounded ml-2">Author</span>
+                    <span className="absolute top-10 -left-16 glass-panel text-white text-xs px-1.5 py-0.5 rounded-full ml-2">Author</span>
                 )}
                 <span className="text-[#A1A1AA] text-xs">
-                {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: zhTW })}
+                    {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: zhTW })}
                 </span>
-            </div>
-            <p className="text-zinc-300 text-sm mt-1 leading-relaxed">
-                {comment.parent?.user?.userName && (
-                    <span className='text-blue-400 mr-2 hover:underline cursor-pointer'>
-                        @{comment.parent.user.userName}
-                    </span>
+                {isOwner && !isEditing && (
+                    <div className="flex items-center gap-2 ml-auto">
+                        <button onClick={() => setIsEditing(true)} disabled={isLoading} className="text-[#A1A1AA] hover:text-white transition-colors">
+                            <Edit2 size={12} />
+                        </button>
+                        <button onClick={handleDelete} disabled={isLoading} className="text-[#A1A1AA] hover:text-red-500 transition-colors">
+                            <Trash2 size={12} />
+                        </button>
+                    </div>
                 )}
-                {comment.content}
-            </p>
+            </div>
+            {/* 根據 isEditing 狀態切換顯示文字或是輸入框 */}
+            {isEditing ? (
+                <div className="mt-2 flex flex-col md:flex-row gap-2">
+                    <input 
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        disabled={isLoading}
+                        className="flex-1 glass-panel px-2 py-1.5 text-white text-sm rounded-full outline-none focus:bg-white/20"
+                        autoFocus
+                    />
+                    <div className='flex gap-2 justify-end'>
+                        <button onClick={handleSaveEdit} disabled={isLoading} className="glass-panel rounded-full text-green-500 p-1.5 transition-colors hover:bg-white/30">
+                            <Check size={16} />
+                        </button>
+                        <button onClick={() => setIsEditing(false)} disabled={isLoading} className="glass-panel rounded-full text-red-500 p-1.5 transition-colors hover:bg-white/30">
+                            <X size={14} />
+                        </button>
+                    </div>
+                    
+                </div>
+            ) : (
+                <p className="text-zinc-300 text-sm mt-1 leading-relaxed break-all">
+                    {comment.parent?.user?.userName && (
+                        <span className='text-blue-400 mr-2 hover:underline cursor-pointer'>
+                            @{comment.parent.user.userName}
+                        </span>
+                    )}
+                    {comment.content}
+                </p>
+            )}
             
-            {/* 回覆按鈕 */}
-            <button 
-                onClick={handleReply}
-                className="flex items-center gap-1 text-[#A1A1AA] text-xs mt-2 hover:text-white transition-colors"
-            >
-                <MessageSquare size={14} /> Reply
-            </button>
-
+            {/* 回覆按鈕 (編輯模式下隱藏) */}
+            {!isEditing && (
+                <button 
+                    onClick={handleReply}
+                    className="flex items-center gap-1 text-[#A1A1AA] text-xs mt-2 hover:text-white transition-colors"
+                >
+                    <MessageSquare size={14} /> Reply
+                </button>
+            )}
             {/* 如果點擊了 Reply，這裡可以塞入我們之前的 CommentInput (傳入 parentId) */}
             {/* {showReplyInput && <CommentInput postId={comment.postId} parentId={comment.id} ... />} */}
             </div>

@@ -167,7 +167,7 @@ export default function ActionButtons({ post }: { post: any }) {
             {isOwner && (
                 <button 
                     onClick={onDeleteOpen} 
-                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition mt-4 border border-red-500/20"
+                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition"
                 >
                     <Trash2 size={18} /> Delete Post
                 </button>
