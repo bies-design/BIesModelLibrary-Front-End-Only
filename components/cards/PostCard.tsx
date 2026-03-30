@@ -62,7 +62,7 @@ const PostCard = ({
 
   return (
     <Tooltip content={title} placement='bottom'>
-      <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px]`}>
+      <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px] `}>
         <Card className="w-full h-full flex-col pb-4 pt-4 pl-4 pr-4 bg-[#FFFFF4] dark:bg-[#3F3F46] shadow-[4px_4px_3px_rgba(0,0,0,0.5),inset_0px_5px_0px_rgba(255,255,255,1)] dark:shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
           <CardBody 
             className="py-0 px-0 rounded-[20px] relative items-center w-full shadow-[0px_3px_5px_1px_rgba(255,255,255,0.16),0px_-2px_2.5px_rgba(0,0,0,0.25)]">
@@ -83,13 +83,13 @@ const PostCard = ({
               </div>
               {/* 右上角的懸浮小圖示 到時候需要一個boolean來判斷是否顯示*/}
               {(type === '3D' )?(
-                <div className="bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
+                <div className="text-black dark:text-white bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
                   <Rotate3D
                     width={16}
                     height={16}
                   />
                 </div>):(
-                <div className="bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
+                <div className="text-black dark:text-white bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
                   <File
                     width={16}
                     height={16}
@@ -141,8 +141,9 @@ const PostCard = ({
                     active:shadow-sm'>
                   <Star
                     fill={isCollected ? 'url(#star-gradient)' : 'none'}
-                    stroke={isCollected ? 'none' : '#A1A1AA'}
+                    stroke={isCollected ? 'none' : 'currentColor'}
                     size={18}
+                    className='text-black dark:text-white'
                   />
                 </button>
               </Tooltip>

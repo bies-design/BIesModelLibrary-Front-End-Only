@@ -70,7 +70,7 @@ const Home = () => {
   }, [isIntersecting, hasMore, isLoading, page]);
 
   return (
-    <div className='flex flex-col min-h-screen pt-20'>
+    <div className='flex flex-col min-h-screen pt-20 text-white'>
       <div className='flex-1 w-full flex flex-col items-center'>
         <div className="flex flex-col items-center  gap-8">
           <Image 
@@ -180,8 +180,8 @@ const Home = () => {
               })}
           </div>
           {/* Newest Hottest query buttoms */}
-            <div className='flex justify-start w-[95%]'>
-              <div className='flex px-[8px] py-[8px] gap-[16px] h-[60px] rounded-lg border-1.5 '>
+            <div className='flex justify-start text-white w-[95%]'>
+              <div className='flex px-[8px] py-[8px] gap-[16px] h-[60px] rounded-lg border-1.5 border-white '>
                 <button key="Newest" onClick={()=>{setIsQueryArrange("Newest")}} 
                   className={`hover-lift px-[16px] py-[8px] rounded-lg text-sm hover:cursor-pointer ${isQueryArrange === "Newest" ? "bg-primary":""}`}><p>Newest</p></button>
                 <button key="Hottest" onClick={()=>{setIsQueryArrange("Hottest")}} 
