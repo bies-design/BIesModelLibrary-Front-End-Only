@@ -250,7 +250,13 @@ const Settings = (props: Props) => {
                             isLoading={isUploadingAvatar}
                             onPress={() => fileInputRef.current?.click()}
                             className="ml-auto hover-lift bg-[#3F3F46] hover:bg-default-200 text-default-600 shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
-                            startContent={!isUploadingAvatar && <Upload size={16} />}
+                            startContent={
+                                !isUploadingAvatar && (
+                                    <span className='hidden md:block'>
+                                        <Upload size={16} />
+                                    </span>
+                                )
+                            }
                         >
                             Upload a new icon
                         </Button>
@@ -348,7 +354,7 @@ const Settings = (props: Props) => {
                 </div>
 
                 {/* --- Row 3 Right: Email Actions --- */}
-                <div className="flex items-end gap-3">
+                <div className="flex flex-col items-stretch md:flex-row md:items-end gap-3">
                     <Button 
                         className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
@@ -381,10 +387,10 @@ const Settings = (props: Props) => {
                 </div>
 
                 {/* --- Row 4 Right: Password Actions --- */}
-                <div className="flex items-end">
+                <div className="flex md:items-end">
                     <Button 
                         onPress={onOpen}
-                        className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 justify-start px-4 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                        className="bg-[#3F3F46] w-full md:w-max hover:bg-default-200 text-default-600 border border-default-200/50 px-4 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
                         startContent={<PenLine size={16} />}
                     >

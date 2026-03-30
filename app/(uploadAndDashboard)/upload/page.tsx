@@ -9,7 +9,7 @@ import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
 import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { Loader2,Menu,X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2,Menu,X } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
 import { createPdfRecord } from '@/lib/actions/pdf.action';
 import { createPost } from '@/lib/actions/post.action';
@@ -258,22 +258,22 @@ const Upload = () => {
         {/* {IFCProcessingStatus.isIFCProcessing && ( */}
             
         <div className='flex w-full h-screen gap-4 p-2 relative overflow-hidden'>
-
-            <button 
-                onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
-                className="md:hidden absolute bottom-5 left-5 z-50 p-2 rounded-lg text-white bg-[#3F3F46] transition-all duration-300 shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] transition-transform active:scale-95"
-            >
-                {isMobileStepNavOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
             {/* 左側步驟導覽列 */}
             <div className={`
-                z-40 overflow-hidden rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
+                z-60 rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
                 /* 📱 手機版設定：絕對定位、根據狀態滑出或隱藏 */
-                absolute top-[5%] left-2 h-[90%] w-[250px] 
-                ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-[120%]"}
+                absolute top-0 left-0 h-[100%] w-[250px]
+                ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-full"}
                 /* 💻 電腦版設定 (md 以上)：恢復相對定位，取消隱藏，乖乖待在左邊 */
-                md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0
+                md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0 overflow-visible
             `}>
+                <button 
+                    onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
+                    className="md:hidden py-2 absolute top-1/2 -translate-y-1/2 rounded-r-lg text-white bg-[#3F3F46] transition-all duration-300 shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]
+                    active:scale-95 left-[104%] -ml-[5px] z-10"
+                >
+                    {isMobileStepNavOpen ? <ChevronLeft size={24}/> : <ChevronRight size={24} />}
+                </button>
                 <SidebarBlobs/>
                 {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
                 <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
