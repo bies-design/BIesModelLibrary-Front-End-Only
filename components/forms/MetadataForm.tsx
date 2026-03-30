@@ -376,7 +376,7 @@ const MetadataForm = ({
                   <Image src={img.preview} alt={`Upload ${index}`} fill className="object-cover" unoptimized />
                   <button 
                     onClick={(e) => handleRemoveImage(index, e)}
-                    className="absolute top-1 right-1 bg-black/60 hover:bg-red-500 text-white p-1 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-0 right-0 md:top-1 md:right-1 bg-red-500 md:hover:bg-red-500 text-white p-2 md:p-1 rounded-md md:rounded-full transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
                   >
                     <X size={12} />
                   </button>

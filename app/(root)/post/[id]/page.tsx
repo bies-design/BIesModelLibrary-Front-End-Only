@@ -58,8 +58,8 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                         </div>
                     </div>
 
-                    {/* 3. 留言區塊 (Comments) - 預留位 */}
-                    <CommentSection/>
+                    {/* 3. 留言區塊 (Comments)*/}
+                    <CommentSection postId={post.id} postShortId={post.shortId} postAuthorId={post.uploaderId}/>
                     {/* 4.關聯模型區塊 */}
                     <div className="mt-8 pt-8">
                         <h2 className="flex items-center gap-3 text-xl text-white mb-6">
