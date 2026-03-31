@@ -6,12 +6,19 @@ import {
 } from 'lucide-react';
 import { Select,SelectItem } from '@heroui/react';
 import { getPostsByScroll } from '@/lib/actions/post.action';
+import { getUserTeams } from '@/lib/actions/team.action';
 import { useNativeInView } from '@/hooks/useIntersectionObserver';
 import PostCard from '../cards/PostCard';
-
+import { useParams } from 'next/navigation';
 type Props = {};
 
 const Models = (props: Props) => {
+    const params = useParams();
+    const userId = params.id as string;
+
+    const [userTeams, setUserTeams] = useState<any[]>([]);
+    const [selectedTeamId, setSelectedTeamId] = useState<string>("");
+
     const [activeTab, setActiveTab] = useState<string>('Personal');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -31,7 +38,7 @@ const Models = (props: Props) => {
     const isFetchingRef = useRef(false);
     const activeTabRef = useRef(activeTab);
     
-    const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string,currentSearch: string = searchQuery,currentCategory: string = category, currentSort:string = isQueryArrange) => {
+    const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string,currentSearch: string = searchQuery,currentCategory: string = category, currentSort:string = isQueryArrange, currentTeamId:string = selectedTeamId) => {
         // 鎖定防護：如果正在抓取，直接阻擋
         if (!isReset && isFetchingRef.current) return;
         
@@ -48,9 +55,7 @@ const Models = (props: Props) => {
         try {
             const currentScope = activeTab.toUpperCase() as "PERSONAL" | "TEAM" | "COLLECTION";
             // 這裡將 activeTab 當作分類參數傳入，並預設以 Newest 排序
-            const result = await getPostsByScroll(currentPage, 9, currentCategory, currentSort, currentSearch, currentScope);
-            
-            if(currentScope === "TEAM") console.log()
+            const result = await getPostsByScroll(currentPage, 9, currentCategory, currentSort, currentSearch, currentScope, currentTeamId);
             // 資料回來後，檢查使用者是不是還停在這個 Tab！
             if(activeTabRef.current === targetTab){
                 if (result.success && result.data) {
@@ -75,10 +80,27 @@ const Models = (props: Props) => {
     };
 
     useEffect(() => {
+        const fetchTeams = async () => {
+            if (userId) {
+                const result = await getUserTeams(userId);
+                if (result.success && result.data) {
+                    setUserTeams(result.data);
+                }
+            }
+        };
+
+        // 只有切換到 Team 分頁，且還沒抓過資料時才發 API
+        if (activeTab === 'Team' && userTeams.length === 0) {
+            fetchTeams();
+        }
+    }, [activeTab, userId]); // 依賴 activeTab 和 userId
+
+    useEffect(() => {
         activeTabRef.current = activeTab;
         setCategory("ALL");
         setInputValue("");
         setIsQueryArrange("Newest");
+        setSelectedTeamId("");
     }, [activeTab]);
 
     useEffect(() => {
@@ -93,8 +115,8 @@ const Models = (props: Props) => {
     useEffect(() => {
         setPage(1);
         setHasMore(true);
-        fetchModels(1, true, activeTab, searchQuery, category, isQueryArrange);
-    }, [activeTab, category, searchQuery, isQueryArrange]);
+        fetchModels(1, true, activeTab, searchQuery, category, isQueryArrange, selectedTeamId);
+    }, [activeTab, category, searchQuery, isQueryArrange, selectedTeamId]);
 
     // 監聽下滑到底部，觸發載入下一頁
     useEffect(() => {
@@ -102,9 +124,9 @@ const Models = (props: Props) => {
         if (isIntersecting && hasMore && !isFetchingRef.current) {
             const nextPage = page + 1;
             setPage(nextPage);
-            fetchModels(nextPage, false, activeTab, searchQuery, category, isQueryArrange);
+            fetchModels(nextPage, false, activeTab, searchQuery, category, isQueryArrange, selectedTeamId);
         }
-    }, [isIntersecting, hasMore, page, activeTab, searchQuery, category, isQueryArrange]);
+    }, [isIntersecting, hasMore, page, activeTab, searchQuery, category, isQueryArrange, selectedTeamId]);
 
     const handleCollectionToggle = (postId: string, newStatus: boolean) => {
         if (activeTab === 'Collection' && !newStatus) {
@@ -154,7 +176,33 @@ const Models = (props: Props) => {
                         className="w-full h-10 rounded-xl pl-9 pr-4 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm"
                     />
                 </div>
-
+                {activeTab === 'Team' && (
+                    <Select 
+                        aria-label="Choose a team: " 
+                        placeholder="Select a team"
+                        className="max-w-xs h-10"
+                        classNames={{
+                            trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
+                            listbox: "bg-[#27272A]", // 下拉選單整體的背景
+                            popoverContent: "bg-[#27272A] border-1 border-white/10", 
+                        }}
+                        selectedKeys={[selectedTeamId]}
+                        onChange={(e) => {
+                            const newTeamId = e.target.value;
+                            setSelectedTeamId(newTeamId || "");
+                        }}
+                    >
+                        {[
+                            { id: "", name: "All" }, 
+                            ...userTeams
+                        ].map((team) => (
+                            <SelectItem key={team.id} className="text-white">
+                                {team.name}
+                            </SelectItem>
+                        ))}
+                    </Select>
+                )}
+                
                 <Select 
                     aria-label="Choose a category : " 
                     placeholder="Select a category"

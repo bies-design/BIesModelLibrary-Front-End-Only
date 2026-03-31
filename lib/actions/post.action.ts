@@ -35,33 +35,37 @@ export async function createPost(params: CreatePostParams) {
         modelIds = [], 
         pdfIds = [] 
     } = params;
+    const isTeamPost = metadata.team && metadata.team !== "none" && metadata.team.trim() !== "";
     try {
+        // 🚀 1. 準備基礎資料 (不包含關聯物件)
+        const data: any = {
+            shortId: shortId,
+            title: params.metadata.title,
+            category: params.metadata.category,
+            description: params.metadata.description,
+            type: postType,
+            keywords: params.metadata.keywords,
+            coverImage: params.coverImageKey!,
+            images: params.imageKeys,
+            uploaderId: session.user.id,
+            relatedPosts: params.metadata.relatedPosts.map(post => post.id),
+            permission: params.metadata.permission,
+            models: {
+                connect: modelIds.map(id => ({ id }))
+            },
+            pdfIds: {
+                connect: pdfIds.map(id => ({ id }))
+            },
+        };
+
+        // 🚀 2. 只有在確定有團隊時，才把 team 物件塞進去
+        if (isTeamPost) {
+            data.teamId = metadata.team;
+        }
+
         // 寫入 PostgreSQL
         const newPost = await prisma.post.create({
-            data: {
-                shortId: shortId,
-                title: params.metadata.title,
-                category: params.metadata.category,
-                description: params.metadata.description,
-                type:postType,
-                keywords: params.metadata.keywords,            
-                coverImage: params.coverImageKey!,
-                images: params.imageKeys,
-                
-                models:{
-                    connect: modelIds.map(id => ({ id }))
-                },
-                pdfIds:{
-                    connect: pdfIds.map(id => ({id}))
-                },
-                uploaderId: session.user.id,
-                
-                relatedPosts: params.metadata.relatedPosts.map(post => post.id),
-                permission: params.metadata.permission,
-                teamId: (!params.metadata.team || params.metadata.team === "none" || params.metadata.team.trim() === "")
-                        ? null
-                        : params.metadata.team,
-            },
+            data: data
         });
 
         return { success: true, postId: newPost.id };
@@ -79,7 +83,8 @@ export const getPostsByScroll = async (
     category: string = "ALL",
     sortBy: string = "Newest",
     search: string = "",
-    scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" = "ALL"
+    scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" = "ALL",
+    teamId: string = ""
 ) => {
     try {
         const session = await auth();
@@ -116,16 +121,47 @@ export const getPostsByScroll = async (
                     break;
                 
                 case "TEAM":
-                    const userTeams = session.user.team || [];
+                    if (teamId !== "") {
+                        // 🚀 狀況 A：使用者有選定特定的 Team (teamId 不是空字串)
+                        
+                        // 安全防護：去資料庫確認該使用者是否真的在這個團隊裡
+                        // 這裡假設你有 TeamMember 這個 model 來記錄關聯
+                        const isMember = await prisma.teamMember.findFirst({
+                            where: { teamId: teamId, userId: session.user.id }
+                        });
 
-                    if(userTeams.length === 0){
-                        return{
-                            success: true, 
-                            data: [], 
-                            hasMore: false
+                        if (!isMember) {
+                            // 如果他亂塞別人的 teamId，直接擋掉
+                            return { success: false, error: "無權限查看此團隊或團隊不存在" };
                         }
+
+                        // 確認有權限後，指定過濾條件
+                        // ⚠️ 備註：請確認你 Post 資料表裡紀錄團隊的欄位是 teamId 還是 team
+                        whereCondition.teamId = teamId; 
+
+                    } else {
+                        // 🚀 狀況 B：使用者選了 "None" (空字串)，代表要看「他所屬的所有團隊」的貼文
+                        
+                        // 因為 session 沒有 team 資訊，我們去資料庫查他加入了哪些團隊
+                        const userTeamRecords = await prisma.teamMember.findMany({
+                            where: { userId: session.user.id },
+                            select: { teamId: true }
+                        });
+
+                        const userTeamIds = userTeamRecords.map(record => record.teamId);
+
+                        if (userTeamIds.length === 0) {
+                            // 如果他根本沒加入任何團隊，直接回傳空陣列
+                            return { 
+                                success: true, 
+                                data: [], 
+                                hasMore: false 
+                            };
+                        }
+
+                        // 找出屬於他加入的「任何一個團隊」的貼文
+                        whereCondition.teamId = { in: userTeamIds };
                     }
-                    whereCondition.team = { in: userTeams };
                     break;
                 
                 case "COLLECTION":
@@ -168,33 +204,6 @@ export const getPostsByScroll = async (
             },
         });
 
-        // // 將資料庫撈出來的 coverImage (Object Key) 轉換成 MinIO Presigned URL
-        // const postsWithSignedUrls = await Promise.all(
-        //     posts.map(async (post) => {
-        //         let signedCoverImage = post.coverImage;
-                
-        //         // 如果該筆資料有 coverImage，就向 MinIO 請求簽名網址
-        //         if (post.coverImage) {
-        //             try {
-                        
-        //                 const command = new GetObjectCommand({
-        //                     Bucket: "images", // 依照你錯誤訊息顯示的 Bucket 名稱
-        //                     Key: post.coverImage,
-        //                 });
-        //                 // 產生 1 小時 (3600 秒) 有效的臨時公開網址
-        //                 signedCoverImage = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-        //             } catch (signError) {
-        //                 console.error(`Failed to sign URL for image ${post.coverImage}:`, signError);
-        //                 // 若簽名失敗，保留原本的值或可在此處替換為預設的 Placeholder 圖片路徑
-        //             }
-        //         }
-
-        //         return {
-        //             ...post,
-        //             coverImage: signedCoverImage // 替換為可直接讀取的完整 URL
-        //         };
-        //     })
-        // );
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
         const postWithPublicUrls = posts.map((post) => {

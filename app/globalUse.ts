@@ -41,6 +41,6 @@ export const card : cardProps[] = [
 
 export const DashboardButtons = [
     {id:"Settings",label:"Settings",icon:Settings},
-    {id:"Team",label:"Team",icon:Users},
+    {id:"Teams",label:"Teams",icon:Users},
     {id:"Models",label:"Models",icon:FileBox},
 ]

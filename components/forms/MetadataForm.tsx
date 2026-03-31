@@ -6,8 +6,10 @@ import { Info, HelpCircle, FileUp, Inbox, X } from 'lucide-react';
 import Cropper from 'react-easy-crop'
 import getCroppedImg from '@/utils/cropImage';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import RelatedPostsModal from '../modals/RelatedPostModal';
 import { SelectedPost } from '../modals/RelatedPostModal';
+import { getUserTeams } from '@/lib/actions/team.action';
 
 export interface ImageFile {
   file: File;      // 原始檔案 (上傳用)
@@ -42,6 +44,8 @@ const MetadataForm = ({
   onMetadataChange 
 }: MetadataFormProps) => {
 
+  const { data: session } = useSession();
+  const [uploadableTeams, setUploadableTeams] = useState<any[]>([]);  
   // 控制 Keywords 輸入框的暫存文字
   const [keywordInput, setKeywordInput] = useState("");
   // --- 裁切相關 State ---
@@ -64,6 +68,27 @@ const MetadataForm = ({
     });
     console.log("準備存入資料庫的關聯 ID:", selectedPosts);
   };
+
+  useEffect(() => {
+    const fetchUploadableTeams = async () => {
+      if (session?.user?.id) {
+        const result = await getUserTeams(session.user.id);
+        
+        if (result.success && result.data) {
+          // 🚀 過濾權限：只保留 role 是 OWNER, ADMIN, 或 EDITOR 的團隊 (排除 VIEWER)
+          // ⚠️ 注意：這裡假設 getUserTeams 回傳的資料結構中包含該使用者在該團隊的 role 屬性
+          // 如果你的回傳結構不同，請根據實際的欄位名稱調整 (例如: team.role 或 team.TeamMember.role)
+          const validTeams = result.data.filter((team: any) => 
+            team.role !== "VIEWER" 
+          );
+          
+          setUploadableTeams(validTeams);
+        }
+      }
+    };
+
+    fetchUploadableTeams();
+  }, [session?.user?.id]);
 
   // 當元件卸載或圖片被移除時，釋放記憶體
   useEffect(() => {
@@ -489,7 +514,14 @@ const MetadataForm = ({
               trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
             }}
           >
-            <SelectItem key="none">None</SelectItem>
+            {[
+              { id: "none", name: "None" },
+              ...uploadableTeams
+            ].map((team) => (
+              <SelectItem key={team.id} className="text-white">
+                {team.name}
+              </SelectItem>
+            ))}
           </Select>
         </div>
       </div>

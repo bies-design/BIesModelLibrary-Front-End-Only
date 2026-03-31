@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SidebarDashboard from '@/components/sidebar/SidebarDashboard';
 import SidebarBlobs from '@/components/blobs/SidebarBlobs';
 import Settings from '@/components/dashboard/Settings';
-import Team from '@/components/dashboard/Team';
+import Teams from '@/components/dashboard/Teams';
 import Models from '@/components/dashboard/Models';
 import { Menu, X ,ChevronLeft, ChevronRight} from 'lucide-react'; // 記得引入圖示！
 
@@ -14,8 +14,6 @@ const Dashboard = () => {
 
     const handleOnSelect = (value: string) => {
         setSelected(value);
-        // UX 優化：在手機版點擊選項後，自動把側邊欄收起來
-        setIsMobileMenuOpen(false);
     };
 
     return (
@@ -53,7 +51,7 @@ const Dashboard = () => {
                 {/* 右側主要內容區域 */}
                 <div className='grow rounded-lg overflow-hidden p-8 shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]'>
                     {selected === "Settings" && <Settings/>}
-                    {selected === "Team" && <Team/>}
+                    {selected === "Teams" && <Teams/>}
                     {selected === "Models" && <Models/>}
                 </div>
             </div>

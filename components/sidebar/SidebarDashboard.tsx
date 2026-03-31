@@ -1,8 +1,6 @@
 'use client'
 import React from 'react';
 import { Avatar } from "@heroui/react";
-// import StepItem from "./StepItem"; // 如果分開寫的話
-import { Link } from '@heroui/react';
 import { MoveRight,MoveLeft ,DoorOpen} from 'lucide-react';
 import Image from 'next/image';
 import DashboardButton from '../buttons/DashboardButton';
@@ -24,6 +22,8 @@ const SidebarDashboard = ({ currentSelect, onSelect }: SidebarDashboardProps) =>
     const userImage = getImageUrl(session?.user.image);
 
     const router = useRouter();
+
+
     return (
         <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className=" px-5 py-10 flex flex-col justify-between h-full">
             <div className='flex flex-col items-center gap-5'>
