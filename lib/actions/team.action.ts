@@ -7,9 +7,9 @@ import { revalidatePath } from "next/cache";
 /**
  * 建立一個新團隊，並自動將建立者設為 OWNER
  */
-export async function createTeam(teamName: string, userId: string) {
+export async function createTeam(teamData: {name:string, description?:string, color?: string, avatar?: string }, userId: string) {
     try {
-        if (!teamName.trim()) {
+        if (!teamData.name.trim()) {
             return { success: false, error: "團隊名稱不可為空" };
         }
 
@@ -18,8 +18,10 @@ export async function createTeam(teamName: string, userId: string) {
             // 1. 建立 Team 本體
             const team = await tx.team.create({
                 data: {
-                    name: teamName.trim(),
-                    // 如果你的 Team schema 有設定 creatorId 或其他必填欄位，請在這裡補上
+                    name: teamData.name.trim(),
+                    description: teamData.description,
+                    color: teamData.color,
+                    avatar: teamData.avatar
                 }
             });
 

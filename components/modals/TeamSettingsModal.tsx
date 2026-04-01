@@ -7,12 +7,16 @@ import { getAvatarUploadUrl } from '@/lib/actions/user.action';
 interface Props {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
-    teamData: { id: string; name: string; description: string; color: string; avatar: string };
-    onUpdate: (data: any) => Promise<void>;
+    teamData?: { id: string; name: string; description: string; color: string; avatar: string };
+    onSubmit: (data: any) => Promise<void>; 
+    mode?: 'edit' | 'create';
 }
 
-const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onUpdate }: Props) => {
-    const [formData, setFormData] = useState({ ...teamData });
+const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'edit' }: Props) => {
+    // create 模式，給予一個預設的乾淨狀態
+    const defaultData = { id: "", name: "", description: "", color: "", avatar: "" };
+    
+    const [formData, setFormData] = useState(teamData || defaultData);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +24,10 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onUpdate }: Props) 
 
     // 當 teamData 改變時同步更新內部 state
     useEffect(() => {
-        setFormData({ ...teamData });
+        if (isOpen) {
+            // 每次打開時，如果是編輯模式就帶入資料，如果是建立模式就給乾淨的預設值
+            setFormData(teamData || defaultData);
+        }
     }, [teamData, isOpen]);
 
     const getImageUrl = (imageVal: string | null | undefined) => {
@@ -69,11 +76,20 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onUpdate }: Props) 
     }
 
     const handleSave = async () => {
+        
+        if (!formData.name.trim()) {
+            addToast({ description: "Team name is required.", color: "warning" });
+            return;
+        }
+
         setIsSubmitting(true);
-        await onUpdate(formData);
+        await onSubmit(formData);
         setIsSubmitting(false);
         onOpenChange(false);
     };
+
+    const titleText = mode === 'create' ? "Create New Team" : "Team Settings";
+    const buttonText = mode === 'create' ? "Create Team" : "Save Changes";
 
     return (
         <Modal 
@@ -86,7 +102,7 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onUpdate }: Props) 
             }}
         >
             <ModalContent>
-                <ModalHeader>Team Settings</ModalHeader>
+                <ModalHeader>{titleText}</ModalHeader>
                 <ModalBody className="space-y-4">
                     <input 
                         type="file" 
@@ -161,7 +177,7 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onUpdate }: Props) 
                         isLoading={isSubmitting} 
                         onPress={handleSave}
                     >
-                        Save Changes
+                        {buttonText}
                     </Button>
                 </ModalFooter>
             </ModalContent>

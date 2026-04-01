@@ -203,6 +203,7 @@ export const getPostsByScroll = async (
                 type: true,   
                 team:{
                     select:{
+                        name: true,
                         color: true
                     }
                 }    

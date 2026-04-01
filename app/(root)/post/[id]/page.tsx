@@ -78,6 +78,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                                         title={relPost.title}
                                         isCollectedInitial={relPost.isCollected}
                                         teamColor={relPost.team?.color}
+                                        teamName={relPost.team?.name}
                                     />
                                 ))
                             ):(

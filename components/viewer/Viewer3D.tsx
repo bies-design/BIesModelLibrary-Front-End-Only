@@ -334,7 +334,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
                         // ifcLoader.cleanUp();
 
                         // await ifcLoader.load(unit8Array,true,modelId);
-                        console.log(`[Viewer3D] 收到 IFC 檔案 ${fileItem.name}，跳過前端載入，等待後端轉檔為 FRAG。`);
+                        console.log(`[Viewer3D] 收到 IFC 檔案 ${fileItem.name}，跳過前端載入，等待後端轉檔。`);
                     } 
                     else if (extension === 'frag') {
                         await fragments.core.load(buffer, { modelId });

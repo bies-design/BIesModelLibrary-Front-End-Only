@@ -18,6 +18,7 @@ interface PostCardProps {
   isCollectedInitial?:boolean;
   onCollectionToggle?: (id: string, newIsCollected: boolean) => void;
   teamColor?: string | null;
+  teamName:string;
 }
 // 將父層傳入的參數解構出 selectedCategory
 const PostCard = ({
@@ -29,7 +30,8 @@ const PostCard = ({
   clickable = true,
   isCollectedInitial = false,
   onCollectionToggle,
-  teamColor = null
+  teamColor = null,
+  teamName
 }:PostCardProps) => {
   // const minioUrl =`${process.env.NEXT_PUBLIC_S3_ENDPOINT}/images`;
   // const imageUrl = `${minioUrl}/${coverImage}`;
@@ -84,10 +86,18 @@ const PostCard = ({
               <div className="absolute rounded-[20px] pointer-events-none z-10 inset-0">
               </div>
               {teamColor && teamColor !== "" && 
+              
                 <div 
-                    className="absolute top-6 left-4 w-4 h-4 rounded-full z-20 border border-white/20 shadow-md"
-                    style={{ backgroundColor: teamColor }}
-                />
+                  className="absolute top-4 left-2 p-2 z-30 cursor-help" // 增加 padding 讓感應區變大
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Tooltip content={teamName} placement="bottom" className='text-white!'>
+                    <div
+                      className="w-4 h-4 rounded-full border border-white/20 shadow-md"
+                      style={{ backgroundColor: teamColor }}
+                    />
+                  </Tooltip>
+                </div>
               }
               {/* 右上角的懸浮小圖示 到時候需要一個boolean來判斷是否顯示*/}
               {(type === '3D' )?(

@@ -253,6 +253,7 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedPosts, onConfi
                                         clickable={false}
                                         isCollectedInitial={post.isCollected}
                                         teamColor={post.team?.color}
+                                        teamName={post.team?.name}
                                     />
                                 </div>
                             ))}
