@@ -7,7 +7,8 @@ import {
 import { Settings, Trash2, Users, Loader2, CirclePlus, Search, Check, Filter, ArrowUpDown, Edit2, Layers, Copy, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createTeam, getTeamMembers, searchUsersForTeam, addMemberToTeam, updateTeamMemberRole, removeTeamMember, leaveTeam, deleteTeam } from '@/lib/actions/team.action';
+import { createTeam, getTeamDetails, getTeamMembers, searchUsersForTeam, addMemberToTeam, updateTeamMemberRole, removeTeamMember, leaveTeam, deleteTeam, updateTeamSettings } from '@/lib/actions/team.action';
+import TeamSettingsModal from '../modals/TeamSettingsModal';
 
 // 定義團隊成員的資料型別
 type TeamMember = {
@@ -26,6 +27,9 @@ const Teams = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentTeamId = searchParams.get('teamId');
+    const [teamDetails, setTeamDetails] = useState<any>(null);
+    //settings modal
+    const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onOpenChange: onSettingsChange } = useDisclosure();    
     //add member modal
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     // 狀態：Modal 內的輸入框內容與載入狀態
@@ -61,29 +65,36 @@ const Teams = () => {
         const result = await getTeamMembers(teamId);
         if (result.success && result.data) {
             setMembers(result.data);
-            if(result.data.length > 0 && result.data[0].teamName){
-                setTeamName(result.data[0].teamName);
-            }else{
-                setTeamName("");
-            }
         } else {
-            setTeamName("");
             addToast({ description: result.error || "讀取失敗", color: "danger" });
         }
         setIsLoadingMembers(false);
     };
+    const loadTeamDetails = async (teamId:string) => {
+        if (!session?.user?.id) return;
+        const result = await getTeamDetails(teamId, session.user.id);
+        if (result.success && result.data) {
+            setTeamDetails(result.data);
+            setTeamName(result.data.name);
+        } else {
+            setTeamDetails(null);
+            addToast({ description: "無法載入團隊詳細資料", color: "danger" });
+        }
+    };
 
     useEffect(() => {
-        
         if (currentTeamId) {
             setTeamName("");
             setMembers([]);
+            setTeamDetails(null);
             loadMembers(currentTeamId);
+            loadTeamDetails(currentTeamId);
         }else {
             setTeamName("");
             setMembers([]);
+            setTeamDetails(null);
         }
-    }, [currentTeamId]);
+    }, [currentTeamId, session?.user.id]);
 
     const handleCreateTeam = async () => {
         if (!session?.user?.id) {
@@ -112,6 +123,20 @@ const Teams = () => {
             addToast({ description: "發生未知錯誤，請稍後再試", color: "danger" });
         } finally {
             setIsCreatingTeam(false);
+        }
+    };
+    const handleUpdateTeam = async(updatedData: any) => {
+        if (!currentTeamId || !session?.user?.id) return;
+        
+        // 這裡如果你有實作圖片上傳 MinIO 的話，要在這之前先把圖片上傳拿到 Key
+        const result = await updateTeamSettings(currentTeamId, session.user.id, updatedData);
+        
+        if (result.success) {
+            addToast({ description: "團隊設定已更新", color: "success" });
+            loadMembers(currentTeamId); // 重新載入以獲取最新名稱/頭像
+            loadTeamDetails(currentTeamId);
+        } else {
+            addToast({ description: result.error, color: "danger" });
         }
     };
     // --- 資料處理邏輯 ---
@@ -465,7 +490,14 @@ const Teams = () => {
     // 狀況 3：有 teamId，且 API 載入完成，且有 teamName -> 顯示團隊管理介面
     return (
         <div className='flex text-white flex-col w-full h-full font-inter gap-4'>
-            <div className='flex gap-2'>
+            <div className='flex items-center gap-2'>
+                <Avatar
+                    src={getImageUrl(teamDetails.avatar)}
+                    name={teamDetails.name}
+                    size='md'
+                    className='hidden md:block'
+                    showFallback
+                />
                 <h1 className="text-3xl font-bold text-white">{teamName} Team Members</h1>
                 <Dropdown classNames={{ content: "bg-[#27272A] border border-[#3F3F46] min-w-[200px]" }}>
                     <DropdownTrigger>
@@ -474,6 +506,14 @@ const Teams = () => {
                         </button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Team Actions" itemClasses={{ base: "text-gray-300" }}>
+                         {/* 團隊設定 (OWNER and ADMIN) */}
+                        <DropdownItem 
+                            key="teamSettings" 
+                            className={`${hasEditPermission ? 'block' : 'hidden'} text-white! data-[hover=true]:text-danger data-[hover=true]:bg-danger/10`}
+                            onPress={onSettingsOpen}
+                        >
+                            Team Settings
+                        </DropdownItem>
                         {/* 離開團隊 (所有人可見) */}
                         <DropdownItem 
                             key="leave" 
@@ -498,6 +538,15 @@ const Teams = () => {
                 </Dropdown>
             </div>
             {/* 上半部：輸入與操作 */}
+            <div className='ml-2 md:ml-16 flex gap-2 items-center'>
+                {teamDetails.color && teamDetails.color !== "" &&
+                    <span 
+                        className="w-3 h-3 rounded-full shrink-0" 
+                        style={{ backgroundColor: teamDetails.color }}
+                    />
+                }    
+                <p className="text-md text-white">{teamDetails.description || ""}</p>
+            </div>
             
 
             {/* 工具列 */}
@@ -654,6 +703,18 @@ const Teams = () => {
                             )}
                         </ModalContent>
                     </Modal>
+                    <TeamSettingsModal 
+                        isOpen={isSettingsOpen} 
+                        onOpenChange={onSettingsChange}
+                        teamData={{
+                            id: currentTeamId || "",
+                            name: teamName,
+                            description: teamDetails.description || "", // 建議從後端 getTeam 的時候順便抓回來
+                            color:  teamDetails.color || "",
+                            avatar: teamDetails.avatar || "" 
+                        }}
+                        onUpdate={handleUpdateTeam}
+                    />
                 </div>
             </div>
 

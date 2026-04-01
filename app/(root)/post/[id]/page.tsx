@@ -77,6 +77,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                                         type={relPost.type}
                                         title={relPost.title}
                                         isCollectedInitial={relPost.isCollected}
+                                        teamColor={relPost.team?.color}
                                     />
                                 ))
                             ):(
@@ -175,7 +176,9 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                                 
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Uploader</span>
                                     <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.uploader?.userName || 'Unknown'}</span>
-                                
+
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Team</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.team?.name || 'none'}</span>
                             </div>
                         </div>
 

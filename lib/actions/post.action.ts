@@ -200,7 +200,12 @@ export const getPostsByScroll = async (
                 shortId: true,   
                 title: true,      
                 coverImage: true, 
-                type: true,       
+                type: true,   
+                team:{
+                    select:{
+                        color: true
+                    }
+                }    
             },
         });
 
@@ -352,6 +357,11 @@ export const getPostDetail = async (shortId: string) => {
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
                 },
+                team:{
+                    select:{
+                        name: true
+                    }
+                }
             },
         });
 

@@ -200,6 +200,7 @@ const Home = () => {
                     type={post.type}
                     title={post.title}
                     isCollectedInitial={post.isCollected}
+                    teamColor={post.team?.color}
                   />
                   ))}
               </div>  

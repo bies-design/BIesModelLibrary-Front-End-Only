@@ -44,7 +44,39 @@ export async function createTeam(teamName: string, userId: string) {
         return { success: false, error: "建立團隊失敗，請稍後再試" };
     }
 }
+/**
+ * 取得單一團隊的詳細資料 (供 Settings Modal 預設值使用)
+ */
+export async function getTeamDetails(teamId:string, userId:string) {
+    try{
+        const member = await prisma.teamMember.findFirst({
+            where:{ teamId, userId}
+        });
+        if(!member) {
+            return { success: false, error: "無權限查看此團隊或團隊不存在" };        
+        }
 
+        const team = await prisma.team.findUnique({
+            where: {id:teamId},
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                color: true,
+                avatar: true
+            }
+        });
+
+        if (!team) {
+            return { success: false, error: "找不到該團隊" };
+        }
+
+        return { success: true, data: team };
+    } catch (error) {
+        console.error("Failed to fetch team details:", error);
+        return { success: false, error: "讀取團隊資料失敗" };
+    }
+}
 /**
  * 取得特定團隊的所有成員
  */
@@ -348,5 +380,41 @@ export async function deleteTeam(teamId: string, userId: string) {
     } catch (error) {
         console.error("Failed to delete team:", error);
         return { success: false, error: "刪除團隊失敗，請稍後再試" };
+    }
+}
+/**
+ * 更新團隊設定
+ */
+export async function updateTeamSettings(
+    teamId: string, 
+    userId: string, 
+    data: { name: string; description?: string; color?: string; avatar?: string }
+) {
+    try {
+        // 1. 權限檢查：只有 OWNER 或 ADMIN 可以修改設定
+        const member = await prisma.teamMember.findFirst({
+            where: { teamId, userId }
+        });
+
+        if (!member || (member.role !== 'OWNER' && member.role !== 'ADMIN')) {
+            return { success: false, error: "權限不足" };
+        }
+
+        // 2. 更新資料庫
+        const updatedTeam = await prisma.team.update({
+            where: { id: teamId },
+            data: {
+                name: data.name,
+                description: data.description,
+                color: data.color,
+                avatar: data.avatar,
+            }
+        });
+
+        revalidatePath('/dashboard');
+        return { success: true, data: updatedTeam };
+    } catch (error) {
+        console.error("Update team failed:", error);
+        return { success: false, error: "更新失敗" };
     }
 }

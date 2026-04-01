@@ -261,6 +261,7 @@ const Models = (props: Props) => {
                         title={post.title}
                         isCollectedInitial={post.isCollected}
                         onCollectionToggle={handleCollectionToggle}
+                        teamColor={post.team?.color}
                     />
                 ))}
             </div>
