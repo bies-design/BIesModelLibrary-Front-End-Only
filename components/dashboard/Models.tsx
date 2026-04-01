@@ -242,15 +242,10 @@ const Models = (props: Props) => {
                     <SelectItem key="Newest" className="text-white">Newest</SelectItem>
                     <SelectItem key="Hottest" className="text-white">Hottest</SelectItem>
                 </Select>
-                <div className="h-6 w-[1px] bg-[#3F3F46] mx-1" />
-                
 
-                <button className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm">
-                    <Edit2 className="w-4 h-4" /> Actions
-                </button>
                 <div className="h-6 w-[1px] bg-[#3F3F46] mx-1" />
                 <button className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors">
-                    <Layers className="w-4 h-4" /> Set Editor
+                    <Edit2 className="w-4 h-4" /> Edit
                 </button>
             </div>
 

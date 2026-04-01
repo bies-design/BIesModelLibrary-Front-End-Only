@@ -109,22 +109,7 @@ const PostCard = ({
               <span className='truncate text-black dark:text-[#E4E4E7] font-medium'>{title}</span>
             </p>
             {/* shrink 0 for 當文字過長也不可以擠壓到按鈕 */}
-            <div className='flex gap-2 shrink-0'>
-              <button
-                onClick={(e)=>{e.stopPropagation(); console.log("Download clicked");}}
-                aria-label={`Download ${title}`}
-                className='hover-lift flex items-center bg-[#FFFFF4] dark:bg-[#52525B] rounded-lg px-3 py-1.5 shadow-[inset_0px_2px_5px_rgba(255,255,255,0.8),inset_0px_-1px_3px_rgba(0,0,0,0.8)] dark:shadow-[inset_0px_2px_1px_rgba(255,255,245,0.2),inset_0px_-2px_8px_rgba(0,0,0,0.4)]
-              active:shadow-sm'>
-                <Image
-                  className='invert dark:invert-0'
-                  src="/icons/Downloadicons.svg"
-                  alt="Download Icon"
-                  width={16}
-                  height={16}
-                />
-                <p className='ml-1 font-medium text-black dark:text-[#E4E4E7] font-medium'><span className='hidden lg:inline'>Download</span></p>
-              </button>
-              
+            <div className='flex gap-2 h-8 shrink-0'>         
               <svg width="0" height="0" style={{ position: 'absolute' }}>
                 <defs>
                     <linearGradient id="star-gradient" x1="0" y1="0" x2="0" y2="1">

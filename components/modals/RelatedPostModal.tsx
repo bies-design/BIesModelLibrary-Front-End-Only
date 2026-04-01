@@ -154,6 +154,10 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedPosts, onConfi
             scrollBehavior="inside"
             placement="center"
             size="5xl"
+            classNames={{
+                wrapper:"z-999",
+                backdrop:"z-998"
+            }}
             className="bg-[#18181B] text-white  border-[#27272A]"
         >
         <ModalContent>
