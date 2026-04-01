@@ -10,6 +10,7 @@ import { Rotate3D, FileText, Loader2, Maximize, Minimize } from 'lucide-react';
 type activeSourceType = 'cover' | '3D' | number | `pdf-${number}`;
 
 export default function MediaGallery({ post }: { post: any }) {
+    const [scrollOffset, setScrollOffset] = useState<number>(0);
     const [activeSource, setActiveSource] = useState<activeSourceType>('cover');
     const viewerRef = useRef<Viewer3DRef>(null);
     const pdfRef = useRef<PDFViewerRef>(null);
@@ -26,35 +27,6 @@ export default function MediaGallery({ post }: { post: any }) {
         if (typeof activeSource === 'number') return `${post.images[activeSource]}`;
         return "";
     };
-
-    // 監聽原生的全螢幕事件，以同步 State (使用者可能按 Esc 退出)
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
-        };
-
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    }, []);
-
-    const toggleFullscreen = async () => {
-        if (!containerRef.current) return;
-
-        if (!document.fullscreenElement) {
-            // 進入全螢幕
-            try {
-                await containerRef.current.requestFullscreen();
-            } catch (err) {
-                console.error(`Error attempting to enable fullscreen: ${err}`);
-            }
-        } else {
-            // 退出全螢幕
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            }
-        }
-    };
-
 
     const handleLoad3D = async () => {
         // 如果已經在 3D 模式，則不執行任何動作
@@ -114,20 +86,63 @@ export default function MediaGallery({ post }: { post: any }) {
         }
     };
 
+    // 監聽 isFullscreen 狀態，當進入全螢幕時鎖定背景捲動
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden';
+            
+            // 加入 ESC 鍵離開全螢幕的監聽
+            const handleEsc = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') setIsFullscreen(false);
+            };
+            window.addEventListener('keydown', handleEsc);
+            return () => {
+                window.removeEventListener('keydown', handleEsc);
+                // 元件卸載或退出全螢幕時，還原捲動
+                document.body.style.overflow = 'auto';
+            };
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [isFullscreen]);
+
+    const toggleFullscreen = () => {
+        if(!isFullscreen){
+            setScrollOffset(window.scrollY);
+        }
+        setIsFullscreen(!isFullscreen);
+    };
+
+    
     return (
         <div 
             ref={containerRef}
-            className={`${isFullscreen ? "border-none rounded-none" : ""} relative flex flex-col gap-4`}
+            // 🚀 關鍵：用 JS 強制設定絕對座標，蓋滿目前的視窗
+            style={isFullscreen ? {
+                position: 'absolute',
+                top: `${scrollOffset}px`, // 扣掉下滑的距離，完美對齊視窗頂部
+                left: 0,
+                width: '100vw',
+                height: '100dvh', // 使用 dvh 避免手機瀏覽器網址列干擾
+                zIndex: 9999,
+                margin: 0
+            } : undefined}
+            className={`${isFullscreen 
+                ? "bg-black p-4 flex flex-col gap-4" 
+                : "relative flex flex-col w-full gap-4"} `}
         >
             <button
                 onClick={toggleFullscreen}
-                className="absolute z-50 top-2 right-2 p-2 bg-black/50 hover:bg-black/80 text-white rounded-lg transition-opacity backdrop-blur-sm"
+                className="absolute z-40 top-2 right-2 p-2 bg-black/50 hover:bg-black/80 text-white rounded-lg transition-opacity backdrop-blur-sm"
                 title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
             >
                 {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
             </button>
             {/* 主展示區 */}
-            <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-none" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-black/80  overflow-hidden relative `}>
+            <div className={`${isFullscreen 
+                ? "flex-1 min-h-0 border-none rounded-none" 
+                : "aspect-video border rounded-xl border-[#3F3F46]"} 
+                w-full bg-black/80  overflow-hidden relative `}>
                 
                 {activeSource === '3D' ? (
                     <div className="relative w-full h-full">
@@ -203,4 +218,5 @@ export default function MediaGallery({ post }: { post: any }) {
             </div>
         </div>
     );
+    
 }
