@@ -1,7 +1,7 @@
 // components/post/ActionButtons.tsx
 "use client";
 import React, { useState } from 'react';
-import { Download, Share2, FileCode, FileText, Loader2,Trash2 } from 'lucide-react';
+import { Download, Share2, FileCode, FileText, Loader2,Trash2, Edit2 } from 'lucide-react';
 import { 
     Modal, 
     ModalContent, 
@@ -28,6 +28,15 @@ export default function ActionButtons({ post }: { post: any }) {
 
     const isOwner = session?.user.id === post.uploaderId;
     
+    const isTeamEditor = post.team?.members?.some(
+        (member:any) => {
+            member.userId === session?.user.id && 
+            ['OWNER', 'ADMIN', 'EDITOR'].includes(member.role)
+        }
+    ) || false;
+
+    const canEditPost = isOwner || isTeamEditor;
+
     // 處理 Presigned URL 下載邏輯
     const handleGetDownloadUrl = async (fileId: string, fileName: string) => {
         try {
@@ -164,6 +173,14 @@ export default function ActionButtons({ post }: { post: any }) {
             <button onClick={handleShare} className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
                 <Share2 size={18} /> Share Link
             </button>
+            {canEditPost && (
+                <button 
+                    onClick={() => router.push(`/edit/${post.shortId}`)} 
+                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-blue-500/10 text-blue-500 py-3.5 rounded-xl font-medium transition"
+                >
+                    <Edit2 size={18} />Edit Post
+                </button>
+            )}
             {isOwner && (
                 <button 
                     onClick={onDeleteOpen} 

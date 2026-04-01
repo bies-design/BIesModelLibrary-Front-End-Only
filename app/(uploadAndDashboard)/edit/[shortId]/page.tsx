@@ -1,19 +1,22 @@
 'use client'
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import SidebarUpload from '@/components/sidebar/SidebarUpload';
 import SidebarBlobs from '@/components/blobs/SidebarBlobs';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
 import PDFViewer from '@/components/viewer/PDFViewer';
 import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
 import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
-import { redirect } from 'next/navigation';
+import { redirect, useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { addToast } from '@heroui/react';
 import { ChevronLeft, ChevronRight, Loader2,Menu,X } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
 import { createPdfRecord } from '@/lib/actions/pdf.action';
-import { createPost } from '@/lib/actions/post.action';
+import { createPost, updatePost } from '@/lib/actions/post.action';
 import { SelectedPost } from '@/components/modals/RelatedPostModal';
+import SidebarEdit from '@/components/sidebar/SidebarEdit';
+import { getEditPostDetail } from '@/lib/actions/post.action';
+
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
@@ -23,7 +26,12 @@ export interface FileItem {
     fileid?:string;
 }
 
-const Upload = () => {
+export default function Edit() {
+    const params = useParams();
+    const postShortId = params.shortId as string;
+
+    const [isInitializing, setIsInitializing] = useState<boolean>(true);
+
     const [isMobileStepNavOpen, setIsMobileStepNavOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [step, setStep] = useState<number>(1);
@@ -51,6 +59,12 @@ const Upload = () => {
 
     const viewerRef = useRef<Viewer3DRef>(null);
     const pdfRef = useRef<PDFViewerRef>(null);
+
+    const getImageUrl = useCallback((imageVal: string | null | undefined) => {
+        if(!imageVal) return "";
+        if(imageVal.startsWith("http")) return imageVal;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+    }, []);
 
     const router = useRouter();
     //for breaking infinite rendering in viewer3D syncModels
@@ -107,14 +121,14 @@ const Upload = () => {
         }
         if (step === 3) {
             // 最後一步點擊 Create
-            handleCreate();
+            handleUpdate();
             return;
         }
         setStep((next) => Math.min(next + 1, 3));
     };
 
     // 處理最終建立邏輯
-    const handleCreate = async () => {
+    const handleUpdate = async () => {
         console.log("正在建立模型卡片...", {
             files: uploadedFiles,
             cover: coverImage,
@@ -190,13 +204,13 @@ const Upload = () => {
             const imageKeys: string[] = [];
             if (additionalImages.length > 0) {
                 const uploadPromises = additionalImages.map(async (img) => {
-                    // 如果它是一張新圖片 (有實體的 File 物件)
-                    if(img.file){
+                    // 1. 如果有實體檔案，代表是「新加的」，就去打 API 上傳拿新 Key
+                    if (img.file) {
                         return await uploadFileDirectly(img.file);
-                    }
-                    //如果它是一張舊圖片 (沒有 file，但有原本的 key)
-                    else if(img.key){
-                        return img.key;
+                    } 
+                    // 2. 如果沒有實體檔案但有 key，代表是「原本就有的舊圖」，直接沿用舊 Key
+                    else if (img.key) {
+                        return img.key; 
                     }
                     return null;
                 });
@@ -208,7 +222,8 @@ const Upload = () => {
 
             // --- 3. 所有檔案都就緒，統一呼叫 Server Action 寫入 Post 資料庫 ---
             console.log("3. 所有檔案就緒，準備寫入資料庫 Post...");
-            const result = await createPost({
+            const result = await updatePost({
+                shortId: postShortId,
                 postType: postType,
                 metadata: metadata,
                 coverImageKey: coverKey,
@@ -218,8 +233,8 @@ const Upload = () => {
             });
 
             if (result.success) {
-                console.log("✅ 建立成功！");
-                router.push('/?status=success');
+                console.log("✅ 更新貼文成功!");
+                router.push(`post/${postShortId}`);
             } else {
                 throw new Error(result.error);
             }
@@ -249,17 +264,121 @@ const Upload = () => {
 
     // 處理上一步按鈕
     const handleBackButton = () => {
-        if(step === 1){
-
-        }
-
         setStep((prev) => Math.max(prev - 1, 1));
     };
+
+    // 初次載入時抓取並填入舊資料
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            if (!postShortId) return;
+            
+            try {
+                const result = await getEditPostDetail(postShortId);
+                
+                if (!result.success || !result.data) {
+                    console.error("找不到貼文：", result.error);
+                    alert("找不到這篇貼文，將返回首頁");
+                    router.push('/');
+                    return;
+                }
+
+                const post = result.data;
+
+                // 1. 填入 Post Type
+                setPostType(post.type as '2D' | '3D');
+
+                // 2. 填入 Metadata
+                setMetadata({
+                    title: post.title || "",
+                    category: post.category || "",
+                    keywords: post.keywords || [],
+                    description: post.description || "",
+                    permission: post.permission || "standard",
+                    team: post.team?.id || "none", // 這裡假設你表單需要的是 teamId
+                    relatedPosts: post.relatedPosts || [] // 如果有需要
+                });
+
+                // 3. 填入封面圖
+                if (post.coverImage) {
+                    setCoverImage(post.coverImage); // 注意：getPostDetail 已經幫你組裝好完整的 URL 了
+                }
+
+                // 4. 填入附加圖片 (需轉成 ImageFile 格式)
+                if (post.images && post.images.length > 0) {
+                    const formattedImages: ImageFile[] = post.images.map((imgUrl: string) => {
+                        // 假設你傳回來的 imgUrl 是 "http://.../img_123.png"
+                        // 我們可以把整個 URL 當作 key，或者你從網址中擷取檔案名稱
+                        // 為了簡單，這裡我們先把完整的 URL 同時當作預覽和 key
+                        const originalKey = imgUrl.split('/').pop() || imgUrl; // 試著抓出檔名當 key
+                        return {
+                            key: originalKey, 
+                            preview: imgUrl
+                        };
+                    });
+                    setAdditionalImages(formattedImages);
+                }
+
+                // 5. 處理檔案 (Models / PDFs) - 觸發雲端下載
+                if (post.type === '3D' && post.models && post.models.length > 0) {
+                    console.log("Model在這",post.models);
+                    // 把遠端的 models 轉換成你 Sidebar 要的 FileItem 格式
+                    const existingModels: FileItem[] = post.models.map((model: any) => ({
+                        dbId: model.id, // 用作唯一識別
+                        fileId: model.fileId, // 你自訂的屬性，用來抓取 MinIO
+                        name: model.name,
+                        type: '3d',
+                        file: new File([], model.name) // 給一個假的 File 物件，因為我們主要是靠 API 去撈 buffer
+                    }));
+                    
+                    setUploadedFiles(existingModels);
+                    
+                    // 🌟 重要：這裡我們不直接去 fetch Buffer (因為 Viewer3D 和 Sidebar 的連動機制)
+                    // 而是設定好 uploadedFiles 後，你的 Sidebar 應該要有邏輯去發現
+                    // 「咦？這些檔案有 fileId 卻沒有實體 Blob，那我要幫忙從網路載下來」
+                    // (這部分我們可能需要稍微調整你的 Sidebar 或 Viewer 邏輯)
+                    
+                } else if (post.type === '2D' && post.pdfIds && post.pdfIds.length > 0) {
+                    console.log("Model在這",post.pdfIds);
+                    // 2D PDF 的處理邏輯
+                    const existingPdfs: FileItem[] = post.pdfIds.map((pdf: any) => ({
+                        dbId: pdf.id,
+                        fileId: pdf.fileId,
+                        name: pdf.name,
+                        type: 'pdf',
+                        file: new File([], pdf.name) 
+                    }));
+                    setUploadedFiles(existingPdfs);
+                    
+                    // 自動選擇第一個 PDF 以便預覽
+                    if (existingPdfs.length > 0) {
+                        setSelectedFile(existingPdfs[0]);
+                    }
+                }
+
+            } catch (error) {
+                console.error("載入貼文失敗:", error);
+            } finally {
+                setIsInitializing(false); // 解除載入狀態
+            }
+        };
+
+        fetchInitialData();
+    }, [postShortId, router, getImageUrl]);
+
     useEffect(() => {
         console.log(`選擇file:${selectedFile?.name}`);
         // console.log(uploadedFiles.map((a)=>(a.name)));   
-    },[selectedFile,uploadedFiles])
-    
+    },[selectedFile,uploadedFiles]);
+
+    if (isInitializing) {
+        return (
+            <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#27272A] text-white">
+                <Loader2 className="w-12 h-12 animate-spin text-[#D70036] mb-4" />
+                <p>Loading post data...</p>
+            </div>
+        );
+    }
+
     return (
     <div className='min-h-screen bg-[#27272A] relative'>
         {/* 全螢幕遮罩：當 isIFCProcessing 為 true 時顯示 */}
@@ -285,7 +404,7 @@ const Upload = () => {
                 <SidebarBlobs/>
                 {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
                 <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
-                <SidebarUpload 
+                <SidebarEdit 
                     currentStep={step}
                     onNext={isSubmitting ? ()=>Promise<void> : handleNextButton}
                     onBack={handleBackButton}
@@ -372,5 +491,3 @@ const Upload = () => {
     </div> 
     );
 }
-
-export default Upload;

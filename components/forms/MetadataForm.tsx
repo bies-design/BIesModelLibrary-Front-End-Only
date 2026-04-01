@@ -12,8 +12,9 @@ import { SelectedPost } from '../modals/RelatedPostModal';
 import { getUserTeams } from '@/lib/actions/team.action';
 
 export interface ImageFile {
-  file: File;      // 原始檔案 (上傳用)
-  preview: string; // Blob URL (預覽顯示用)
+  file?: File;      // 原始檔案 (上傳用)
+  key?: string;     // 舊圖片才會有 S3 Key
+  preview: string; // Blob URL (預覽顯示用) 
 }
 
 export interface Metadata {

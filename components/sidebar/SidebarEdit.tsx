@@ -5,16 +5,20 @@ import { Button } from "@heroui/react";
 import StepItem from '../StepItem';
 import { useRouter } from 'next/navigation';
 import { MoveRight,MoveLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
 interface SidebarUploadProps {
     currentStep: number;
     onNext:()=>void;
     onBack:()=>void;
 }
 
-const SidebarUpload = ({ currentStep,onNext,onBack }: SidebarUploadProps) => {
+const SidebarEdit = ({ currentStep,onNext,onBack }: SidebarUploadProps) => {
+    const params = useParams();
+    const postShortId = params.shortId as string;
+
     const router = useRouter();
     const handleCancel = () => {
-        router.push(`/`); // 這會執行 Client-side 導航，保持 Context 存活
+        router.push(`/post/${postShortId}`);
     };
     return (
         <aside style={{backdropFilter:'blur(100px)',backgroundColor: '#A1A1AA40',}} className="w-full h-full px-5 py-8 flex flex-col shadow-[inset_0_0_20px_rgba(255,255,255,0.1)] justify-between">
@@ -64,7 +68,7 @@ const SidebarUpload = ({ currentStep,onNext,onBack }: SidebarUploadProps) => {
                     onPress={ onNext}
                     className="font-inter text-white flex-1 bg-[#D70036] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
                     >
-                    {currentStep === 3 ? "Create" : "Next"}
+                    {currentStep === 3 ? "Update" : "Next"}
                     {currentStep !== 3 && <MoveRight size={15} className="ml-2 @max-[200px]:hidden"/>}
                 </Button>
             </div>
@@ -73,4 +77,4 @@ const SidebarUpload = ({ currentStep,onNext,onBack }: SidebarUploadProps) => {
     );
     }
 
-export default SidebarUpload;
+export default SidebarEdit;
