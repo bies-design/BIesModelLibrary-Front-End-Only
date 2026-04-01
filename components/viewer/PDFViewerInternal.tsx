@@ -48,12 +48,6 @@ const renderToolbar = (Toolbar: (props: ToolbarProps) => ReactElement) => (
           <div className="mt-1">
             <ZoomOut />
           </div>
-          <div className="mt-1">
-            <EnterFullScreen />
-          </div>
-          <div className="mt-1 ml-2">
-            <Download />
-          </div>
         </div>
       );
     }}

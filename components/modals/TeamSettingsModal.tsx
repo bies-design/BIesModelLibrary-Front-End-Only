@@ -97,6 +97,8 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
             onOpenChange={onOpenChange} 
             placement='center'
             classNames={{ 
+                wrapper: "z-999",
+                backdrop:"z-998",
                 base: "bg-[#18181B] text-white", 
                 closeButton:"text-2xl"
             }}

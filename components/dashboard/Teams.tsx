@@ -29,9 +29,9 @@ const Teams = () => {
     const currentTeamId = searchParams.get('teamId');
     const [teamDetails, setTeamDetails] = useState<any>(null);
     
-    // 🚀 Settings modal (Edit Mode)
+    // Settings modal (Edit Mode)
     const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onOpenChange: onSettingsChange } = useDisclosure();    
-    // 🚀 Create Team modal (Create Mode)
+    // Create Team modal (Create Mode)
     const { isOpen: isCreateOpen, onOpen: onCreateOpen, onOpenChange: onCreateChange } = useDisclosure();    
     
     // add member modal
@@ -48,7 +48,7 @@ const Teams = () => {
     
     // 狀態：團隊成員資料與載入狀態
     const [members, setMembers] = useState<TeamMember[]>([]);
-    const [isLoadingMembers, setIsLoadingMembers] = useState<boolean>(true);
+    const [isLoadingMembers, setIsLoadingMembers] = useState<boolean>(false);
     
     // --- State 管理 ---
     const [currentPage, setCurrentPage] = useState<number>(1);

@@ -220,7 +220,7 @@ const MetadataForm = ({
 
   return (
     <div className="w-full space-y-2 p-1">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Title */}
         <div className="space-y-2">
           <label className="text-white text-sm flex items-center gap-1">
@@ -401,7 +401,7 @@ const MetadataForm = ({
                   <Image src={img.preview} alt={`Upload ${index}`} fill className="object-cover" unoptimized />
                   <button 
                     onClick={(e) => handleRemoveImage(index, e)}
-                    className="absolute top-0 right-0 md:top-1 md:right-1 bg-red-500 md:hover:bg-red-500 text-white p-2 md:p-1 rounded-md md:rounded-full transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                    className="absolute top-0 right-0 lg:top-1 lg:right-1 bg-red-500 lg:hover:bg-red-500 text-white p-2 lg:p-1 rounded-md lg:rounded-full transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                   >
                     <X size={12} />
                   </button>
@@ -467,8 +467,7 @@ const MetadataForm = ({
                             closeButton: "text-zinc-400 hover:text-danger"
                         }}
                     >
-                        {/* ⚠️ 注意：這裡目前顯示 ID，建議你可以改成顯示 title (詳見下方說明) */}
-                        {post.title} 
+                      {post.title} 
                     </Chip>
                 ))
             )}

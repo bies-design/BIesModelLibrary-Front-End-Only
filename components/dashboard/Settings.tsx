@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import { useSession } from 'next-auth/react';
 import { updateUserName, getAvatarUploadUrl, updateUserImage, updateUserPassword } from '@/lib/actions/user.action';
 import { Input, Button, Avatar, User, Modal, ModalContent, ModalHeader ,ModalBody, ModalFooter, useDisclosure, addToast } from "@heroui/react"; // 如果你是舊版 NextUI，請改為 @nextui-org/react
-import { Copy, Upload, PenLine, RotateCw, Currency } from 'lucide-react'; 
+import { Check, Copy, Upload, PenLine, RotateCw, Currency } from 'lucide-react'; 
 import { UpdatePasswordSchema } from '@/lib/validations';
 
 const GoogleIcon = () => (
@@ -23,6 +23,7 @@ export interface passwordsType {
 
 const Settings = (props: Props) => {
     const {data:session, update} = useSession();
+    const [isCopied, setIsCopied] = useState<boolean>(false);
     // Name State
     const [name, setName] = useState<string>(session?.user.name || "");
     const [isSavingName, setIsSavingName] = useState<boolean>(false);
@@ -142,7 +143,16 @@ const Settings = (props: Props) => {
             setIsUpdatingPwdUI(false);
         }
     };
-
+    const handleCopy = async () => {
+        try {
+            if(userData && userData.userId) await navigator.clipboard.writeText(userData.userId);
+            setIsCopied(true);
+            addToast({ description: "已複製 ID！", color: "success" });
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            addToast({ description: "複製失敗，請手動複製", color: "danger" });
+        }
+    };
     const handleAvatarUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if(!file) return;
@@ -230,7 +240,7 @@ const Settings = (props: Props) => {
                 <h1 className='text-3xl leading-9 font-bold'>Settings</h1>
                 <p className='text-sm text-[#A1A1AA]'>Customize settings, email preferences, and web appearance.</p>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8'>
                 {/* --- Row 1 Left: Profile --- */}
                 <div className="flex flex-col">
                     <label className="text-sm text-foreground-700">Profile</label>
@@ -279,11 +289,13 @@ const Settings = (props: Props) => {
                             }}
                         />
                         <Button 
+                            title='Copy User ID'
                             isIconOnly
+                            onClick={handleCopy}
                             className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                             variant="flat"
                         >
-                            <Copy size={16} />
+                            {isCopied ? <Check className="w-4 h-4 text-[#10b981]" /> : <Copy className="w-4 h-4" />}
                         </Button>
                     </div>
                     <p className="text-xs text-default-400">Copy the ID to join a team</p>
@@ -410,6 +422,10 @@ const Settings = (props: Props) => {
                 onOpenChange={(open) => {
                     if(!open) handleModalClose();
                 }} 
+                classNames={{
+                    wrapper:"z-999",
+                    backdrop:"z-998"
+                }}
                 placement="center"
             >
                 <ModalContent>

@@ -57,7 +57,7 @@ const SidebarDashboard = ({ currentSelect, onSelect }: SidebarDashboardProps) =>
             </div>
             
             {/* 底部按鈕 */}
-            <div className="flex justify-center">
+            <div className="flex justify-center text-white">
                 <button
                     className="hover-lift bg-[#D70036] px-[12px] py-[6px] gap-[12px] rounded-lg flex items-center shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
                     onClick={()=>router.push('/')}

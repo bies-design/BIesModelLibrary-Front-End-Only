@@ -1,11 +1,11 @@
 // components/post/MediaGallery.tsx
 "use client";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
 import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
 import PDFViewer from '../viewer/PDFViewer';
-import { Rotate3D, FileText, Loader2 } from 'lucide-react';
+import { Rotate3D, FileText, Loader2, Maximize, Minimize } from 'lucide-react';
 
 type activeSourceType = 'cover' | '3D' | number | `pdf-${number}`;
 
@@ -18,12 +18,43 @@ export default function MediaGallery({ post }: { post: any }) {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [isPdfLoading, setIsPdfLoading] = useState<boolean>(false);
 
-    console.log("pdfIds",post.pdfIds);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
     const getActiveImageUrl = () => {
         if (activeSource === 'cover') return `${post.coverImage}`;
         if (typeof activeSource === 'number') return `${post.images[activeSource]}`;
-        return ""; // 3D 模式下不顯示 Image
+        return "";
     };
+
+    // 監聽原生的全螢幕事件，以同步 State (使用者可能按 Esc 退出)
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const toggleFullscreen = async () => {
+        if (!containerRef.current) return;
+
+        if (!document.fullscreenElement) {
+            // 進入全螢幕
+            try {
+                await containerRef.current.requestFullscreen();
+            } catch (err) {
+                console.error(`Error attempting to enable fullscreen: ${err}`);
+            }
+        } else {
+            // 退出全螢幕
+            if (document.exitFullscreen) {
+                await document.exitFullscreen();
+            }
+        }
+    };
+
 
     const handleLoad3D = async () => {
         // 如果已經在 3D 模式，則不執行任何動作
@@ -84,9 +115,20 @@ export default function MediaGallery({ post }: { post: any }) {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div 
+            ref={containerRef}
+            className={`${isFullscreen ? "border-none rounded-none" : ""} relative flex flex-col gap-4`}
+        >
+            <button
+                onClick={toggleFullscreen}
+                className="absolute z-50 top-2 right-2 p-2 bg-black/50 hover:bg-black/80 text-white rounded-lg transition-opacity backdrop-blur-sm"
+                title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            >
+                {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+            </button>
             {/* 主展示區 */}
-            <div className="w-full bg-black/80 aspect-video rounded-xl overflow-hidden relative border border-[#3F3F46]">
+            <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-none" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-black/80  overflow-hidden relative `}>
+                
                 {activeSource === '3D' ? (
                     <div className="relative w-full h-full">
                         <Viewer3D ref={viewerRef} allFiles={[]} />
@@ -117,7 +159,7 @@ export default function MediaGallery({ post }: { post: any }) {
             </div>
 
             {/* 縮圖輪播 */}
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide shrink-0">
                 {/* 3D 入口 (如果是 3D 貼文) */}
                 {post.type === '3D' && (
                     <div onClick={handleLoad3D} className={`w-[120px] shrink-0 aspect-video rounded-lg border-2 flex items-center justify-center bg-black/40 ${activeSource === '3D' ? 'border-[#D70036]' : 'border-transparent'}`}>
