@@ -234,7 +234,7 @@ export default function Edit() {
 
             if (result.success) {
                 console.log("✅ 更新貼文成功!");
-                router.push(`post/${postShortId}`);
+                router.push(`/post/${postShortId}`);
             } else {
                 throw new Error(result.error);
             }

@@ -55,7 +55,9 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 2. WebSocket 監聽 (處理轉檔通知)
     useEffect(() => {
-        const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+        const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL,{
+            transports:['websocket']
+        });
 
         socket.on("connect", () => {
         console.log("🔌 Socket connected");
