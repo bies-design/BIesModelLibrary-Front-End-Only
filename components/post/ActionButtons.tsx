@@ -1,6 +1,6 @@
 // components/post/ActionButtons.tsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, Share2, FileCode, FileText, Loader2,Trash2, Edit2 } from 'lucide-react';
 import { 
     Modal, 
@@ -30,8 +30,8 @@ export default function ActionButtons({ post }: { post: any }) {
     
     const isTeamEditor = post.team?.members?.some(
         (member:any) => {
-            member.userId === session?.user.id && 
-            ['OWNER', 'ADMIN', 'EDITOR'].includes(member.role)
+            return member.userId === session?.user.id && 
+            ['OWNER', 'ADMIN', 'EDITOR'].includes(member.role);
         }
     ) || false;
 
@@ -134,7 +134,6 @@ export default function ActionButtons({ post }: { post: any }) {
             }
         }
     };
-    
     const handleDeletePost = async() => {
         
         try{
@@ -181,7 +180,7 @@ export default function ActionButtons({ post }: { post: any }) {
                     <Edit2 size={18} />Edit Post
                 </button>
             )}
-            {isOwner && (
+            {canEditPost && (
                 <button 
                     onClick={onDeleteOpen} 
                     className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition"
