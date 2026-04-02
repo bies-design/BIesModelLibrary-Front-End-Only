@@ -158,7 +158,7 @@ const RelatedPostsModal = ({ isOpen, onOpenChange, currentSelectedPosts, onConfi
                 wrapper:"z-999",
                 backdrop:"z-998"
             }}
-            className="bg-[#18181B] text-white  border-[#27272A]"
+            className="bg-[#18181B] text-white dark border-[#27272A]"
         >
         <ModalContent>
             {(onClose) => (

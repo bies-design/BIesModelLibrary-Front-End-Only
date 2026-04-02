@@ -232,9 +232,15 @@ const MetadataForm = ({
             onValueChange={(v) => handleTextChange('title', v)}
             placeholder="Fill in the title that will show up in your cards"
             aria-label='Title Input'
-            className="text-white "
+            className="text-white focus:bg-black"
             classNames={{
-              inputWrapper: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              inputWrapper: [
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              ].join(" "),
+              input: "text-white placeholder:text-gray-500"
             }}
           />
         </div>
@@ -250,7 +256,17 @@ const MetadataForm = ({
             aria-label='Category Select'
             placeholder="Select a category for your model"
             classNames={{
-              trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
+              trigger: [
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              ].join(" "),
+              popoverContent:[
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+              ].join(" "),
               value: "text-white",
             }}
           >
@@ -274,7 +290,14 @@ const MetadataForm = ({
           aria-label='Keywords Input'
           placeholder={metadata.keywords.length > 0 ? "Add more keywords..." : "Type and press Enter to add tags"}
           classNames={{
-            inputWrapper: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+            inputWrapper: [
+              "bg-[#18181B]",
+              "data-[hover=true]:bg-[#27272a]", 
+              "data-[focus=true]:bg-[#27272a]",
+              "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+            ].join(" "),
+            // 確保輸入框裡面的文字和 placeholder 顯示正常
+            input: "text-white placeholder:text-gray-500"
           }}
           endContent={
             <span className="text-xs text-gray-500">Enter to add</span>
@@ -312,8 +335,15 @@ const MetadataForm = ({
           placeholder="Please add some description for your model. You can also click the button to get a template"
           minRows={4}
           classNames={{
-            inputWrapper: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
-          }}
+              inputWrapper: [
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              ].join(" "),
+              // 確保輸入框裡面的文字和 placeholder 顯示正常
+              input: "text-white placeholder:text-gray-500"
+            }}
         />
       </div>
 
@@ -494,7 +524,18 @@ const MetadataForm = ({
             onSelectionChange={(k) => handleSelectionChange('permission', k)}
             aria-label='Permission Setting Select'
             classNames={{
-              trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              trigger: [
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              ].join(" "),
+              popoverContent:[
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+              ].join(" "),
+              value: "text-white",
             }}
           >
             <SelectItem key="standard">Standard License</SelectItem>
@@ -511,7 +552,18 @@ const MetadataForm = ({
             aria-label='Belonging Team Select'
             placeholder="None"
             classNames={{
-              trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              trigger: [
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+              ].join(" "),
+              popoverContent:[
+                "bg-[#18181B]",
+                "data-[hover=true]:bg-[#27272a]", 
+                "data-[focus=true]:bg-[#27272a]",
+              ].join(" "),
+              value: "text-white",
             }}
           >
             {[

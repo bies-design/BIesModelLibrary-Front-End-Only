@@ -65,7 +65,7 @@ const PostCard = ({
   };
 
   return (
-    <Tooltip content={title} placement='bottom'>
+    <Tooltip content={title} placement='bottom' className='bg-black text-white'>
       <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px] `}>
         <Card className="w-full h-full flex-col pb-4 pt-4 pl-4 pr-4 bg-[#ecece9] dark:bg-[#3F3F46] shadow-[4px_4px_3px_rgba(0,0,0,0.5),inset_0px_3px_4px_rgba(255,255,255,1)] dark:shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
           <CardBody 
@@ -91,7 +91,7 @@ const PostCard = ({
                   className="absolute top-4 left-2 p-2 z-30 cursor-help" // 增加 padding 讓感應區變大
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Tooltip content={teamName} placement="bottom" className='text-white!'>
+                  <Tooltip content={teamName} placement="bottom" className='bg-black text-white'>
                     <div
                       className="w-4 h-4 rounded-full border border-white/20 shadow-md"
                       style={{ backgroundColor: teamColor }}
@@ -136,7 +136,7 @@ const PostCard = ({
                     </linearGradient>
                 </defs>
               </svg>
-              <Tooltip content={`Collection`} placement='bottom'>
+              <Tooltip content={`Collection`} placement='bottom' className='bg-black text-white'>
                 <button
                   onClick={handleStarClick}
                   aria-label={`Collection ${title}`}

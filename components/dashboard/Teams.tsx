@@ -354,8 +354,18 @@ const Teams = () => {
                                     if(newRole) handleUpdateRole(data.id, newRole);
                                 }}
                                 classNames={{
-                                    trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
-                                    popoverContent: "bg-[#27272A] border border-[#3F3F46]"
+                                    trigger: [
+                                        "bg-[#18181B]",
+                                        "data-[hover=true]:bg-[#27272a]", 
+                                        "data-[focus=true]:bg-[#27272a]",
+                                        "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                    ].join(" "),
+                                    popoverContent:[
+                                        "bg-[#18181B]",
+                                        "data-[hover=true]:bg-[#27272a]", 
+                                        "data-[focus=true]:bg-[#27272a]",
+                                    ].join(" "),
+                                    value: "text-white",
                                 }}
                             >
                                 <SelectItem key="OWNER" className= "text-white">OWNER</SelectItem>
@@ -505,8 +515,18 @@ const Teams = () => {
                             setCurrentPage(1);
                         }}
                         classNames={{
-                            trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
-                            popoverContent: "bg-[#27272A] border border-[#3F3F46]"
+                            trigger: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            popoverContent:[
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                            ].join(" "),
+                            value: "text-white",
                         }}
                     >
                         <SelectItem key="username" className="text-white">Username</SelectItem>

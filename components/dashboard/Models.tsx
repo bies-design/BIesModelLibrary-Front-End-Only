@@ -257,7 +257,7 @@ const Models = (props: Props) => {
             </div>
 
             {/* 內容網格區 */}
-            <div className="w-full flex flex-wrap gap-6">
+            <div className="w-full dark flex flex-wrap gap-6">
                 {posts.map((post) => (
                     <PostCard 
                         key={post.id}

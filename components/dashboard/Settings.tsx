@@ -243,7 +243,7 @@ const Settings = (props: Props) => {
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8'>
                 {/* --- Row 1 Left: Profile --- */}
                 <div className="flex flex-col">
-                    <label className="text-sm text-foreground-700">Profile</label>
+                    <label className="text-white text-sm text-foreground-700">Profile</label>
                     <div className="flex items-center gap-4 p-1">
                         <Avatar 
                             src={userData.image || ''} 
@@ -259,7 +259,7 @@ const Settings = (props: Props) => {
                             variant="flat" 
                             isLoading={isUploadingAvatar}
                             onPress={() => fileInputRef.current?.click()}
-                            className="ml-auto hover-lift bg-[#3F3F46] hover:bg-default-200 text-default-600 shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                            className="ml-auto hover-lift bg-[#3F3F46] hover:bg-[#27272a] text-white shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                             startContent={
                                 !isUploadingAvatar && (
                                     <span className='hidden md:block'>
@@ -284,18 +284,23 @@ const Settings = (props: Props) => {
                             variant="flat"
                             isReadOnly
                             classNames={{
-                                label:"!text-white",
-                                inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] hover:bg-default-100/50 transition-colors pr-1",
+                                inputWrapper: [
+                                    "bg-[#18181B]",
+                                    "data-[hover=true]:bg-[#27272a]", 
+                                    "data-[focus=true]:bg-[#27272a]",
+                                    "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                ].join(" "),
+                                input: "text-white placeholder:text-gray-500"
                             }}
                         />
                         <Button 
                             title='Copy User ID'
                             isIconOnly
                             onClick={handleCopy}
-                            className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                            className="bg-[#3F3F46] hover:bg-[#27272a] hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                             variant="flat"
                         >
-                            {isCopied ? <Check className="w-4 h-4 text-[#10b981]" /> : <Copy className="w-4 h-4" />}
+                            {isCopied ? <Check className="w-4 h-4 text-[#10b981]" /> : <Copy className="text-white w-4 h-4" />}
                         </Button>
                     </div>
                     <p className="text-xs text-default-400">Copy the ID to join a team</p>
@@ -324,8 +329,13 @@ const Settings = (props: Props) => {
                         }}
                         variant="flat"
                         classNames={{
-                            label:"!text-white",
-                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
                         }}
                     />
                     {name !== session?.user?.name && (
@@ -349,8 +359,13 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
-                            label:"!text-white",
-                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-default-500",
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
                         }}
                     />
                 </div>
@@ -363,8 +378,13 @@ const Settings = (props: Props) => {
                         defaultValue={userData.email}
                         variant="flat"
                         classNames={{
-                            label:"!text-white",
-                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
                         }}
                     />
                 </div>
@@ -372,14 +392,14 @@ const Settings = (props: Props) => {
                 {/* --- Row 3 Right: Email Actions --- */}
                 <div className="flex flex-col items-stretch md:flex-row md:items-end gap-3">
                     <Button 
-                        className="bg-[#3F3F46] hover:bg-default-200 text-default-600 border border-default-200/50 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                        className="bg-[#3F3F46] text-white hover:bg-[#27272a] hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
                         startContent={<PenLine size={16} />}
                     >
                         Request email change
                     </Button>
                     <Button 
-                        className="bg-[#18181b] hover:bg-[#27272a] border border-default-200/20 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                        className="bg-[#18181b] hover:bg-[#27272a] text-white hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
                         startContent={<GoogleIcon />}
                     >
@@ -393,12 +413,17 @@ const Settings = (props: Props) => {
                         label="Password"
                         labelPlacement="outside"
                         type="password"
-                        defaultValue="********"
+                        defaultValue="*********************"
                         variant="flat"
                         isReadOnly
                         classNames={{
-                            label:"!text-white",
-                            inputWrapper: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D]",
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
                         }}
                     />
                 </div>
@@ -407,7 +432,7 @@ const Settings = (props: Props) => {
                 <div className="flex md:items-end">
                     <Button 
                         onPress={onOpen}
-                        className="bg-[#3F3F46] w-full md:w-max hover:bg-default-200 text-default-600 border border-default-200/50 px-4 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
+                        className="bg-[#3F3F46] w-full md:w-max hover:bg-[#27272a] text-white px-4 hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]"
                         variant="flat"
                         startContent={<PenLine size={16} />}
                     >

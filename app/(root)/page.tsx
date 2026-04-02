@@ -11,6 +11,7 @@ import PostCard from '@/components/cards/PostCard';
 import { getPostsByScroll } from '@/lib/actions/post.action';
 import { useNativeInView } from '@/hooks/useIntersectionObserver';
 import { Loader2, ChevronDown } from 'lucide-react';
+import DataFlowLayout from '@/components/animation/DataFlowLayout';
 
 const Home = () => {
   const { data:session,status } = useSession();
