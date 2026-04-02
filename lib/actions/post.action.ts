@@ -19,6 +19,7 @@ interface UpdatePostParams {
     imageKeys: string[];
     modelIds?: string[];
     pdfIds?: string[];
+    pdfsToDelete?: string[];
 }
 
 interface CreatePostParams {
@@ -98,11 +99,11 @@ export async function updatePost(params: UpdatePostParams) {
         coverImageKey, 
         imageKeys, 
         modelIds = [], 
-        pdfIds = [] 
+        pdfIds = [] ,
+        pdfsToDelete
     } = params;
 
     try {
-        // 🚀 1. 先抓出舊的貼文資料，用來比對哪些圖片被刪除了
         const oldPost = await prisma.post.findUnique({
             where: { shortId: shortId },
             include: { team: { include: { members: true } } }
@@ -122,7 +123,7 @@ export async function updatePost(params: UpdatePostParams) {
             return { success: false, error: "Permission denied" };
         }
 
-        // 🚀 2. S3 垃圾回收 (找出被剔除的圖片)
+        // S3 垃圾回收 
         const s3DeletePromises: Promise<any>[] = [];
         
         // 判斷封面是否更換：如果有舊封面，且新封面 Key 跟舊的不同，就把舊的刪掉
@@ -144,6 +145,28 @@ export async function updatePost(params: UpdatePostParams) {
             );
         });
 
+        if(pdfsToDelete && pdfsToDelete.length > 0){
+            const pdfRecords = await prisma.pdf.findMany({
+                where: {id: { in: pdfsToDelete }},
+                select: {id:true, fileId:true}
+            });
+
+            pdfRecords.forEach(pdf => {
+                if(pdf.fileId){
+                    const command = new DeleteObjectCommand({ Bucket: process.env.S3_PDF_BUCKET, Key: pdf.fileId });
+                    s3DeletePromises.push(
+                        s3Client.send(command)
+                            .then(() => console.log(`MinIO PDF 已刪除: ${pdf.fileId}`))
+                            .catch(err => console.error(`MinIO PDF 刪除失敗: ${pdf.fileId}`, err))
+                    )
+                }
+            });
+
+            await prisma.pdf.deleteMany({
+                where:{id: {in: pdfsToDelete}}
+            });
+            console.log(`✅ 已從資料庫清除 ${pdfsToDelete.length} 個 PDF 紀錄`);
+        }
         // 執行所有刪除任務 (不阻塞主流程，讓它在背景刪除即可，但這裡用 await 確保穩定也可以)
         await Promise.all(s3DeletePromises);
 

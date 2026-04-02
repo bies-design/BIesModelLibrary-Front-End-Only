@@ -157,7 +157,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         try { uppy.removeFile(uppyId); } catch (e) {}
     };
 
-    // 🔥 [新增] 獨立的 Effect：當 Session 載入完成，將 UserID 寫入 Uppy Metadata
+    // 獨立的 Effect：當 Session 載入完成，將 UserID 寫入 Uppy Metadata
     useEffect(() => {
         if (uppy && session?.user?.id) {
             // 設定全域 metadata，所有新增的檔案都會自動帶上這個 ID

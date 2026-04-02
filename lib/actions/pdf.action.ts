@@ -45,3 +45,29 @@ export async function createPdfRecord(params: CreatePdfParams) {
         return { success: false, error: error.message || "資料庫寫入失敗" };
     }
 }
+
+export async function deletePdfsByPostId(postId: string) {
+    try {
+        // 先找出哪些 PDF 關聯到這篇貼文
+        const pdfsToDelete = await prisma.pdf.findMany({
+            where: { posts: { some: { id: postId } } }
+        });
+
+        // 取出它們的 id
+        const pdfIds = pdfsToDelete.map(pdf => pdf.id);
+
+        // 如果沒有要刪除的，就提早 return
+        if (pdfIds.length === 0) return { success: true };
+
+        // 從資料庫中刪除這些 PDF 紀錄
+        // 註：如果你也想從 S3 刪除實體檔案，你需要拿 pdfsToDelete 裡面的 fileId 去呼叫 S3 刪除邏輯
+        await prisma.pdf.deleteMany({
+            where: { id: { in: pdfIds } }
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("刪除舊 PDF 失敗:", error);
+        return { success: false, error: "Failed to delete old PDFs" };
+    }
+}

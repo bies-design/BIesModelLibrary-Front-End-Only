@@ -20,7 +20,7 @@ export interface FileItem {
     file: File;
     type: '3d' | 'pdf';
     name: string;
-    fileid?:string;
+    fileId?:string;
 }
 
 const Upload = () => {

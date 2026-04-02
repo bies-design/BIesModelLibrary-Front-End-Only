@@ -23,7 +23,7 @@ export interface FileItem {
     file: File;
     type: '3d' | 'pdf';
     name: string;
-    fileid?:string;
+    fileId?:string;
 }
 
 export default function Edit() {
@@ -37,6 +37,7 @@ export default function Edit() {
     const [step, setStep] = useState<number>(1);
     const [postType, setPostType] = useState<'2D' | '3D'>('3D');
     const [uploadedFiles, setUploadedFiles] = useState<FileItem[]>([]);
+    const [preLoadedModels, setPreLoadedModels] = useState<FileItem[]>([])
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
     const [loadedFiles, setLoadedFiles] = useState<FileItem[]>([]);
     const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -151,7 +152,7 @@ export default function Edit() {
         try {
             let dbPdfIds: string[] = [];
             let dbModelIds: string[] = [];
-
+            let pdfsToDelete: string[] = [];
             // --- 1. 優先處理核心檔案 (PDF 或 Models) ---
             console.log("1. 處理核心檔案...");
             
@@ -160,8 +161,18 @@ export default function Edit() {
                 dbModelIds = loadedFiles.map(file => file.dbId);
                 
             } else if (postType === '2D') {
+                const oldPdfs = uploadedFiles.filter(f => f.fileId);
+                const newPdfs = uploadedFiles.filter(f => !f.fileId);
+
+                dbPdfIds = oldPdfs.map(f => f.dbId);
+                
+                const originalPdfIds = preLoadedModels.map(m => m.dbId);
+                pdfsToDelete = originalPdfIds.filter(id => !dbPdfIds.includes(id));
+
+                console.log("準備刪除的pdf檔案",pdfsToDelete);
+                
                 // 2D 必須先確保 PDF 都能成功上傳，否則直接中斷，不浪費時間傳圖片
-                for(const file of uploadedFiles){
+                for(const file of newPdfs){
                     try {
                         const formData = new FormData();
                         formData.append("file", file.file);
@@ -230,6 +241,7 @@ export default function Edit() {
                 imageKeys: imageKeys,
                 modelIds: dbModelIds, // 3D 的陣列 (2D 時為空)
                 pdfIds: dbPdfIds,     // 2D 的陣列 (3D 時為空)
+                pdfsToDelete: pdfsToDelete
             });
 
             if (result.success) {
@@ -330,15 +342,9 @@ export default function Edit() {
                         file: new File([], model.name) // 給一個假的 File 物件，因為我們主要是靠 API 去撈 buffer
                     }));
                     
-                    setUploadedFiles(existingModels);
-                    
-                    // 🌟 重要：這裡我們不直接去 fetch Buffer (因為 Viewer3D 和 Sidebar 的連動機制)
-                    // 而是設定好 uploadedFiles 後，你的 Sidebar 應該要有邏輯去發現
-                    // 「咦？這些檔案有 fileId 卻沒有實體 Blob，那我要幫忙從網路載下來」
-                    // (這部分我們可能需要稍微調整你的 Sidebar 或 Viewer 邏輯)
+                    setPreLoadedModels(existingModels);
                     
                 } else if (post.type === '2D' && post.pdfIds && post.pdfIds.length > 0) {
-                    console.log("Model在這",post.pdfIds);
                     // 2D PDF 的處理邏輯
                     const existingPdfs: FileItem[] = post.pdfIds.map((pdf: any) => ({
                         dbId: pdf.id,
@@ -347,12 +353,9 @@ export default function Edit() {
                         type: 'pdf',
                         file: new File([], pdf.name) 
                     }));
-                    setUploadedFiles(existingPdfs);
+                    console.log("Model在這",existingPdfs)
+                    setPreLoadedModels(existingPdfs);
                     
-                    // 自動選擇第一個 PDF 以便預覽
-                    if (existingPdfs.length > 0) {
-                        setSelectedFile(existingPdfs[0]);
-                    }
                 }
 
             } catch (error) {
@@ -454,6 +457,7 @@ export default function Edit() {
                                 onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
                                 postType={postType}
                                 setPostType={setPostType}
+                                preLoadedModels={preLoadedModels}
                             />
                         </div>
                         {step === 2 && (

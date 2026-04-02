@@ -56,6 +56,7 @@ interface ModelUploadSidebarProps {
   onDeleteModel: (modelId: string) => void;  
   postType:'2D' | '3D';
   setPostType:React.Dispatch<React.SetStateAction<"2D" | "3D">>;
+  preLoadedModels?:FileItem[];
 }
 
 const ModelUploadSidebar = ({ 
@@ -71,7 +72,8 @@ const ModelUploadSidebar = ({
   onDeleteModel,
   onExportModelFrag,
   postType,
-  setPostType
+  setPostType,
+  preLoadedModels
 }: ModelUploadSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -89,7 +91,7 @@ const ModelUploadSidebar = ({
   const [isLoadedExpanded, setIsLoadedExpanded] = useState<boolean>(true);
   const [isCloudExpanded, setIsCloudExpanded] = useState<boolean>(true);
   const [isPdfExpanded, setIsPdfExpandeded] = useState<boolean>(true);
-
+  const hasPreloadedRef = useRef<boolean>(false);
   // 之後需要調到更外層
   const [processMode, setProcessMode] = useState<'cloud' | 'local'>('cloud');
 
@@ -155,12 +157,44 @@ const ModelUploadSidebar = ({
     if(postType === "2D") return;
     fetchUserModels();
   }, [postType]); // 空陣列代表只在掛載時執行一次
+  // 自動載models邏輯
+  useEffect(() => {
+    
+    if(!preLoadedModels || preLoadedModels.length === 0) return;
+    const loadPreloadedData = async () => {
+      console.log("預載入已先上傳models");
+      const dt = new DataTransfer();
+
+      const loadPromises = preLoadedModels?.map(async (modelFile) => {
+        if(!modelFile.fileId) return;
+        if(modelFile.type === "3d"){
+          await downloadAndLoadFragForPreload(modelFile.dbId,modelFile.fileId,modelFile.name);
+        }else if(modelFile.type === "pdf"){
+          const downloadedFile = await downloadAndLoadPdfForPreload(modelFile.dbId,modelFile.fileId,modelFile.name);
+          if(downloadedFile) {
+            dt.items.add(downloadedFile);
+          }
+        }
+
+      });
+      await Promise.all(loadPromises);
+
+      if (dt.files.length > 0) {
+        console.log(`打包完成，共 ${dt.files.length} 個 PDF 準備交給 handleFiles`);
+        handleFiles(dt.files);
+      }
+    };
+    
+    loadPreloadedData();
+
+  },[preLoadedModels, postType])
   // 處理檔案上傳邏輯
   const handleFiles = (uploadedFiles: FileList | null) => {
     if (!uploadedFiles) return;
 
     // 1. 處理本地狀態 (保持你原本的邏輯，讓 Viewer 可以直接看)
     const newFiles: FileItem[] = Array.from(uploadedFiles).map(file => {
+      const extendedFile = file as File & {dbId?: string, fileId?: string};
       const extension = file.name.split('.').pop()?.toLowerCase();
       const type = (extension === 'ifc' || extension === 'frag') ? '3d' : 'pdf';
       // testing for telling whether the file loader work
@@ -188,7 +222,8 @@ const ModelUploadSidebar = ({
       }
 
       return {
-        dbId: Math.random().toString(36).substr(2, 9),
+        dbId: extendedFile.dbId || Math.random().toString(36).substr(2, 9),
+        fileId:extendedFile.fileId,
         file,
         type,
         name: file.name
@@ -246,7 +281,7 @@ const ModelUploadSidebar = ({
         file: new File([], modelName, { type: 'application/octet-stream' }),
         type:'3d',
         name:modelName,
-        fileid:fileId,
+        fileId:fileId,
       }
       setLoadedFiles(prev => [...prev, newLoadedItem]);
       onSelectFile(newLoadedItem);
@@ -257,6 +292,75 @@ const ModelUploadSidebar = ({
       setLoadingModelId(null);
     }
   }
+  const downloadAndLoadFragForPreload = async(dbId:string, fileId:string, modelName:string) => {
+    if(loadingModelId) return;
+
+    try{
+      setLoadingModelId(modelName);
+      console.warn(fileId);
+      const response = await fetch(`/api/frags/${fileId}`);
+
+      if (!response.ok) {
+        throw new Error("下載失敗");
+      }
+
+      const buffer = await response.arrayBuffer();
+
+      console.log(`📦 模型下載成功: ${modelName}, 大小: ${buffer.byteLength}`);
+
+      onLoadModel(buffer, modelName);
+
+      const newLoadedItem: FileItem ={
+        dbId:dbId,
+        file: new File([], modelName, { type: 'application/octet-stream' }),
+        type:'3d',
+        name:modelName,
+        fileId:fileId,
+      }
+      setLoadedFiles(prev => [...prev, newLoadedItem]);
+      onSelectFile(newLoadedItem);
+
+    }catch(error){
+      console.error("載入失敗:", error);
+    }finally{
+      setLoadingModelId(null);
+    }
+  }
+  const downloadAndLoadPdfForPreload = async (dbId: string, fileId: string, fileName: string) => {
+    if (loadingModelId) return;
+
+    try {
+      setLoadingModelId(fileName);
+      console.log(`[自動載入] 準備下載 PDF: ${fileName} (ID: ${fileId})`);
+      
+      const apiRes = await fetch(`/api/download/${fileId}?filename=${encodeURIComponent(fileName)}&type=pdf`);
+      
+      if (!apiRes.ok) {
+        throw new Error("無法取得 PDF 下載連結");
+      }
+      const { url } = await apiRes.json();
+
+      // 2. 透過 S3 網址，真正把二進位檔案抓下來
+      const fileRes = await fetch(url);
+      if (!fileRes.ok) {
+        throw new Error("從 S3 獲取檔案實體失敗");
+      }
+      const blob = await fileRes.blob();
+      const pdfFile = new File([blob], fileName, {type:'application/pdf'}) as File & {dbId?: string, fileId?: string};
+
+      pdfFile.dbId = dbId;
+      pdfFile.fileId = fileId;
+
+      console.log(`[自動載入] 📄 PDF 實體下載成功: ${fileName}, 大小: ${pdfFile.size}`);
+      
+      return pdfFile;
+
+    } catch (error) {
+      console.error("[自動載入] PDF 載入失敗:", error);
+    } finally {
+      setLoadingModelId(null);
+    }
+  };
 
   const focusModel = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -588,7 +692,7 @@ const ModelUploadSidebar = ({
                             file: new File([], item.name, { type: 'application/octet-stream' }),
                             type: isPdf ? 'pdf' : '3d',
                             name:item.name,
-                            fileid:item.fileid,
+                            fileId:item.fileId,
                           })
                         }
                       }
@@ -689,7 +793,7 @@ const ModelUploadSidebar = ({
                           file: item.file,
                           type: isPdf ? 'pdf' : '3d',
                           name:item.name,
-                          fileid:item.fileid,
+                          fileId:item.fileId,
                         })
                       }
                     }

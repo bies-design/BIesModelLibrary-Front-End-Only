@@ -182,6 +182,7 @@ const Models = (props: Props) => {
                         placeholder="Select a team"
                         className="max-w-xs h-10"
                         classNames={{
+                            base:`md:w-[140px]`,
                             trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
                             listbox: "bg-[#27272A]", // 下拉選單整體的背景
                             popoverContent: "bg-[#27272A] border-1 border-white/10", 
@@ -243,10 +244,10 @@ const Models = (props: Props) => {
                     <SelectItem key="Hottest" className="text-white">Hottest</SelectItem>
                 </Select>
 
-                <div className="h-6 w-[1px] bg-[#3F3F46] mx-1" />
+                {/* <div className="h-6 w-[1px] bg-[#3F3F46] mx-1" />
                 <button className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors">
                     <Edit2 className="w-4 h-4" /> Edit
-                </button>
+                </button> */}
             </div>
 
             {/* 內容網格區 */}

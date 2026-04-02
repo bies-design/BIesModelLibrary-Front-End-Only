@@ -118,7 +118,7 @@ export default function Navbarhead() {
               
           </NavbarContent>
           <NavbarContent as="div" className="items-center" justify="end">
-            <SetLanguageButton/>
+            {/* <SetLanguageButton/> */}
             <ThemeSwitcher/>
             {session ? 
             (<Dropdown placement="bottom-end" className="font-abeezee">
