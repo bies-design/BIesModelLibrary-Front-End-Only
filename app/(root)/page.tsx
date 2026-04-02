@@ -161,13 +161,13 @@ const Home = () => {
                   <button 
                     key={item.id}
                     onClick={() => {setIsSelectId(item.id)}}
-                    className={`relative transition-all bg-black/20 flex flex-col justify-center items-center gap-2 rounded-[8px] h-full w-[20%] min-w-[61px] hover:cursor-pointer hover-lift font-abeezee text-sm text-[#B8B8B8]
-                      ${isSelected ? "p-[1px] bg-gradient-to-r from-pink-500 to-purple-500":"border-1 border-[#B8B8B8]"}
+                    className={`glass-panel relative transition-all bg-black/20 flex flex-col justify-center items-center gap-2 rounded-[8px] h-full w-[20%] min-w-[61px] hover:cursor-pointer hover-lift font-abeezee text-sm text-[#B8B8B8]
+                      ${isSelected ? "p-[1px] bg-gradient-to-r from-pink-500/50 to-purple-500/60 dark:from-pink-500 dark:to-purple-500":"border-1 border-[#B8B8B8]"}
                     `}     
                   >
                     <div className={`
-                      w-full h-full rounded-[7px] flex flex-col justify-center items-center gap-2
-                      ${isSelected ? "bg-[#18181B]" : ""} 
+                      w-full h-full rounded-[7px] text-gray-600 dark:text-gray-400 flex flex-col justify-center items-center gap-2
+                      ${isSelected ? " bg-white/20 dark:bg-black/80" : ""} 
                     `}>
                       <item.icon 
                         height={30}

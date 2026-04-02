@@ -495,6 +495,8 @@ const Teams = () => {
                 <div className=" flex flex-col md:flex-row gap-2 min-w-[300px]">
                     <Select 
                         aria-label="Search Type"
+                        labelPlacement='inside'
+                        label="Search Type"
                         defaultSelectedKeys={["username"]}
                         className="md:min-w-[130px]"
                         onChange={(e) => {
@@ -522,7 +524,7 @@ const Teams = () => {
                         className="rounded-xl px-2 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm outline-none transition-colors"
                     />
                 </div>
-                <div className='flex gap-3'>
+                <div className='flex max-sm:w-full  items-start gap-2'>
                     <button onClick={() => setIsEditMode(!isEditMode)} className={`${hasEditPermission ? 'block' : 'hidden'} hover-lift flex items-center gap-2 px-4 py-2  ${isEditMode ? 'bg-[#640a0a]' : 'bg-[#e11d48]'} text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm font-medium transition-colors`}>
                         <Edit2 className="w-4 h-6" /> {isEditMode ? 'Finish Edit' : 'Edit'}
                     </button>
@@ -641,7 +643,7 @@ const Teams = () => {
             </div>
 
             {/* 列表顯示區 */}
-            <div className="w-full flex flex-col md:flex-row gap-x-12 gap-y-8 mt-4">
+            <div className="w-full flex flex-col lg:flex-row gap-x-12 gap-y-8 mt-4">
                 <div className="flex flex-col flex-1">
                     <ListHeader />
                     <div className="flex flex-col gap-1">

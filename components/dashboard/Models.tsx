@@ -165,7 +165,7 @@ const Models = (props: Props) => {
             </div>
 
             {/* 工具列 */}
-            <div className="flex flex-wrap items-center justify-start gap-3 mt-2">
+            <div className="flex flex-wrap items-start justify-start gap-3 mt-2">
                 <div className="relative flex-1 min-w-[200px] max-w-xs">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input 
@@ -173,14 +173,16 @@ const Models = (props: Props) => {
                         placeholder="Search posts..."
                         value={inputValue}
                         onChange={(e) => {setInputValue(e.target.value)}} 
-                        className="w-full h-10 rounded-xl pl-9 pr-4 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm"
+                        className="w-full h-14 rounded-xl pl-9 pr-4 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm"
                     />
                 </div>
                 {activeTab === 'Team' && (
                     <Select 
                         aria-label="Choose a team: " 
                         placeholder="Select a team"
-                        className="max-w-xs h-10"
+                        labelPlacement='inside'
+                        label="Team"
+                        className="max-w-xs h-10 mb-4"
                         classNames={{
                             base:`md:w-[140px]`,
                             trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
@@ -207,7 +209,9 @@ const Models = (props: Props) => {
                 <Select 
                     aria-label="Choose a category : " 
                     placeholder="Select a category"
-                    className="max-w-xs h-10"
+                    labelPlacement='inside'
+                    label="Category"
+                    className="max-w-xs h-10 mb-4"
                     classNames={{
                         trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
                         listbox: "bg-[#27272A]", // 下拉選單整體的背景
@@ -228,7 +232,9 @@ const Models = (props: Props) => {
                 <Select 
                     aria-label="order by : " 
                     placeholder="order by"
-                    className="max-w-30 h-10"
+                    labelPlacement='inside'
+                    label="Order By"
+                    className="max-w-30 h-10 mb-4"
                     classNames={{
                         trigger: "bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] rounded-xl text-white data-[hover=true]:bg-gray-600",
                         listbox: "bg-[#27272A]", // 下拉選單整體的背景
