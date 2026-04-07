@@ -40,7 +40,7 @@ export const FloatingProgress = () => {
     return (
         <div className="fixed bottom-6 right-6 z-[9999] animate-slide-in-bottom">
 
-            <Card className="max-w-[380px] shadow-2xl border border-default-200 bg-[#18181B] text-white">
+            <Card className="w-[30dvw] max-w-[300px] min-w-[250px] shadow-2xl border border-default-200 bg-[#18181B] text-white">
                 
                 {/* Header: 標題與全部取消 */}
                 <div className="px-4 py-3 border-b border-default-100/10 flex justify-between items-center bg-[#27272A]">

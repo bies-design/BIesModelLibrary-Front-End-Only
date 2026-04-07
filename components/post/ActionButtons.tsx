@@ -63,7 +63,13 @@ export default function ActionButtons({ post }: { post: any }) {
                 return; // 中斷後續邏輯
             }
 
-            if (!res.ok) throw new Error("Failed to get URL");
+            if (res.status === 403) {
+                const data = await res.json();
+                addToast({ description: data.error || "權限不足，無法下載", color: "warning" });
+                return;
+            }
+
+            if (!res.ok) throw new Error("伺服器錯誤，無法取得下載連結");
 
             const data = await res.json();
             
@@ -77,7 +83,7 @@ export default function ActionButtons({ post }: { post: any }) {
                 a.remove();
                 
                 addToast({
-                    description: `Starting download: ${fileName}`,
+                    description: `開始下載: ${fileName}`,
                     color: "success"
                 });
             }
