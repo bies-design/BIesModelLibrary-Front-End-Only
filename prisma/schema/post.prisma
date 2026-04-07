@@ -29,6 +29,9 @@ model Post {
   teamId     String?
   team  Team? @relation(fields: [teamId], references: [id], onDelete: SetNull) //當團隊解散所有的TeamMember會自動清空
 
+  // 貼文可以同時被掛載到無數個不同的ProjectNode上 可以複用
+  nodes ProjectNode[]
+
   comments Comment[]
   
   createdAt DateTime @default(now())

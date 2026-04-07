@@ -135,10 +135,48 @@ model Post {
   teamId String?
   team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull) //當團隊解散所有的TeamMember會自動清空
 
+  // 貼文可以同時被掛載到無數個不同的ProjectNode上 可以複用
+  nodes ProjectNode[]
+
   comments Comment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // 權限與擁有者 (可根據你現有系統調整)
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // 👥 關聯到 Team (專案所屬團隊，如果是個人專案則為 null)
+  teamId String?
+  team   Team?         @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  // 一個專案包含多個節點
+  nodes  ProjectNode[]
+}
+
+model ProjectNode {
+  id   String @id @default(uuid())
+  name String // 例如："A棟", "2F機房", "冰水主機"
+
+  // 綁定所屬的 Project (當專案刪除時，底下節點一併刪除)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // 樹狀結構自我關聯
+  parentId String? // 如果是 null，代表是該專案的最頂層節點
+  parent   ProjectNode?  @relation("NodeHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children ProjectNode[] @relation("NodeHierarchy")
+
+  // 🔗 關聯到你現有的 Post (模型 / PDF)
+  // 一個節點可以掛載多個 Post，例如一個「2F機房」節點可以掛一個 3D 模型 Post 和三個 PDF 圖紙 Post
+  posts Post[]
 }
 
 model Team {
@@ -150,9 +188,9 @@ model Team {
   // 關聯
   members     TeamMember[] // 團隊成員與他們的權限
   posts       Post[] // 該團隊擁有的所有模型貼文
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  projects    Project[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 enum TeamRole {
@@ -215,8 +253,10 @@ model User {
 
   pdfs Pdf[]
 
-  posts     Post[]
-  comments  Comment[]
+  posts    Post[]
+  comments Comment[]
+
+  projects  Project[]
   // 對應 timestamps: true
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -45,7 +45,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
         uppyInstance.use(Tus, {
         endpoint: process.env.NEXT_PUBLIC_TUS_URL, // 指向你的 Tus Server
-        chunkSize: 5 * 1024 * 1024,
+        chunkSize: 10 * 1024 * 1024,
         retryDelays: [0, 1000, 3000, 5000],
         removeFingerprintOnSuccess: true,
         });

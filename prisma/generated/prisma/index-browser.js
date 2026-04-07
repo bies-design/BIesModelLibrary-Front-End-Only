@@ -180,6 +180,23 @@ exports.Prisma.PostScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ownerId: 'ownerId',
+  teamId: 'teamId'
+};
+
+exports.Prisma.ProjectNodeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  projectId: 'projectId',
+  parentId: 'parentId'
+};
+
 exports.Prisma.TeamScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -248,6 +265,8 @@ exports.Prisma.ModelName = {
   Model: 'Model',
   Pdf: 'Pdf',
   Post: 'Post',
+  Project: 'Project',
+  ProjectNode: 'ProjectNode',
   Team: 'Team',
   TeamMember: 'TeamMember',
   User: 'User'

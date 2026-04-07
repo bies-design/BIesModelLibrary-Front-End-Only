@@ -160,11 +160,11 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                             <div className="grid grid-cols-[120px_1fr] gap-y-3 text-sm">
                                 
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent mr-px]">Last update</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.createdAt)}</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.updatedAt)}</span>
                                 
                                 
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Published</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.updatedAt)}</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.createdAt)}</span>
                                 
                                 
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Category</span>
