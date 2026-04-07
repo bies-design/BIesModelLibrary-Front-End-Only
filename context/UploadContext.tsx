@@ -61,7 +61,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         if(socketRef.current?.connected) return;
 
         const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL,{
-            transports:['polling','websocket'],
+            transports:['websocket'],
             withCredentials: true,
             reconnectionAttempts: 5,
         });
