@@ -1,7 +1,7 @@
 // src/context/UploadContext.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import Uppy, { Uppy as UppyType } from "@uppy/core";
 import Tus from "@uppy/tus";
 import { io, Socket } from "socket.io-client";
@@ -35,19 +35,22 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
     // 用來快速反查 ID 的 Ref (不會觸發渲染，專門給 Socket 用)
     const tusIdMap = React.useRef<Record<string,{id:string, name:string}>>({});
 
+    // 用來儲存socket io 連線 避免重新渲染連線斷線過度重建
+    const socketRef = useRef<Socket | null>(null);
+
     // 1. 初始化 Uppy
     const [uppy] = useState(() => {
         const uppyInstance = new Uppy({
-        id: 'uppy-global',
-        autoProceed: true,
-        restrictions: { allowedFileTypes: ['.ifc'] },
+            id: 'uppy-global',
+            autoProceed: true,
+            restrictions: { allowedFileTypes: ['.ifc'] },
         });
 
         uppyInstance.use(Tus, {
-        endpoint: process.env.NEXT_PUBLIC_TUS_URL, // 指向你的 Tus Server
-        chunkSize: 10 * 1024 * 1024,
-        retryDelays: [0, 1000, 3000, 5000],
-        removeFingerprintOnSuccess: true,
+            endpoint: process.env.NEXT_PUBLIC_TUS_URL, // 指向你的 Tus Server
+            chunkSize: 10 * 1024 * 1024,
+            retryDelays: [0, 1000, 3000, 5000],
+            removeFingerprintOnSuccess: true,
         });
 
         return uppyInstance;
@@ -55,12 +58,18 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 2. WebSocket 監聽 (處理轉檔通知)
     useEffect(() => {
+        if(socketRef.current?.connected) return;
+
         const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL,{
-            transports:['polling','websocket']
+            transports:['polling','websocket'],
+            withCredentials: true,
+            reconnectionAttempts: 5,
         });
 
+        socketRef.current = socket;
+
         socket.on("connect", () => {
-        console.log("🔌 Socket connected");
+            console.log("🔌 Socket connected");
         });
         // 監聽進度更新
         socket.on("conversion-progress", (data: { fileId: string, progress: number }) => {
@@ -142,7 +151,9 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         return () => {
+            console.log("正在清理 Socket 連線");
             socket.disconnect();
+            socketRef.current = null;
         };
     }, []);
 
