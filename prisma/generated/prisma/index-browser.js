@@ -140,6 +140,22 @@ exports.Prisma.CommentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FileRecordScalarFieldEnum = {
+  id: 'id',
+  shortId: 'shortId',
+  name: 'name',
+  fileId: 'fileId',
+  category: 'category',
+  extension: 'extension',
+  size: 'size',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  uploaderId: 'uploaderId',
+  postId: 'postId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ModelScalarFieldEnum = {
   id: 'id',
   shortId: 'shortId',
@@ -158,6 +174,15 @@ exports.Prisma.PdfScalarFieldEnum = {
   name: 'name',
   fileId: 'fileId',
   uploaderId: 'uploaderId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PhaseScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  sortOrder: 'sortOrder',
+  projectId: 'projectId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -184,17 +209,23 @@ exports.Prisma.ProjectScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  client: 'client',
+  location: 'location',
+  coverImage: 'coverImage',
+  status: 'status',
+  teamId: 'teamId',
+  creatorId: 'creatorId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  ownerId: 'ownerId',
-  teamId: 'teamId'
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProjectNodeScalarFieldEnum = {
+exports.Prisma.ProjectAssetScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  sortOrder: 'sortOrder',
   projectId: 'projectId',
-  parentId: 'parentId'
+  phaseId: 'phaseId',
+  postId: 'postId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.TeamScalarFieldEnum = {
@@ -240,11 +271,26 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.FileCategory = exports.$Enums.FileCategory = {
+  MODEL_3D: 'MODEL_3D',
+  DRAWING: 'DRAWING',
+  DOCUMENT: 'DOCUMENT',
+  IMAGE: 'IMAGE',
+  OTHER: 'OTHER'
+};
+
 exports.ProcessStatus = exports.$Enums.ProcessStatus = {
   uploading: 'uploading',
   processing: 'processing',
   completed: 'completed',
   error: 'error'
+};
+
+exports.ProjectStatus = exports.$Enums.ProjectStatus = {
+  ACTIVE: 'ACTIVE',
+  ON_HOLD: 'ON_HOLD',
+  COMPLETED: 'COMPLETED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.TeamRole = exports.$Enums.TeamRole = {
@@ -262,11 +308,13 @@ exports.Role = exports.$Enums.Role = {
 exports.Prisma.ModelName = {
   Account: 'Account',
   Comment: 'Comment',
+  FileRecord: 'FileRecord',
   Model: 'Model',
   Pdf: 'Pdf',
+  Phase: 'Phase',
   Post: 'Post',
   Project: 'Project',
-  ProjectNode: 'ProjectNode',
+  ProjectAsset: 'ProjectAsset',
   Team: 'Team',
   TeamMember: 'TeamMember',
   User: 'User'
