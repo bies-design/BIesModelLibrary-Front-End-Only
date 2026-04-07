@@ -196,7 +196,7 @@ const ModelUploadSidebar = ({
     const newFiles: FileItem[] = Array.from(uploadedFiles).map(file => {
       const extendedFile = file as File & {dbId?: string, fileId?: string};
       const extension = file.name.split('.').pop()?.toLowerCase();
-      const type = (extension === 'ifc' || extension === 'frag') ? '3d' : 'pdf';
+      const type = (extension === 'ifc' || extension === 'frag' ) ? '3d' : 'pdf';
       // testing for telling whether the file loader work
       console.log(`File uploaded: ${file.name}, Extension: .${extension}, Type: ${type}`);
       
@@ -220,7 +220,6 @@ const ModelUploadSidebar = ({
         //   console.log(`[Local Mode] 檔案 ${file.name} 跳過雲端上傳，僅交由本地瀏覽器解析`);
         // }
       }
-
       return {
         dbId: extendedFile.dbId || Math.random().toString(36).substr(2, 9),
         fileId:extendedFile.fileId,
@@ -243,6 +242,36 @@ const ModelUploadSidebar = ({
       onSelectFile(newFiles[0]);
     }
   };
+//   const handleGltfFile = async (uploadedFiles: FileList | null) => {
+//     // 確保有檔案傳入
+//     if (!uploadedFiles || uploadedFiles.length === 0) return;
+    
+//     // 取出第一個檔案
+//     const file = uploadedFiles[0];
+
+//     try {
+//       // 修正點：這裡必須改為 <ArrayBuffer>，因為你下面 resolve 的是 ArrayBuffer
+//       const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//           if (e.target?.result instanceof ArrayBuffer) {
+//             resolve(e.target.result);
+//           } else {
+//             reject(new Error("未能成功轉換為 ArrayBuffer"));
+//           }
+//         };
+//         reader.onerror = (err) => reject(err);
+//         reader.readAsArrayBuffer(file);
+//       });
+//       console.log("buffer在這",buffer);
+//       onLoadModel(buffer,"test");
+
+//     } catch (error) {
+//       // 順手修正：把錯誤訊息的 Base64 改成 ArrayBuffer
+//       console.error('[測試] 轉換 ArrayBuffer 失敗:', error);
+//     }
+// };
+
   // 當使用者按下垃圾桶時：只做「紀錄 ID」跟「打開 Modal」
   const openDeleteModal = (name: string,id:string) => {
     setModelToDelete(name); // 記住要刪誰
@@ -552,7 +581,7 @@ const ModelUploadSidebar = ({
             aria-label="Upload 3D models or PDF files"
             className="hidden"
             multiple
-            accept={postType === '3D' ? ".ifc,.frag":".pdf"}
+            accept={postType === '3D' ? ".ifc,.frag,.gltf":".pdf"}
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>
@@ -859,7 +888,11 @@ const ModelUploadSidebar = ({
       <Modal 
         isOpen={isOpen} 
         onOpenChange={onOpenChange}
+        placement='center'
         className="dark text-white bg-[#18181B] border border-[#27272A]"
+        classNames={{
+          closeButton:"hover:bg-white/10 active:bg-white/20 text-2xl p-3"
+        }}
         backdrop="blur"
       >
         <ModalContent>
@@ -874,10 +907,19 @@ const ModelUploadSidebar = ({
                 </p>
               </ModalBody>
               <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
+                <Button 
+                  color="default" 
+                  variant="flat" 
+                  onPress={onClose}
+                  className='text-white hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                >
                   Cancel
                 </Button>
-                <Button color="danger" onPress={handleConfirmDelete}>
+                <Button 
+                  color="danger" 
+                  onPress={handleConfirmDelete}
+                  className='hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                >
                   Delete
                 </Button>
               </ModalFooter>

@@ -223,7 +223,7 @@ const HeroAnimation = () => {
                         {/* 修改 1: 光球 (圓形 + 濾鏡) */}
                         <circle r="5" fill="#41D1FF" filter="url(#glow)" />
                         
-                        {/* 文字標籤 (跟隨球體) */}
+                        {/* 文字標籤 (跟隨球體)
                         <text 
                             x="0" 
                             y="-12" // 讓文字浮在球上方
@@ -234,7 +234,7 @@ const HeroAnimation = () => {
                             style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}
                         >
                             {item.label}
-                        </text>
+                        </text> */}
                     </g>
                 </React.Fragment>
                 );

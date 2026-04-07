@@ -109,7 +109,8 @@ const Home = () => {
 
         {/* 2. 替換掉原本的文字 div */}
         {/* 調整 mt 來控制與上方的距離，w-full 確保寬度 */}
-        <div className='flex flex-col items-center mt-10 w-full overflow-hidden max-sm:hidden'>
+        <div className='hidden md:flex md:flex-col items-center mt-10 w-full overflow-hidden '>
+            {/* <DataFlowLayout/> */}
             <HeroAnimation/>
         </div>
         
