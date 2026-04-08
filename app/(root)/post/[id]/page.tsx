@@ -1,6 +1,6 @@
 // app/post/[shortId]/page.tsx
 import { getPostDetail, getRelatedPostsByIds } from '@/lib/actions/post.action';
-import { notFound } from 'next/navigation';
+import { notFound, forbidden } from 'next/navigation';
 import { ArrowDownToLine, ChevronRight, Dot, File, Rotate3D, Star } from 'lucide-react';
 import Link from 'next/link';
 import MediaGallery from '@/components/post/MediaGallery';
@@ -22,7 +22,14 @@ export default async function PostDetailPage({
     // 在這邊把preaAssingedimage url傳入
     const result = await getPostDetail(id);
 
-    // 執行驗證邏輯 mark.hsieh++
+    // 如果找不到貼文，導向 404 頁面
+    if (!result.success || !result.data) {
+        notFound();
+    }
+
+    // 驗證邏輯：優先驗證 URL 中的 token，如果沒有或無效，再檢查 session cookie
+    // mark.hsieh++
+    let isAuthorized = false; // 預設為未授權
     if (token && typeof token === 'string') {
         const isValid = await verifyToken(token, id); 
         console.log("Token 驗證結果:", isValid);
@@ -40,13 +47,10 @@ export default async function PostDetailPage({
                     </div>
                 </section>
             );
+        } else {
+            isAuthorized = true; // token 有效，授權訪問
         }
-    }
-
-    // 如果找不到貼文，導向 404 頁面
-    if (!result.success || !result.data) {
-        notFound();
-    }
+    } 
 
     const post = result.data;
 
