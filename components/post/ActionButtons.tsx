@@ -102,7 +102,12 @@ export default function ActionButtons({ post }: { post: any }) {
         // 直接在函式內部抓取當前的網址，避開 React Event 參數衝突
 
         // 增加參數用於管理和處理token mark.hsieh ++
-        let errorCode = {
+        // 定義結構
+        interface ErrorResponse {
+            number: number;  // 在 TS 中，整數與浮點數統一為 number
+            message: string | null;
+        }
+        let errorCode: ErrorResponse = {
             number: 0,
             message: ""
         }; // 用於追蹤錯誤類型的變數，0 代表無錯誤
