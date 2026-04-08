@@ -35,7 +35,7 @@ export default function MediaGallery({ post }: { post: any }) {
         setIs3DLoading(true);
         // 等待下一幀以確保 Viewer3D 已掛載，然後載入模型
         setTimeout(async () => {
-            for (const model of post.models) {
+            for (const model of post.files) {
                 try {
                     console.log(`正在透過 API 抓取模型數據: ${model.name}`);
                     console.warn("現在抓取model fileId為",model.fileId);

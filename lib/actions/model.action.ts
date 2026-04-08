@@ -67,8 +67,8 @@ export async function deleteModel(modelFileId: string) {
             // 這裡假設 Tus 存的是純 ID，或者你可以試試 `${fileId}.ifc`
             deleteOps.push(
                 s3Client.send(new DeleteObjectCommand({
-                Bucket: process.env.S3_IFC_BUCKET,
-                Key: fileId, // 或者是 `${fileId}.ifc`，取決於 Tus 怎麼存
+                    Bucket: process.env.S3_IFC_BUCKET,
+                    Key: fileId, // 或者是 `${fileId}.ifc`，取決於 Tus 怎麼存
                 }))
             );
 

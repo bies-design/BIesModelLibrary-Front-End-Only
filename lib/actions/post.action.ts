@@ -497,6 +497,7 @@ export const getPostDetail = async (shortId: string) => {
             include: {
                 models: true, 
                 pdfIds: true, // 依照你先前的命名，這裡是 pdfIds
+                files:true,
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
                 },

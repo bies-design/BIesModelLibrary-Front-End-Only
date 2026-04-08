@@ -43,7 +43,6 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         const uppyInstance = new Uppy({
             id: 'uppy-global',
             autoProceed: true,
-            restrictions: { allowedFileTypes: ['.ifc'] },
         });
 
         uppyInstance.use(Tus, {
@@ -221,10 +220,12 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         uppy.on('upload-success', (file) => {
         if (!file) return;
         console.log("🔍 [Debug] File Object:", file);
-        console.log(`🚀 [Uppy] ${file.name} 上傳 MinIO 完畢，等待轉檔...`);
+
         const uploadUrlFromTus = file.tus?.uploadUrl;
         const fileid = uploadUrlFromTus?.split('/').pop();
-        console.log(`🚀 [Uppy] 提取出fileid${fileid}，提供後續比對使用 填入tusId `);
+        // 判斷是否為需要轉檔的 IFC 檔案
+        const isIfc = file.name.toLowerCase().endsWith('.ifc');
+        console.log(`🚀 [Uppy] ${file.name} 上傳完畢。 是否需要轉檔: ${isIfc ? "Yes":"NO"}`);
         // 紀錄 TusId 對應到的 UppyId
         if(fileid) tusIdMap.current[fileid] = { id:file.id, name: file.name };
 

@@ -1,9 +1,9 @@
 // 1. 統整所有檔案類型的 Enum
 enum FileCategory {
     MODEL_3D  // .ifc, .3dm, .obj, .gltf
-    DRAWING   // .dwg, CAD 圖紙
+    DRAWING   // .dwg, .pdf, .png
     DOCUMENT  // .pdf, .docx, .xlsx
-    IMAGE     // .jpg, .png
+    IMAGE     // .jpg, .png, .webp
     OTHER     // 其他未知格式
 }
 
@@ -13,7 +13,7 @@ model FileRecord {
     shortId      String?       @unique // 如果有單檔分享需求可留
     name         String        // 原始檔名 (e.g., "A棟結構.ifc", "報價單.pdf")
     fileId       String        @unique // MinIO / Tus ID (關鍵關聯)
-    
+    viewerFileId String?       
     category     FileCategory  @default(OTHER) // 大分類
     extension    String?       // 副檔名紀錄 (e.g., ".3dm", ".pdf")
     size         String        @default("") // 檔案大小 (bytes)
@@ -23,11 +23,11 @@ model FileRecord {
 
     // 關聯到上傳者
     uploaderId   String
-    uploader     User          @relation(fields: [uploaderId], references: [id])
+    uploader     User          @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
     // 關聯到 Post：一個檔案屬於一篇 Post
     postId       String?       
-    post         Post?         @relation(fields: [postId], references: [id], onDelete: Cascade)
+    post         Post?         @relation(fields: [postId], references: [id], onDelete: SetNull)
 
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt

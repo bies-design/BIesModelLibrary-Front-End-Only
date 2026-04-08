@@ -4572,6 +4572,7 @@ export namespace Prisma {
     shortId: string | null
     name: string | null
     fileId: string | null
+    viewerFileId: string | null
     category: $Enums.FileCategory | null
     extension: string | null
     size: string | null
@@ -4588,6 +4589,7 @@ export namespace Prisma {
     shortId: string | null
     name: string | null
     fileId: string | null
+    viewerFileId: string | null
     category: $Enums.FileCategory | null
     extension: string | null
     size: string | null
@@ -4604,6 +4606,7 @@ export namespace Prisma {
     shortId: number
     name: number
     fileId: number
+    viewerFileId: number
     category: number
     extension: number
     size: number
@@ -4622,6 +4625,7 @@ export namespace Prisma {
     shortId?: true
     name?: true
     fileId?: true
+    viewerFileId?: true
     category?: true
     extension?: true
     size?: true
@@ -4638,6 +4642,7 @@ export namespace Prisma {
     shortId?: true
     name?: true
     fileId?: true
+    viewerFileId?: true
     category?: true
     extension?: true
     size?: true
@@ -4654,6 +4659,7 @@ export namespace Prisma {
     shortId?: true
     name?: true
     fileId?: true
+    viewerFileId?: true
     category?: true
     extension?: true
     size?: true
@@ -4743,6 +4749,7 @@ export namespace Prisma {
     shortId: string | null
     name: string
     fileId: string
+    viewerFileId: string | null
     category: $Enums.FileCategory
     extension: string | null
     size: string
@@ -4776,6 +4783,7 @@ export namespace Prisma {
     shortId?: boolean
     name?: boolean
     fileId?: boolean
+    viewerFileId?: boolean
     category?: boolean
     extension?: boolean
     size?: boolean
@@ -4794,6 +4802,7 @@ export namespace Prisma {
     shortId?: boolean
     name?: boolean
     fileId?: boolean
+    viewerFileId?: boolean
     category?: boolean
     extension?: boolean
     size?: boolean
@@ -4812,6 +4821,7 @@ export namespace Prisma {
     shortId?: boolean
     name?: boolean
     fileId?: boolean
+    viewerFileId?: boolean
     category?: boolean
     extension?: boolean
     size?: boolean
@@ -4830,6 +4840,7 @@ export namespace Prisma {
     shortId?: boolean
     name?: boolean
     fileId?: boolean
+    viewerFileId?: boolean
     category?: boolean
     extension?: boolean
     size?: boolean
@@ -4841,7 +4852,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type FileRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "category" | "extension" | "size" | "status" | "errorMessage" | "uploaderId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileRecord"]>
+  export type FileRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "viewerFileId" | "category" | "extension" | "size" | "status" | "errorMessage" | "uploaderId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileRecord"]>
   export type FileRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     uploader?: boolean | UserDefaultArgs<ExtArgs>
     post?: boolean | FileRecord$postArgs<ExtArgs>
@@ -4866,6 +4877,7 @@ export namespace Prisma {
       shortId: string | null
       name: string
       fileId: string
+      viewerFileId: string | null
       category: $Enums.FileCategory
       extension: string | null
       size: string
@@ -5304,6 +5316,7 @@ export namespace Prisma {
     readonly shortId: FieldRef<"FileRecord", 'String'>
     readonly name: FieldRef<"FileRecord", 'String'>
     readonly fileId: FieldRef<"FileRecord", 'String'>
+    readonly viewerFileId: FieldRef<"FileRecord", 'String'>
     readonly category: FieldRef<"FileRecord", 'FileCategory'>
     readonly extension: FieldRef<"FileRecord", 'String'>
     readonly size: FieldRef<"FileRecord", 'String'>
@@ -16436,6 +16449,7 @@ export namespace Prisma {
     shortId: 'shortId',
     name: 'name',
     fileId: 'fileId',
+    viewerFileId: 'viewerFileId',
     category: 'category',
     extension: 'extension',
     size: 'size',
@@ -16884,6 +16898,7 @@ export namespace Prisma {
     shortId?: StringNullableFilter<"FileRecord"> | string | null
     name?: StringFilter<"FileRecord"> | string
     fileId?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
     category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
     extension?: StringNullableFilter<"FileRecord"> | string | null
     size?: StringFilter<"FileRecord"> | string
@@ -16902,6 +16917,7 @@ export namespace Prisma {
     shortId?: SortOrderInput | SortOrder
     name?: SortOrder
     fileId?: SortOrder
+    viewerFileId?: SortOrderInput | SortOrder
     category?: SortOrder
     extension?: SortOrderInput | SortOrder
     size?: SortOrder
@@ -16923,6 +16939,7 @@ export namespace Prisma {
     OR?: FileRecordWhereInput[]
     NOT?: FileRecordWhereInput | FileRecordWhereInput[]
     name?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
     category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
     extension?: StringNullableFilter<"FileRecord"> | string | null
     size?: StringFilter<"FileRecord"> | string
@@ -16941,6 +16958,7 @@ export namespace Prisma {
     shortId?: SortOrderInput | SortOrder
     name?: SortOrder
     fileId?: SortOrder
+    viewerFileId?: SortOrderInput | SortOrder
     category?: SortOrder
     extension?: SortOrderInput | SortOrder
     size?: SortOrder
@@ -16963,6 +16981,7 @@ export namespace Prisma {
     shortId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
     name?: StringWithAggregatesFilter<"FileRecord"> | string
     fileId?: StringWithAggregatesFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
     category?: EnumFileCategoryWithAggregatesFilter<"FileRecord"> | $Enums.FileCategory
     extension?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
     size?: StringWithAggregatesFilter<"FileRecord"> | string
@@ -17837,6 +17856,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -17853,6 +17873,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -17869,6 +17890,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -17885,6 +17907,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -17901,6 +17924,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -17917,6 +17941,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -17931,6 +17956,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -18931,6 +18957,7 @@ export namespace Prisma {
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
+    viewerFileId?: SortOrder
     category?: SortOrder
     extension?: SortOrder
     size?: SortOrder
@@ -18947,6 +18974,7 @@ export namespace Prisma {
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
+    viewerFileId?: SortOrder
     category?: SortOrder
     extension?: SortOrder
     size?: SortOrder
@@ -18963,6 +18991,7 @@ export namespace Prisma {
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
+    viewerFileId?: SortOrder
     category?: SortOrder
     extension?: SortOrder
     size?: SortOrder
@@ -22080,6 +22109,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -22095,6 +22125,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -22325,6 +22356,7 @@ export namespace Prisma {
     shortId?: StringNullableFilter<"FileRecord"> | string | null
     name?: StringFilter<"FileRecord"> | string
     fileId?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
     category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
     extension?: StringNullableFilter<"FileRecord"> | string | null
     size?: StringFilter<"FileRecord"> | string
@@ -23399,6 +23431,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -23414,6 +23447,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -23898,6 +23932,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -23996,6 +24031,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -24011,6 +24047,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -24026,6 +24063,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -24358,6 +24396,7 @@ export namespace Prisma {
     shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
     category?: $Enums.FileCategory
     extension?: string | null
     size?: string
@@ -24524,6 +24563,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -24539,6 +24579,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
@@ -24554,6 +24595,7 @@ export namespace Prisma {
     shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
     extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string

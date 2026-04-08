@@ -14,6 +14,6 @@ model ProjectAsset {
     post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     createdAt   DateTime @default(now())
-    // 防呆：同一個專案的同一個階段下，不能重複加入同一篇 Post
+    
     @@unique([projectId, phaseId, postId])
 }

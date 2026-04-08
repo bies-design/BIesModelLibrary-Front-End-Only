@@ -326,15 +326,7 @@ const Upload = () => {
                                 onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
                                 onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
                                 onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
-                                onExportModelFrag={async (modelId) => {
-                                    if (viewerRef.current) {
-                                        return viewerRef.current.exportModelFrag(modelId);
-                                    }
-                                    return null;
-                                }}
                                 onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
-                                postType={postType}
-                                setPostType={setPostType}
                             />
                         </div>
                         {step === 2 && (

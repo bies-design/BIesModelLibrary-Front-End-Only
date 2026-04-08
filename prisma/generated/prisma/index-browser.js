@@ -145,6 +145,7 @@ exports.Prisma.FileRecordScalarFieldEnum = {
   shortId: 'shortId',
   name: 'name',
   fileId: 'fileId',
+  viewerFileId: 'viewerFileId',
   category: 'category',
   extension: 'extension',
   size: 'size',
