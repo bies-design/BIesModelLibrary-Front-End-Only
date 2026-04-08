@@ -49,6 +49,16 @@ S3_ENDPOINT_SERVER="你的儲存體伺服器網址"
 NEXT_PUBLIC_S3_ENDPOINT_SERVER="你的儲存體伺服器網址"
 NEXT_PUBLIC_S3_IMAGES_BUCKET="你的圖片Bucket名稱"
 
+# --- Share Link Manage ---
+# 除非有必要調整複雜度才改變，不然最好的保護就是不要外洩設定
+LINK_EXPIRATION_ALGORITHM=aes-256-cbc
+# 可以按照需要改變
+LINK_EXPIRATION_HOURS=24
+# 產生的 64 位 Hex 字串，可使用 openssl rand -hex 32 生成
+LINK_EXPIRATION_TOKEN_SECRET=????
+# 此特徵也能作為link出處之用，會丟在瀏覽器的開發者模式中的 log
+LINK_EXPIRATION_FEATURE=XXXX
+
 ```
 
 ## 本專案目前使用 Coolify 進行容器化部署，請注意以下伺服器與建置設定：

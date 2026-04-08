@@ -1,19 +1,47 @@
 // app/post/[shortId]/page.tsx
-import React from 'react';
 import { getPostDetail, getRelatedPostsByIds } from '@/lib/actions/post.action';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { ArrowDownToLine, ChevronRight, Dot, Download, File, Rotate3D, Share2, Star } from 'lucide-react';
+import { ArrowDownToLine, ChevronRight, Dot, File, Rotate3D, Star } from 'lucide-react';
 import Link from 'next/link';
 import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
 import CommentSection from '@/components/post/CommentSection';
 import PostCard from '@/components/cards/PostCard';
+import { verifyToken } from '@/app/api/generate-token/verifyToken';
 
-export default async function PostDetailPage({ params }:{ params:Promise<{ id:string }> }) {
+export default async function PostDetailPage({ 
+    params, 
+    searchParams     // 為了抓附在URL上的 token. mark.hsieh++
+}:{ 
+    params:Promise<{ id:string }> 
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>  // mark.hsieh++ - Promise 版本的 searchParams，使用 async/await 來獲取 searchParams 的值 
+}) {
     const { id } = await params;
+    const { token } = await searchParams; // mark.hsieh ++ - ?token=xxx
+
     // 在這邊把preaAssingedimage url傳入
     const result = await getPostDetail(id);
+
+    // 執行驗證邏輯 mark.hsieh++
+    if (token && typeof token === 'string') {
+        const isValid = await verifyToken(token, id); 
+        console.log("Token 驗證結果:", isValid);
+
+        if (!isValid.valid) {
+            // token 無效，導向 403 頁面或顯示錯誤訊息
+            const errorReason = isValid.reason || "Invalid or expired token.";
+            const errorMessage = isValid.message || "You do not have permission to access this content.";
+            return (
+                <section className="container mx-auto py-10">
+                    <div className="bg-danger-50 border-1 border-danger-200 p-6 rounded-xl">
+                        <h2 className="text-danger font-bold text-xl">Access Denied</h2>
+                        <p className="text-danger-600 mt-2">{errorReason}</p>
+                        <p className="text-danger-600 text-sm mt-1">{errorMessage}</p>
+                    </div>
+                </section>
+            );
+        }
+    }
 
     // 如果找不到貼文，導向 404 頁面
     if (!result.success || !result.data) {
