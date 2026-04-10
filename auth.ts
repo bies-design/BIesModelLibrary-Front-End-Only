@@ -189,4 +189,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return session;
         },
     },
+    pages: {
+        signIn:'/sign-in',
+        signOut:'/',
+        error: '/auth/error',
+    }
 });

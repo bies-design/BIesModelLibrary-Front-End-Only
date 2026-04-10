@@ -3,12 +3,13 @@ import React from 'react';
 import { getPostDetail, getRelatedPostsByIds } from '@/lib/actions/post.action';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { ArrowDownToLine, ChevronRight, Dot, Download, File, Rotate3D, Share2, Star } from 'lucide-react';
+import { Box, FileText, Image as ImageIcon, Layers, PenTool, FileBox, ArrowDownToLine, ChevronRight, Dot, Download, File, Rotate3D, Share2, Star } from 'lucide-react';
 import Link from 'next/link';
 import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
 import CommentSection from '@/components/post/CommentSection';
 import PostCard from '@/components/cards/PostCard';
+import ProjectAssociationPills from '@/components/post/ProjectAssociationPills';
 import Footer from '@/components/Footer';
 
 export default async function PostDetailPage({ params }:{ params:Promise<{ id:string }> }) {
@@ -34,6 +35,39 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
         }).format(date);
     }
 
+    const renderTypeIcon = () => {
+        let IconComponent = FileBox; // 預設 Icon
+        let iconColor = "text-gray-400 dark:text-gray-300"; 
+    
+        switch (post.type) {
+            case 'MODEL_3D':
+            case '3D': // 兼容舊資料
+                IconComponent = Box;
+                iconColor = "text-blue-500 dark:text-blue-400";
+                break;
+            case 'DOCUMENT':
+            case '2D': // 兼容舊資料
+                IconComponent = FileText;
+                iconColor = "text-orange-500 dark:text-orange-400";
+                break;
+            case 'DRAWING':
+                IconComponent = PenTool;
+                iconColor = "text-purple-500 dark:text-purple-400";
+                break;
+            case 'IMAGE':
+                IconComponent = ImageIcon;
+                iconColor = "text-pink-500 dark:text-pink-400";
+                break;
+            case 'MIX':
+                IconComponent = Layers; // 🚀 Mix 用圖層的 Icon 感覺很搭
+                iconColor = "text-[#10B981]"; // Emerald green
+                break;
+            default:
+                IconComponent = FileBox;
+            }
+        
+            return <IconComponent className={iconColor} width={16} height={16} strokeWidth={2.5} />;
+    };
     return (
         <div className=" min-h-screen text-[#E4E4E7] pt-12 font-abeezee">
             {/* 頂部麵包屑 (Breadcrumbs) */}
@@ -96,13 +130,13 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                         {/* 標題與基本資訊 */}
                         <div className='font-abeezee'>
                             <div className="font-abeezee glass-panel inline-block text-xs text-black/80 dark:text-white px-3 py-1 rounded-full mb-5">
-                                {post.type === '3D' ? 
-                                    (<div className='flex items-center gap-1'><Rotate3D size={16}/><p>3D model</p></div>)
-                                    :(<div className='flex items-center gap-1'><File size={16}/><p>2D file</p></div>)
-                                }
+                                <div className='flex gap-2 '>
+                                    {renderTypeIcon()} 
+                                    {post.type} post
+                                </div>
                             </div>
                             <h1 className="text-3xl font-abeezee bg-linear-to-b from-white to-[#d1d1da] bg-clip-text text-transparent mb-4 leading-tight">{post.title}</h1>
-                            {/* 分類 */}
+                            {/* 分類
                             <div className="mx-auto mb-6 text-sm text-[#A1A1AA]">
                                 {
                                     post.type === '3D' ? 
@@ -112,7 +146,7 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                                 
                                 <span className="mx-3">{'>'}</span>
                                 <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{post.category || 'none'}</span>
-                            </div>
+                            </div> */}
 
                             <div className="flex items-center gap-4 text-sm text-[#A1A1AA] mb-4">
                                 <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -154,7 +188,14 @@ export default async function PostDetailPage({ params }:{ params:Promise<{ id:st
                         <div className="flex flex-col gap-3">
                             <ActionButtons post={post}/>
                         </div>
-
+                        {/* 專案連結 */}
+                        <div className=''>
+                            <ProjectAssociationPills 
+                                team={post.team} 
+                                associations={post.projectAssets} 
+                            />
+                        </div>
+                        
                         {/* 詳細資料表 */}
                         <div className="font-abeezee text-left">
                             <h3 className="bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent mb-5">Details</h3>

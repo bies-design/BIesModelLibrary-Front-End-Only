@@ -504,16 +504,11 @@ export const getPostDetail = async (shortId: string) => {
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
                 },
-                team:{
-                    select:{
-                        id: true,
-                        name: true,
-                        members:{
-                            select: {
-                                userId: true,
-                                role: true
-                            }
-                        }
+                team:true,
+                projectAssets: {
+                    include: {
+                        project: { select: { id: true, name: true } },
+                        phase: { select: { id: true, name: true } }
                     }
                 }
             },

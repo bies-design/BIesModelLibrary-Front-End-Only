@@ -135,12 +135,20 @@ const ModelUploadSidebar = ({
     fetchUserFilesData();
   }, []);
 
+  const getTechnicalType = (fileName: string): '3d' | 'pdf' | 'other' => {
+      const ext = fileName.split('.').pop()?.toLowerCase();
+      if (['ifc', 'obj', 'gltf', '3dm', 'frag'].includes(ext || '')) return '3d';
+      if (ext === 'pdf') return 'pdf';
+      return 'other';
+  };
+
   // 處理檔案上傳邏輯
   const handleFiles = (uploadedFiles: FileList | null) => {
     if (!uploadedFiles) return;
 
     const newFiles: FileItem[] = Array.from(uploadedFiles).map(file => {
-      // 🚀 關鍵改動：把使用者選的分類塞進 Uppy Metadata
+      const techType = getTechnicalType(file.name);
+      // 把使用者選的分類塞進 Uppy Metadata
       try {
         uppy.addFile({
           name: file.name,
@@ -156,13 +164,15 @@ const ModelUploadSidebar = ({
         console.warn(`[Uppy] 無法加入檔案 (可能已存在):`, err);
       }
 
-      return {
-        dbId: Math.random().toString(36).substr(2, 9),
-        fileId: "", // 還沒上傳完沒有 fileId
-        file,
-        type: uploadTargetCategory === FileCategory.MODEL_3D ? '3d' : 'pdf', 
-        name: file.name
+      const newItem: FileItem = {
+          dbId: Math.random().toString(36).substr(2, 9),
+          fileId: "",
+          file,
+          type: techType, // 🚀 使用精準判定的類別
+          name: file.name
       };
+
+      return newItem;
     });
 
     const updatedFiles = [...files, ...newFiles];
@@ -170,7 +180,7 @@ const ModelUploadSidebar = ({
     onFilesChange(updatedFiles);
 
     if (fileInputRef.current) fileInputRef.current.value = ""; 
-    if (files.length === 0 && newFiles.length > 0) onSelectFile(newFiles[0]);
+    setTimeout(()=>fetchUserFilesData(),500)
   };
 
   // 刪除確認邏輯
@@ -181,14 +191,15 @@ const ModelUploadSidebar = ({
   };
 
   const handleConfirmDelete = async () => {
-    if (!modelToDelete || !modelIdToDelete) return;
-    onOpenChange();
-    removeModelFromScene(modelToDelete);
-    
-    // 🚀 呼叫新版刪除 API
-    await deleteFileRecord(modelIdToDelete);
-    fetchUserFilesData(); // 重新整理列表
-  };
+        if (!modelToDelete || !modelIdToDelete) return;
+        onOpenChange();
+        // 這裡的邏輯是從雲端刪除，我們找到對應的載入項也一起拔掉
+        const loadedItem = loadedFiles.find(f => f.name === modelToDelete);
+        if (loadedItem) removeFileFromScene(loadedItem);
+        
+        await deleteFileRecord(modelIdToDelete);
+        fetchUserFilesData();
+    };
 
   // 下載並載入 ifc 模型
   const downloadAndLoadFrag = async(dbId: string, fileId: string, viewerFileId: string | null | undefined, modelName: string, e: React.MouseEvent) => {
@@ -286,6 +297,21 @@ const ModelUploadSidebar = ({
         }
       }
     }
+  };
+
+  const removeFileFromScene = (item: FileItem) => {
+      // 1. 如果是 3D 模型，通知父層從 IFC 引擎移除
+      if (item.type === '3d') {
+          onDeleteModel(item.name);
+      }
+      
+      // 2. 從 Loaded 清單移除
+      setLoadedFiles(prev => prev.filter(f => f.dbId !== item.dbId));
+
+      // 3. 核心：如果目前正在預覽的就是這檔案，立刻清空預覽
+      if (selectedFileId === item.dbId) {
+          onSelectFile(null);
+      }
   };
 
   const removeModelFromScene = (modelName: string) => {
@@ -549,7 +575,7 @@ const ModelUploadSidebar = ({
                       {item.type === '3d' && (
                         <button onClick={(e) => focusModel(item.name, e)} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
                       )}
-                      <button onClick={(e) => { removeModelFromScene(item.name); }} className="text-gray-400 hover:text-danger"><BrushCleaning size={16}/></button>
+                      <button onClick={(e) => { removeFileFromScene(item); }} className="text-gray-400 hover:text-danger"><BrushCleaning size={16}/></button>
                     </div>
                   </div>
                 ))}
