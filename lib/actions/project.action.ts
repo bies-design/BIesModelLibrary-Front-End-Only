@@ -6,6 +6,7 @@ import { ProjectStatus } from "../../prisma/generated/prisma/client";
 import { connect } from "http2";
 import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { AssetType } from "../../prisma/generated/prisma/client";
 // ==========================================
 // 1. 專案 (Project) 相關
 // ==========================================
@@ -245,64 +246,69 @@ export async function reorderPhases(orders: { id: string; sortOrder: number }[])
 // 3. 資源關聯 (ProjectAsset) 相關
 // ==========================================
 
-// 將系統中現有的 Post 加入到專案的指定階段
-// 將系統中現有的 Post 加入到專案的指定階段
-export async function addPostToPhase(projectId: string, postId: string, phaseId: string | null = null) {
+export async function createProjectAsset(data: {
+    projectId: string;
+    phaseId: string | null;
+    parentId: string | null;
+    type: 'FOLDER' | 'POST' | 'LINK';
+    name?: string;
+    postId?: string;
+    url?: string;
+}) {
     try {
-        // 1. 先找出該專案所屬的 teamId
-        const targetProject = await prisma.project.findUnique({
-            where: { id: projectId },
-            select: { teamId: true }
+        const { projectId, phaseId, parentId, type, name, postId, url } = data;
+
+        // 1. 如果是加入 Post，執行團隊歸屬同步邏輯
+        if (type === 'POST' && postId) {
+            const targetProject = await prisma.project.findUnique({
+                where: { id: projectId },
+                select: { teamId: true }
+            });
+            if (targetProject) {
+                await prisma.post.update({
+                    where: { id: postId },
+                    data: { teamId: targetProject.teamId }
+                });
+            }
+        }
+
+        // 2. 建立資產節點
+        const newAsset = await prisma.projectAsset.create({
+            data: {
+                projectId,
+                phaseId,
+                parentId,
+                type,
+                name: type === 'POST' ? null : name, // Post 預設不給名，前端抓 Post Title
+                postId: type === 'POST' ? postId : null,
+                url: type === 'LINK' ? url : null,
+                sortOrder: 0, // 預設排在最前面
+            },
+            include: {
+                post: true // 方便前端立即渲染
+            }
         });
 
-        if (!targetProject) return { success: false, error: "找不到專案資料" };
-
-        // 2. 使用交易 (Transaction) 確保兩件事同時發生：
-        //    A. 更新 Post 本身的 teamId (繼承專案的團隊)
-        //    B. 建立 ProjectAsset 關聯
-        const result = await prisma.$transaction(async (tx) => {
-            // 檢查是否已經存在相同的關聯 (防呆)
-            const existing = await tx.projectAsset.findUnique({
-                where: {
-                    projectId_phaseId_postId: { projectId, phaseId: phaseId ?? "", postId }
-                }
-            });
-
-            if (existing) throw new Error("該資源已存在於此階段中");
-
-            // 更新 Post 的歸屬團隊
-            // 這樣在 PostDetailPage 撈取時，post.team 就不會是 null
-            await tx.post.update({
-                where: { id: postId },
-                data: { teamId: targetProject.teamId }
-            });
-
-            // 建立關聯
-            return await tx.projectAsset.create({
-                data: {
-                    projectId,
-                    postId,
-                    phaseId, // 若為 null 就是放到「未分類」
-                    sortOrder: 0
-                },
-                include: {
-                    post: {
-                        include: {
-                            files: true,
-                            team: true // 順便把剛更新好的 team 資料抓回來給前端
-                        }
-                    }
-                }
-            });
-        });
-
-        return { success: true, data: result };
+        return { success: true, data: newAsset };
     } catch (error: any) {
-        console.error("Add post to phase error:", error);
+        console.error("Create Asset Error:", error);
         return { success: false, error: error.message };
     }
 }
-
+export async function updateProjectAsset(id: string, data: { name?: string | null; url?: string | null }) {
+    try {
+        const updated = await prisma.projectAsset.update({
+            where: { id },
+            data: {
+                name: data.name,
+                url: data.url
+            }
+        });
+        return { success: true, data: updated };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
 // 在專案內移動資源 (更改資源所屬的階段)
 export async function moveAssetToPhase(projectAssetId: string, newPhaseId: string | null) {
     try {

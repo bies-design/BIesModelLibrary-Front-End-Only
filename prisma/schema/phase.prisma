@@ -5,8 +5,8 @@ model Phase {
     
     projectId   String
     project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-    projectAssets ProjectAsset[]
+    // 該階段下的「頂層」資源節點
+    rootAssets ProjectAsset[]
 
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

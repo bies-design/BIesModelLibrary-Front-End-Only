@@ -99,6 +99,15 @@ export const ProjectStatus: {
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
+export const AssetType: {
+  FOLDER: 'FOLDER',
+  POST: 'POST',
+  LINK: 'LINK'
+};
+
+export type AssetType = (typeof AssetType)[keyof typeof AssetType]
+
+
 export const TeamRole: {
   OWNER: 'OWNER',
   ADMIN: 'ADMIN',
@@ -129,6 +138,10 @@ export const ProcessStatus: typeof $Enums.ProcessStatus
 export type ProjectStatus = $Enums.ProjectStatus
 
 export const ProjectStatus: typeof $Enums.ProjectStatus
+
+export type AssetType = $Enums.AssetType
+
+export const AssetType: typeof $Enums.AssetType
 
 export type TeamRole = $Enums.TeamRole
 
@@ -1790,11 +1803,11 @@ export namespace Prisma {
    */
 
   export type PhaseCountOutputType = {
-    projectAssets: number
+    rootAssets: number
   }
 
   export type PhaseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    projectAssets?: boolean | PhaseCountOutputTypeCountProjectAssetsArgs
+    rootAssets?: boolean | PhaseCountOutputTypeCountRootAssetsArgs
   }
 
   // Custom InputTypes
@@ -1811,7 +1824,7 @@ export namespace Prisma {
   /**
    * PhaseCountOutputType without action
    */
-  export type PhaseCountOutputTypeCountProjectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseCountOutputTypeCountRootAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectAssetWhereInput
   }
 
@@ -1901,6 +1914,37 @@ export namespace Prisma {
    * ProjectCountOutputType without action
    */
   export type ProjectCountOutputTypeCountAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAssetWhereInput
+  }
+
+
+  /**
+   * Count Type ProjectAssetCountOutputType
+   */
+
+  export type ProjectAssetCountOutputType = {
+    children: number
+  }
+
+  export type ProjectAssetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    children?: boolean | ProjectAssetCountOutputTypeCountChildrenArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProjectAssetCountOutputType without action
+   */
+  export type ProjectAssetCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAssetCountOutputType
+     */
+    select?: ProjectAssetCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProjectAssetCountOutputType without action
+   */
+  export type ProjectAssetCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectAssetWhereInput
   }
 
@@ -5691,7 +5735,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    projectAssets?: boolean | Phase$projectAssetsArgs<ExtArgs>
+    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs>
     _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["phase"]>
 
@@ -5727,7 +5771,7 @@ export namespace Prisma {
   export type PhaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "sortOrder" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["phase"]>
   export type PhaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    projectAssets?: boolean | Phase$projectAssetsArgs<ExtArgs>
+    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs>
     _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PhaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5741,7 +5785,7 @@ export namespace Prisma {
     name: "Phase"
     objects: {
       project: Prisma.$ProjectPayload<ExtArgs>
-      projectAssets: Prisma.$ProjectAssetPayload<ExtArgs>[]
+      rootAssets: Prisma.$ProjectAssetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6145,7 +6189,7 @@ export namespace Prisma {
   export interface Prisma__PhaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    projectAssets<T extends Phase$projectAssetsArgs<ExtArgs> = {}>(args?: Subset<T, Phase$projectAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    rootAssets<T extends Phase$rootAssetsArgs<ExtArgs> = {}>(args?: Subset<T, Phase$rootAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6582,9 +6626,9 @@ export namespace Prisma {
   }
 
   /**
-   * Phase.projectAssets
+   * Phase.rootAssets
    */
-  export type Phase$projectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Phase$rootAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the ProjectAsset
      */
@@ -9147,29 +9191,44 @@ export namespace Prisma {
 
   export type ProjectAssetMinAggregateOutputType = {
     id: string | null
+    name: string | null
+    type: $Enums.AssetType | null
     sortOrder: number | null
+    parentId: string | null
     projectId: string | null
     phaseId: string | null
     postId: string | null
+    url: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ProjectAssetMaxAggregateOutputType = {
     id: string | null
+    name: string | null
+    type: $Enums.AssetType | null
     sortOrder: number | null
+    parentId: string | null
     projectId: string | null
     phaseId: string | null
     postId: string | null
+    url: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ProjectAssetCountAggregateOutputType = {
     id: number
+    name: number
+    type: number
     sortOrder: number
+    parentId: number
     projectId: number
     phaseId: number
     postId: number
+    url: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -9184,29 +9243,44 @@ export namespace Prisma {
 
   export type ProjectAssetMinAggregateInputType = {
     id?: true
+    name?: true
+    type?: true
     sortOrder?: true
+    parentId?: true
     projectId?: true
     phaseId?: true
     postId?: true
+    url?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ProjectAssetMaxAggregateInputType = {
     id?: true
+    name?: true
+    type?: true
     sortOrder?: true
+    parentId?: true
     projectId?: true
     phaseId?: true
     postId?: true
+    url?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ProjectAssetCountAggregateInputType = {
     id?: true
+    name?: true
+    type?: true
     sortOrder?: true
+    parentId?: true
     projectId?: true
     phaseId?: true
     postId?: true
+    url?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -9298,11 +9372,16 @@ export namespace Prisma {
 
   export type ProjectAssetGroupByOutputType = {
     id: string
+    name: string | null
+    type: $Enums.AssetType
     sortOrder: number
+    parentId: string | null
     projectId: string
     phaseId: string | null
-    postId: string
+    postId: string | null
+    url: string | null
     createdAt: Date
+    updatedAt: Date
     _count: ProjectAssetCountAggregateOutputType | null
     _avg: ProjectAssetAvgAggregateOutputType | null
     _sum: ProjectAssetSumAggregateOutputType | null
@@ -9326,80 +9405,117 @@ export namespace Prisma {
 
   export type ProjectAssetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
+    type?: boolean
     sortOrder?: boolean
+    parentId?: boolean
     projectId?: boolean
     phaseId?: boolean
     postId?: boolean
+    url?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
+    children?: boolean | ProjectAsset$childrenArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
+    type?: boolean
     sortOrder?: boolean
+    parentId?: boolean
     projectId?: boolean
     phaseId?: boolean
     postId?: boolean
+    url?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
+    type?: boolean
     sortOrder?: boolean
+    parentId?: boolean
     projectId?: boolean
     phaseId?: boolean
     postId?: boolean
+    url?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectScalar = {
     id?: boolean
+    name?: boolean
+    type?: boolean
     sortOrder?: boolean
+    parentId?: boolean
     projectId?: boolean
     phaseId?: boolean
     postId?: boolean
+    url?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sortOrder" | "projectId" | "phaseId" | "postId" | "createdAt", ExtArgs["result"]["projectAsset"]>
+  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "sortOrder" | "parentId" | "projectId" | "phaseId" | "postId" | "url" | "createdAt" | "updatedAt", ExtArgs["result"]["projectAsset"]>
   export type ProjectAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
+    children?: boolean | ProjectAsset$childrenArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
   }
   export type ProjectAssetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
+    post?: boolean | ProjectAsset$postArgs<ExtArgs>
   }
 
   export type $ProjectAssetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ProjectAsset"
     objects: {
+      parent: Prisma.$ProjectAssetPayload<ExtArgs> | null
+      children: Prisma.$ProjectAssetPayload<ExtArgs>[]
       project: Prisma.$ProjectPayload<ExtArgs>
       phase: Prisma.$PhasePayload<ExtArgs> | null
-      post: Prisma.$PostPayload<ExtArgs>
+      post: Prisma.$PostPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      name: string | null
+      type: $Enums.AssetType
       sortOrder: number
+      parentId: string | null
       projectId: string
       phaseId: string | null
-      postId: string
+      postId: string | null
+      url: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["projectAsset"]>
     composites: {}
   }
@@ -9794,9 +9910,11 @@ export namespace Prisma {
    */
   export interface Prisma__ProjectAssetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    parent<T extends ProjectAsset$parentArgs<ExtArgs> = {}>(args?: Subset<T, ProjectAsset$parentArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    children<T extends ProjectAsset$childrenArgs<ExtArgs> = {}>(args?: Subset<T, ProjectAsset$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     phase<T extends ProjectAsset$phaseArgs<ExtArgs> = {}>(args?: Subset<T, ProjectAsset$phaseArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    post<T extends PostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PostDefaultArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    post<T extends ProjectAsset$postArgs<ExtArgs> = {}>(args?: Subset<T, ProjectAsset$postArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9827,11 +9945,16 @@ export namespace Prisma {
    */
   interface ProjectAssetFieldRefs {
     readonly id: FieldRef<"ProjectAsset", 'String'>
+    readonly name: FieldRef<"ProjectAsset", 'String'>
+    readonly type: FieldRef<"ProjectAsset", 'AssetType'>
     readonly sortOrder: FieldRef<"ProjectAsset", 'Int'>
+    readonly parentId: FieldRef<"ProjectAsset", 'String'>
     readonly projectId: FieldRef<"ProjectAsset", 'String'>
     readonly phaseId: FieldRef<"ProjectAsset", 'String'>
     readonly postId: FieldRef<"ProjectAsset", 'String'>
+    readonly url: FieldRef<"ProjectAsset", 'String'>
     readonly createdAt: FieldRef<"ProjectAsset", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProjectAsset", 'DateTime'>
   }
     
 
@@ -10233,6 +10356,49 @@ export namespace Prisma {
   }
 
   /**
+   * ProjectAsset.parent
+   */
+  export type ProjectAsset$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAsset
+     */
+    select?: ProjectAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAsset
+     */
+    omit?: ProjectAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAssetInclude<ExtArgs> | null
+    where?: ProjectAssetWhereInput
+  }
+
+  /**
+   * ProjectAsset.children
+   */
+  export type ProjectAsset$childrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAsset
+     */
+    select?: ProjectAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAsset
+     */
+    omit?: ProjectAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAssetInclude<ExtArgs> | null
+    where?: ProjectAssetWhereInput
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    cursor?: ProjectAssetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+  }
+
+  /**
    * ProjectAsset.phase
    */
   export type ProjectAsset$phaseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10249,6 +10415,25 @@ export namespace Prisma {
      */
     include?: PhaseInclude<ExtArgs> | null
     where?: PhaseWhereInput
+  }
+
+  /**
+   * ProjectAsset.post
+   */
+  export type ProjectAsset$postArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    where?: PostWhereInput
   }
 
   /**
@@ -13860,11 +14045,16 @@ export namespace Prisma {
 
   export const ProjectAssetScalarFieldEnum: {
     id: 'id',
+    name: 'name',
+    type: 'type',
     sortOrder: 'sortOrder',
+    parentId: 'parentId',
     projectId: 'projectId',
     phaseId: 'phaseId',
     postId: 'postId',
-    createdAt: 'createdAt'
+    url: 'url',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ProjectAssetScalarFieldEnum = (typeof ProjectAssetScalarFieldEnum)[keyof typeof ProjectAssetScalarFieldEnum]
@@ -14018,6 +14208,20 @@ export namespace Prisma {
    * Reference to a field of type 'ProjectStatus[]'
    */
   export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AssetType'
+   */
+  export type EnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AssetType[]'
+   */
+  export type ListEnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType[]'>
     
 
 
@@ -14320,7 +14524,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Phase"> | Date | string
     updatedAt?: DateTimeFilter<"Phase"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    projectAssets?: ProjectAssetListRelationFilter
+    rootAssets?: ProjectAssetListRelationFilter
   }
 
   export type PhaseOrderByWithRelationInput = {
@@ -14331,7 +14535,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     project?: ProjectOrderByWithRelationInput
-    projectAssets?: ProjectAssetOrderByRelationAggregateInput
+    rootAssets?: ProjectAssetOrderByRelationAggregateInput
   }
 
   export type PhaseWhereUniqueInput = Prisma.AtLeast<{
@@ -14345,7 +14549,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Phase"> | Date | string
     updatedAt?: DateTimeFilter<"Phase"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    projectAssets?: ProjectAssetListRelationFilter
+    rootAssets?: ProjectAssetListRelationFilter
   }, "id">
 
   export type PhaseOrderByWithAggregationInput = {
@@ -14590,23 +14794,37 @@ export namespace Prisma {
     OR?: ProjectAssetWhereInput[]
     NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
     id?: StringFilter<"ProjectAsset"> | string
+    name?: StringNullableFilter<"ProjectAsset"> | string | null
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
     projectId?: StringFilter<"ProjectAsset"> | string
     phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringFilter<"ProjectAsset"> | string
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null
+    url?: StringNullableFilter<"ProjectAsset"> | string | null
     createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null
+    children?: ProjectAssetListRelationFilter
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
   }
 
   export type ProjectAssetOrderByWithRelationInput = {
     id?: SortOrder
+    name?: SortOrderInput | SortOrder
+    type?: SortOrder
     sortOrder?: SortOrder
+    parentId?: SortOrderInput | SortOrder
     projectId?: SortOrder
     phaseId?: SortOrderInput | SortOrder
-    postId?: SortOrder
+    postId?: SortOrderInput | SortOrder
+    url?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    parent?: ProjectAssetOrderByWithRelationInput
+    children?: ProjectAssetOrderByRelationAggregateInput
     project?: ProjectOrderByWithRelationInput
     phase?: PhaseOrderByWithRelationInput
     post?: PostOrderByWithRelationInput
@@ -14614,27 +14832,38 @@ export namespace Prisma {
 
   export type ProjectAssetWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    projectId_phaseId_postId?: ProjectAssetProjectIdPhaseIdPostIdCompoundUniqueInput
     AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
     OR?: ProjectAssetWhereInput[]
     NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
+    name?: StringNullableFilter<"ProjectAsset"> | string | null
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
     projectId?: StringFilter<"ProjectAsset"> | string
     phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringFilter<"ProjectAsset"> | string
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null
+    url?: StringNullableFilter<"ProjectAsset"> | string | null
     createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null
+    children?: ProjectAssetListRelationFilter
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
-  }, "id" | "projectId_phaseId_postId">
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
+  }, "id">
 
   export type ProjectAssetOrderByWithAggregationInput = {
     id?: SortOrder
+    name?: SortOrderInput | SortOrder
+    type?: SortOrder
     sortOrder?: SortOrder
+    parentId?: SortOrderInput | SortOrder
     projectId?: SortOrder
     phaseId?: SortOrderInput | SortOrder
-    postId?: SortOrder
+    postId?: SortOrderInput | SortOrder
+    url?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ProjectAssetCountOrderByAggregateInput
     _avg?: ProjectAssetAvgOrderByAggregateInput
     _max?: ProjectAssetMaxOrderByAggregateInput
@@ -14647,11 +14876,16 @@ export namespace Prisma {
     OR?: ProjectAssetScalarWhereWithAggregatesInput[]
     NOT?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ProjectAsset"> | string
+    name?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
+    type?: EnumAssetTypeWithAggregatesFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntWithAggregatesFilter<"ProjectAsset"> | number
+    parentId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
     projectId?: StringWithAggregatesFilter<"ProjectAsset"> | string
     phaseId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    postId?: StringWithAggregatesFilter<"ProjectAsset"> | string
+    postId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
+    url?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string
   }
 
   export type TeamWhereInput = {
@@ -15133,7 +15367,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     project: ProjectCreateNestedOneWithoutPhasesInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
+    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
   }
 
   export type PhaseUncheckedCreateInput = {
@@ -15143,7 +15377,7 @@ export namespace Prisma {
     projectId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
+    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
   }
 
   export type PhaseUpdateInput = {
@@ -15153,7 +15387,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
+    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
   }
 
   export type PhaseUncheckedUpdateInput = {
@@ -15163,7 +15397,7 @@ export namespace Prisma {
     projectId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
+    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
   }
 
   export type PhaseCreateManyInput = {
@@ -15434,62 +15668,100 @@ export namespace Prisma {
 
   export type ProjectAssetCreateInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    children?: ProjectAssetCreateNestedManyWithoutParentInput
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
-    post: PostCreateNestedOneWithoutProjectAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput
   }
 
   export type ProjectAssetUncheckedCreateInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
     phaseId?: string | null
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type ProjectAssetUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput
     project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
-    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type ProjectAssetCreateManyInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
     phaseId?: string | null
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ProjectAssetUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProjectAssetUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamCreateInput = {
@@ -16227,24 +16499,35 @@ export namespace Prisma {
     _max?: NestedEnumProjectStatusFilter<$PrismaModel>
   }
 
+  export type EnumAssetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+  }
+
+  export type ProjectAssetNullableScalarRelationFilter = {
+    is?: ProjectAssetWhereInput | null
+    isNot?: ProjectAssetWhereInput | null
+  }
+
   export type PhaseNullableScalarRelationFilter = {
     is?: PhaseWhereInput | null
     isNot?: PhaseWhereInput | null
   }
 
-  export type ProjectAssetProjectIdPhaseIdPostIdCompoundUniqueInput = {
-    projectId: string
-    phaseId: string
-    postId: string
-  }
-
   export type ProjectAssetCountOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
     sortOrder?: SortOrder
+    parentId?: SortOrder
     projectId?: SortOrder
     phaseId?: SortOrder
     postId?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectAssetAvgOrderByAggregateInput = {
@@ -16253,24 +16536,44 @@ export namespace Prisma {
 
   export type ProjectAssetMaxOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
     sortOrder?: SortOrder
+    parentId?: SortOrder
     projectId?: SortOrder
     phaseId?: SortOrder
     postId?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectAssetMinOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
     sortOrder?: SortOrder
+    parentId?: SortOrder
     projectId?: SortOrder
     phaseId?: SortOrder
     postId?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectAssetSumOrderByAggregateInput = {
     sortOrder?: SortOrder
+  }
+
+  export type EnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAssetTypeFilter<$PrismaModel>
+    _max?: NestedEnumAssetTypeFilter<$PrismaModel>
   }
 
   export type TeamMemberListRelationFilter = {
@@ -16950,15 +17253,28 @@ export namespace Prisma {
     deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
+  export type ProjectAssetCreateNestedOneWithoutChildrenInput = {
+    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput
+    connect?: ProjectAssetWhereUniqueInput
+  }
+
+  export type ProjectAssetCreateNestedManyWithoutParentInput = {
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
+    createMany?: ProjectAssetCreateManyParentInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+  }
+
   export type ProjectCreateNestedOneWithoutAssetsInput = {
     create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput
     connect?: ProjectWhereUniqueInput
   }
 
-  export type PhaseCreateNestedOneWithoutProjectAssetsInput = {
-    create?: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectAssetsInput
+  export type PhaseCreateNestedOneWithoutRootAssetsInput = {
+    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
+    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput
     connect?: PhaseWhereUniqueInput
   }
 
@@ -16966,6 +17282,41 @@ export namespace Prisma {
     create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
     connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
     connect?: PostWhereUniqueInput
+  }
+
+  export type ProjectAssetUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
+    createMany?: ProjectAssetCreateManyParentInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+  }
+
+  export type EnumAssetTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AssetType
+  }
+
+  export type ProjectAssetUpdateOneWithoutChildrenNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput
+    upsert?: ProjectAssetUpsertWithoutChildrenInput
+    disconnect?: ProjectAssetWhereInput | boolean
+    delete?: ProjectAssetWhereInput | boolean
+    connect?: ProjectAssetWhereUniqueInput
+    update?: XOR<XOR<ProjectAssetUpdateToOneWithWhereWithoutChildrenInput, ProjectAssetUpdateWithoutChildrenInput>, ProjectAssetUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ProjectAssetUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ProjectAssetCreateManyParentInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
   export type ProjectUpdateOneRequiredWithoutAssetsNestedInput = {
@@ -16976,22 +17327,38 @@ export namespace Prisma {
     update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutAssetsInput, ProjectUpdateWithoutAssetsInput>, ProjectUncheckedUpdateWithoutAssetsInput>
   }
 
-  export type PhaseUpdateOneWithoutProjectAssetsNestedInput = {
-    create?: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectAssetsInput
-    upsert?: PhaseUpsertWithoutProjectAssetsInput
+  export type PhaseUpdateOneWithoutRootAssetsNestedInput = {
+    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
+    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput
+    upsert?: PhaseUpsertWithoutRootAssetsInput
     disconnect?: PhaseWhereInput | boolean
     delete?: PhaseWhereInput | boolean
     connect?: PhaseWhereUniqueInput
-    update?: XOR<XOR<PhaseUpdateToOneWithWhereWithoutProjectAssetsInput, PhaseUpdateWithoutProjectAssetsInput>, PhaseUncheckedUpdateWithoutProjectAssetsInput>
+    update?: XOR<XOR<PhaseUpdateToOneWithWhereWithoutRootAssetsInput, PhaseUpdateWithoutRootAssetsInput>, PhaseUncheckedUpdateWithoutRootAssetsInput>
   }
 
-  export type PostUpdateOneRequiredWithoutProjectAssetsNestedInput = {
+  export type PostUpdateOneWithoutProjectAssetsNestedInput = {
     create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
     connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
     upsert?: PostUpsertWithoutProjectAssetsInput
+    disconnect?: PostWhereInput | boolean
+    delete?: PostWhereInput | boolean
     connect?: PostWhereUniqueInput
     update?: XOR<XOR<PostUpdateToOneWithWhereWithoutProjectAssetsInput, PostUpdateWithoutProjectAssetsInput>, PostUncheckedUpdateWithoutProjectAssetsInput>
+  }
+
+  export type ProjectAssetUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ProjectAssetCreateManyParentInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
@@ -17602,6 +17969,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProjectStatusFilter<$PrismaModel>
     _max?: NestedEnumProjectStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAssetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+  }
+
+  export type NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAssetTypeFilter<$PrismaModel>
+    _max?: NestedEnumAssetTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumTeamRoleFilter<$PrismaModel = never> = {
@@ -18222,18 +18606,30 @@ export namespace Prisma {
 
   export type ProjectAssetCreateWithoutPhaseInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    children?: ProjectAssetCreateNestedManyWithoutParentInput
     project: ProjectCreateNestedOneWithoutAssetsInput
-    post: PostCreateNestedOneWithoutProjectAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput
   }
 
   export type ProjectAssetUncheckedCreateWithoutPhaseInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type ProjectAssetCreateOrConnectWithoutPhaseInput = {
@@ -18308,11 +18704,16 @@ export namespace Prisma {
     OR?: ProjectAssetScalarWhereInput[]
     NOT?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
     id?: StringFilter<"ProjectAsset"> | string
+    name?: StringNullableFilter<"ProjectAsset"> | string | null
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
     projectId?: StringFilter<"ProjectAsset"> | string
     phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringFilter<"ProjectAsset"> | string
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null
+    url?: StringNullableFilter<"ProjectAsset"> | string | null
     createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
   }
 
   export type FileRecordCreateWithoutPostInput = {
@@ -18455,18 +18856,30 @@ export namespace Prisma {
 
   export type ProjectAssetCreateWithoutPostInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    children?: ProjectAssetCreateNestedManyWithoutParentInput
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
   }
 
   export type ProjectAssetUncheckedCreateWithoutPostInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
     phaseId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type ProjectAssetCreateOrConnectWithoutPostInput = {
@@ -18697,7 +19110,7 @@ export namespace Prisma {
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
+    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
   }
 
   export type PhaseUncheckedCreateWithoutProjectInput = {
@@ -18706,7 +19119,7 @@ export namespace Prisma {
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
+    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
   }
 
   export type PhaseCreateOrConnectWithoutProjectInput = {
@@ -18721,18 +19134,30 @@ export namespace Prisma {
 
   export type ProjectAssetCreateWithoutProjectInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    url?: string | null
     createdAt?: Date | string
-    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
-    post: PostCreateNestedOneWithoutProjectAssetsInput
+    updatedAt?: Date | string
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput
   }
 
   export type ProjectAssetUncheckedCreateWithoutProjectInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     phaseId?: string | null
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type ProjectAssetCreateOrConnectWithoutProjectInput = {
@@ -18867,6 +19292,77 @@ export namespace Prisma {
     data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyWithoutProjectInput>
   }
 
+  export type ProjectAssetCreateWithoutChildrenInput = {
+    id?: string
+    name?: string | null
+    type?: $Enums.AssetType
+    sortOrder?: number
+    url?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    project: ProjectCreateNestedOneWithoutAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput
+  }
+
+  export type ProjectAssetUncheckedCreateWithoutChildrenInput = {
+    id?: string
+    name?: string | null
+    type?: $Enums.AssetType
+    sortOrder?: number
+    parentId?: string | null
+    projectId: string
+    phaseId?: string | null
+    postId?: string | null
+    url?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectAssetCreateOrConnectWithoutChildrenInput = {
+    where: ProjectAssetWhereUniqueInput
+    create: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
+  }
+
+  export type ProjectAssetCreateWithoutParentInput = {
+    id?: string
+    name?: string | null
+    type?: $Enums.AssetType
+    sortOrder?: number
+    url?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    project: ProjectCreateNestedOneWithoutAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput
+  }
+
+  export type ProjectAssetUncheckedCreateWithoutParentInput = {
+    id?: string
+    name?: string | null
+    type?: $Enums.AssetType
+    sortOrder?: number
+    projectId: string
+    phaseId?: string | null
+    postId?: string | null
+    url?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type ProjectAssetCreateOrConnectWithoutParentInput = {
+    where: ProjectAssetWhereUniqueInput
+    create: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput>
+  }
+
+  export type ProjectAssetCreateManyParentInputEnvelope = {
+    data: ProjectAssetCreateManyParentInput | ProjectAssetCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ProjectCreateWithoutAssetsInput = {
     id?: string
     name: string
@@ -18902,7 +19398,7 @@ export namespace Prisma {
     create: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
   }
 
-  export type PhaseCreateWithoutProjectAssetsInput = {
+  export type PhaseCreateWithoutRootAssetsInput = {
     id?: string
     name: string
     sortOrder?: number
@@ -18911,7 +19407,7 @@ export namespace Prisma {
     project: ProjectCreateNestedOneWithoutPhasesInput
   }
 
-  export type PhaseUncheckedCreateWithoutProjectAssetsInput = {
+  export type PhaseUncheckedCreateWithoutRootAssetsInput = {
     id?: string
     name: string
     sortOrder?: number
@@ -18920,9 +19416,9 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type PhaseCreateOrConnectWithoutProjectAssetsInput = {
+  export type PhaseCreateOrConnectWithoutRootAssetsInput = {
     where: PhaseWhereUniqueInput
-    create: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
+    create: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
   }
 
   export type PostCreateWithoutProjectAssetsInput = {
@@ -18970,6 +19466,61 @@ export namespace Prisma {
     create: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
   }
 
+  export type ProjectAssetUpsertWithoutChildrenInput = {
+    update: XOR<ProjectAssetUpdateWithoutChildrenInput, ProjectAssetUncheckedUpdateWithoutChildrenInput>
+    create: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
+    where?: ProjectAssetWhereInput
+  }
+
+  export type ProjectAssetUpdateToOneWithWhereWithoutChildrenInput = {
+    where?: ProjectAssetWhereInput
+    data: XOR<ProjectAssetUpdateWithoutChildrenInput, ProjectAssetUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ProjectAssetUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+  }
+
+  export type ProjectAssetUncheckedUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: StringFieldUpdateOperationsInput | string
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAssetUpsertWithWhereUniqueWithoutParentInput = {
+    where: ProjectAssetWhereUniqueInput
+    update: XOR<ProjectAssetUpdateWithoutParentInput, ProjectAssetUncheckedUpdateWithoutParentInput>
+    create: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput>
+  }
+
+  export type ProjectAssetUpdateWithWhereUniqueWithoutParentInput = {
+    where: ProjectAssetWhereUniqueInput
+    data: XOR<ProjectAssetUpdateWithoutParentInput, ProjectAssetUncheckedUpdateWithoutParentInput>
+  }
+
+  export type ProjectAssetUpdateManyWithWhereWithoutParentInput = {
+    where: ProjectAssetScalarWhereInput
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyWithoutParentInput>
+  }
+
   export type ProjectUpsertWithoutAssetsInput = {
     update: XOR<ProjectUpdateWithoutAssetsInput, ProjectUncheckedUpdateWithoutAssetsInput>
     create: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
@@ -19011,18 +19562,18 @@ export namespace Prisma {
     phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
   }
 
-  export type PhaseUpsertWithoutProjectAssetsInput = {
-    update: XOR<PhaseUpdateWithoutProjectAssetsInput, PhaseUncheckedUpdateWithoutProjectAssetsInput>
-    create: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
+  export type PhaseUpsertWithoutRootAssetsInput = {
+    update: XOR<PhaseUpdateWithoutRootAssetsInput, PhaseUncheckedUpdateWithoutRootAssetsInput>
+    create: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
     where?: PhaseWhereInput
   }
 
-  export type PhaseUpdateToOneWithWhereWithoutProjectAssetsInput = {
+  export type PhaseUpdateToOneWithWhereWithoutRootAssetsInput = {
     where?: PhaseWhereInput
-    data: XOR<PhaseUpdateWithoutProjectAssetsInput, PhaseUncheckedUpdateWithoutProjectAssetsInput>
+    data: XOR<PhaseUpdateWithoutRootAssetsInput, PhaseUncheckedUpdateWithoutRootAssetsInput>
   }
 
-  export type PhaseUpdateWithoutProjectAssetsInput = {
+  export type PhaseUpdateWithoutRootAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -19031,7 +19582,7 @@ export namespace Prisma {
     project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
   }
 
-  export type PhaseUncheckedUpdateWithoutProjectAssetsInput = {
+  export type PhaseUncheckedUpdateWithoutRootAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -19809,34 +20360,56 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyPhaseInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ProjectAssetUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput
     project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FileRecordCreateManyPostInput = {
@@ -19866,10 +20439,15 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyPostInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     projectId: string
     phaseId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type FileRecordUpdateWithoutPostInput = {
@@ -19951,26 +20529,43 @@ export namespace Prisma {
 
   export type ProjectAssetUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput
     project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: StringFieldUpdateOperationsInput | string
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PhaseCreateManyProjectInput = {
@@ -19983,10 +20578,15 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyProjectInput = {
     id?: string
+    name?: string | null
+    type?: $Enums.AssetType
     sortOrder?: number
+    parentId?: string | null
     phaseId?: string | null
-    postId: string
+    postId?: string | null
+    url?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PhaseUpdateWithoutProjectInput = {
@@ -19995,7 +20595,7 @@ export namespace Prisma {
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    projectAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
+    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
   }
 
   export type PhaseUncheckedUpdateWithoutProjectInput = {
@@ -20004,7 +20604,7 @@ export namespace Prisma {
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
+    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
   }
 
   export type PhaseUncheckedUpdateManyWithoutProjectInput = {
@@ -20017,26 +20617,97 @@ export namespace Prisma {
 
   export type ProjectAssetUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
-    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
     phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAssetCreateManyParentInput = {
+    id?: string
+    name?: string | null
+    type?: $Enums.AssetType
+    sortOrder?: number
+    projectId: string
+    phaseId?: string | null
+    postId?: string | null
+    url?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectAssetUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+  }
+
+  export type ProjectAssetUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+  }
+
+  export type ProjectAssetUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamMemberCreateManyTeamInput = {

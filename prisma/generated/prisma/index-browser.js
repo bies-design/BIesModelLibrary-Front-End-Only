@@ -200,11 +200,16 @@ exports.Prisma.ProjectScalarFieldEnum = {
 
 exports.Prisma.ProjectAssetScalarFieldEnum = {
   id: 'id',
+  name: 'name',
+  type: 'type',
   sortOrder: 'sortOrder',
+  parentId: 'parentId',
   projectId: 'projectId',
   phaseId: 'phaseId',
   postId: 'postId',
-  createdAt: 'createdAt'
+  url: 'url',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TeamScalarFieldEnum = {
@@ -270,6 +275,12 @@ exports.ProjectStatus = exports.$Enums.ProjectStatus = {
   ON_HOLD: 'ON_HOLD',
   COMPLETED: 'COMPLETED',
   ARCHIVED: 'ARCHIVED'
+};
+
+exports.AssetType = exports.$Enums.AssetType = {
+  FOLDER: 'FOLDER',
+  POST: 'POST',
+  LINK: 'LINK'
 };
 
 exports.TeamRole = exports.$Enums.TeamRole = {
