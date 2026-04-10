@@ -8,11 +8,15 @@ import CreateProjectModal from '@/components/modals/ProjectSettingsModal';
 import { useParams, useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
 import ProjectSettingsModal from '@/components/modals/ProjectSettingsModal';
+import { checkUserTeamStatus, TeamAccessLevel } from '@/lib/actions/team.action';
 
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const isFetchingRef = useRef(false); // 新增純邏輯鎖定，防止非同步競爭條件
+
+    const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
+    const isVerifying = useRef(false);
 
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
@@ -51,6 +55,31 @@ export default function ProjectsPage() {
     };
     
     useEffect(() => {
+        if (isVerifying.current) return;
+
+        const verifyAccess = async () => {
+            isVerifying.current = true;
+            try {
+                const status = await checkUserTeamStatus(teamId);
+                
+                // if (status === 'GUEST') {
+                //     addToast({ title: "請先登入", color: "warning" });
+                //     router.push("/auth/signin");
+                //     return;
+                // }
+                
+                // if (status === 'FORBIDDEN') {
+                //     addToast({ title: "存取被拒", description: "你不是此團隊成員", color: "danger" });
+                //     router.push("/");
+                //     return;
+                // }
+
+                setAccessLevel(status);
+            } finally {
+                isVerifying.current = false;
+            }
+        };
+        verifyAccess();
         fetchProjects();
     }, [teamId]); // 當網址的 teamId 改變時，自動重新抓取
 
@@ -117,14 +146,16 @@ export default function ProjectsPage() {
                     </h1>
                     <p className="text-gray-400 text-sm mt-1">Manage your team project.</p>
                     </div>
-                    <Button 
-                    color="primary" 
-                    endContent={<Plus size={18} />}
-                    onPress={handleOpenCreate}
-                    className="bg-[#D70036] hover-lift shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] text-white font-bold"
-                    >
-                    New Project
-                    </Button>
+                    {accessLevel === 'EDITOR_ACCESS' && (
+                        <Button 
+                            color="primary" 
+                            endContent={<Plus size={18} />}
+                            onPress={handleOpenCreate}
+                            className={`bg-[#D70036] hover-lift shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] text-white font-bold`}
+                        >
+                            New Project
+                        </Button>
+                    )}
                 </div>
 
                 {/* 專案卡片列表 */}
@@ -158,14 +189,15 @@ export default function ProjectsPage() {
                                     }}
                                     onClick={() => router.push(`/project/${project.id}`)}
                                 >
-                                    <button
-                                        onClick={(e) => handleOpenEdit(e, project)}
-                                        className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors z-10 opacity-0 group-hover:opacity-100"
-                                        title="編輯專案"
-                                    >
-                                        <Edit2 size={16} />
-                                    </button>
-
+                                    {accessLevel === 'EDITOR_ACCESS' && (
+                                        <button
+                                            onClick={(e) => handleOpenEdit(e, project)}
+                                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors z-10 opacity-0 group-hover:opacity-100"
+                                            title="編輯專案"
+                                        >
+                                            <Edit2 size={16} />
+                                        </button>
+                                    )}
                                     <div className="flex-1">
                                         <h3 className="text-xl font-semibold mb-2 group-hover:text-[#D70036] transition-colors">
                                             {project.name}

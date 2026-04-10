@@ -163,12 +163,15 @@ export default function ActionButtons({ post }: { post: any }) {
 
     return (
         <div className="flex flex-col gap-3">
-            <button 
-                onClick={onDownloadOpen} 
-                className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
-            >
-                <Download size={18} /> Download
-            </button>
+            {canEditPost && (
+                <button 
+                    onClick={onDownloadOpen} 
+                    className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
+                >
+                    <Download size={18} /> Download
+                </button>
+            )}
+                
             <button onClick={handleShare} className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
                 <Share2 size={18} /> Share Link
             </button>

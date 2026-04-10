@@ -20,9 +20,13 @@ export default function ProjectAssociationPills({ team, associations }: Associat
             <p className="bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Project Origins</p>
         
             {associations.map((asset, index) => (
-                <Tooltip placement='top' content={`${team?.name} -> ${asset.project.name} -> ${asset.phase.name} `}>
-                    <div 
+                <Tooltip 
                     key={index}
+                    placement='top' 
+                    content={`${asset?.project.team || "無"} -> ${asset.project?.name || "無"} -> ${asset.phase?.name || "未分類"} `}
+                    className="bg-black text-white text-md"
+                >
+                    <div 
                     onClick={() => router.push(`/project/${asset.project.id}`)} // 這裡依照你的路由調整
                     className="group glass-panel hover-lift flex items-center gap-2 p-3 rounded-xl bg-[#27272A]/50 border border-white/5 hover:border-[#8DB2E8]/30 hover:bg-[#27272A] cursor-pointer transition-all overflow-hidden"
                         >
