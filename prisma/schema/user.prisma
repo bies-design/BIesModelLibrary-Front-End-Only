@@ -27,10 +27,7 @@ model User {
   // 建立與 Account 的關聯 (User 能有多個 Account) provider不同會有不同account
   accounts Account[]
 
-  // 一個使用者可以擁有多個模型
-  models Model[]
-  
-  pdfs Pdf[]
+  fileRecords FileRecord[]
 
   posts     Post[]
   comments  Comment[]

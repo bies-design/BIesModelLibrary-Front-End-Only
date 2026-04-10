@@ -40,13 +40,13 @@ export async function signUpWithCredentials(params: AuthCredentials) {
       const existingUserByEmail = await tx.user.findUnique({
         where:{ email:email },
       });
-      if(existingUserByEmail) throw new Error("User already exists");
+      if(existingUserByEmail) throw new Error("Email already exists");
 
       //2.檢查userName
       const existingUserByName = await tx.user.findUnique({
         where: { userName: username },
       })
-      if(existingUserByName) throw new Error("User already exists");
+      if(existingUserByName) throw new Error("userName already exists");
 
       // 3. 密碼雜湊
       const hashedPassword = await bcrypt.hash(password,12);

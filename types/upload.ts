@@ -1,3 +1,4 @@
+import { FileCategory } from "@/prisma/generated/prisma";
 // src/types/upload.ts (或是直接寫在 Context 裡)
 export type FileStatus = 
   | 'uploading'   // Uppy 正在傳輸到 MinIO
@@ -27,3 +28,12 @@ export interface UIModel extends Model {
   type: '3d' | 'pdf';
 }
 
+// 擴展 UIModel 型別以包含 category
+export interface UIFileRecord {
+  id: string;
+  fileId: string;
+  name: string;
+  size: string;
+  status: "uploading" | "processing" | "completed" | "error";
+  category: FileCategory;
+}

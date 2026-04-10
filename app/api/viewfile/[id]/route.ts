@@ -1,4 +1,4 @@
-// src/app/api/models/[id]/frag/route.ts
+// src/app/api/viewfile/[id]/route.ts
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import prisma from "@/lib/prisma";
@@ -12,8 +12,8 @@ export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>
         const fragDownloadId = (await params).id;
         // 3. 從 S3 取得資料流
         const command = new GetObjectCommand({
-            Bucket: process.env.S3_FRAGS_BUCKET,
-            Key: `${fragDownloadId}.frag`, // 你的 S3 Key 規則
+            Bucket: process.env.S3_VIEWER_ASSETS_BUCKET,
+            Key: `${fragDownloadId}`, // 你的 S3 Key 規則
         });
 
         const s3Response = await s3Client.send(command);
