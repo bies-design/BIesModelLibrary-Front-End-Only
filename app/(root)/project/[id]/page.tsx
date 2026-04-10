@@ -22,7 +22,7 @@ import {
 import { useDisclosure, addToast } from "@heroui/react";
 import { Project, ProjectStatus } from "@/prisma/generated/prisma";
 import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
-
+import { checkUserTeamStatus, TeamAccessLevel } from "@/lib/actions/team.action";
 // --- 型別定義 (已根據你 Server Action 回傳的 include 結構更新) ---
 type FileRecord = { id: string; name: string; category: string; /* ...其他欄位 */ };
 
@@ -71,7 +71,9 @@ export default function ProjectDetailPage() {
     // --- UI 渲染狀態 (useState) ---
     const [project, setProject] = useState<ProjectData | null>(null);
     const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
-    
+    // 權限管理
+    const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
+    const isVerifying = useRef(false);
     // Modal 狀態
     const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
     const [editingPhaseId, setEditingPhaseId] = useState<string | null>(null);
@@ -94,26 +96,30 @@ export default function ProjectDetailPage() {
         if (!projectId || isFetchingRef.current) return;
 
         const fetchProject = async () => {
-        isFetchingRef.current = true;
-        try {
-            const response = await getProjectDetails(projectId);
-            
-            if (response.success && response.data) {
-            setProject(response.data as ProjectData); // 轉型確保 TS 不報錯
+            isFetchingRef.current = true;
+            try {
+                const response = await getProjectDetails(projectId);
+                
+                if (response.success && response.data) {
+                    const data = response.data as ProjectData;
+                    setProject(response.data); 
+                    teamIdRef.current = data.teamId;
 
-            // 預設展開所有資料夾
-            const initialExpanded: Record<string, boolean> = { unclassified: true };
-            response.data.phases.forEach((p: Phase) => (initialExpanded[p.id] = true));
-                setExpandedNodes(initialExpanded);
-            } else {
-                console.error("專案載入失敗:", response.error);
+                    const status = await checkUserTeamStatus(data.teamId);
+                    setAccessLevel(status);
+
+                    // 預設展開所有資料夾
+                    const initialExpanded: Record<string, boolean> = { unclassified: true };
+                    response.data.phases.forEach((p: Phase) => (initialExpanded[p.id] = true));
+                    setExpandedNodes(initialExpanded);
+                } else {
+                    console.error("專案載入失敗:", response.error);
+                }
+            } catch (error) {
+                console.error("Server Action 執行錯誤:", error);
+            } finally {
+                isFetchingRef.current = false;
             }
-            if(response.data?.teamId) teamIdRef.current = response.data?.teamId;
-        } catch (error) {
-            console.error("Server Action 執行錯誤:", error);
-        } finally {
-            isFetchingRef.current = false;
-        }
         };
 
         fetchProject();
@@ -260,9 +266,9 @@ export default function ProjectDetailPage() {
             alert(res.error || "加入資源失敗");
         }
         } catch (error) {
-        console.error("加入資源失敗", error);
+            console.error("加入資源失敗", error);
         } finally {
-        isSubmittingRef.current = false;
+            isSubmittingRef.current = false;
         }
     };
     // 處理 Phase 上下移動
@@ -442,49 +448,46 @@ export default function ProjectDetailPage() {
                     {isModel ? <Box size={16} className="text-blue-500" /> : <File size={16} className="text-slate-400" />}
                     <span className="font-medium">{asset.post.title}</span>
                 </Link>
-
-                <div className="flex items-center gap-3">
-                    <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button 
-                            onClick={() => handleReorderAsset(asset.phaseId, index, 'up')}
-                            disabled={index === 0}
-                            className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
-                        >
-                            <ArrowUp size={12} />
+                
+                {accessLevel === 'EDITOR_ACCESS' && (
+                    <div className="flex items-center gap-3">
+                        <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                                onClick={() => handleReorderAsset(asset.phaseId, index, 'up')}
+                                disabled={index === 0}
+                                className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                            >
+                                <ArrowUp size={12} />
+                            </button>
+                            <button 
+                                onClick={() => handleReorderAsset(asset.phaseId, index, 'down')}
+                                disabled={index === total - 1}
+                                className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                            >
+                                <ArrowDown size={12} />
+                            </button>
+                        </div>
+                        <button className="text-xs text-slate-500 dark:text-white hover:text-slate-800 cursor-pointer dark:hover:text-slate-700 flex items-center gap-1">
+                            <LinkIcon size={12} /> [分享]
                         </button>
-                        <button 
-                            onClick={() => handleReorderAsset(asset.phaseId, index, 'down')}
-                            disabled={index === total - 1}
-                            className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                        <select 
+                            value={currentPhaseValue}
+                            onChange={(e) => handleMoveAsset(asset.id, e.target.value)}
+                            className="text-xs border border-slate-200 rounded px-1 py-0.5 ml-2 text-slate-600 dark:text-white outline-none hover:border-blue-400 cursor-pointer"
                         >
-                            <ArrowDown size={12} />
+                            {project.phases.map(p => (
+                            <option key={p.id} value={p.id} className="bg-white  text-slate-500 dark:text-white dark:bg-slate-500">{p.name}</option>
+                            ))}
+                            <option value="unclassified" className="bg-white text-slate-500 dark:text-white dark:bg-slate-500">未分類</option>
+                        </select>
+                        <button 
+                            onClick={() => handleRemoveAsset(asset.id)}
+                            className="text-xs text-red-400 hover:text-red-600 cursor-pointer ml-2"
+                        >
+                            移除關聯
                         </button>
                     </div>
-                    {isModel && (
-                        <button className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        [3D 瀏覽]
-                        </button>
-                    )}
-                    <button className="text-xs text-slate-500 dark:text-white hover:text-slate-800 cursor-pointer dark:hover:text-slate-700 flex items-center gap-1">
-                        <LinkIcon size={12} /> [分享]
-                    </button>
-                    <select 
-                        value={currentPhaseValue}
-                        onChange={(e) => handleMoveAsset(asset.id, e.target.value)}
-                        className="text-xs border border-slate-200 rounded px-1 py-0.5 ml-2 text-slate-600 dark:text-white outline-none hover:border-blue-400 cursor-pointer"
-                    >
-                        {project.phases.map(p => (
-                        <option key={p.id} value={p.id} className="bg-white  text-slate-500 dark:text-white dark:bg-slate-500">{p.name}</option>
-                        ))}
-                        <option value="unclassified" className="bg-white text-slate-500 dark:text-white dark:bg-slate-500">未分類</option>
-                    </select>
-                    <button 
-                        onClick={() => handleRemoveAsset(asset.id)}
-                        className="text-xs text-red-400 hover:text-red-600 cursor-pointer ml-2"
-                    >
-                        移除關聯
-                    </button>
-                </div>
+                )}
             </div>
         );
     };
@@ -530,35 +533,37 @@ export default function ProjectDetailPage() {
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>最後編輯時間：{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</p>                        
                     </div>
                 </div>
-
-                {/* 右側：操作按鈕區 */}
-                <div className="flex flex-col items-center gap-3">
-                    {/* 新增階段按鈕 */}
-                    <button 
-                        onClick={() => openPhaseModal()}  
-                        className="flex items-center gap-2 hover-lift bg-slate-800 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-slate-700 transition-colors flex-shrink-0"
-                    >
-                        <Plus size={16} /> 新增階段
-                    </button>
-                    {/* 編輯專案按鈕 */}
-                    <button 
-                        onClick={openEditProjectModal}
-                        className="hover-lift flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-blue-100 dark:bg-blue-950/80 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors flex-shrink-0"
-                        title="編輯專案資訊"
-                    >
-                        <Edit2 size={16} /> 編輯資訊
-                    </button>
-                    {/* 刪除專案按鈕 */}
-                    <button 
-                        onClick={handleDeleteProject}
-                        className="flex items-center gap-2 hover-lift bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-red-100 dark:bg-red-950/80 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors flex-shrink-0"
-                        title="刪除此專案"
-                    >
-                        <Trash2 size={16} /> 刪除專案
-                    </button>
-
                     
-                </div>
+                {/* 右側：操作按鈕區 */}
+                {accessLevel === 'EDITOR_ACCESS' && (
+                    <div className="flex flex-col items-center gap-3">
+                        {/* 新增階段按鈕 */}
+                        <button 
+                            onClick={() => openPhaseModal()}  
+                            className="flex items-center gap-2 hover-lift bg-slate-800 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-slate-700 transition-colors flex-shrink-0"
+                        >
+                            <Plus size={16} /> 新增階段
+                        </button>
+                        {/* 編輯專案按鈕 */}
+                        <button 
+                            onClick={openEditProjectModal}
+                            className="hover-lift flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-blue-100 dark:bg-blue-950/80 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors flex-shrink-0"
+                            title="編輯專案資訊"
+                        >
+                            <Edit2 size={16} /> 編輯資訊
+                        </button>
+                        {/* 刪除專案按鈕 */}
+                        <button 
+                            onClick={handleDeleteProject}
+                            className="flex items-center gap-2 hover-lift bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-red-100 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors flex-shrink-0"
+                            title="刪除此專案"
+                        >
+                            <Trash2 size={16} /> 刪除專案
+                        </button>
+
+                        
+                    </div>
+                )}
             </div>
 
             {/* 樹狀列表區 */}
@@ -581,42 +586,44 @@ export default function ProjectDetailPage() {
                             {phase.name}
                             <span className="text-xs text-slate-400 font-normal ml-2">({phaseAssets.length})</span>
                         </div>
+                        {accessLevel === 'EDITOR_ACCESS' && (
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'up'); }}
+                                    disabled={index === 0}
+                                    className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                                >
+                                    <ArrowUp size={14} />
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'down'); }}
+                                    disabled={index === project.phases.length - 1}
+                                    className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                                >
+                                    <ArrowDown size={14} />
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); openAddAssetModal(phase.id); }}
+                                    className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded"
+                                    title="加入資源"
+                                >
+                                    <PlusCircle size={14} />
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); openPhaseModal(phase); }}
+                                    className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded"
+                                >
+                                    <Edit2 size={14} />
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); handleDeletePhase(phase.id); }}
+                                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded"
+                                >
+                                    <Trash2 size={14} />
+                                </button>
+                            </div>
+                        )}
                         
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'up'); }}
-                                disabled={index === 0}
-                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
-                            >
-                                <ArrowUp size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'down'); }}
-                                disabled={index === project.phases.length - 1}
-                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
-                            >
-                                <ArrowDown size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); openAddAssetModal(phase.id); }}
-                                className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded"
-                                title="加入資源"
-                            >
-                                <PlusCircle size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); openPhaseModal(phase); }}
-                                className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded"
-                            >
-                                <Edit2 size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleDeletePhase(phase.id); }}
-                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded"
-                            >
-                                <Trash2 size={14} />
-                            </button>
-                        </div>
                         </div>
                         
                         {isExpanded && (

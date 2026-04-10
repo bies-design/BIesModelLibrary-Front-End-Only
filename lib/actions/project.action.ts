@@ -246,33 +246,57 @@ export async function reorderPhases(orders: { id: string; sortOrder: number }[])
 // ==========================================
 
 // 將系統中現有的 Post 加入到專案的指定階段
+// 將系統中現有的 Post 加入到專案的指定階段
 export async function addPostToPhase(projectId: string, postId: string, phaseId: string | null = null) {
     try {
-        // 檢查是否已經存在相同的關聯 (防呆)
-        const existing = await prisma.projectAsset.findUnique({
-            where: {
-                projectId_phaseId_postId: { projectId, phaseId: phaseId ?? "", postId }
-            }
+        // 1. 先找出該專案所屬的 teamId
+        const targetProject = await prisma.project.findUnique({
+            where: { id: projectId },
+            select: { teamId: true }
         });
 
-        if (existing) return { success: false, error: "該資源已存在於此階段中" };
+        if (!targetProject) return { success: false, error: "找不到專案資料" };
 
-        const newAsset = await prisma.projectAsset.create({
-            data: {
-                projectId,
-                postId,
-                phaseId, // 若為 null 就是放到「未分類」
-                sortOrder: 0 // 預設排序，後續可實作拖拉排序
-            },
-            include: {
-                post: {
-                    include: {
-                        files: true
+        // 2. 使用交易 (Transaction) 確保兩件事同時發生：
+        //    A. 更新 Post 本身的 teamId (繼承專案的團隊)
+        //    B. 建立 ProjectAsset 關聯
+        const result = await prisma.$transaction(async (tx) => {
+            // 檢查是否已經存在相同的關聯 (防呆)
+            const existing = await tx.projectAsset.findUnique({
+                where: {
+                    projectId_phaseId_postId: { projectId, phaseId: phaseId ?? "", postId }
+                }
+            });
+
+            if (existing) throw new Error("該資源已存在於此階段中");
+
+            // 更新 Post 的歸屬團隊
+            // 這樣在 PostDetailPage 撈取時，post.team 就不會是 null
+            await tx.post.update({
+                where: { id: postId },
+                data: { teamId: targetProject.teamId }
+            });
+
+            // 建立關聯
+            return await tx.projectAsset.create({
+                data: {
+                    projectId,
+                    postId,
+                    phaseId, // 若為 null 就是放到「未分類」
+                    sortOrder: 0
+                },
+                include: {
+                    post: {
+                        include: {
+                            files: true,
+                            team: true // 順便把剛更新好的 team 資料抓回來給前端
+                        }
                     }
                 }
-            }
+            });
         });
-        return { success: true, data: newAsset };
+
+        return { success: true, data: result };
     } catch (error: any) {
         console.error("Add post to phase error:", error);
         return { success: false, error: error.message };

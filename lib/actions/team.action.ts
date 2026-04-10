@@ -5,6 +5,36 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { auth } from "@/auth";
+
+// 權限檢查
+// 定義回傳型別，讓前端 switch 更好寫
+export type TeamAccessLevel = 'GUEST' | 'FORBIDDEN' | 'READ_ONLY' | 'EDITOR_ACCESS';
+
+export async function checkUserTeamStatus(teamId: string): Promise<TeamAccessLevel> {
+    const session = await auth();
+    
+    // 1. 沒登入
+    if (!session?.user?.id) return 'GUEST';
+
+    const member = await prisma.teamMember.findFirst({
+        where: {
+            teamId: teamId,
+            userId: session.user.id
+        }
+    });
+
+    // 2. 不是成員
+    if (!member) return 'FORBIDDEN';
+
+    // 3. 判斷權限等級
+    // 只有 VIEWER 是唯讀，其餘 (OWNER, ADMIN, EDITOR) 皆為可編輯
+    if (member.role === 'VIEWER') {
+        return 'READ_ONLY';
+    }
+
+    return 'EDITOR_ACCESS';
+}
 /**
  * 建立一個新團隊，並自動將建立者設為 OWNER
  */
