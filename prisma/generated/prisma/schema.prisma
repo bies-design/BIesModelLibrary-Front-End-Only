@@ -45,6 +45,41 @@ model Comment {
   updatedAt DateTime @updatedAt
 }
 
+// 1. 統整所有檔案類型的 Enum
+enum FileCategory {
+  MODEL_3D // .ifc, .3dm, .obj, .gltf
+  DRAWING // .dwg, .pdf, .png
+  DOCUMENT // .pdf, .docx, .xlsx
+  IMAGE // .jpg, .png, .webp
+  OTHER // 其他未知格式
+}
+
+// 2. 將原本的 Model 和 Pdf 合併成這一張表 
+model FileRecord {
+  id           String       @id @default(uuid())
+  shortId      String?      @unique // 如果有單檔分享需求可留
+  name         String // 原始檔名 (e.g., "A棟結構.ifc", "報價單.pdf")
+  fileId       String       @unique // MinIO / Tus ID (關鍵關聯)
+  viewerFileId String?
+  category     FileCategory @default(OTHER) // 大分類
+  extension    String? // 副檔名紀錄 (e.g., ".3dm", ".pdf")
+  size         String       @default("") // 檔案大小 (bytes)
+
+  status       ProcessStatus @default(completed)
+  errorMessage String?
+
+  // 關聯到上傳者
+  uploaderId String
+  uploader   User   @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  // 關聯到 Post：一個檔案屬於一篇 Post
+  postId String?
+  post   Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // prisma/schema/main.prisma
 
 generator client {
@@ -64,41 +99,15 @@ enum ProcessStatus {
   error
 }
 
-// prisma/schema/model.prisma
+model Phase {
+  id        String @id @default(uuid())
+  name      String // "概念設計", "細部設計" 等
+  sortOrder Int    @default(0)
 
-model Model {
-  id      String @id @default(uuid())
-  shortId String @unique // 用於分享的短 ID
-  name    String // 原始檔名
-  fileId  String @unique // MinIO / Tus ID (關鍵關聯)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  // 建立與 User 的關聯
-  uploaderId String // 外鍵欄位
-  uploader   User   @relation(fields: [uploaderId], references: [id])
-  size       String @default("") // 檔案大小 (bytes)
-
-  status       ProcessStatus @default(uploading)
-  errorMessage String?
-
-  // 關聯：Prisma 會自動跨檔案識別 Post 模型
-  posts Post[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// prisma/schema/pdfs.prisma
-
-model Pdf {
-  id     String @id @default(uuid())
-  name   String // 原始檔名
-  fileId String @unique // MinIO / Tus ID (關鍵關聯)
-
-  // 建立與 User 的關聯
-  uploaderId String // 外鍵欄位
-  uploader   User   @relation(fields: [uploaderId], references: [id])
-
-  posts Post[]
+  projectAssets ProjectAsset[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -119,13 +128,11 @@ model Post {
   coverImage String
   images     String[]
 
-  // 關聯到 Model (3D 檔案)
-  models Model[]
-
-  pdfIds     Pdf[]
+  // 任何檔案類型都可以兼容
+  files      FileRecord[]
   // pdf Pdf @relation(fields: [pdfId], references: [id])
   uploaderId String
-  uploader   User   @relation(fields: [uploaderId], references: [id])
+  uploader   User         @relation(fields: [uploaderId], references: [id])
 
   // 相關文章 ID (簡易關聯)
   relatedPosts String[]
@@ -135,48 +142,62 @@ model Post {
   teamId String?
   team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull) //當團隊解散所有的TeamMember會自動清空
 
-  // 貼文可以同時被掛載到無數個不同的ProjectNode上 可以複用
-  nodes ProjectNode[]
-
   comments Comment[]
+
+  projectAssets ProjectAsset[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Project {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  // 權限與擁有者 (可根據你現有系統調整)
-  ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  // 👥 關聯到 Team (專案所屬團隊，如果是個人專案則為 null)
-  teamId String?
-  team   Team?         @relation(fields: [teamId], references: [id], onDelete: SetNull)
-  // 一個專案包含多個節點
-  nodes  ProjectNode[]
+enum ProjectStatus {
+  ACTIVE // 進行中
+  ON_HOLD // 暫停中
+  COMPLETED // 已完工
+  ARCHIVED // 封存備查
 }
 
-model ProjectNode {
-  id   String @id @default(uuid())
-  name String // 例如："A棟", "2F機房", "冰水主機"
+// 專案與階段架構
+model Project {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  client      String? // 業主
+  location    String? // 地點
+  coverImage  String?
+  status      ProjectStatus @default(ACTIVE)
 
-  // 綁定所屬的 Project (當專案刪除時，底下節點一併刪除)
+  teamId    String
+  team      Team   @relation(fields: [teamId], references: [id], onDelete: Restrict) //防止手殘
+  // 專案的實際管理權限由 TeamMember 的 Role 決定，這個欄位只用來紀錄「最初是誰建的」
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  phases Phase[]
+  assets ProjectAsset[] // 掛載的 Post
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 專案中介表 (橋接 Project, Phase 與 Post)
+model ProjectAsset {
+  id        String @id @default(uuid())
+  sortOrder Int    @default(0)
+
   projectId String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  // 樹狀結構自我關聯
-  parentId String? // 如果是 null，代表是該專案的最頂層節點
-  parent   ProjectNode?  @relation("NodeHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
-  children ProjectNode[] @relation("NodeHierarchy")
+  phaseId String? // null 代表「未分類」
+  phase   Phase?  @relation(fields: [phaseId], references: [id], onDelete: SetNull)
 
-  // 🔗 關聯到你現有的 Post (模型 / PDF)
-  // 一個節點可以掛載多個 Post，例如一個「2F機房」節點可以掛一個 3D 模型 Post 和三個 PDF 圖紙 Post
-  posts Post[]
+  // 掛載實體資源 (就是 Post)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, phaseId, postId])
 }
 
 model Team {
@@ -248,10 +269,7 @@ model User {
   // 建立與 Account 的關聯 (User 能有多個 Account) provider不同會有不同account
   accounts Account[]
 
-  // 一個使用者可以擁有多個模型
-  models Model[]
-
-  pdfs Pdf[]
+  fileRecords FileRecord[]
 
   posts    Post[]
   comments Comment[]

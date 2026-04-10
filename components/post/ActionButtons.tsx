@@ -1,7 +1,7 @@
 // components/post/ActionButtons.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Download, Share2, FileCode, FileText, Loader2,Trash2, Edit2 } from 'lucide-react';
+import { Download, Share2, FileCode, FileText, Loader2,Trash2, Edit2, ImageIcon, FileBox } from 'lucide-react';
 import { 
     Modal, 
     ModalContent, 
@@ -14,7 +14,8 @@ import {
 } from "@heroui/react";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { delete2DPost, delete3DPost } from '@/lib/actions/post.action';
+import { deletePost } from '@/lib/actions/post.action';
+import { getFileDownloadUrl } from '@/lib/actions/file.action';
 import { generateSecureToken } from '@/app/api/generate-token/generateSecureToken';
 
 export default function ActionButtons({ post }: { post: any }) {
@@ -38,56 +39,42 @@ export default function ActionButtons({ post }: { post: any }) {
 
     const canEditPost = isOwner || isTeamEditor;
 
+    // 取得副檔名的 Helper
+    const getExt = (name: string) => name.split('.').pop()?.toLowerCase() || '';
+
     // 處理 Presigned URL 下載邏輯
     const handleGetDownloadUrl = async (fileId: string, fileName: string) => {
+        if (!session?.user) {
+            addToast({ description: "請先登入後再進行下載", color: "warning" });
+            return;
+        }
+
         try {
             setIsGenerating(fileId); // 顯示該檔案正在準備中
             
-            // 1. 判斷檔案類型
-            const isPdf = fileName.toLocaleLowerCase().endsWith('.pdf');
-            const fileType = isPdf ? 'pdf' : 'ifc';
+            // 呼叫統一的 Server Action
+            const urlResult = await getFileDownloadUrl(fileId, fileName);
 
-            // 2. 處理檔名 (如果不是 PDF 也不是 IFC 結尾，就預設補上 .ifc)
-            const finalFileName = (isPdf || fileName.toLowerCase().endsWith('.ifc'))
-                ? fileName 
-                : `${fileName}.ifc`;
-
-            // 3. 呼叫 API，加上 type 參數讓後端知道要去哪個 Bucket 拿
-            const res = await fetch(`/api/download/${fileId}?filename=${encodeURIComponent(finalFileName)}&type=${fileType}`);
-
-            // 檢查是否為Unauthorized
-            if (res.status === 401) {
-                addToast({
-                    description: "請先登入後再進行下載",
-                    color: "warning" 
-                });
-                return; // 中斷後續邏輯
-            }
-
-            if (res.status === 403) {
-                const data = await res.json();
-                addToast({ description: data.error || "權限不足，無法下載", color: "warning" });
+            if (!urlResult.success || !urlResult.url) {
+                addToast({ description: urlResult.error || "權限不足或檔案遺失，無法下載", color: "warning" });
                 return;
             }
 
-            if (!res.ok) throw new Error("伺服器錯誤，無法取得下載連結");
-
-            const data = await res.json();
+            // 建立隱藏 <a> 標籤觸發下載
+            const a = document.createElement('a');
+            a.href = urlResult.url;
+            a.download = fileName; 
+            // 避免因為 inline disposition 而無法強制下載，加上 target blank
+            a.target = "_blank"; 
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
             
-            if (data.url) {
-                // 建立隱藏 <a> 標籤觸發下載
-                const a = document.createElement('a');
-                a.href = data.url;
-                a.download = fileName; // 嘗試指定下載檔名
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                
-                addToast({
-                    description: `開始下載: ${fileName}`,
-                    color: "success"
-                });
-            }
+            addToast({
+                description: `開始下載: ${fileName}`,
+                color: "success"
+            });
+            
         } catch (error) {
             addToast({
                 description: "下載失敗，請稍後再試。",
@@ -187,7 +174,7 @@ export default function ActionButtons({ post }: { post: any }) {
         
         try{
             setIsDeleting(true);
-            const result = await (post.type === '3D' ? delete3DPost(post.id) : delete2DPost(post.id));    
+            const result = await deletePost(post.id);   
 
             if(result.success){
                 addToast({
@@ -209,6 +196,13 @@ export default function ActionButtons({ post }: { post: any }) {
             setIsDeleting(false);
         } 
     }
+
+    // 分類檔案資料 (利用 Memo 或直接過濾)
+    const files = post.files || [];
+    const models3D = files.filter((f: any) => ['ifc', 'frag', 'obj', 'gltf', '3dm'].includes(getExt(f.name)));
+    const docs = files.filter((f: any) => ['pdf', 'docx', 'xlsx'].includes(getExt(f.name)));
+    const images = files.filter((f: any) => ['png', 'jpg', 'jpeg', 'webp', 'dwg'].includes(getExt(f.name)));
+    const others = files.filter((f: any) => !models3D.includes(f) && !docs.includes(f) && !images.includes(f));
 
     return (
         <div className="flex flex-col gap-3">
@@ -238,7 +232,7 @@ export default function ActionButtons({ post }: { post: any }) {
                 </button>
             )}
 
-            {/* 下載清單 Modal */}
+            {/* 🚀 下載清單 Modal (全新分類渲染) */}
             <Modal 
                 isOpen={isDownloadOpen} 
                 onOpenChange={onDownloadChange} 
@@ -250,24 +244,27 @@ export default function ActionButtons({ post }: { post: any }) {
                     <ModalHeader className="border-b border-[#3F3F46] py-4">
                         Download Resources
                     </ModalHeader>
-                    <ModalBody className="py-6 flex flex-col gap-4">
-                        {/* 3D 模型區域 */}
-                        {post.models?.length > 0 && (
+                    <ModalBody className="py-6 flex flex-col gap-4 max-h-[60vh] overflow-y-auto">
+                        
+                        {/* 如果這篇貼文完全沒有檔案 */}
+                        {files.length === 0 && (
+                            <p className="text-sm text-[#A1A1AA] text-center">There are no files available for download.</p>
+                        )}
+
+                        {/* 3D 區域 */}
+                        {models3D.length > 0 && (
                             <div className="flex flex-col gap-2">
-                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">3D Models (IFC/FRAG)</p>
-                                {post.models.map((model: any) => (
+                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">3D Models</p>
+                                {models3D.map((model: any) => (
                                     <div key={model.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <FileCode size={20} className="text-[#D70036] shrink-0" />
                                             <div className="overflow-hidden">
-                                                <p className="text-sm truncate">{model.name}</p>
-                                                <p className="text-[10px] text-[#A1A1AA]">{model.size || "Unknown Size"}</p>
+                                                <p className="text-sm truncate" title={model.name}>{model.name}</p>
                                             </div>
                                         </div>
                                         <Button 
-                                            isIconOnly 
-                                            size="sm" 
-                                            variant="light" 
+                                            isIconOnly size="sm" variant="light" 
                                             isDisabled={isGenerating === model.fileId}
                                             onPress={() => handleGetDownloadUrl(model.fileId, model.name)}
                                         >
@@ -278,23 +275,66 @@ export default function ActionButtons({ post }: { post: any }) {
                             </div>
                         )}
 
-                        {/* PDF 區域 */}
-                        {post.pdfIds?.length > 0 && (
+                        {/* 文件 / PDF 區域 */}
+                        {docs.length > 0 && (
                             <div className="flex flex-col gap-2">
-                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Drawings (PDF)</p>
-                                {post.pdfIds.map((pdf: any) => (
-                                    <div key={pdf.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
-                                        <div className="flex items-center gap-3">
-                                            <FileText size={20} className="text-blue-400 shrink-0" />
-                                            <p className="text-sm truncate">{pdf.name}</p>
+                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Documents (PDF/Word)</p>
+                                {docs.map((doc: any) => (
+                                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <FileText size={20} className="text-orange-400 shrink-0" />
+                                            <p className="text-sm truncate" title={doc.name}>{doc.name}</p>
                                         </div>
                                         <Button 
-                                            isIconOnly 
-                                            size="sm" 
-                                            variant="light"
-                                            onPress={() => handleGetDownloadUrl(pdf.fileId, pdf.name)}
+                                            isIconOnly size="sm" variant="light" 
+                                            isDisabled={isGenerating === doc.fileId}
+                                            onPress={() => handleGetDownloadUrl(doc.fileId, doc.name)}
                                         >
-                                            <Download size={16} />
+                                            {isGenerating === doc.fileId ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* 圖片 / 圖紙區域 */}
+                        {images.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Images & Drawings</p>
+                                {images.map((img: any) => (
+                                    <div key={img.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <ImageIcon size={20} className="text-pink-400 shrink-0" />
+                                            <p className="text-sm truncate" title={img.name}>{img.name}</p>
+                                        </div>
+                                        <Button 
+                                            isIconOnly size="sm" variant="light" 
+                                            isDisabled={isGenerating === img.fileId}
+                                            onPress={() => handleGetDownloadUrl(img.fileId, img.name)}
+                                        >
+                                            {isGenerating === img.fileId ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* 其他雜項檔案 */}
+                        {others.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Other Files</p>
+                                {others.map((file: any) => (
+                                    <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <FileBox size={20} className="text-gray-400 shrink-0" />
+                                            <p className="text-sm truncate" title={file.name}>{file.name}</p>
+                                        </div>
+                                        <Button 
+                                            isIconOnly size="sm" variant="light" 
+                                            isDisabled={isGenerating === file.fileId}
+                                            onPress={() => handleGetDownloadUrl(file.fileId, file.name)}
+                                        >
+                                            {isGenerating === file.fileId ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
                                         </Button>
                                     </div>
                                 ))}

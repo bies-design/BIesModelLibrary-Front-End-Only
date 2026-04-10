@@ -106,7 +106,7 @@ export const extractMaterialsFromIFC = (webIfc: WEBIFC.IfcAPI, modelID: number):
 };
 
 interface Viewer3DProps {
-    allFiles: FileItem[];
+    allFiles?: FileItem[];
     file?: File | null;
     onIFCProcessingChange?: (isProcessing: boolean, fileName: string | null, progress?:number) => void;
 }
@@ -116,6 +116,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     const componentsRef = useRef<OBC.Components | null>(null);
     const fragmentsRef = useRef<OBC.FragmentsManager | null>(null);
     const [loadedModelsCount, setLoadingModelsCount] = useState<number>(0);
+    const [isViewerReady, setIsViewerReady] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
         getComponents: () => componentsRef.current,
@@ -260,6 +261,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             currentResizeObserver = resizeObserver;
             // 將 BUI Viewport (Web Component) 掛載到 React 容器
             containerRef.current.appendChild(viewport);
+            setIsViewerReady(true);
         };
 
         initViewer();
@@ -293,64 +295,57 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     }, []);
 
     // 處理檔案載入邏輯
+    // 🚀 狀態驅動載入邏輯：當外部傳入的 file 改變時，自動載入場景
     useEffect(() => {
-    const syncModels = async () => {
-        if (!allFiles || !componentsRef.current) return;
-
-        const fragments = componentsRef.current.get(OBC.FragmentsManager);
-        const ifcLoader = componentsRef.current.get(OBC.IfcLoader);
-
-        // 1. 先過濾出「真正需要載入」的新檔案
-        const filesToLoad = allFiles.filter(fileItem => {
-            const modelId = fileItem.name.replace(/\.(ifc|frag)$/i, "");
-            return !fragments.list.has(modelId);
-        });
-
-        // 如果沒有新檔案需要處理，直接結束，不要觸發任何狀態更新
-        if (filesToLoad.length === 0) return;
-
-        try {
-            // 2. 只有在確定有檔案要載入時，才開啟遮罩
-            onIFCProcessingChange?.(true, "Initializing...");
-
-            for (const fileItem of filesToLoad) {
-                const modelId = fileItem.name.replace(/\.(ifc|frag)$/i, "");
-                
-                // 更新目前正在處理的檔名
-                onIFCProcessingChange?.(true, fileItem.name);
-
-                try {
-                    console.log(`正在自動載入新模型: ${fileItem.name}`);
-                    const buffer = await fileItem.file.arrayBuffer();
-                    const extension = fileItem.name.split('.').pop()?.toLowerCase();
-
-                    if (extension === 'ifc') {
-                        
-                        // const unit8Array = new Uint8Array(buffer);
-                        // const wasmModelId = await ifcLoader.readIfcFile(unit8Array);
-                        // const materialMapping = extractMaterialsFromIFC(ifcLoader.webIfc, wasmModelId);
-                        
-                        // console.log(`[材質萃取成功] ${fileItem.name}:`, materialMapping);
-                        // ifcLoader.cleanUp();
-
-                        // await ifcLoader.load(unit8Array,true,modelId);
-                        console.log(`[Viewer3D] 收到 IFC 檔案 ${fileItem.name}，跳過前端載入，等待後端轉檔。`);
-                    } 
-                    else if (extension === 'frag') {
-                        await fragments.core.load(buffer, { modelId });
-                    } 
-                } catch (error) {
-                    console.error(`載入 ${fileItem.name} 失敗:`, error);
-                }
+        const loadSelectedModel = async () => {
+            // 防呆：如果沒有檔案、或是 Viewer 還沒準備好，就跳過
+            if (!file || !isViewerReady || !componentsRef.current) {
+                console.log("[Viewer3D] 缺少檔案或 Viewer 未就緒，跳過載入");
+                return;
             }
-        } finally {
-            // 3. ✅ 關鍵：在 try...finally 的 finally 區塊關閉遮罩
-            // 這樣無論成功或失敗，最後一定會關閉遮罩,進度歸 0
-            onIFCProcessingChange?.(false, null,0);
-        }
-    };
-        syncModels();
-    }, [allFiles,onIFCProcessingChange]); // 👈 監聽整個陣列的變化
+
+            const fragments = componentsRef.current.get(OBC.FragmentsManager);
+            
+            // 1. 取得模型 ID (去除副檔名)
+            const modelId = file.name.replace(/\.(ifc|frag)$/i, "");
+
+            // 2. 判斷是否已經在場景中，如果已經在場景中，就不重複載入
+            if (fragments.list.has(modelId)) {
+                console.log(`[Viewer3D] 模型 ${modelId} 已存在場景中，直接 Focus`);
+                
+                return;
+            }
+
+            try {
+                onIFCProcessingChange?.(true, file.name);
+                console.log(`[Viewer3D] 開始自動載入新模型: ${file.name}`);
+
+                // 3. 取得實體資料
+                const buffer = await file.arrayBuffer();
+                const extension = file.name.split('.').pop()?.toLowerCase();
+
+                // 4. 根據副檔名進行載入
+                if (extension === 'frag' || file.type === 'application/octet-stream') {
+                    // 如果 Sidebar 下載回來的是轉好的 frag (雖然副檔名可能是 .ifc 但內容其實是轉好的)
+                    await fragments.core.load(buffer, { modelId });
+                    setLoadingModelsCount(fragments.list.size);
+                    console.log(`[Viewer3D] 成功載入: ${modelId}`);
+                } 
+                else if (extension === 'ifc') {
+                    // ⚠️ 注意：如果你未來允許使用者直接把本地的 .ifc 拖曳進來並在本地轉檔，才需要這段
+                    // 目前依據你的流程，這段應該會被跳過，因為你交給後端轉檔了
+                    console.log(`[Viewer3D] 收到原始 IFC 檔案 ${file.name}，目前設定為後端轉檔不渲染。`);
+                }
+            } catch (error) {
+                console.error(`[Viewer3D] 載入 ${file.name} 失敗:`, error);
+            } finally {
+                onIFCProcessingChange?.(false, null, 0);
+            }
+        };
+
+        loadSelectedModel();
+
+    }, [file, isViewerReady]); // 👈 監聽傳入的 file，而不是 allFiles
 
     return (
         <div className="flex flex-col w-full h-full relative">

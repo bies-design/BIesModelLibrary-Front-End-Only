@@ -23,8 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
         const post = await prisma.post.findFirst({
             where: {
                 OR: [
-                    { models: { some: { fileId: fileId }}},
-                    { pdfIds: { some: { fileId: fileId } } }
+                    { files: { some: { fileId: fileId}}}
                 ]
             },
             include: {
@@ -60,11 +59,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
                 error: "Forbidden: You don't have permission to download this resource." 
             }, { status: 403 });
         }
-        
+
         // 這裡要決定下載哪個 Bucket。
-        const targetBucket = fileType === "pdf" 
-            ? process.env.S3_PDF_BUCKET // 確保你的 .env 裡面有這個
-            : process.env.S3_IFC_BUCKET;
+        // const targetBucket = fileType === "pdf" 
+        //     ? process.env.S3_PDF_BUCKET // 確保你的 .env 裡面有這個
+        //     : process.env.S3_IFC_BUCKET;
+
+        const targetBucket = process.env.S3_UPLOADASSETS_BUCKET;
         
             // 防呆機制：如果 .env 忘記設定 Bucket，提早噴錯
         if (!targetBucket) {
@@ -74,8 +75,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
         
         // 你可以根據邏輯判斷是 IFC (S3_UPLOAD_BUCKET) 還是 PDF。
         const command = new GetObjectCommand({
-            Bucket: targetBucket, // 存放原始 IFC 的 Bucket
-            Key: fileId, // 原始檔案 ID
+            Bucket: targetBucket, 
+            Key: fileId, 
             ResponseContentDisposition: `attachment; filename="${encodeURIComponent(fileName)}"`,
         });
 

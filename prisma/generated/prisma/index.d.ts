@@ -24,15 +24,15 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
  */
 export type Comment = $Result.DefaultSelection<Prisma.$CommentPayload>
 /**
- * Model Model
+ * Model FileRecord
  * 
  */
-export type Model = $Result.DefaultSelection<Prisma.$ModelPayload>
+export type FileRecord = $Result.DefaultSelection<Prisma.$FileRecordPayload>
 /**
- * Model Pdf
+ * Model Phase
  * 
  */
-export type Pdf = $Result.DefaultSelection<Prisma.$PdfPayload>
+export type Phase = $Result.DefaultSelection<Prisma.$PhasePayload>
 /**
  * Model Post
  * 
@@ -44,10 +44,10 @@ export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
  */
 export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 /**
- * Model ProjectNode
+ * Model ProjectAsset
  * 
  */
-export type ProjectNode = $Result.DefaultSelection<Prisma.$ProjectNodePayload>
+export type ProjectAsset = $Result.DefaultSelection<Prisma.$ProjectAssetPayload>
 /**
  * Model Team
  * 
@@ -68,7 +68,18 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * Enums
  */
 export namespace $Enums {
-  export const ProcessStatus: {
+  export const FileCategory: {
+  MODEL_3D: 'MODEL_3D',
+  DRAWING: 'DRAWING',
+  DOCUMENT: 'DOCUMENT',
+  IMAGE: 'IMAGE',
+  OTHER: 'OTHER'
+};
+
+export type FileCategory = (typeof FileCategory)[keyof typeof FileCategory]
+
+
+export const ProcessStatus: {
   uploading: 'uploading',
   processing: 'processing',
   completed: 'completed',
@@ -76,6 +87,16 @@ export namespace $Enums {
 };
 
 export type ProcessStatus = (typeof ProcessStatus)[keyof typeof ProcessStatus]
+
+
+export const ProjectStatus: {
+  ACTIVE: 'ACTIVE',
+  ON_HOLD: 'ON_HOLD',
+  COMPLETED: 'COMPLETED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
 export const TeamRole: {
@@ -97,9 +118,17 @@ export type Role = (typeof Role)[keyof typeof Role]
 
 }
 
+export type FileCategory = $Enums.FileCategory
+
+export const FileCategory: typeof $Enums.FileCategory
+
 export type ProcessStatus = $Enums.ProcessStatus
 
 export const ProcessStatus: typeof $Enums.ProcessStatus
+
+export type ProjectStatus = $Enums.ProjectStatus
+
+export const ProjectStatus: typeof $Enums.ProjectStatus
 
 export type TeamRole = $Enums.TeamRole
 
@@ -251,24 +280,24 @@ export class PrismaClient<
   get comment(): Prisma.CommentDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.model`: Exposes CRUD operations for the **Model** model.
+   * `prisma.fileRecord`: Exposes CRUD operations for the **FileRecord** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Models
-    * const models = await prisma.model.findMany()
+    * // Fetch zero or more FileRecords
+    * const fileRecords = await prisma.fileRecord.findMany()
     * ```
     */
-  get model(): Prisma.ModelDelegate<ExtArgs, ClientOptions>;
+  get fileRecord(): Prisma.FileRecordDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.pdf`: Exposes CRUD operations for the **Pdf** model.
+   * `prisma.phase`: Exposes CRUD operations for the **Phase** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Pdfs
-    * const pdfs = await prisma.pdf.findMany()
+    * // Fetch zero or more Phases
+    * const phases = await prisma.phase.findMany()
     * ```
     */
-  get pdf(): Prisma.PdfDelegate<ExtArgs, ClientOptions>;
+  get phase(): Prisma.PhaseDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.post`: Exposes CRUD operations for the **Post** model.
@@ -291,14 +320,14 @@ export class PrismaClient<
   get project(): Prisma.ProjectDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.projectNode`: Exposes CRUD operations for the **ProjectNode** model.
+   * `prisma.projectAsset`: Exposes CRUD operations for the **ProjectAsset** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ProjectNodes
-    * const projectNodes = await prisma.projectNode.findMany()
+    * // Fetch zero or more ProjectAssets
+    * const projectAssets = await prisma.projectAsset.findMany()
     * ```
     */
-  get projectNode(): Prisma.ProjectNodeDelegate<ExtArgs, ClientOptions>;
+  get projectAsset(): Prisma.ProjectAssetDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.team`: Exposes CRUD operations for the **Team** model.
@@ -765,11 +794,11 @@ export namespace Prisma {
   export const ModelName: {
     Account: 'Account',
     Comment: 'Comment',
-    Model: 'Model',
-    Pdf: 'Pdf',
+    FileRecord: 'FileRecord',
+    Phase: 'Phase',
     Post: 'Post',
     Project: 'Project',
-    ProjectNode: 'ProjectNode',
+    ProjectAsset: 'ProjectAsset',
     Team: 'Team',
     TeamMember: 'TeamMember',
     User: 'User'
@@ -788,7 +817,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "comment" | "model" | "pdf" | "post" | "project" | "projectNode" | "team" | "teamMember" | "user"
+      modelProps: "account" | "comment" | "fileRecord" | "phase" | "post" | "project" | "projectAsset" | "team" | "teamMember" | "user"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -940,151 +969,151 @@ export namespace Prisma {
           }
         }
       }
-      Model: {
-        payload: Prisma.$ModelPayload<ExtArgs>
-        fields: Prisma.ModelFieldRefs
+      FileRecord: {
+        payload: Prisma.$FileRecordPayload<ExtArgs>
+        fields: Prisma.FileRecordFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ModelFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload> | null
+            args: Prisma.FileRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ModelFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           findFirst: {
-            args: Prisma.ModelFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload> | null
+            args: Prisma.FileRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ModelFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           findMany: {
-            args: Prisma.ModelFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>[]
+            args: Prisma.FileRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>[]
           }
           create: {
-            args: Prisma.ModelCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           createMany: {
-            args: Prisma.ModelCreateManyArgs<ExtArgs>
+            args: Prisma.FileRecordCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ModelCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>[]
+            args: Prisma.FileRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>[]
           }
           delete: {
-            args: Prisma.ModelDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           update: {
-            args: Prisma.ModelUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           deleteMany: {
-            args: Prisma.ModelDeleteManyArgs<ExtArgs>
+            args: Prisma.FileRecordDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ModelUpdateManyArgs<ExtArgs>
+            args: Prisma.FileRecordUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ModelUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>[]
+            args: Prisma.FileRecordUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>[]
           }
           upsert: {
-            args: Prisma.ModelUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ModelPayload>
+            args: Prisma.FileRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileRecordPayload>
           }
           aggregate: {
-            args: Prisma.ModelAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateModel>
+            args: Prisma.FileRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFileRecord>
           }
           groupBy: {
-            args: Prisma.ModelGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ModelGroupByOutputType>[]
+            args: Prisma.FileRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FileRecordGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ModelCountArgs<ExtArgs>
-            result: $Utils.Optional<ModelCountAggregateOutputType> | number
+            args: Prisma.FileRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<FileRecordCountAggregateOutputType> | number
           }
         }
       }
-      Pdf: {
-        payload: Prisma.$PdfPayload<ExtArgs>
-        fields: Prisma.PdfFieldRefs
+      Phase: {
+        payload: Prisma.$PhasePayload<ExtArgs>
+        fields: Prisma.PhaseFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.PdfFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload> | null
+            args: Prisma.PhaseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.PdfFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           findFirst: {
-            args: Prisma.PdfFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload> | null
+            args: Prisma.PhaseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.PdfFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           findMany: {
-            args: Prisma.PdfFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>[]
+            args: Prisma.PhaseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>[]
           }
           create: {
-            args: Prisma.PdfCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           createMany: {
-            args: Prisma.PdfCreateManyArgs<ExtArgs>
+            args: Prisma.PhaseCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.PdfCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>[]
+            args: Prisma.PhaseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>[]
           }
           delete: {
-            args: Prisma.PdfDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           update: {
-            args: Prisma.PdfUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           deleteMany: {
-            args: Prisma.PdfDeleteManyArgs<ExtArgs>
+            args: Prisma.PhaseDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.PdfUpdateManyArgs<ExtArgs>
+            args: Prisma.PhaseUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.PdfUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>[]
+            args: Prisma.PhaseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>[]
           }
           upsert: {
-            args: Prisma.PdfUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PdfPayload>
+            args: Prisma.PhaseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhasePayload>
           }
           aggregate: {
-            args: Prisma.PdfAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregatePdf>
+            args: Prisma.PhaseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhase>
           }
           groupBy: {
-            args: Prisma.PdfGroupByArgs<ExtArgs>
-            result: $Utils.Optional<PdfGroupByOutputType>[]
+            args: Prisma.PhaseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhaseGroupByOutputType>[]
           }
           count: {
-            args: Prisma.PdfCountArgs<ExtArgs>
-            result: $Utils.Optional<PdfCountAggregateOutputType> | number
+            args: Prisma.PhaseCountArgs<ExtArgs>
+            result: $Utils.Optional<PhaseCountAggregateOutputType> | number
           }
         }
       }
@@ -1236,77 +1265,77 @@ export namespace Prisma {
           }
         }
       }
-      ProjectNode: {
-        payload: Prisma.$ProjectNodePayload<ExtArgs>
-        fields: Prisma.ProjectNodeFieldRefs
+      ProjectAsset: {
+        payload: Prisma.$ProjectAssetPayload<ExtArgs>
+        fields: Prisma.ProjectAssetFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ProjectNodeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload> | null
+            args: Prisma.ProjectAssetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ProjectNodeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           findFirst: {
-            args: Prisma.ProjectNodeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload> | null
+            args: Prisma.ProjectAssetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ProjectNodeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           findMany: {
-            args: Prisma.ProjectNodeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>[]
+            args: Prisma.ProjectAssetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>[]
           }
           create: {
-            args: Prisma.ProjectNodeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           createMany: {
-            args: Prisma.ProjectNodeCreateManyArgs<ExtArgs>
+            args: Prisma.ProjectAssetCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ProjectNodeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>[]
+            args: Prisma.ProjectAssetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>[]
           }
           delete: {
-            args: Prisma.ProjectNodeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           update: {
-            args: Prisma.ProjectNodeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           deleteMany: {
-            args: Prisma.ProjectNodeDeleteManyArgs<ExtArgs>
+            args: Prisma.ProjectAssetDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ProjectNodeUpdateManyArgs<ExtArgs>
+            args: Prisma.ProjectAssetUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ProjectNodeUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>[]
+            args: Prisma.ProjectAssetUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>[]
           }
           upsert: {
-            args: Prisma.ProjectNodeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjectNodePayload>
+            args: Prisma.ProjectAssetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAssetPayload>
           }
           aggregate: {
-            args: Prisma.ProjectNodeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateProjectNode>
+            args: Prisma.ProjectAssetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProjectAsset>
           }
           groupBy: {
-            args: Prisma.ProjectNodeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ProjectNodeGroupByOutputType>[]
+            args: Prisma.ProjectAssetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProjectAssetGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ProjectNodeCountArgs<ExtArgs>
-            result: $Utils.Optional<ProjectNodeCountAggregateOutputType> | number
+            args: Prisma.ProjectAssetCountArgs<ExtArgs>
+            result: $Utils.Optional<ProjectAssetCountAggregateOutputType> | number
           }
         }
       }
@@ -1642,11 +1671,11 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     account?: AccountOmit
     comment?: CommentOmit
-    model?: ModelOmit
-    pdf?: PdfOmit
+    fileRecord?: FileRecordOmit
+    phase?: PhaseOmit
     post?: PostOmit
     project?: ProjectOmit
-    projectNode?: ProjectNodeOmit
+    projectAsset?: ProjectAssetOmit
     team?: TeamOmit
     teamMember?: TeamMemberOmit
     user?: UserOmit
@@ -1757,64 +1786,33 @@ export namespace Prisma {
 
 
   /**
-   * Count Type ModelCountOutputType
+   * Count Type PhaseCountOutputType
    */
 
-  export type ModelCountOutputType = {
-    posts: number
+  export type PhaseCountOutputType = {
+    projectAssets: number
   }
 
-  export type ModelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    posts?: boolean | ModelCountOutputTypeCountPostsArgs
+  export type PhaseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    projectAssets?: boolean | PhaseCountOutputTypeCountProjectAssetsArgs
   }
 
   // Custom InputTypes
   /**
-   * ModelCountOutputType without action
+   * PhaseCountOutputType without action
    */
-  export type ModelCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ModelCountOutputType
+     * Select specific fields to fetch from the PhaseCountOutputType
      */
-    select?: ModelCountOutputTypeSelect<ExtArgs> | null
+    select?: PhaseCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * ModelCountOutputType without action
+   * PhaseCountOutputType without action
    */
-  export type ModelCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
-  }
-
-
-  /**
-   * Count Type PdfCountOutputType
-   */
-
-  export type PdfCountOutputType = {
-    posts: number
-  }
-
-  export type PdfCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    posts?: boolean | PdfCountOutputTypeCountPostsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * PdfCountOutputType without action
-   */
-  export type PdfCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the PdfCountOutputType
-     */
-    select?: PdfCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * PdfCountOutputType without action
-   */
-  export type PdfCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
+  export type PhaseCountOutputTypeCountProjectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAssetWhereInput
   }
 
 
@@ -1823,17 +1821,15 @@ export namespace Prisma {
    */
 
   export type PostCountOutputType = {
-    models: number
-    pdfIds: number
-    nodes: number
+    files: number
     comments: number
+    projectAssets: number
   }
 
   export type PostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    models?: boolean | PostCountOutputTypeCountModelsArgs
-    pdfIds?: boolean | PostCountOutputTypeCountPdfIdsArgs
-    nodes?: boolean | PostCountOutputTypeCountNodesArgs
+    files?: boolean | PostCountOutputTypeCountFilesArgs
     comments?: boolean | PostCountOutputTypeCountCommentsArgs
+    projectAssets?: boolean | PostCountOutputTypeCountProjectAssetsArgs
   }
 
   // Custom InputTypes
@@ -1850,22 +1846,8 @@ export namespace Prisma {
   /**
    * PostCountOutputType without action
    */
-  export type PostCountOutputTypeCountModelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelWhereInput
-  }
-
-  /**
-   * PostCountOutputType without action
-   */
-  export type PostCountOutputTypeCountPdfIdsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PdfWhereInput
-  }
-
-  /**
-   * PostCountOutputType without action
-   */
-  export type PostCountOutputTypeCountNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectNodeWhereInput
+  export type PostCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileRecordWhereInput
   }
 
   /**
@@ -1875,17 +1857,26 @@ export namespace Prisma {
     where?: CommentWhereInput
   }
 
+  /**
+   * PostCountOutputType without action
+   */
+  export type PostCountOutputTypeCountProjectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAssetWhereInput
+  }
+
 
   /**
    * Count Type ProjectCountOutputType
    */
 
   export type ProjectCountOutputType = {
-    nodes: number
+    phases: number
+    assets: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    nodes?: boolean | ProjectCountOutputTypeCountNodesArgs
+    phases?: boolean | ProjectCountOutputTypeCountPhasesArgs
+    assets?: boolean | ProjectCountOutputTypeCountAssetsArgs
   }
 
   // Custom InputTypes
@@ -1902,48 +1893,15 @@ export namespace Prisma {
   /**
    * ProjectCountOutputType without action
    */
-  export type ProjectCountOutputTypeCountNodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectNodeWhereInput
-  }
-
-
-  /**
-   * Count Type ProjectNodeCountOutputType
-   */
-
-  export type ProjectNodeCountOutputType = {
-    children: number
-    posts: number
-  }
-
-  export type ProjectNodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    children?: boolean | ProjectNodeCountOutputTypeCountChildrenArgs
-    posts?: boolean | ProjectNodeCountOutputTypeCountPostsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * ProjectNodeCountOutputType without action
-   */
-  export type ProjectNodeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ProjectNodeCountOutputType
-     */
-    select?: ProjectNodeCountOutputTypeSelect<ExtArgs> | null
+  export type ProjectCountOutputTypeCountPhasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhaseWhereInput
   }
 
   /**
-   * ProjectNodeCountOutputType without action
+   * ProjectCountOutputType without action
    */
-  export type ProjectNodeCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectNodeWhereInput
-  }
-
-  /**
-   * ProjectNodeCountOutputType without action
-   */
-  export type ProjectNodeCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
+  export type ProjectCountOutputTypeCountAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAssetWhereInput
   }
 
 
@@ -2003,8 +1961,7 @@ export namespace Prisma {
   export type UserCountOutputType = {
     teamMembers: number
     accounts: number
-    models: number
-    pdfs: number
+    fileRecords: number
     posts: number
     comments: number
     projects: number
@@ -2013,8 +1970,7 @@ export namespace Prisma {
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teamMembers?: boolean | UserCountOutputTypeCountTeamMembersArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-    models?: boolean | UserCountOutputTypeCountModelsArgs
-    pdfs?: boolean | UserCountOutputTypeCountPdfsArgs
+    fileRecords?: boolean | UserCountOutputTypeCountFileRecordsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
     comments?: boolean | UserCountOutputTypeCountCommentsArgs
     projects?: boolean | UserCountOutputTypeCountProjectsArgs
@@ -2048,15 +2004,8 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountModelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountPdfsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PdfWhereInput
+  export type UserCountOutputTypeCountFileRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileRecordWhereInput
   }
 
   /**
@@ -4329,415 +4278,465 @@ export namespace Prisma {
 
 
   /**
-   * Model Model
+   * Model FileRecord
    */
 
-  export type AggregateModel = {
-    _count: ModelCountAggregateOutputType | null
-    _min: ModelMinAggregateOutputType | null
-    _max: ModelMaxAggregateOutputType | null
+  export type AggregateFileRecord = {
+    _count: FileRecordCountAggregateOutputType | null
+    _min: FileRecordMinAggregateOutputType | null
+    _max: FileRecordMaxAggregateOutputType | null
   }
 
-  export type ModelMinAggregateOutputType = {
+  export type FileRecordMinAggregateOutputType = {
     id: string | null
     shortId: string | null
     name: string | null
     fileId: string | null
-    uploaderId: string | null
+    viewerFileId: string | null
+    category: $Enums.FileCategory | null
+    extension: string | null
     size: string | null
     status: $Enums.ProcessStatus | null
     errorMessage: string | null
+    uploaderId: string | null
+    postId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type ModelMaxAggregateOutputType = {
+  export type FileRecordMaxAggregateOutputType = {
     id: string | null
     shortId: string | null
     name: string | null
     fileId: string | null
-    uploaderId: string | null
+    viewerFileId: string | null
+    category: $Enums.FileCategory | null
+    extension: string | null
     size: string | null
     status: $Enums.ProcessStatus | null
     errorMessage: string | null
+    uploaderId: string | null
+    postId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type ModelCountAggregateOutputType = {
+  export type FileRecordCountAggregateOutputType = {
     id: number
     shortId: number
     name: number
     fileId: number
-    uploaderId: number
+    viewerFileId: number
+    category: number
+    extension: number
     size: number
     status: number
     errorMessage: number
+    uploaderId: number
+    postId: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
-  export type ModelMinAggregateInputType = {
+  export type FileRecordMinAggregateInputType = {
     id?: true
     shortId?: true
     name?: true
     fileId?: true
-    uploaderId?: true
+    viewerFileId?: true
+    category?: true
+    extension?: true
     size?: true
     status?: true
     errorMessage?: true
+    uploaderId?: true
+    postId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type ModelMaxAggregateInputType = {
+  export type FileRecordMaxAggregateInputType = {
     id?: true
     shortId?: true
     name?: true
     fileId?: true
-    uploaderId?: true
+    viewerFileId?: true
+    category?: true
+    extension?: true
     size?: true
     status?: true
     errorMessage?: true
+    uploaderId?: true
+    postId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type ModelCountAggregateInputType = {
+  export type FileRecordCountAggregateInputType = {
     id?: true
     shortId?: true
     name?: true
     fileId?: true
-    uploaderId?: true
+    viewerFileId?: true
+    category?: true
+    extension?: true
     size?: true
     status?: true
     errorMessage?: true
+    uploaderId?: true
+    postId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
   }
 
-  export type ModelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Model to aggregate.
+     * Filter which FileRecord to aggregate.
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Models to fetch.
+     * Determine the order of FileRecords to fetch.
      */
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ModelWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Models from the position of the cursor.
+     * Take `±n` FileRecords from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Models.
+     * Skip the first `n` FileRecords.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Models
+     * Count returned FileRecords
     **/
-    _count?: true | ModelCountAggregateInputType
+    _count?: true | FileRecordCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ModelMinAggregateInputType
+    _min?: FileRecordMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ModelMaxAggregateInputType
+    _max?: FileRecordMaxAggregateInputType
   }
 
-  export type GetModelAggregateType<T extends ModelAggregateArgs> = {
-        [P in keyof T & keyof AggregateModel]: P extends '_count' | 'count'
+  export type GetFileRecordAggregateType<T extends FileRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregateFileRecord]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateModel[P]>
-      : GetScalarType<T[P], AggregateModel[P]>
+        : GetScalarType<T[P], AggregateFileRecord[P]>
+      : GetScalarType<T[P], AggregateFileRecord[P]>
   }
 
 
 
 
-  export type ModelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ModelWhereInput
-    orderBy?: ModelOrderByWithAggregationInput | ModelOrderByWithAggregationInput[]
-    by: ModelScalarFieldEnum[] | ModelScalarFieldEnum
-    having?: ModelScalarWhereWithAggregatesInput
+  export type FileRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileRecordWhereInput
+    orderBy?: FileRecordOrderByWithAggregationInput | FileRecordOrderByWithAggregationInput[]
+    by: FileRecordScalarFieldEnum[] | FileRecordScalarFieldEnum
+    having?: FileRecordScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ModelCountAggregateInputType | true
-    _min?: ModelMinAggregateInputType
-    _max?: ModelMaxAggregateInputType
+    _count?: FileRecordCountAggregateInputType | true
+    _min?: FileRecordMinAggregateInputType
+    _max?: FileRecordMaxAggregateInputType
   }
 
-  export type ModelGroupByOutputType = {
+  export type FileRecordGroupByOutputType = {
     id: string
-    shortId: string
+    shortId: string | null
     name: string
     fileId: string
-    uploaderId: string
+    viewerFileId: string | null
+    category: $Enums.FileCategory
+    extension: string | null
     size: string
     status: $Enums.ProcessStatus
     errorMessage: string | null
+    uploaderId: string
+    postId: string | null
     createdAt: Date
     updatedAt: Date
-    _count: ModelCountAggregateOutputType | null
-    _min: ModelMinAggregateOutputType | null
-    _max: ModelMaxAggregateOutputType | null
+    _count: FileRecordCountAggregateOutputType | null
+    _min: FileRecordMinAggregateOutputType | null
+    _max: FileRecordMaxAggregateOutputType | null
   }
 
-  type GetModelGroupByPayload<T extends ModelGroupByArgs> = Prisma.PrismaPromise<
+  type GetFileRecordGroupByPayload<T extends FileRecordGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ModelGroupByOutputType, T['by']> &
+      PickEnumerable<FileRecordGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ModelGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof FileRecordGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ModelGroupByOutputType[P]>
-            : GetScalarType<T[P], ModelGroupByOutputType[P]>
+              : GetScalarType<T[P], FileRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], FileRecordGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ModelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type FileRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     shortId?: boolean
     name?: boolean
     fileId?: boolean
-    uploaderId?: boolean
+    viewerFileId?: boolean
+    category?: boolean
+    extension?: boolean
     size?: boolean
     status?: boolean
     errorMessage?: boolean
+    uploaderId?: boolean
+    postId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     uploader?: boolean | UserDefaultArgs<ExtArgs>
-    posts?: boolean | Model$postsArgs<ExtArgs>
-    _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["model"]>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
+  }, ExtArgs["result"]["fileRecord"]>
 
-  export type ModelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type FileRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     shortId?: boolean
     name?: boolean
     fileId?: boolean
-    uploaderId?: boolean
+    viewerFileId?: boolean
+    category?: boolean
+    extension?: boolean
     size?: boolean
     status?: boolean
     errorMessage?: boolean
+    uploaderId?: boolean
+    postId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     uploader?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["model"]>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
+  }, ExtArgs["result"]["fileRecord"]>
 
-  export type ModelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type FileRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     shortId?: boolean
     name?: boolean
     fileId?: boolean
-    uploaderId?: boolean
+    viewerFileId?: boolean
+    category?: boolean
+    extension?: boolean
     size?: boolean
     status?: boolean
     errorMessage?: boolean
+    uploaderId?: boolean
+    postId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     uploader?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["model"]>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
+  }, ExtArgs["result"]["fileRecord"]>
 
-  export type ModelSelectScalar = {
+  export type FileRecordSelectScalar = {
     id?: boolean
     shortId?: boolean
     name?: boolean
     fileId?: boolean
-    uploaderId?: boolean
+    viewerFileId?: boolean
+    category?: boolean
+    extension?: boolean
     size?: boolean
     status?: boolean
     errorMessage?: boolean
+    uploaderId?: boolean
+    postId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ModelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "uploaderId" | "size" | "status" | "errorMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["model"]>
-  export type ModelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "viewerFileId" | "category" | "extension" | "size" | "status" | "errorMessage" | "uploaderId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileRecord"]>
+  export type FileRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     uploader?: boolean | UserDefaultArgs<ExtArgs>
-    posts?: boolean | Model$postsArgs<ExtArgs>
-    _count?: boolean | ModelCountOutputTypeDefaultArgs<ExtArgs>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
   }
-  export type ModelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     uploader?: boolean | UserDefaultArgs<ExtArgs>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
   }
-  export type ModelIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     uploader?: boolean | UserDefaultArgs<ExtArgs>
+    post?: boolean | FileRecord$postArgs<ExtArgs>
   }
 
-  export type $ModelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Model"
+  export type $FileRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FileRecord"
     objects: {
       uploader: Prisma.$UserPayload<ExtArgs>
-      posts: Prisma.$PostPayload<ExtArgs>[]
+      post: Prisma.$PostPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      shortId: string
+      shortId: string | null
       name: string
       fileId: string
-      uploaderId: string
+      viewerFileId: string | null
+      category: $Enums.FileCategory
+      extension: string | null
       size: string
       status: $Enums.ProcessStatus
       errorMessage: string | null
+      uploaderId: string
+      postId: string | null
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["model"]>
+    }, ExtArgs["result"]["fileRecord"]>
     composites: {}
   }
 
-  type ModelGetPayload<S extends boolean | null | undefined | ModelDefaultArgs> = $Result.GetResult<Prisma.$ModelPayload, S>
+  type FileRecordGetPayload<S extends boolean | null | undefined | FileRecordDefaultArgs> = $Result.GetResult<Prisma.$FileRecordPayload, S>
 
-  type ModelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ModelFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ModelCountAggregateInputType | true
+  type FileRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FileRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FileRecordCountAggregateInputType | true
     }
 
-  export interface ModelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Model'], meta: { name: 'Model' } }
+  export interface FileRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FileRecord'], meta: { name: 'FileRecord' } }
     /**
-     * Find zero or one Model that matches the filter.
-     * @param {ModelFindUniqueArgs} args - Arguments to find a Model
+     * Find zero or one FileRecord that matches the filter.
+     * @param {FileRecordFindUniqueArgs} args - Arguments to find a FileRecord
      * @example
-     * // Get one Model
-     * const model = await prisma.model.findUnique({
+     * // Get one FileRecord
+     * const fileRecord = await prisma.fileRecord.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ModelFindUniqueArgs>(args: SelectSubset<T, ModelFindUniqueArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends FileRecordFindUniqueArgs>(args: SelectSubset<T, FileRecordFindUniqueArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Model that matches the filter or throw an error with `error.code='P2025'`
+     * Find one FileRecord that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ModelFindUniqueOrThrowArgs} args - Arguments to find a Model
+     * @param {FileRecordFindUniqueOrThrowArgs} args - Arguments to find a FileRecord
      * @example
-     * // Get one Model
-     * const model = await prisma.model.findUniqueOrThrow({
+     * // Get one FileRecord
+     * const fileRecord = await prisma.fileRecord.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ModelFindUniqueOrThrowArgs>(args: SelectSubset<T, ModelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends FileRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, FileRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Model that matches the filter.
+     * Find the first FileRecord that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelFindFirstArgs} args - Arguments to find a Model
+     * @param {FileRecordFindFirstArgs} args - Arguments to find a FileRecord
      * @example
-     * // Get one Model
-     * const model = await prisma.model.findFirst({
+     * // Get one FileRecord
+     * const fileRecord = await prisma.fileRecord.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ModelFindFirstArgs>(args?: SelectSubset<T, ModelFindFirstArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends FileRecordFindFirstArgs>(args?: SelectSubset<T, FileRecordFindFirstArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Model that matches the filter or
+     * Find the first FileRecord that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelFindFirstOrThrowArgs} args - Arguments to find a Model
+     * @param {FileRecordFindFirstOrThrowArgs} args - Arguments to find a FileRecord
      * @example
-     * // Get one Model
-     * const model = await prisma.model.findFirstOrThrow({
+     * // Get one FileRecord
+     * const fileRecord = await prisma.fileRecord.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ModelFindFirstOrThrowArgs>(args?: SelectSubset<T, ModelFindFirstOrThrowArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends FileRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, FileRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Models that matches the filter.
+     * Find zero or more FileRecords that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {FileRecordFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Models
-     * const models = await prisma.model.findMany()
+     * // Get all FileRecords
+     * const fileRecords = await prisma.fileRecord.findMany()
      * 
-     * // Get first 10 Models
-     * const models = await prisma.model.findMany({ take: 10 })
+     * // Get first 10 FileRecords
+     * const fileRecords = await prisma.fileRecord.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const modelWithIdOnly = await prisma.model.findMany({ select: { id: true } })
+     * const fileRecordWithIdOnly = await prisma.fileRecord.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends ModelFindManyArgs>(args?: SelectSubset<T, ModelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends FileRecordFindManyArgs>(args?: SelectSubset<T, FileRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Model.
-     * @param {ModelCreateArgs} args - Arguments to create a Model.
+     * Create a FileRecord.
+     * @param {FileRecordCreateArgs} args - Arguments to create a FileRecord.
      * @example
-     * // Create one Model
-     * const Model = await prisma.model.create({
+     * // Create one FileRecord
+     * const FileRecord = await prisma.fileRecord.create({
      *   data: {
-     *     // ... data to create a Model
+     *     // ... data to create a FileRecord
      *   }
      * })
      * 
      */
-    create<T extends ModelCreateArgs>(args: SelectSubset<T, ModelCreateArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends FileRecordCreateArgs>(args: SelectSubset<T, FileRecordCreateArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Models.
-     * @param {ModelCreateManyArgs} args - Arguments to create many Models.
+     * Create many FileRecords.
+     * @param {FileRecordCreateManyArgs} args - Arguments to create many FileRecords.
      * @example
-     * // Create many Models
-     * const model = await prisma.model.createMany({
+     * // Create many FileRecords
+     * const fileRecord = await prisma.fileRecord.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ModelCreateManyArgs>(args?: SelectSubset<T, ModelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends FileRecordCreateManyArgs>(args?: SelectSubset<T, FileRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Models and returns the data saved in the database.
-     * @param {ModelCreateManyAndReturnArgs} args - Arguments to create many Models.
+     * Create many FileRecords and returns the data saved in the database.
+     * @param {FileRecordCreateManyAndReturnArgs} args - Arguments to create many FileRecords.
      * @example
-     * // Create many Models
-     * const model = await prisma.model.createManyAndReturn({
+     * // Create many FileRecords
+     * const fileRecord = await prisma.fileRecord.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Models and only return the `id`
-     * const modelWithIdOnly = await prisma.model.createManyAndReturn({
+     * // Create many FileRecords and only return the `id`
+     * const fileRecordWithIdOnly = await prisma.fileRecord.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -4747,28 +4746,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends ModelCreateManyAndReturnArgs>(args?: SelectSubset<T, ModelCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends FileRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, FileRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Model.
-     * @param {ModelDeleteArgs} args - Arguments to delete one Model.
+     * Delete a FileRecord.
+     * @param {FileRecordDeleteArgs} args - Arguments to delete one FileRecord.
      * @example
-     * // Delete one Model
-     * const Model = await prisma.model.delete({
+     * // Delete one FileRecord
+     * const FileRecord = await prisma.fileRecord.delete({
      *   where: {
-     *     // ... filter to delete one Model
+     *     // ... filter to delete one FileRecord
      *   }
      * })
      * 
      */
-    delete<T extends ModelDeleteArgs>(args: SelectSubset<T, ModelDeleteArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends FileRecordDeleteArgs>(args: SelectSubset<T, FileRecordDeleteArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Model.
-     * @param {ModelUpdateArgs} args - Arguments to update one Model.
+     * Update one FileRecord.
+     * @param {FileRecordUpdateArgs} args - Arguments to update one FileRecord.
      * @example
-     * // Update one Model
-     * const model = await prisma.model.update({
+     * // Update one FileRecord
+     * const fileRecord = await prisma.fileRecord.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -4778,30 +4777,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ModelUpdateArgs>(args: SelectSubset<T, ModelUpdateArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends FileRecordUpdateArgs>(args: SelectSubset<T, FileRecordUpdateArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Models.
-     * @param {ModelDeleteManyArgs} args - Arguments to filter Models to delete.
+     * Delete zero or more FileRecords.
+     * @param {FileRecordDeleteManyArgs} args - Arguments to filter FileRecords to delete.
      * @example
-     * // Delete a few Models
-     * const { count } = await prisma.model.deleteMany({
+     * // Delete a few FileRecords
+     * const { count } = await prisma.fileRecord.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ModelDeleteManyArgs>(args?: SelectSubset<T, ModelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends FileRecordDeleteManyArgs>(args?: SelectSubset<T, FileRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Models.
+     * Update zero or more FileRecords.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {FileRecordUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Models
-     * const model = await prisma.model.updateMany({
+     * // Update many FileRecords
+     * const fileRecord = await prisma.fileRecord.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -4811,14 +4810,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ModelUpdateManyArgs>(args: SelectSubset<T, ModelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends FileRecordUpdateManyArgs>(args: SelectSubset<T, FileRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Models and returns the data updated in the database.
-     * @param {ModelUpdateManyAndReturnArgs} args - Arguments to update many Models.
+     * Update zero or more FileRecords and returns the data updated in the database.
+     * @param {FileRecordUpdateManyAndReturnArgs} args - Arguments to update many FileRecords.
      * @example
-     * // Update many Models
-     * const model = await prisma.model.updateManyAndReturn({
+     * // Update many FileRecords
+     * const fileRecord = await prisma.fileRecord.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -4827,8 +4826,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Models and only return the `id`
-     * const modelWithIdOnly = await prisma.model.updateManyAndReturn({
+     * // Update zero or more FileRecords and only return the `id`
+     * const fileRecordWithIdOnly = await prisma.fileRecord.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -4841,56 +4840,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends ModelUpdateManyAndReturnArgs>(args: SelectSubset<T, ModelUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends FileRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, FileRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Model.
-     * @param {ModelUpsertArgs} args - Arguments to update or create a Model.
+     * Create or update one FileRecord.
+     * @param {FileRecordUpsertArgs} args - Arguments to update or create a FileRecord.
      * @example
-     * // Update or create a Model
-     * const model = await prisma.model.upsert({
+     * // Update or create a FileRecord
+     * const fileRecord = await prisma.fileRecord.upsert({
      *   create: {
-     *     // ... data to create a Model
+     *     // ... data to create a FileRecord
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Model we want to update
+     *     // ... the filter for the FileRecord we want to update
      *   }
      * })
      */
-    upsert<T extends ModelUpsertArgs>(args: SelectSubset<T, ModelUpsertArgs<ExtArgs>>): Prisma__ModelClient<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends FileRecordUpsertArgs>(args: SelectSubset<T, FileRecordUpsertArgs<ExtArgs>>): Prisma__FileRecordClient<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Models.
+     * Count the number of FileRecords.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelCountArgs} args - Arguments to filter Models to count.
+     * @param {FileRecordCountArgs} args - Arguments to filter FileRecords to count.
      * @example
-     * // Count the number of Models
-     * const count = await prisma.model.count({
+     * // Count the number of FileRecords
+     * const count = await prisma.fileRecord.count({
      *   where: {
-     *     // ... the filter for the Models we want to count
+     *     // ... the filter for the FileRecords we want to count
      *   }
      * })
     **/
-    count<T extends ModelCountArgs>(
-      args?: Subset<T, ModelCountArgs>,
+    count<T extends FileRecordCountArgs>(
+      args?: Subset<T, FileRecordCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ModelCountAggregateOutputType>
+          : GetScalarType<T['select'], FileRecordCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Model.
+     * Allows you to perform aggregations operations on a FileRecord.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {FileRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -4910,13 +4909,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ModelAggregateArgs>(args: Subset<T, ModelAggregateArgs>): Prisma.PrismaPromise<GetModelAggregateType<T>>
+    aggregate<T extends FileRecordAggregateArgs>(args: Subset<T, FileRecordAggregateArgs>): Prisma.PrismaPromise<GetFileRecordAggregateType<T>>
 
     /**
-     * Group by Model.
+     * Group by FileRecord.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ModelGroupByArgs} args - Group by arguments.
+     * @param {FileRecordGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -4931,14 +4930,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ModelGroupByArgs,
+      T extends FileRecordGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ModelGroupByArgs['orderBy'] }
-        : { orderBy?: ModelGroupByArgs['orderBy'] },
+        ? { orderBy: FileRecordGroupByArgs['orderBy'] }
+        : { orderBy?: FileRecordGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -4987,23 +4986,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ModelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, FileRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFileRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Model model
+   * Fields of the FileRecord model
    */
-  readonly fields: ModelFieldRefs;
+  readonly fields: FileRecordFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Model.
+   * The delegate class that acts as a "Promise-like" for FileRecord.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ModelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__FileRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     uploader<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    posts<T extends Model$postsArgs<ExtArgs> = {}>(args?: Subset<T, Model$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    post<T extends FileRecord$postArgs<ExtArgs> = {}>(args?: Subset<T, FileRecord$postArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5030,423 +5029,427 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Model model
+   * Fields of the FileRecord model
    */
-  interface ModelFieldRefs {
-    readonly id: FieldRef<"Model", 'String'>
-    readonly shortId: FieldRef<"Model", 'String'>
-    readonly name: FieldRef<"Model", 'String'>
-    readonly fileId: FieldRef<"Model", 'String'>
-    readonly uploaderId: FieldRef<"Model", 'String'>
-    readonly size: FieldRef<"Model", 'String'>
-    readonly status: FieldRef<"Model", 'ProcessStatus'>
-    readonly errorMessage: FieldRef<"Model", 'String'>
-    readonly createdAt: FieldRef<"Model", 'DateTime'>
-    readonly updatedAt: FieldRef<"Model", 'DateTime'>
+  interface FileRecordFieldRefs {
+    readonly id: FieldRef<"FileRecord", 'String'>
+    readonly shortId: FieldRef<"FileRecord", 'String'>
+    readonly name: FieldRef<"FileRecord", 'String'>
+    readonly fileId: FieldRef<"FileRecord", 'String'>
+    readonly viewerFileId: FieldRef<"FileRecord", 'String'>
+    readonly category: FieldRef<"FileRecord", 'FileCategory'>
+    readonly extension: FieldRef<"FileRecord", 'String'>
+    readonly size: FieldRef<"FileRecord", 'String'>
+    readonly status: FieldRef<"FileRecord", 'ProcessStatus'>
+    readonly errorMessage: FieldRef<"FileRecord", 'String'>
+    readonly uploaderId: FieldRef<"FileRecord", 'String'>
+    readonly postId: FieldRef<"FileRecord", 'String'>
+    readonly createdAt: FieldRef<"FileRecord", 'DateTime'>
+    readonly updatedAt: FieldRef<"FileRecord", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Model findUnique
+   * FileRecord findUnique
    */
-  export type ModelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter, which Model to fetch.
+     * Filter, which FileRecord to fetch.
      */
-    where: ModelWhereUniqueInput
+    where: FileRecordWhereUniqueInput
   }
 
   /**
-   * Model findUniqueOrThrow
+   * FileRecord findUniqueOrThrow
    */
-  export type ModelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter, which Model to fetch.
+     * Filter, which FileRecord to fetch.
      */
-    where: ModelWhereUniqueInput
+    where: FileRecordWhereUniqueInput
   }
 
   /**
-   * Model findFirst
+   * FileRecord findFirst
    */
-  export type ModelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter, which Model to fetch.
+     * Filter, which FileRecord to fetch.
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Models to fetch.
+     * Determine the order of FileRecords to fetch.
      */
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Models.
+     * Sets the position for searching for FileRecords.
      */
-    cursor?: ModelWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Models from the position of the cursor.
+     * Take `±n` FileRecords from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Models.
+     * Skip the first `n` FileRecords.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Models.
+     * Filter by unique combinations of FileRecords.
      */
-    distinct?: ModelScalarFieldEnum | ModelScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
   }
 
   /**
-   * Model findFirstOrThrow
+   * FileRecord findFirstOrThrow
    */
-  export type ModelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter, which Model to fetch.
+     * Filter, which FileRecord to fetch.
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Models to fetch.
+     * Determine the order of FileRecords to fetch.
      */
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Models.
+     * Sets the position for searching for FileRecords.
      */
-    cursor?: ModelWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Models from the position of the cursor.
+     * Take `±n` FileRecords from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Models.
+     * Skip the first `n` FileRecords.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Models.
+     * Filter by unique combinations of FileRecords.
      */
-    distinct?: ModelScalarFieldEnum | ModelScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
   }
 
   /**
-   * Model findMany
+   * FileRecord findMany
    */
-  export type ModelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter, which Models to fetch.
+     * Filter, which FileRecords to fetch.
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Models to fetch.
+     * Determine the order of FileRecords to fetch.
      */
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Models.
+     * Sets the position for listing FileRecords.
      */
-    cursor?: ModelWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Models from the position of the cursor.
+     * Take `±n` FileRecords from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Models.
+     * Skip the first `n` FileRecords.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Models.
+     * Filter by unique combinations of FileRecords.
      */
-    distinct?: ModelScalarFieldEnum | ModelScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
   }
 
   /**
-   * Model create
+   * FileRecord create
    */
-  export type ModelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * The data needed to create a Model.
+     * The data needed to create a FileRecord.
      */
-    data: XOR<ModelCreateInput, ModelUncheckedCreateInput>
+    data: XOR<FileRecordCreateInput, FileRecordUncheckedCreateInput>
   }
 
   /**
-   * Model createMany
+   * FileRecord createMany
    */
-  export type ModelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Models.
+     * The data used to create many FileRecords.
      */
-    data: ModelCreateManyInput | ModelCreateManyInput[]
+    data: FileRecordCreateManyInput | FileRecordCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Model createManyAndReturn
+   * FileRecord createManyAndReturn
    */
-  export type ModelCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelectCreateManyAndReturn<ExtArgs> | null
+    select?: FileRecordSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
-     * The data used to create many Models.
+     * The data used to create many FileRecords.
      */
-    data: ModelCreateManyInput | ModelCreateManyInput[]
+    data: FileRecordCreateManyInput | FileRecordCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: FileRecordIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Model update
+   * FileRecord update
    */
-  export type ModelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * The data needed to update a Model.
+     * The data needed to update a FileRecord.
      */
-    data: XOR<ModelUpdateInput, ModelUncheckedUpdateInput>
+    data: XOR<FileRecordUpdateInput, FileRecordUncheckedUpdateInput>
     /**
-     * Choose, which Model to update.
+     * Choose, which FileRecord to update.
      */
-    where: ModelWhereUniqueInput
+    where: FileRecordWhereUniqueInput
   }
 
   /**
-   * Model updateMany
+   * FileRecord updateMany
    */
-  export type ModelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Models.
+     * The data used to update FileRecords.
      */
-    data: XOR<ModelUpdateManyMutationInput, ModelUncheckedUpdateManyInput>
+    data: XOR<FileRecordUpdateManyMutationInput, FileRecordUncheckedUpdateManyInput>
     /**
-     * Filter which Models to update
+     * Filter which FileRecords to update
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
-     * Limit how many Models to update.
+     * Limit how many FileRecords to update.
      */
     limit?: number
   }
 
   /**
-   * Model updateManyAndReturn
+   * FileRecord updateManyAndReturn
    */
-  export type ModelUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: FileRecordSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
-     * The data used to update Models.
+     * The data used to update FileRecords.
      */
-    data: XOR<ModelUpdateManyMutationInput, ModelUncheckedUpdateManyInput>
+    data: XOR<FileRecordUpdateManyMutationInput, FileRecordUncheckedUpdateManyInput>
     /**
-     * Filter which Models to update
+     * Filter which FileRecords to update
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
-     * Limit how many Models to update.
+     * Limit how many FileRecords to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: FileRecordIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Model upsert
+   * FileRecord upsert
    */
-  export type ModelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * The filter to search for the Model to update in case it exists.
+     * The filter to search for the FileRecord to update in case it exists.
      */
-    where: ModelWhereUniqueInput
+    where: FileRecordWhereUniqueInput
     /**
-     * In case the Model found by the `where` argument doesn't exist, create a new Model with this data.
+     * In case the FileRecord found by the `where` argument doesn't exist, create a new FileRecord with this data.
      */
-    create: XOR<ModelCreateInput, ModelUncheckedCreateInput>
+    create: XOR<FileRecordCreateInput, FileRecordUncheckedCreateInput>
     /**
-     * In case the Model was found with the provided `where` argument, update it with this data.
+     * In case the FileRecord was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ModelUpdateInput, ModelUncheckedUpdateInput>
+    update: XOR<FileRecordUpdateInput, FileRecordUncheckedUpdateInput>
   }
 
   /**
-   * Model delete
+   * FileRecord delete
    */
-  export type ModelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
     /**
-     * Filter which Model to delete.
+     * Filter which FileRecord to delete.
      */
-    where: ModelWhereUniqueInput
+    where: FileRecordWhereUniqueInput
   }
 
   /**
-   * Model deleteMany
+   * FileRecord deleteMany
    */
-  export type ModelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Models to delete
+     * Filter which FileRecords to delete
      */
-    where?: ModelWhereInput
+    where?: FileRecordWhereInput
     /**
-     * Limit how many Models to delete.
+     * Limit how many FileRecords to delete.
      */
     limit?: number
   }
 
   /**
-   * Model.posts
+   * FileRecord.post
    */
-  export type Model$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecord$postArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Post
      */
@@ -5460,394 +5463,423 @@ export namespace Prisma {
      */
     include?: PostInclude<ExtArgs> | null
     where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
   }
 
   /**
-   * Model without action
+   * FileRecord without action
    */
-  export type ModelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FileRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
+    include?: FileRecordInclude<ExtArgs> | null
   }
 
 
   /**
-   * Model Pdf
+   * Model Phase
    */
 
-  export type AggregatePdf = {
-    _count: PdfCountAggregateOutputType | null
-    _min: PdfMinAggregateOutputType | null
-    _max: PdfMaxAggregateOutputType | null
+  export type AggregatePhase = {
+    _count: PhaseCountAggregateOutputType | null
+    _avg: PhaseAvgAggregateOutputType | null
+    _sum: PhaseSumAggregateOutputType | null
+    _min: PhaseMinAggregateOutputType | null
+    _max: PhaseMaxAggregateOutputType | null
   }
 
-  export type PdfMinAggregateOutputType = {
+  export type PhaseAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type PhaseSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type PhaseMinAggregateOutputType = {
     id: string | null
     name: string | null
-    fileId: string | null
-    uploaderId: string | null
+    sortOrder: number | null
+    projectId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type PdfMaxAggregateOutputType = {
+  export type PhaseMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    fileId: string | null
-    uploaderId: string | null
+    sortOrder: number | null
+    projectId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type PdfCountAggregateOutputType = {
+  export type PhaseCountAggregateOutputType = {
     id: number
     name: number
-    fileId: number
-    uploaderId: number
+    sortOrder: number
+    projectId: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
-  export type PdfMinAggregateInputType = {
+  export type PhaseAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type PhaseSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type PhaseMinAggregateInputType = {
     id?: true
     name?: true
-    fileId?: true
-    uploaderId?: true
+    sortOrder?: true
+    projectId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type PdfMaxAggregateInputType = {
+  export type PhaseMaxAggregateInputType = {
     id?: true
     name?: true
-    fileId?: true
-    uploaderId?: true
+    sortOrder?: true
+    projectId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type PdfCountAggregateInputType = {
+  export type PhaseCountAggregateInputType = {
     id?: true
     name?: true
-    fileId?: true
-    uploaderId?: true
+    sortOrder?: true
+    projectId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
   }
 
-  export type PdfAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Pdf to aggregate.
+     * Filter which Phase to aggregate.
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Pdfs to fetch.
+     * Determine the order of Phases to fetch.
      */
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: PdfWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Pdfs from the position of the cursor.
+     * Take `±n` Phases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Pdfs.
+     * Skip the first `n` Phases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Pdfs
+     * Count returned Phases
     **/
-    _count?: true | PdfCountAggregateInputType
+    _count?: true | PhaseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhaseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhaseSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: PdfMinAggregateInputType
+    _min?: PhaseMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: PdfMaxAggregateInputType
+    _max?: PhaseMaxAggregateInputType
   }
 
-  export type GetPdfAggregateType<T extends PdfAggregateArgs> = {
-        [P in keyof T & keyof AggregatePdf]: P extends '_count' | 'count'
+  export type GetPhaseAggregateType<T extends PhaseAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhase]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregatePdf[P]>
-      : GetScalarType<T[P], AggregatePdf[P]>
+        : GetScalarType<T[P], AggregatePhase[P]>
+      : GetScalarType<T[P], AggregatePhase[P]>
   }
 
 
 
 
-  export type PdfGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PdfWhereInput
-    orderBy?: PdfOrderByWithAggregationInput | PdfOrderByWithAggregationInput[]
-    by: PdfScalarFieldEnum[] | PdfScalarFieldEnum
-    having?: PdfScalarWhereWithAggregatesInput
+  export type PhaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhaseWhereInput
+    orderBy?: PhaseOrderByWithAggregationInput | PhaseOrderByWithAggregationInput[]
+    by: PhaseScalarFieldEnum[] | PhaseScalarFieldEnum
+    having?: PhaseScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: PdfCountAggregateInputType | true
-    _min?: PdfMinAggregateInputType
-    _max?: PdfMaxAggregateInputType
+    _count?: PhaseCountAggregateInputType | true
+    _avg?: PhaseAvgAggregateInputType
+    _sum?: PhaseSumAggregateInputType
+    _min?: PhaseMinAggregateInputType
+    _max?: PhaseMaxAggregateInputType
   }
 
-  export type PdfGroupByOutputType = {
+  export type PhaseGroupByOutputType = {
     id: string
     name: string
-    fileId: string
-    uploaderId: string
+    sortOrder: number
+    projectId: string
     createdAt: Date
     updatedAt: Date
-    _count: PdfCountAggregateOutputType | null
-    _min: PdfMinAggregateOutputType | null
-    _max: PdfMaxAggregateOutputType | null
+    _count: PhaseCountAggregateOutputType | null
+    _avg: PhaseAvgAggregateOutputType | null
+    _sum: PhaseSumAggregateOutputType | null
+    _min: PhaseMinAggregateOutputType | null
+    _max: PhaseMaxAggregateOutputType | null
   }
 
-  type GetPdfGroupByPayload<T extends PdfGroupByArgs> = Prisma.PrismaPromise<
+  type GetPhaseGroupByPayload<T extends PhaseGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<PdfGroupByOutputType, T['by']> &
+      PickEnumerable<PhaseGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof PdfGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof PhaseGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], PdfGroupByOutputType[P]>
-            : GetScalarType<T[P], PdfGroupByOutputType[P]>
+              : GetScalarType<T[P], PhaseGroupByOutputType[P]>
+            : GetScalarType<T[P], PhaseGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type PdfSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type PhaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    fileId?: boolean
-    uploaderId?: boolean
+    sortOrder?: boolean
+    projectId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    posts?: boolean | Pdf$postsArgs<ExtArgs>
-    _count?: boolean | PdfCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["pdf"]>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    projectAssets?: boolean | Phase$projectAssetsArgs<ExtArgs>
+    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phase"]>
 
-  export type PdfSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type PhaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    fileId?: boolean
-    uploaderId?: boolean
+    sortOrder?: boolean
+    projectId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["pdf"]>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phase"]>
 
-  export type PdfSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type PhaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    fileId?: boolean
-    uploaderId?: boolean
+    sortOrder?: boolean
+    projectId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["pdf"]>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phase"]>
 
-  export type PdfSelectScalar = {
+  export type PhaseSelectScalar = {
     id?: boolean
     name?: boolean
-    fileId?: boolean
-    uploaderId?: boolean
+    sortOrder?: boolean
+    projectId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PdfOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "fileId" | "uploaderId" | "createdAt" | "updatedAt", ExtArgs["result"]["pdf"]>
-  export type PdfInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    posts?: boolean | Pdf$postsArgs<ExtArgs>
-    _count?: boolean | PdfCountOutputTypeDefaultArgs<ExtArgs>
+  export type PhaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "sortOrder" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["phase"]>
+  export type PhaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    projectAssets?: boolean | Phase$projectAssetsArgs<ExtArgs>
+    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type PdfIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  export type PhaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
   }
-  export type PdfIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  export type PhaseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
   }
 
-  export type $PdfPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Pdf"
+  export type $PhasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Phase"
     objects: {
-      uploader: Prisma.$UserPayload<ExtArgs>
-      posts: Prisma.$PostPayload<ExtArgs>[]
+      project: Prisma.$ProjectPayload<ExtArgs>
+      projectAssets: Prisma.$ProjectAssetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      fileId: string
-      uploaderId: string
+      sortOrder: number
+      projectId: string
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["pdf"]>
+    }, ExtArgs["result"]["phase"]>
     composites: {}
   }
 
-  type PdfGetPayload<S extends boolean | null | undefined | PdfDefaultArgs> = $Result.GetResult<Prisma.$PdfPayload, S>
+  type PhaseGetPayload<S extends boolean | null | undefined | PhaseDefaultArgs> = $Result.GetResult<Prisma.$PhasePayload, S>
 
-  type PdfCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<PdfFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: PdfCountAggregateInputType | true
+  type PhaseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhaseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhaseCountAggregateInputType | true
     }
 
-  export interface PdfDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Pdf'], meta: { name: 'Pdf' } }
+  export interface PhaseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Phase'], meta: { name: 'Phase' } }
     /**
-     * Find zero or one Pdf that matches the filter.
-     * @param {PdfFindUniqueArgs} args - Arguments to find a Pdf
+     * Find zero or one Phase that matches the filter.
+     * @param {PhaseFindUniqueArgs} args - Arguments to find a Phase
      * @example
-     * // Get one Pdf
-     * const pdf = await prisma.pdf.findUnique({
+     * // Get one Phase
+     * const phase = await prisma.phase.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends PdfFindUniqueArgs>(args: SelectSubset<T, PdfFindUniqueArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends PhaseFindUniqueArgs>(args: SelectSubset<T, PhaseFindUniqueArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Pdf that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Phase that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {PdfFindUniqueOrThrowArgs} args - Arguments to find a Pdf
+     * @param {PhaseFindUniqueOrThrowArgs} args - Arguments to find a Phase
      * @example
-     * // Get one Pdf
-     * const pdf = await prisma.pdf.findUniqueOrThrow({
+     * // Get one Phase
+     * const phase = await prisma.phase.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends PdfFindUniqueOrThrowArgs>(args: SelectSubset<T, PdfFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends PhaseFindUniqueOrThrowArgs>(args: SelectSubset<T, PhaseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Pdf that matches the filter.
+     * Find the first Phase that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfFindFirstArgs} args - Arguments to find a Pdf
+     * @param {PhaseFindFirstArgs} args - Arguments to find a Phase
      * @example
-     * // Get one Pdf
-     * const pdf = await prisma.pdf.findFirst({
+     * // Get one Phase
+     * const phase = await prisma.phase.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends PdfFindFirstArgs>(args?: SelectSubset<T, PdfFindFirstArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends PhaseFindFirstArgs>(args?: SelectSubset<T, PhaseFindFirstArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Pdf that matches the filter or
+     * Find the first Phase that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfFindFirstOrThrowArgs} args - Arguments to find a Pdf
+     * @param {PhaseFindFirstOrThrowArgs} args - Arguments to find a Phase
      * @example
-     * // Get one Pdf
-     * const pdf = await prisma.pdf.findFirstOrThrow({
+     * // Get one Phase
+     * const phase = await prisma.phase.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends PdfFindFirstOrThrowArgs>(args?: SelectSubset<T, PdfFindFirstOrThrowArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends PhaseFindFirstOrThrowArgs>(args?: SelectSubset<T, PhaseFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Pdfs that matches the filter.
+     * Find zero or more Phases that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {PhaseFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Pdfs
-     * const pdfs = await prisma.pdf.findMany()
+     * // Get all Phases
+     * const phases = await prisma.phase.findMany()
      * 
-     * // Get first 10 Pdfs
-     * const pdfs = await prisma.pdf.findMany({ take: 10 })
+     * // Get first 10 Phases
+     * const phases = await prisma.phase.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const pdfWithIdOnly = await prisma.pdf.findMany({ select: { id: true } })
+     * const phaseWithIdOnly = await prisma.phase.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends PdfFindManyArgs>(args?: SelectSubset<T, PdfFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends PhaseFindManyArgs>(args?: SelectSubset<T, PhaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Pdf.
-     * @param {PdfCreateArgs} args - Arguments to create a Pdf.
+     * Create a Phase.
+     * @param {PhaseCreateArgs} args - Arguments to create a Phase.
      * @example
-     * // Create one Pdf
-     * const Pdf = await prisma.pdf.create({
+     * // Create one Phase
+     * const Phase = await prisma.phase.create({
      *   data: {
-     *     // ... data to create a Pdf
+     *     // ... data to create a Phase
      *   }
      * })
      * 
      */
-    create<T extends PdfCreateArgs>(args: SelectSubset<T, PdfCreateArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends PhaseCreateArgs>(args: SelectSubset<T, PhaseCreateArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Pdfs.
-     * @param {PdfCreateManyArgs} args - Arguments to create many Pdfs.
+     * Create many Phases.
+     * @param {PhaseCreateManyArgs} args - Arguments to create many Phases.
      * @example
-     * // Create many Pdfs
-     * const pdf = await prisma.pdf.createMany({
+     * // Create many Phases
+     * const phase = await prisma.phase.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends PdfCreateManyArgs>(args?: SelectSubset<T, PdfCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends PhaseCreateManyArgs>(args?: SelectSubset<T, PhaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Pdfs and returns the data saved in the database.
-     * @param {PdfCreateManyAndReturnArgs} args - Arguments to create many Pdfs.
+     * Create many Phases and returns the data saved in the database.
+     * @param {PhaseCreateManyAndReturnArgs} args - Arguments to create many Phases.
      * @example
-     * // Create many Pdfs
-     * const pdf = await prisma.pdf.createManyAndReturn({
+     * // Create many Phases
+     * const phase = await prisma.phase.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Pdfs and only return the `id`
-     * const pdfWithIdOnly = await prisma.pdf.createManyAndReturn({
+     * // Create many Phases and only return the `id`
+     * const phaseWithIdOnly = await prisma.phase.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -5857,28 +5889,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends PdfCreateManyAndReturnArgs>(args?: SelectSubset<T, PdfCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends PhaseCreateManyAndReturnArgs>(args?: SelectSubset<T, PhaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Pdf.
-     * @param {PdfDeleteArgs} args - Arguments to delete one Pdf.
+     * Delete a Phase.
+     * @param {PhaseDeleteArgs} args - Arguments to delete one Phase.
      * @example
-     * // Delete one Pdf
-     * const Pdf = await prisma.pdf.delete({
+     * // Delete one Phase
+     * const Phase = await prisma.phase.delete({
      *   where: {
-     *     // ... filter to delete one Pdf
+     *     // ... filter to delete one Phase
      *   }
      * })
      * 
      */
-    delete<T extends PdfDeleteArgs>(args: SelectSubset<T, PdfDeleteArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends PhaseDeleteArgs>(args: SelectSubset<T, PhaseDeleteArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Pdf.
-     * @param {PdfUpdateArgs} args - Arguments to update one Pdf.
+     * Update one Phase.
+     * @param {PhaseUpdateArgs} args - Arguments to update one Phase.
      * @example
-     * // Update one Pdf
-     * const pdf = await prisma.pdf.update({
+     * // Update one Phase
+     * const phase = await prisma.phase.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5888,30 +5920,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends PdfUpdateArgs>(args: SelectSubset<T, PdfUpdateArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends PhaseUpdateArgs>(args: SelectSubset<T, PhaseUpdateArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Pdfs.
-     * @param {PdfDeleteManyArgs} args - Arguments to filter Pdfs to delete.
+     * Delete zero or more Phases.
+     * @param {PhaseDeleteManyArgs} args - Arguments to filter Phases to delete.
      * @example
-     * // Delete a few Pdfs
-     * const { count } = await prisma.pdf.deleteMany({
+     * // Delete a few Phases
+     * const { count } = await prisma.phase.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends PdfDeleteManyArgs>(args?: SelectSubset<T, PdfDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends PhaseDeleteManyArgs>(args?: SelectSubset<T, PhaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Pdfs.
+     * Update zero or more Phases.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {PhaseUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Pdfs
-     * const pdf = await prisma.pdf.updateMany({
+     * // Update many Phases
+     * const phase = await prisma.phase.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5921,14 +5953,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends PdfUpdateManyArgs>(args: SelectSubset<T, PdfUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends PhaseUpdateManyArgs>(args: SelectSubset<T, PhaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Pdfs and returns the data updated in the database.
-     * @param {PdfUpdateManyAndReturnArgs} args - Arguments to update many Pdfs.
+     * Update zero or more Phases and returns the data updated in the database.
+     * @param {PhaseUpdateManyAndReturnArgs} args - Arguments to update many Phases.
      * @example
-     * // Update many Pdfs
-     * const pdf = await prisma.pdf.updateManyAndReturn({
+     * // Update many Phases
+     * const phase = await prisma.phase.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5937,8 +5969,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Pdfs and only return the `id`
-     * const pdfWithIdOnly = await prisma.pdf.updateManyAndReturn({
+     * // Update zero or more Phases and only return the `id`
+     * const phaseWithIdOnly = await prisma.phase.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -5951,56 +5983,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends PdfUpdateManyAndReturnArgs>(args: SelectSubset<T, PdfUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends PhaseUpdateManyAndReturnArgs>(args: SelectSubset<T, PhaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Pdf.
-     * @param {PdfUpsertArgs} args - Arguments to update or create a Pdf.
+     * Create or update one Phase.
+     * @param {PhaseUpsertArgs} args - Arguments to update or create a Phase.
      * @example
-     * // Update or create a Pdf
-     * const pdf = await prisma.pdf.upsert({
+     * // Update or create a Phase
+     * const phase = await prisma.phase.upsert({
      *   create: {
-     *     // ... data to create a Pdf
+     *     // ... data to create a Phase
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Pdf we want to update
+     *     // ... the filter for the Phase we want to update
      *   }
      * })
      */
-    upsert<T extends PdfUpsertArgs>(args: SelectSubset<T, PdfUpsertArgs<ExtArgs>>): Prisma__PdfClient<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends PhaseUpsertArgs>(args: SelectSubset<T, PhaseUpsertArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Pdfs.
+     * Count the number of Phases.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfCountArgs} args - Arguments to filter Pdfs to count.
+     * @param {PhaseCountArgs} args - Arguments to filter Phases to count.
      * @example
-     * // Count the number of Pdfs
-     * const count = await prisma.pdf.count({
+     * // Count the number of Phases
+     * const count = await prisma.phase.count({
      *   where: {
-     *     // ... the filter for the Pdfs we want to count
+     *     // ... the filter for the Phases we want to count
      *   }
      * })
     **/
-    count<T extends PdfCountArgs>(
-      args?: Subset<T, PdfCountArgs>,
+    count<T extends PhaseCountArgs>(
+      args?: Subset<T, PhaseCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], PdfCountAggregateOutputType>
+          : GetScalarType<T['select'], PhaseCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Pdf.
+     * Allows you to perform aggregations operations on a Phase.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {PhaseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -6020,13 +6052,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends PdfAggregateArgs>(args: Subset<T, PdfAggregateArgs>): Prisma.PrismaPromise<GetPdfAggregateType<T>>
+    aggregate<T extends PhaseAggregateArgs>(args: Subset<T, PhaseAggregateArgs>): Prisma.PrismaPromise<GetPhaseAggregateType<T>>
 
     /**
-     * Group by Pdf.
+     * Group by Phase.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {PdfGroupByArgs} args - Group by arguments.
+     * @param {PhaseGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -6041,14 +6073,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends PdfGroupByArgs,
+      T extends PhaseGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: PdfGroupByArgs['orderBy'] }
-        : { orderBy?: PdfGroupByArgs['orderBy'] },
+        ? { orderBy: PhaseGroupByArgs['orderBy'] }
+        : { orderBy?: PhaseGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -6097,23 +6129,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, PdfGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPdfGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, PhaseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhaseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Pdf model
+   * Fields of the Phase model
    */
-  readonly fields: PdfFieldRefs;
+  readonly fields: PhaseFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Pdf.
+   * The delegate class that acts as a "Promise-like" for Phase.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__PdfClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__PhaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    uploader<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    posts<T extends Pdf$postsArgs<ExtArgs> = {}>(args?: Subset<T, Pdf$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    projectAssets<T extends Phase$projectAssetsArgs<ExtArgs> = {}>(args?: Subset<T, Phase$projectAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6140,455 +6172,455 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Pdf model
+   * Fields of the Phase model
    */
-  interface PdfFieldRefs {
-    readonly id: FieldRef<"Pdf", 'String'>
-    readonly name: FieldRef<"Pdf", 'String'>
-    readonly fileId: FieldRef<"Pdf", 'String'>
-    readonly uploaderId: FieldRef<"Pdf", 'String'>
-    readonly createdAt: FieldRef<"Pdf", 'DateTime'>
-    readonly updatedAt: FieldRef<"Pdf", 'DateTime'>
+  interface PhaseFieldRefs {
+    readonly id: FieldRef<"Phase", 'String'>
+    readonly name: FieldRef<"Phase", 'String'>
+    readonly sortOrder: FieldRef<"Phase", 'Int'>
+    readonly projectId: FieldRef<"Phase", 'String'>
+    readonly createdAt: FieldRef<"Phase", 'DateTime'>
+    readonly updatedAt: FieldRef<"Phase", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Pdf findUnique
+   * Phase findUnique
    */
-  export type PdfFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter, which Pdf to fetch.
+     * Filter, which Phase to fetch.
      */
-    where: PdfWhereUniqueInput
+    where: PhaseWhereUniqueInput
   }
 
   /**
-   * Pdf findUniqueOrThrow
+   * Phase findUniqueOrThrow
    */
-  export type PdfFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter, which Pdf to fetch.
+     * Filter, which Phase to fetch.
      */
-    where: PdfWhereUniqueInput
+    where: PhaseWhereUniqueInput
   }
 
   /**
-   * Pdf findFirst
+   * Phase findFirst
    */
-  export type PdfFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter, which Pdf to fetch.
+     * Filter, which Phase to fetch.
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Pdfs to fetch.
+     * Determine the order of Phases to fetch.
      */
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Pdfs.
+     * Sets the position for searching for Phases.
      */
-    cursor?: PdfWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Pdfs from the position of the cursor.
+     * Take `±n` Phases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Pdfs.
+     * Skip the first `n` Phases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Pdfs.
+     * Filter by unique combinations of Phases.
      */
-    distinct?: PdfScalarFieldEnum | PdfScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
   }
 
   /**
-   * Pdf findFirstOrThrow
+   * Phase findFirstOrThrow
    */
-  export type PdfFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter, which Pdf to fetch.
+     * Filter, which Phase to fetch.
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Pdfs to fetch.
+     * Determine the order of Phases to fetch.
      */
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Pdfs.
+     * Sets the position for searching for Phases.
      */
-    cursor?: PdfWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Pdfs from the position of the cursor.
+     * Take `±n` Phases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Pdfs.
+     * Skip the first `n` Phases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Pdfs.
+     * Filter by unique combinations of Phases.
      */
-    distinct?: PdfScalarFieldEnum | PdfScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
   }
 
   /**
-   * Pdf findMany
+   * Phase findMany
    */
-  export type PdfFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter, which Pdfs to fetch.
+     * Filter, which Phases to fetch.
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Pdfs to fetch.
+     * Determine the order of Phases to fetch.
      */
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Pdfs.
+     * Sets the position for listing Phases.
      */
-    cursor?: PdfWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Pdfs from the position of the cursor.
+     * Take `±n` Phases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Pdfs.
+     * Skip the first `n` Phases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Pdfs.
+     * Filter by unique combinations of Phases.
      */
-    distinct?: PdfScalarFieldEnum | PdfScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
   }
 
   /**
-   * Pdf create
+   * Phase create
    */
-  export type PdfCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * The data needed to create a Pdf.
+     * The data needed to create a Phase.
      */
-    data: XOR<PdfCreateInput, PdfUncheckedCreateInput>
+    data: XOR<PhaseCreateInput, PhaseUncheckedCreateInput>
   }
 
   /**
-   * Pdf createMany
+   * Phase createMany
    */
-  export type PdfCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Pdfs.
+     * The data used to create many Phases.
      */
-    data: PdfCreateManyInput | PdfCreateManyInput[]
+    data: PhaseCreateManyInput | PhaseCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Pdf createManyAndReturn
+   * Phase createManyAndReturn
    */
-  export type PdfCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelectCreateManyAndReturn<ExtArgs> | null
+    select?: PhaseSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
-     * The data used to create many Pdfs.
+     * The data used to create many Phases.
      */
-    data: PdfCreateManyInput | PdfCreateManyInput[]
+    data: PhaseCreateManyInput | PhaseCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: PhaseIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Pdf update
+   * Phase update
    */
-  export type PdfUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * The data needed to update a Pdf.
+     * The data needed to update a Phase.
      */
-    data: XOR<PdfUpdateInput, PdfUncheckedUpdateInput>
+    data: XOR<PhaseUpdateInput, PhaseUncheckedUpdateInput>
     /**
-     * Choose, which Pdf to update.
+     * Choose, which Phase to update.
      */
-    where: PdfWhereUniqueInput
+    where: PhaseWhereUniqueInput
   }
 
   /**
-   * Pdf updateMany
+   * Phase updateMany
    */
-  export type PdfUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Pdfs.
+     * The data used to update Phases.
      */
-    data: XOR<PdfUpdateManyMutationInput, PdfUncheckedUpdateManyInput>
+    data: XOR<PhaseUpdateManyMutationInput, PhaseUncheckedUpdateManyInput>
     /**
-     * Filter which Pdfs to update
+     * Filter which Phases to update
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
-     * Limit how many Pdfs to update.
+     * Limit how many Phases to update.
      */
     limit?: number
   }
 
   /**
-   * Pdf updateManyAndReturn
+   * Phase updateManyAndReturn
    */
-  export type PdfUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: PhaseSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
-     * The data used to update Pdfs.
+     * The data used to update Phases.
      */
-    data: XOR<PdfUpdateManyMutationInput, PdfUncheckedUpdateManyInput>
+    data: XOR<PhaseUpdateManyMutationInput, PhaseUncheckedUpdateManyInput>
     /**
-     * Filter which Pdfs to update
+     * Filter which Phases to update
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
-     * Limit how many Pdfs to update.
+     * Limit how many Phases to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: PhaseIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Pdf upsert
+   * Phase upsert
    */
-  export type PdfUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * The filter to search for the Pdf to update in case it exists.
+     * The filter to search for the Phase to update in case it exists.
      */
-    where: PdfWhereUniqueInput
+    where: PhaseWhereUniqueInput
     /**
-     * In case the Pdf found by the `where` argument doesn't exist, create a new Pdf with this data.
+     * In case the Phase found by the `where` argument doesn't exist, create a new Phase with this data.
      */
-    create: XOR<PdfCreateInput, PdfUncheckedCreateInput>
+    create: XOR<PhaseCreateInput, PhaseUncheckedCreateInput>
     /**
-     * In case the Pdf was found with the provided `where` argument, update it with this data.
+     * In case the Phase was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<PdfUpdateInput, PdfUncheckedUpdateInput>
+    update: XOR<PhaseUpdateInput, PhaseUncheckedUpdateInput>
   }
 
   /**
-   * Pdf delete
+   * Phase delete
    */
-  export type PdfDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
     /**
-     * Filter which Pdf to delete.
+     * Filter which Phase to delete.
      */
-    where: PdfWhereUniqueInput
+    where: PhaseWhereUniqueInput
   }
 
   /**
-   * Pdf deleteMany
+   * Phase deleteMany
    */
-  export type PdfDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Pdfs to delete
+     * Filter which Phases to delete
      */
-    where?: PdfWhereInput
+    where?: PhaseWhereInput
     /**
-     * Limit how many Pdfs to delete.
+     * Limit how many Phases to delete.
      */
     limit?: number
   }
 
   /**
-   * Pdf.posts
+   * Phase.projectAssets
    */
-  export type Pdf$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Phase$projectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Post
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: PostSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Post
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: PostOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
+    include?: ProjectAssetInclude<ExtArgs> | null
+    where?: ProjectAssetWhereInput
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    cursor?: ProjectAssetWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
-   * Pdf without action
+   * Phase without action
    */
-  export type PdfDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type PhaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Pdf
+     * Select specific fields to fetch from the Phase
      */
-    select?: PdfSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Pdf
+     * Omit specific fields from the Phase
      */
-    omit?: PdfOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: PdfInclude<ExtArgs> | null
+    include?: PhaseInclude<ExtArgs> | null
   }
 
 
@@ -6824,12 +6856,11 @@ export namespace Prisma {
     teamId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    models?: boolean | Post$modelsArgs<ExtArgs>
-    pdfIds?: boolean | Post$pdfIdsArgs<ExtArgs>
+    files?: boolean | Post$filesArgs<ExtArgs>
     uploader?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | Post$teamArgs<ExtArgs>
-    nodes?: boolean | Post$nodesArgs<ExtArgs>
     comments?: boolean | Post$commentsArgs<ExtArgs>
+    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["post"]>
 
@@ -6893,12 +6924,11 @@ export namespace Prisma {
 
   export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "title" | "category" | "description" | "type" | "keywords" | "coverImage" | "images" | "uploaderId" | "relatedPosts" | "permission" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
   export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    models?: boolean | Post$modelsArgs<ExtArgs>
-    pdfIds?: boolean | Post$pdfIdsArgs<ExtArgs>
+    files?: boolean | Post$filesArgs<ExtArgs>
     uploader?: boolean | UserDefaultArgs<ExtArgs>
     team?: boolean | Post$teamArgs<ExtArgs>
-    nodes?: boolean | Post$nodesArgs<ExtArgs>
     comments?: boolean | Post$commentsArgs<ExtArgs>
+    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6913,12 +6943,11 @@ export namespace Prisma {
   export type $PostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Post"
     objects: {
-      models: Prisma.$ModelPayload<ExtArgs>[]
-      pdfIds: Prisma.$PdfPayload<ExtArgs>[]
+      files: Prisma.$FileRecordPayload<ExtArgs>[]
       uploader: Prisma.$UserPayload<ExtArgs>
       team: Prisma.$TeamPayload<ExtArgs> | null
-      nodes: Prisma.$ProjectNodePayload<ExtArgs>[]
       comments: Prisma.$CommentPayload<ExtArgs>[]
+      projectAssets: Prisma.$ProjectAssetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7330,12 +7359,11 @@ export namespace Prisma {
    */
   export interface Prisma__PostClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    models<T extends Post$modelsArgs<ExtArgs> = {}>(args?: Subset<T, Post$modelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    pdfIds<T extends Post$pdfIdsArgs<ExtArgs> = {}>(args?: Subset<T, Post$pdfIdsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    files<T extends Post$filesArgs<ExtArgs> = {}>(args?: Subset<T, Post$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     uploader<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     team<T extends Post$teamArgs<ExtArgs> = {}>(args?: Subset<T, Post$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    nodes<T extends Post$nodesArgs<ExtArgs> = {}>(args?: Subset<T, Post$nodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comments<T extends Post$commentsArgs<ExtArgs> = {}>(args?: Subset<T, Post$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    projectAssets<T extends Post$projectAssetsArgs<ExtArgs> = {}>(args?: Subset<T, Post$projectAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7781,51 +7809,27 @@ export namespace Prisma {
   }
 
   /**
-   * Post.models
+   * Post.files
    */
-  export type Post$modelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Post$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
-    where?: ModelWhereInput
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
-    cursor?: ModelWhereUniqueInput
+    include?: FileRecordInclude<ExtArgs> | null
+    where?: FileRecordWhereInput
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    cursor?: FileRecordWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ModelScalarFieldEnum | ModelScalarFieldEnum[]
-  }
-
-  /**
-   * Post.pdfIds
-   */
-  export type Post$pdfIdsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Pdf
-     */
-    select?: PdfSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Pdf
-     */
-    omit?: PdfOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PdfInclude<ExtArgs> | null
-    where?: PdfWhereInput
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
-    cursor?: PdfWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PdfScalarFieldEnum | PdfScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
   }
 
   /**
@@ -7845,30 +7849,6 @@ export namespace Prisma {
      */
     include?: TeamInclude<ExtArgs> | null
     where?: TeamWhereInput
-  }
-
-  /**
-   * Post.nodes
-   */
-  export type Post$nodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ProjectNode
-     */
-    select?: ProjectNodeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ProjectNode
-     */
-    omit?: ProjectNodeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjectNodeInclude<ExtArgs> | null
-    where?: ProjectNodeWhereInput
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
-    cursor?: ProjectNodeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
   }
 
   /**
@@ -7893,6 +7873,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+  }
+
+  /**
+   * Post.projectAssets
+   */
+  export type Post$projectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAsset
+     */
+    select?: ProjectAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAsset
+     */
+    omit?: ProjectAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAssetInclude<ExtArgs> | null
+    where?: ProjectAssetWhereInput
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    cursor?: ProjectAssetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
@@ -7928,30 +7932,42 @@ export namespace Prisma {
     id: string | null
     name: string | null
     description: string | null
+    client: string | null
+    location: string | null
+    coverImage: string | null
+    status: $Enums.ProjectStatus | null
+    teamId: string | null
+    creatorId: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    ownerId: string | null
-    teamId: string | null
   }
 
   export type ProjectMaxAggregateOutputType = {
     id: string | null
     name: string | null
     description: string | null
+    client: string | null
+    location: string | null
+    coverImage: string | null
+    status: $Enums.ProjectStatus | null
+    teamId: string | null
+    creatorId: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    ownerId: string | null
-    teamId: string | null
   }
 
   export type ProjectCountAggregateOutputType = {
     id: number
     name: number
     description: number
+    client: number
+    location: number
+    coverImage: number
+    status: number
+    teamId: number
+    creatorId: number
     createdAt: number
     updatedAt: number
-    ownerId: number
-    teamId: number
     _all: number
   }
 
@@ -7960,30 +7976,42 @@ export namespace Prisma {
     id?: true
     name?: true
     description?: true
+    client?: true
+    location?: true
+    coverImage?: true
+    status?: true
+    teamId?: true
+    creatorId?: true
     createdAt?: true
     updatedAt?: true
-    ownerId?: true
-    teamId?: true
   }
 
   export type ProjectMaxAggregateInputType = {
     id?: true
     name?: true
     description?: true
+    client?: true
+    location?: true
+    coverImage?: true
+    status?: true
+    teamId?: true
+    creatorId?: true
     createdAt?: true
     updatedAt?: true
-    ownerId?: true
-    teamId?: true
   }
 
   export type ProjectCountAggregateInputType = {
     id?: true
     name?: true
     description?: true
+    client?: true
+    location?: true
+    coverImage?: true
+    status?: true
+    teamId?: true
+    creatorId?: true
     createdAt?: true
     updatedAt?: true
-    ownerId?: true
-    teamId?: true
     _all?: true
   }
 
@@ -8063,10 +8091,14 @@ export namespace Prisma {
     id: string
     name: string
     description: string | null
+    client: string | null
+    location: string | null
+    coverImage: string | null
+    status: $Enums.ProjectStatus
+    teamId: string
+    creatorId: string
     createdAt: Date
     updatedAt: Date
-    ownerId: string
-    teamId: string | null
     _count: ProjectCountAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
@@ -8090,13 +8122,18 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    client?: boolean
+    location?: boolean
+    coverImage?: boolean
+    status?: boolean
+    teamId?: boolean
+    creatorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ownerId?: boolean
-    teamId?: boolean
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
-    nodes?: boolean | Project$nodesArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    phases?: boolean | Project$phasesArgs<ExtArgs>
+    assets?: boolean | Project$assetsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -8104,67 +8141,85 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     description?: boolean
+    client?: boolean
+    location?: boolean
+    coverImage?: boolean
+    status?: boolean
+    teamId?: boolean
+    creatorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ownerId?: boolean
-    teamId?: boolean
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     description?: boolean
+    client?: boolean
+    location?: boolean
+    coverImage?: boolean
+    status?: boolean
+    teamId?: boolean
+    creatorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ownerId?: boolean
-    teamId?: boolean
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectScalar = {
     id?: boolean
     name?: boolean
     description?: boolean
+    client?: boolean
+    location?: boolean
+    coverImage?: boolean
+    status?: boolean
+    teamId?: boolean
+    creatorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    ownerId?: boolean
-    teamId?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt" | "ownerId" | "teamId", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "client" | "location" | "coverImage" | "status" | "teamId" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
-    nodes?: boolean | Project$nodesArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    phases?: boolean | Project$phasesArgs<ExtArgs>
+    assets?: boolean | Project$assetsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    owner?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Project$teamArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $ProjectPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Project"
     objects: {
-      owner: Prisma.$UserPayload<ExtArgs>
-      team: Prisma.$TeamPayload<ExtArgs> | null
-      nodes: Prisma.$ProjectNodePayload<ExtArgs>[]
+      team: Prisma.$TeamPayload<ExtArgs>
+      creator: Prisma.$UserPayload<ExtArgs>
+      phases: Prisma.$PhasePayload<ExtArgs>[]
+      assets: Prisma.$ProjectAssetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       description: string | null
+      client: string | null
+      location: string | null
+      coverImage: string | null
+      status: $Enums.ProjectStatus
+      teamId: string
+      creatorId: string
       createdAt: Date
       updatedAt: Date
-      ownerId: string
-      teamId: string | null
     }, ExtArgs["result"]["project"]>
     composites: {}
   }
@@ -8559,9 +8614,10 @@ export namespace Prisma {
    */
   export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    team<T extends Project$teamArgs<ExtArgs> = {}>(args?: Subset<T, Project$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    nodes<T extends Project$nodesArgs<ExtArgs> = {}>(args?: Subset<T, Project$nodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    phases<T extends Project$phasesArgs<ExtArgs> = {}>(args?: Subset<T, Project$phasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assets<T extends Project$assetsArgs<ExtArgs> = {}>(args?: Subset<T, Project$assetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8594,10 +8650,14 @@ export namespace Prisma {
     readonly id: FieldRef<"Project", 'String'>
     readonly name: FieldRef<"Project", 'String'>
     readonly description: FieldRef<"Project", 'String'>
+    readonly client: FieldRef<"Project", 'String'>
+    readonly location: FieldRef<"Project", 'String'>
+    readonly coverImage: FieldRef<"Project", 'String'>
+    readonly status: FieldRef<"Project", 'ProjectStatus'>
+    readonly teamId: FieldRef<"Project", 'String'>
+    readonly creatorId: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
-    readonly ownerId: FieldRef<"Project", 'String'>
-    readonly teamId: FieldRef<"Project", 'String'>
   }
     
 
@@ -8999,46 +9059,51 @@ export namespace Prisma {
   }
 
   /**
-   * Project.team
+   * Project.phases
    */
-  export type Project$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Project$phasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Team
+     * Select specific fields to fetch from the Phase
      */
-    select?: TeamSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Team
+     * Omit specific fields from the Phase
      */
-    omit?: TeamOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: TeamInclude<ExtArgs> | null
-    where?: TeamWhereInput
+    include?: PhaseInclude<ExtArgs> | null
+    where?: PhaseWhereInput
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
+    cursor?: PhaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
   }
 
   /**
-   * Project.nodes
+   * Project.assets
    */
-  export type Project$nodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Project$assetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
-    where?: ProjectNodeWhereInput
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
-    cursor?: ProjectNodeWhereUniqueInput
+    include?: ProjectAssetInclude<ExtArgs> | null
+    where?: ProjectAssetWhereInput
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    cursor?: ProjectAssetWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
@@ -9061,353 +9126,410 @@ export namespace Prisma {
 
 
   /**
-   * Model ProjectNode
+   * Model ProjectAsset
    */
 
-  export type AggregateProjectNode = {
-    _count: ProjectNodeCountAggregateOutputType | null
-    _min: ProjectNodeMinAggregateOutputType | null
-    _max: ProjectNodeMaxAggregateOutputType | null
+  export type AggregateProjectAsset = {
+    _count: ProjectAssetCountAggregateOutputType | null
+    _avg: ProjectAssetAvgAggregateOutputType | null
+    _sum: ProjectAssetSumAggregateOutputType | null
+    _min: ProjectAssetMinAggregateOutputType | null
+    _max: ProjectAssetMaxAggregateOutputType | null
   }
 
-  export type ProjectNodeMinAggregateOutputType = {
+  export type ProjectAssetAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type ProjectAssetSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type ProjectAssetMinAggregateOutputType = {
     id: string | null
-    name: string | null
+    sortOrder: number | null
     projectId: string | null
-    parentId: string | null
+    phaseId: string | null
+    postId: string | null
+    createdAt: Date | null
   }
 
-  export type ProjectNodeMaxAggregateOutputType = {
+  export type ProjectAssetMaxAggregateOutputType = {
     id: string | null
-    name: string | null
+    sortOrder: number | null
     projectId: string | null
-    parentId: string | null
+    phaseId: string | null
+    postId: string | null
+    createdAt: Date | null
   }
 
-  export type ProjectNodeCountAggregateOutputType = {
+  export type ProjectAssetCountAggregateOutputType = {
     id: number
-    name: number
+    sortOrder: number
     projectId: number
-    parentId: number
+    phaseId: number
+    postId: number
+    createdAt: number
     _all: number
   }
 
 
-  export type ProjectNodeMinAggregateInputType = {
-    id?: true
-    name?: true
-    projectId?: true
-    parentId?: true
+  export type ProjectAssetAvgAggregateInputType = {
+    sortOrder?: true
   }
 
-  export type ProjectNodeMaxAggregateInputType = {
-    id?: true
-    name?: true
-    projectId?: true
-    parentId?: true
+  export type ProjectAssetSumAggregateInputType = {
+    sortOrder?: true
   }
 
-  export type ProjectNodeCountAggregateInputType = {
+  export type ProjectAssetMinAggregateInputType = {
     id?: true
-    name?: true
+    sortOrder?: true
     projectId?: true
-    parentId?: true
+    phaseId?: true
+    postId?: true
+    createdAt?: true
+  }
+
+  export type ProjectAssetMaxAggregateInputType = {
+    id?: true
+    sortOrder?: true
+    projectId?: true
+    phaseId?: true
+    postId?: true
+    createdAt?: true
+  }
+
+  export type ProjectAssetCountAggregateInputType = {
+    id?: true
+    sortOrder?: true
+    projectId?: true
+    phaseId?: true
+    postId?: true
+    createdAt?: true
     _all?: true
   }
 
-  export type ProjectNodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ProjectNode to aggregate.
+     * Filter which ProjectAsset to aggregate.
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ProjectNodes to fetch.
+     * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ProjectNodeWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ProjectNodes from the position of the cursor.
+     * Take `±n` ProjectAssets from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ProjectNodes.
+     * Skip the first `n` ProjectAssets.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned ProjectNodes
+     * Count returned ProjectAssets
     **/
-    _count?: true | ProjectNodeCountAggregateInputType
+    _count?: true | ProjectAssetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProjectAssetAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProjectAssetSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ProjectNodeMinAggregateInputType
+    _min?: ProjectAssetMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ProjectNodeMaxAggregateInputType
+    _max?: ProjectAssetMaxAggregateInputType
   }
 
-  export type GetProjectNodeAggregateType<T extends ProjectNodeAggregateArgs> = {
-        [P in keyof T & keyof AggregateProjectNode]: P extends '_count' | 'count'
+  export type GetProjectAssetAggregateType<T extends ProjectAssetAggregateArgs> = {
+        [P in keyof T & keyof AggregateProjectAsset]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateProjectNode[P]>
-      : GetScalarType<T[P], AggregateProjectNode[P]>
+        : GetScalarType<T[P], AggregateProjectAsset[P]>
+      : GetScalarType<T[P], AggregateProjectAsset[P]>
   }
 
 
 
 
-  export type ProjectNodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectNodeWhereInput
-    orderBy?: ProjectNodeOrderByWithAggregationInput | ProjectNodeOrderByWithAggregationInput[]
-    by: ProjectNodeScalarFieldEnum[] | ProjectNodeScalarFieldEnum
-    having?: ProjectNodeScalarWhereWithAggregatesInput
+  export type ProjectAssetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAssetWhereInput
+    orderBy?: ProjectAssetOrderByWithAggregationInput | ProjectAssetOrderByWithAggregationInput[]
+    by: ProjectAssetScalarFieldEnum[] | ProjectAssetScalarFieldEnum
+    having?: ProjectAssetScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ProjectNodeCountAggregateInputType | true
-    _min?: ProjectNodeMinAggregateInputType
-    _max?: ProjectNodeMaxAggregateInputType
+    _count?: ProjectAssetCountAggregateInputType | true
+    _avg?: ProjectAssetAvgAggregateInputType
+    _sum?: ProjectAssetSumAggregateInputType
+    _min?: ProjectAssetMinAggregateInputType
+    _max?: ProjectAssetMaxAggregateInputType
   }
 
-  export type ProjectNodeGroupByOutputType = {
+  export type ProjectAssetGroupByOutputType = {
     id: string
-    name: string
+    sortOrder: number
     projectId: string
-    parentId: string | null
-    _count: ProjectNodeCountAggregateOutputType | null
-    _min: ProjectNodeMinAggregateOutputType | null
-    _max: ProjectNodeMaxAggregateOutputType | null
+    phaseId: string | null
+    postId: string
+    createdAt: Date
+    _count: ProjectAssetCountAggregateOutputType | null
+    _avg: ProjectAssetAvgAggregateOutputType | null
+    _sum: ProjectAssetSumAggregateOutputType | null
+    _min: ProjectAssetMinAggregateOutputType | null
+    _max: ProjectAssetMaxAggregateOutputType | null
   }
 
-  type GetProjectNodeGroupByPayload<T extends ProjectNodeGroupByArgs> = Prisma.PrismaPromise<
+  type GetProjectAssetGroupByPayload<T extends ProjectAssetGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ProjectNodeGroupByOutputType, T['by']> &
+      PickEnumerable<ProjectAssetGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ProjectNodeGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof ProjectAssetGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ProjectNodeGroupByOutputType[P]>
-            : GetScalarType<T[P], ProjectNodeGroupByOutputType[P]>
+              : GetScalarType<T[P], ProjectAssetGroupByOutputType[P]>
+            : GetScalarType<T[P], ProjectAssetGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ProjectNodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProjectAssetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    sortOrder?: boolean
     projectId?: boolean
-    parentId?: boolean
+    phaseId?: boolean
+    postId?: boolean
+    createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
-    children?: boolean | ProjectNode$childrenArgs<ExtArgs>
-    posts?: boolean | ProjectNode$postsArgs<ExtArgs>
-    _count?: boolean | ProjectNodeCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["projectNode"]>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAsset"]>
 
-  export type ProjectNodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProjectAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    sortOrder?: boolean
     projectId?: boolean
-    parentId?: boolean
+    phaseId?: boolean
+    postId?: boolean
+    createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
-  }, ExtArgs["result"]["projectNode"]>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAsset"]>
 
-  export type ProjectNodeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ProjectAssetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    sortOrder?: boolean
     projectId?: boolean
-    parentId?: boolean
+    phaseId?: boolean
+    postId?: boolean
+    createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
-  }, ExtArgs["result"]["projectNode"]>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAsset"]>
 
-  export type ProjectNodeSelectScalar = {
+  export type ProjectAssetSelectScalar = {
     id?: boolean
-    name?: boolean
+    sortOrder?: boolean
     projectId?: boolean
-    parentId?: boolean
+    phaseId?: boolean
+    postId?: boolean
+    createdAt?: boolean
   }
 
-  export type ProjectNodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "projectId" | "parentId", ExtArgs["result"]["projectNode"]>
-  export type ProjectNodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sortOrder" | "projectId" | "phaseId" | "postId" | "createdAt", ExtArgs["result"]["projectAsset"]>
+  export type ProjectAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
-    children?: boolean | ProjectNode$childrenArgs<ExtArgs>
-    posts?: boolean | ProjectNode$postsArgs<ExtArgs>
-    _count?: boolean | ProjectNodeCountOutputTypeDefaultArgs<ExtArgs>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
   }
-  export type ProjectNodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
   }
-  export type ProjectNodeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
-    parent?: boolean | ProjectNode$parentArgs<ExtArgs>
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs>
   }
 
-  export type $ProjectNodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "ProjectNode"
+  export type $ProjectAssetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProjectAsset"
     objects: {
       project: Prisma.$ProjectPayload<ExtArgs>
-      parent: Prisma.$ProjectNodePayload<ExtArgs> | null
-      children: Prisma.$ProjectNodePayload<ExtArgs>[]
-      posts: Prisma.$PostPayload<ExtArgs>[]
+      phase: Prisma.$PhasePayload<ExtArgs> | null
+      post: Prisma.$PostPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      name: string
+      sortOrder: number
       projectId: string
-      parentId: string | null
-    }, ExtArgs["result"]["projectNode"]>
+      phaseId: string | null
+      postId: string
+      createdAt: Date
+    }, ExtArgs["result"]["projectAsset"]>
     composites: {}
   }
 
-  type ProjectNodeGetPayload<S extends boolean | null | undefined | ProjectNodeDefaultArgs> = $Result.GetResult<Prisma.$ProjectNodePayload, S>
+  type ProjectAssetGetPayload<S extends boolean | null | undefined | ProjectAssetDefaultArgs> = $Result.GetResult<Prisma.$ProjectAssetPayload, S>
 
-  type ProjectNodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ProjectNodeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ProjectNodeCountAggregateInputType | true
+  type ProjectAssetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProjectAssetFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProjectAssetCountAggregateInputType | true
     }
 
-  export interface ProjectNodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProjectNode'], meta: { name: 'ProjectNode' } }
+  export interface ProjectAssetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProjectAsset'], meta: { name: 'ProjectAsset' } }
     /**
-     * Find zero or one ProjectNode that matches the filter.
-     * @param {ProjectNodeFindUniqueArgs} args - Arguments to find a ProjectNode
+     * Find zero or one ProjectAsset that matches the filter.
+     * @param {ProjectAssetFindUniqueArgs} args - Arguments to find a ProjectAsset
      * @example
-     * // Get one ProjectNode
-     * const projectNode = await prisma.projectNode.findUnique({
+     * // Get one ProjectAsset
+     * const projectAsset = await prisma.projectAsset.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ProjectNodeFindUniqueArgs>(args: SelectSubset<T, ProjectNodeFindUniqueArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends ProjectAssetFindUniqueArgs>(args: SelectSubset<T, ProjectAssetFindUniqueArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one ProjectNode that matches the filter or throw an error with `error.code='P2025'`
+     * Find one ProjectAsset that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ProjectNodeFindUniqueOrThrowArgs} args - Arguments to find a ProjectNode
+     * @param {ProjectAssetFindUniqueOrThrowArgs} args - Arguments to find a ProjectAsset
      * @example
-     * // Get one ProjectNode
-     * const projectNode = await prisma.projectNode.findUniqueOrThrow({
+     * // Get one ProjectAsset
+     * const projectAsset = await prisma.projectAsset.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ProjectNodeFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectNodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends ProjectAssetFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectAssetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ProjectNode that matches the filter.
+     * Find the first ProjectAsset that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeFindFirstArgs} args - Arguments to find a ProjectNode
+     * @param {ProjectAssetFindFirstArgs} args - Arguments to find a ProjectAsset
      * @example
-     * // Get one ProjectNode
-     * const projectNode = await prisma.projectNode.findFirst({
+     * // Get one ProjectAsset
+     * const projectAsset = await prisma.projectAsset.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ProjectNodeFindFirstArgs>(args?: SelectSubset<T, ProjectNodeFindFirstArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends ProjectAssetFindFirstArgs>(args?: SelectSubset<T, ProjectAssetFindFirstArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ProjectNode that matches the filter or
+     * Find the first ProjectAsset that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeFindFirstOrThrowArgs} args - Arguments to find a ProjectNode
+     * @param {ProjectAssetFindFirstOrThrowArgs} args - Arguments to find a ProjectAsset
      * @example
-     * // Get one ProjectNode
-     * const projectNode = await prisma.projectNode.findFirstOrThrow({
+     * // Get one ProjectAsset
+     * const projectAsset = await prisma.projectAsset.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ProjectNodeFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectNodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends ProjectAssetFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectAssetFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more ProjectNodes that matches the filter.
+     * Find zero or more ProjectAssets that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ProjectAssetFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all ProjectNodes
-     * const projectNodes = await prisma.projectNode.findMany()
+     * // Get all ProjectAssets
+     * const projectAssets = await prisma.projectAsset.findMany()
      * 
-     * // Get first 10 ProjectNodes
-     * const projectNodes = await prisma.projectNode.findMany({ take: 10 })
+     * // Get first 10 ProjectAssets
+     * const projectAssets = await prisma.projectAsset.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const projectNodeWithIdOnly = await prisma.projectNode.findMany({ select: { id: true } })
+     * const projectAssetWithIdOnly = await prisma.projectAsset.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends ProjectNodeFindManyArgs>(args?: SelectSubset<T, ProjectNodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends ProjectAssetFindManyArgs>(args?: SelectSubset<T, ProjectAssetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a ProjectNode.
-     * @param {ProjectNodeCreateArgs} args - Arguments to create a ProjectNode.
+     * Create a ProjectAsset.
+     * @param {ProjectAssetCreateArgs} args - Arguments to create a ProjectAsset.
      * @example
-     * // Create one ProjectNode
-     * const ProjectNode = await prisma.projectNode.create({
+     * // Create one ProjectAsset
+     * const ProjectAsset = await prisma.projectAsset.create({
      *   data: {
-     *     // ... data to create a ProjectNode
+     *     // ... data to create a ProjectAsset
      *   }
      * })
      * 
      */
-    create<T extends ProjectNodeCreateArgs>(args: SelectSubset<T, ProjectNodeCreateArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends ProjectAssetCreateArgs>(args: SelectSubset<T, ProjectAssetCreateArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many ProjectNodes.
-     * @param {ProjectNodeCreateManyArgs} args - Arguments to create many ProjectNodes.
+     * Create many ProjectAssets.
+     * @param {ProjectAssetCreateManyArgs} args - Arguments to create many ProjectAssets.
      * @example
-     * // Create many ProjectNodes
-     * const projectNode = await prisma.projectNode.createMany({
+     * // Create many ProjectAssets
+     * const projectAsset = await prisma.projectAsset.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ProjectNodeCreateManyArgs>(args?: SelectSubset<T, ProjectNodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ProjectAssetCreateManyArgs>(args?: SelectSubset<T, ProjectAssetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many ProjectNodes and returns the data saved in the database.
-     * @param {ProjectNodeCreateManyAndReturnArgs} args - Arguments to create many ProjectNodes.
+     * Create many ProjectAssets and returns the data saved in the database.
+     * @param {ProjectAssetCreateManyAndReturnArgs} args - Arguments to create many ProjectAssets.
      * @example
-     * // Create many ProjectNodes
-     * const projectNode = await prisma.projectNode.createManyAndReturn({
+     * // Create many ProjectAssets
+     * const projectAsset = await prisma.projectAsset.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many ProjectNodes and only return the `id`
-     * const projectNodeWithIdOnly = await prisma.projectNode.createManyAndReturn({
+     * // Create many ProjectAssets and only return the `id`
+     * const projectAssetWithIdOnly = await prisma.projectAsset.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -9417,28 +9539,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends ProjectNodeCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectNodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends ProjectAssetCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectAssetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a ProjectNode.
-     * @param {ProjectNodeDeleteArgs} args - Arguments to delete one ProjectNode.
+     * Delete a ProjectAsset.
+     * @param {ProjectAssetDeleteArgs} args - Arguments to delete one ProjectAsset.
      * @example
-     * // Delete one ProjectNode
-     * const ProjectNode = await prisma.projectNode.delete({
+     * // Delete one ProjectAsset
+     * const ProjectAsset = await prisma.projectAsset.delete({
      *   where: {
-     *     // ... filter to delete one ProjectNode
+     *     // ... filter to delete one ProjectAsset
      *   }
      * })
      * 
      */
-    delete<T extends ProjectNodeDeleteArgs>(args: SelectSubset<T, ProjectNodeDeleteArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends ProjectAssetDeleteArgs>(args: SelectSubset<T, ProjectAssetDeleteArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one ProjectNode.
-     * @param {ProjectNodeUpdateArgs} args - Arguments to update one ProjectNode.
+     * Update one ProjectAsset.
+     * @param {ProjectAssetUpdateArgs} args - Arguments to update one ProjectAsset.
      * @example
-     * // Update one ProjectNode
-     * const projectNode = await prisma.projectNode.update({
+     * // Update one ProjectAsset
+     * const projectAsset = await prisma.projectAsset.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9448,30 +9570,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ProjectNodeUpdateArgs>(args: SelectSubset<T, ProjectNodeUpdateArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends ProjectAssetUpdateArgs>(args: SelectSubset<T, ProjectAssetUpdateArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more ProjectNodes.
-     * @param {ProjectNodeDeleteManyArgs} args - Arguments to filter ProjectNodes to delete.
+     * Delete zero or more ProjectAssets.
+     * @param {ProjectAssetDeleteManyArgs} args - Arguments to filter ProjectAssets to delete.
      * @example
-     * // Delete a few ProjectNodes
-     * const { count } = await prisma.projectNode.deleteMany({
+     * // Delete a few ProjectAssets
+     * const { count } = await prisma.projectAsset.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ProjectNodeDeleteManyArgs>(args?: SelectSubset<T, ProjectNodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ProjectAssetDeleteManyArgs>(args?: SelectSubset<T, ProjectAssetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ProjectNodes.
+     * Update zero or more ProjectAssets.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ProjectAssetUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many ProjectNodes
-     * const projectNode = await prisma.projectNode.updateMany({
+     * // Update many ProjectAssets
+     * const projectAsset = await prisma.projectAsset.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9481,14 +9603,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ProjectNodeUpdateManyArgs>(args: SelectSubset<T, ProjectNodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ProjectAssetUpdateManyArgs>(args: SelectSubset<T, ProjectAssetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ProjectNodes and returns the data updated in the database.
-     * @param {ProjectNodeUpdateManyAndReturnArgs} args - Arguments to update many ProjectNodes.
+     * Update zero or more ProjectAssets and returns the data updated in the database.
+     * @param {ProjectAssetUpdateManyAndReturnArgs} args - Arguments to update many ProjectAssets.
      * @example
-     * // Update many ProjectNodes
-     * const projectNode = await prisma.projectNode.updateManyAndReturn({
+     * // Update many ProjectAssets
+     * const projectAsset = await prisma.projectAsset.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9497,8 +9619,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ProjectNodes and only return the `id`
-     * const projectNodeWithIdOnly = await prisma.projectNode.updateManyAndReturn({
+     * // Update zero or more ProjectAssets and only return the `id`
+     * const projectAssetWithIdOnly = await prisma.projectAsset.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -9511,56 +9633,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends ProjectNodeUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectNodeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends ProjectAssetUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectAssetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one ProjectNode.
-     * @param {ProjectNodeUpsertArgs} args - Arguments to update or create a ProjectNode.
+     * Create or update one ProjectAsset.
+     * @param {ProjectAssetUpsertArgs} args - Arguments to update or create a ProjectAsset.
      * @example
-     * // Update or create a ProjectNode
-     * const projectNode = await prisma.projectNode.upsert({
+     * // Update or create a ProjectAsset
+     * const projectAsset = await prisma.projectAsset.upsert({
      *   create: {
-     *     // ... data to create a ProjectNode
+     *     // ... data to create a ProjectAsset
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the ProjectNode we want to update
+     *     // ... the filter for the ProjectAsset we want to update
      *   }
      * })
      */
-    upsert<T extends ProjectNodeUpsertArgs>(args: SelectSubset<T, ProjectNodeUpsertArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends ProjectAssetUpsertArgs>(args: SelectSubset<T, ProjectAssetUpsertArgs<ExtArgs>>): Prisma__ProjectAssetClient<$Result.GetResult<Prisma.$ProjectAssetPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of ProjectNodes.
+     * Count the number of ProjectAssets.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeCountArgs} args - Arguments to filter ProjectNodes to count.
+     * @param {ProjectAssetCountArgs} args - Arguments to filter ProjectAssets to count.
      * @example
-     * // Count the number of ProjectNodes
-     * const count = await prisma.projectNode.count({
+     * // Count the number of ProjectAssets
+     * const count = await prisma.projectAsset.count({
      *   where: {
-     *     // ... the filter for the ProjectNodes we want to count
+     *     // ... the filter for the ProjectAssets we want to count
      *   }
      * })
     **/
-    count<T extends ProjectNodeCountArgs>(
-      args?: Subset<T, ProjectNodeCountArgs>,
+    count<T extends ProjectAssetCountArgs>(
+      args?: Subset<T, ProjectAssetCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ProjectNodeCountAggregateOutputType>
+          : GetScalarType<T['select'], ProjectAssetCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a ProjectNode.
+     * Allows you to perform aggregations operations on a ProjectAsset.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {ProjectAssetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -9580,13 +9702,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ProjectNodeAggregateArgs>(args: Subset<T, ProjectNodeAggregateArgs>): Prisma.PrismaPromise<GetProjectNodeAggregateType<T>>
+    aggregate<T extends ProjectAssetAggregateArgs>(args: Subset<T, ProjectAssetAggregateArgs>): Prisma.PrismaPromise<GetProjectAssetAggregateType<T>>
 
     /**
-     * Group by ProjectNode.
+     * Group by ProjectAsset.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectNodeGroupByArgs} args - Group by arguments.
+     * @param {ProjectAssetGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -9601,14 +9723,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ProjectNodeGroupByArgs,
+      T extends ProjectAssetGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ProjectNodeGroupByArgs['orderBy'] }
-        : { orderBy?: ProjectNodeGroupByArgs['orderBy'] },
+        ? { orderBy: ProjectAssetGroupByArgs['orderBy'] }
+        : { orderBy?: ProjectAssetGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -9657,25 +9779,24 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ProjectNodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectNodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ProjectAssetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectAssetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the ProjectNode model
+   * Fields of the ProjectAsset model
    */
-  readonly fields: ProjectNodeFieldRefs;
+  readonly fields: ProjectAssetFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for ProjectNode.
+   * The delegate class that acts as a "Promise-like" for ProjectAsset.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ProjectNodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ProjectAssetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    parent<T extends ProjectNode$parentArgs<ExtArgs> = {}>(args?: Subset<T, ProjectNode$parentArgs<ExtArgs>>): Prisma__ProjectNodeClient<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    children<T extends ProjectNode$childrenArgs<ExtArgs> = {}>(args?: Subset<T, ProjectNode$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    posts<T extends ProjectNode$postsArgs<ExtArgs> = {}>(args?: Subset<T, ProjectNode$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    phase<T extends ProjectAsset$phaseArgs<ExtArgs> = {}>(args?: Subset<T, ProjectAsset$phaseArgs<ExtArgs>>): Prisma__PhaseClient<$Result.GetResult<Prisma.$PhasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    post<T extends PostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PostDefaultArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9702,496 +9823,450 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the ProjectNode model
+   * Fields of the ProjectAsset model
    */
-  interface ProjectNodeFieldRefs {
-    readonly id: FieldRef<"ProjectNode", 'String'>
-    readonly name: FieldRef<"ProjectNode", 'String'>
-    readonly projectId: FieldRef<"ProjectNode", 'String'>
-    readonly parentId: FieldRef<"ProjectNode", 'String'>
+  interface ProjectAssetFieldRefs {
+    readonly id: FieldRef<"ProjectAsset", 'String'>
+    readonly sortOrder: FieldRef<"ProjectAsset", 'Int'>
+    readonly projectId: FieldRef<"ProjectAsset", 'String'>
+    readonly phaseId: FieldRef<"ProjectAsset", 'String'>
+    readonly postId: FieldRef<"ProjectAsset", 'String'>
+    readonly createdAt: FieldRef<"ProjectAsset", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * ProjectNode findUnique
+   * ProjectAsset findUnique
    */
-  export type ProjectNodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter, which ProjectNode to fetch.
+     * Filter, which ProjectAsset to fetch.
      */
-    where: ProjectNodeWhereUniqueInput
+    where: ProjectAssetWhereUniqueInput
   }
 
   /**
-   * ProjectNode findUniqueOrThrow
+   * ProjectAsset findUniqueOrThrow
    */
-  export type ProjectNodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter, which ProjectNode to fetch.
+     * Filter, which ProjectAsset to fetch.
      */
-    where: ProjectNodeWhereUniqueInput
+    where: ProjectAssetWhereUniqueInput
   }
 
   /**
-   * ProjectNode findFirst
+   * ProjectAsset findFirst
    */
-  export type ProjectNodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter, which ProjectNode to fetch.
+     * Filter, which ProjectAsset to fetch.
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ProjectNodes to fetch.
+     * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ProjectNodes.
+     * Sets the position for searching for ProjectAssets.
      */
-    cursor?: ProjectNodeWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ProjectNodes from the position of the cursor.
+     * Take `±n` ProjectAssets from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ProjectNodes.
+     * Skip the first `n` ProjectAssets.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ProjectNodes.
+     * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
-   * ProjectNode findFirstOrThrow
+   * ProjectAsset findFirstOrThrow
    */
-  export type ProjectNodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter, which ProjectNode to fetch.
+     * Filter, which ProjectAsset to fetch.
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ProjectNodes to fetch.
+     * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ProjectNodes.
+     * Sets the position for searching for ProjectAssets.
      */
-    cursor?: ProjectNodeWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ProjectNodes from the position of the cursor.
+     * Take `±n` ProjectAssets from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ProjectNodes.
+     * Skip the first `n` ProjectAssets.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ProjectNodes.
+     * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
-   * ProjectNode findMany
+   * ProjectAsset findMany
    */
-  export type ProjectNodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter, which ProjectNodes to fetch.
+     * Filter, which ProjectAssets to fetch.
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ProjectNodes to fetch.
+     * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing ProjectNodes.
+     * Sets the position for listing ProjectAssets.
      */
-    cursor?: ProjectNodeWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ProjectNodes from the position of the cursor.
+     * Take `±n` ProjectAssets from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ProjectNodes.
+     * Skip the first `n` ProjectAssets.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ProjectNodes.
+     * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
   }
 
   /**
-   * ProjectNode create
+   * ProjectAsset create
    */
-  export type ProjectNodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * The data needed to create a ProjectNode.
+     * The data needed to create a ProjectAsset.
      */
-    data: XOR<ProjectNodeCreateInput, ProjectNodeUncheckedCreateInput>
+    data: XOR<ProjectAssetCreateInput, ProjectAssetUncheckedCreateInput>
   }
 
   /**
-   * ProjectNode createMany
+   * ProjectAsset createMany
    */
-  export type ProjectNodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many ProjectNodes.
+     * The data used to create many ProjectAssets.
      */
-    data: ProjectNodeCreateManyInput | ProjectNodeCreateManyInput[]
+    data: ProjectAssetCreateManyInput | ProjectAssetCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * ProjectNode createManyAndReturn
+   * ProjectAsset createManyAndReturn
    */
-  export type ProjectNodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ProjectAssetSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
-     * The data used to create many ProjectNodes.
+     * The data used to create many ProjectAssets.
      */
-    data: ProjectNodeCreateManyInput | ProjectNodeCreateManyInput[]
+    data: ProjectAssetCreateManyInput | ProjectAssetCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: ProjectAssetIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * ProjectNode update
+   * ProjectAsset update
    */
-  export type ProjectNodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * The data needed to update a ProjectNode.
+     * The data needed to update a ProjectAsset.
      */
-    data: XOR<ProjectNodeUpdateInput, ProjectNodeUncheckedUpdateInput>
+    data: XOR<ProjectAssetUpdateInput, ProjectAssetUncheckedUpdateInput>
     /**
-     * Choose, which ProjectNode to update.
+     * Choose, which ProjectAsset to update.
      */
-    where: ProjectNodeWhereUniqueInput
+    where: ProjectAssetWhereUniqueInput
   }
 
   /**
-   * ProjectNode updateMany
+   * ProjectAsset updateMany
    */
-  export type ProjectNodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update ProjectNodes.
+     * The data used to update ProjectAssets.
      */
-    data: XOR<ProjectNodeUpdateManyMutationInput, ProjectNodeUncheckedUpdateManyInput>
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyInput>
     /**
-     * Filter which ProjectNodes to update
+     * Filter which ProjectAssets to update
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
-     * Limit how many ProjectNodes to update.
+     * Limit how many ProjectAssets to update.
      */
     limit?: number
   }
 
   /**
-   * ProjectNode updateManyAndReturn
+   * ProjectAsset updateManyAndReturn
    */
-  export type ProjectNodeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: ProjectAssetSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
-     * The data used to update ProjectNodes.
+     * The data used to update ProjectAssets.
      */
-    data: XOR<ProjectNodeUpdateManyMutationInput, ProjectNodeUncheckedUpdateManyInput>
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyInput>
     /**
-     * Filter which ProjectNodes to update
+     * Filter which ProjectAssets to update
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
-     * Limit how many ProjectNodes to update.
+     * Limit how many ProjectAssets to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: ProjectAssetIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * ProjectNode upsert
+   * ProjectAsset upsert
    */
-  export type ProjectNodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * The filter to search for the ProjectNode to update in case it exists.
+     * The filter to search for the ProjectAsset to update in case it exists.
      */
-    where: ProjectNodeWhereUniqueInput
+    where: ProjectAssetWhereUniqueInput
     /**
-     * In case the ProjectNode found by the `where` argument doesn't exist, create a new ProjectNode with this data.
+     * In case the ProjectAsset found by the `where` argument doesn't exist, create a new ProjectAsset with this data.
      */
-    create: XOR<ProjectNodeCreateInput, ProjectNodeUncheckedCreateInput>
+    create: XOR<ProjectAssetCreateInput, ProjectAssetUncheckedCreateInput>
     /**
-     * In case the ProjectNode was found with the provided `where` argument, update it with this data.
+     * In case the ProjectAsset was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ProjectNodeUpdateInput, ProjectNodeUncheckedUpdateInput>
+    update: XOR<ProjectAssetUpdateInput, ProjectAssetUncheckedUpdateInput>
   }
 
   /**
-   * ProjectNode delete
+   * ProjectAsset delete
    */
-  export type ProjectNodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
     /**
-     * Filter which ProjectNode to delete.
+     * Filter which ProjectAsset to delete.
      */
-    where: ProjectNodeWhereUniqueInput
+    where: ProjectAssetWhereUniqueInput
   }
 
   /**
-   * ProjectNode deleteMany
+   * ProjectAsset deleteMany
    */
-  export type ProjectNodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ProjectNodes to delete
+     * Filter which ProjectAssets to delete
      */
-    where?: ProjectNodeWhereInput
+    where?: ProjectAssetWhereInput
     /**
-     * Limit how many ProjectNodes to delete.
+     * Limit how many ProjectAssets to delete.
      */
     limit?: number
   }
 
   /**
-   * ProjectNode.parent
+   * ProjectAsset.phase
    */
-  export type ProjectNode$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAsset$phaseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the Phase
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: PhaseSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the Phase
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: PhaseOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
-    where?: ProjectNodeWhereInput
+    include?: PhaseInclude<ExtArgs> | null
+    where?: PhaseWhereInput
   }
 
   /**
-   * ProjectNode.children
+   * ProjectAsset without action
    */
-  export type ProjectNode$childrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ProjectAssetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ProjectNode
+     * Select specific fields to fetch from the ProjectAsset
      */
-    select?: ProjectNodeSelect<ExtArgs> | null
+    select?: ProjectAssetSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ProjectNode
+     * Omit specific fields from the ProjectAsset
      */
-    omit?: ProjectNodeOmit<ExtArgs> | null
+    omit?: ProjectAssetOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProjectNodeInclude<ExtArgs> | null
-    where?: ProjectNodeWhereInput
-    orderBy?: ProjectNodeOrderByWithRelationInput | ProjectNodeOrderByWithRelationInput[]
-    cursor?: ProjectNodeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectNodeScalarFieldEnum | ProjectNodeScalarFieldEnum[]
-  }
-
-  /**
-   * ProjectNode.posts
-   */
-  export type ProjectNode$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
-  }
-
-  /**
-   * ProjectNode without action
-   */
-  export type ProjectNodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ProjectNode
-     */
-    select?: ProjectNodeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ProjectNode
-     */
-    omit?: ProjectNodeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjectNodeInclude<ExtArgs> | null
+    include?: ProjectAssetInclude<ExtArgs> | null
   }
 
 
@@ -12609,8 +12684,7 @@ export namespace Prisma {
     updatedAt?: boolean
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    models?: boolean | User$modelsArgs<ExtArgs>
-    pdfs?: boolean | User$pdfsArgs<ExtArgs>
+    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     comments?: boolean | User$commentsArgs<ExtArgs>
     projects?: boolean | User$projectsArgs<ExtArgs>
@@ -12654,8 +12728,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    models?: boolean | User$modelsArgs<ExtArgs>
-    pdfs?: boolean | User$pdfsArgs<ExtArgs>
+    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     comments?: boolean | User$commentsArgs<ExtArgs>
     projects?: boolean | User$projectsArgs<ExtArgs>
@@ -12669,8 +12742,7 @@ export namespace Prisma {
     objects: {
       teamMembers: Prisma.$TeamMemberPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
-      models: Prisma.$ModelPayload<ExtArgs>[]
-      pdfs: Prisma.$PdfPayload<ExtArgs>[]
+      fileRecords: Prisma.$FileRecordPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
       comments: Prisma.$CommentPayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
@@ -13080,8 +13152,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     teamMembers<T extends User$teamMembersArgs<ExtArgs> = {}>(args?: Subset<T, User$teamMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    models<T extends User$modelsArgs<ExtArgs> = {}>(args?: Subset<T, User$modelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ModelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    pdfs<T extends User$pdfsArgs<ExtArgs> = {}>(args?: Subset<T, User$pdfsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PdfPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fileRecords<T extends User$fileRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$fileRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comments<T extends User$commentsArgs<ExtArgs> = {}>(args?: Subset<T, User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projects<T extends User$projectsArgs<ExtArgs> = {}>(args?: Subset<T, User$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13563,51 +13634,27 @@ export namespace Prisma {
   }
 
   /**
-   * User.models
+   * User.fileRecords
    */
-  export type User$modelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$fileRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Model
+     * Select specific fields to fetch from the FileRecord
      */
-    select?: ModelSelect<ExtArgs> | null
+    select?: FileRecordSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Model
+     * Omit specific fields from the FileRecord
      */
-    omit?: ModelOmit<ExtArgs> | null
+    omit?: FileRecordOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ModelInclude<ExtArgs> | null
-    where?: ModelWhereInput
-    orderBy?: ModelOrderByWithRelationInput | ModelOrderByWithRelationInput[]
-    cursor?: ModelWhereUniqueInput
+    include?: FileRecordInclude<ExtArgs> | null
+    where?: FileRecordWhereInput
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    cursor?: FileRecordWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ModelScalarFieldEnum | ModelScalarFieldEnum[]
-  }
-
-  /**
-   * User.pdfs
-   */
-  export type User$pdfsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Pdf
-     */
-    select?: PdfSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Pdf
-     */
-    omit?: PdfOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PdfInclude<ExtArgs> | null
-    where?: PdfWhereInput
-    orderBy?: PdfOrderByWithRelationInput | PdfOrderByWithRelationInput[]
-    cursor?: PdfWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PdfScalarFieldEnum | PdfScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
   }
 
   /**
@@ -13741,32 +13788,36 @@ export namespace Prisma {
   export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
 
 
-  export const ModelScalarFieldEnum: {
+  export const FileRecordScalarFieldEnum: {
     id: 'id',
     shortId: 'shortId',
     name: 'name',
     fileId: 'fileId',
-    uploaderId: 'uploaderId',
+    viewerFileId: 'viewerFileId',
+    category: 'category',
+    extension: 'extension',
     size: 'size',
     status: 'status',
     errorMessage: 'errorMessage',
+    uploaderId: 'uploaderId',
+    postId: 'postId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
-  export type ModelScalarFieldEnum = (typeof ModelScalarFieldEnum)[keyof typeof ModelScalarFieldEnum]
+  export type FileRecordScalarFieldEnum = (typeof FileRecordScalarFieldEnum)[keyof typeof FileRecordScalarFieldEnum]
 
 
-  export const PdfScalarFieldEnum: {
+  export const PhaseScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    fileId: 'fileId',
-    uploaderId: 'uploaderId',
+    sortOrder: 'sortOrder',
+    projectId: 'projectId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
-  export type PdfScalarFieldEnum = (typeof PdfScalarFieldEnum)[keyof typeof PdfScalarFieldEnum]
+  export type PhaseScalarFieldEnum = (typeof PhaseScalarFieldEnum)[keyof typeof PhaseScalarFieldEnum]
 
 
   export const PostScalarFieldEnum: {
@@ -13794,23 +13845,29 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     description: 'description',
+    client: 'client',
+    location: 'location',
+    coverImage: 'coverImage',
+    status: 'status',
+    teamId: 'teamId',
+    creatorId: 'creatorId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    ownerId: 'ownerId',
-    teamId: 'teamId'
+    updatedAt: 'updatedAt'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
-  export const ProjectNodeScalarFieldEnum: {
+  export const ProjectAssetScalarFieldEnum: {
     id: 'id',
-    name: 'name',
+    sortOrder: 'sortOrder',
     projectId: 'projectId',
-    parentId: 'parentId'
+    phaseId: 'phaseId',
+    postId: 'postId',
+    createdAt: 'createdAt'
   };
 
-  export type ProjectNodeScalarFieldEnum = (typeof ProjectNodeScalarFieldEnum)[keyof typeof ProjectNodeScalarFieldEnum]
+  export type ProjectAssetScalarFieldEnum = (typeof ProjectAssetScalarFieldEnum)[keyof typeof ProjectAssetScalarFieldEnum]
 
 
   export const TeamScalarFieldEnum: {
@@ -13909,6 +13966,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FileCategory'
+   */
+  export type EnumFileCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FileCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'FileCategory[]'
+   */
+  export type ListEnumFileCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FileCategory[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ProcessStatus'
    */
   export type EnumProcessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProcessStatus'>
@@ -13919,6 +13990,34 @@ export namespace Prisma {
    * Reference to a field of type 'ProcessStatus[]'
    */
   export type ListEnumProcessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProcessStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectStatus'
+   */
+  export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectStatus[]'
+   */
+  export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
     
 
 
@@ -13951,16 +14050,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'Float'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'Float[]'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -14107,150 +14206,172 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
   }
 
-  export type ModelWhereInput = {
-    AND?: ModelWhereInput | ModelWhereInput[]
-    OR?: ModelWhereInput[]
-    NOT?: ModelWhereInput | ModelWhereInput[]
-    id?: StringFilter<"Model"> | string
-    shortId?: StringFilter<"Model"> | string
-    name?: StringFilter<"Model"> | string
-    fileId?: StringFilter<"Model"> | string
-    uploaderId?: StringFilter<"Model"> | string
-    size?: StringFilter<"Model"> | string
-    status?: EnumProcessStatusFilter<"Model"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"Model"> | string | null
-    createdAt?: DateTimeFilter<"Model"> | Date | string
-    updatedAt?: DateTimeFilter<"Model"> | Date | string
+  export type FileRecordWhereInput = {
+    AND?: FileRecordWhereInput | FileRecordWhereInput[]
+    OR?: FileRecordWhereInput[]
+    NOT?: FileRecordWhereInput | FileRecordWhereInput[]
+    id?: StringFilter<"FileRecord"> | string
+    shortId?: StringNullableFilter<"FileRecord"> | string | null
+    name?: StringFilter<"FileRecord"> | string
+    fileId?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
+    extension?: StringNullableFilter<"FileRecord"> | string | null
+    size?: StringFilter<"FileRecord"> | string
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
+    uploaderId?: StringFilter<"FileRecord"> | string
+    postId?: StringNullableFilter<"FileRecord"> | string | null
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
     uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    posts?: PostListRelationFilter
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
   }
 
-  export type ModelOrderByWithRelationInput = {
+  export type FileRecordOrderByWithRelationInput = {
     id?: SortOrder
-    shortId?: SortOrder
+    shortId?: SortOrderInput | SortOrder
     name?: SortOrder
     fileId?: SortOrder
-    uploaderId?: SortOrder
+    viewerFileId?: SortOrderInput | SortOrder
+    category?: SortOrder
+    extension?: SortOrderInput | SortOrder
     size?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
+    uploaderId?: SortOrder
+    postId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     uploader?: UserOrderByWithRelationInput
-    posts?: PostOrderByRelationAggregateInput
+    post?: PostOrderByWithRelationInput
   }
 
-  export type ModelWhereUniqueInput = Prisma.AtLeast<{
+  export type FileRecordWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     shortId?: string
     fileId?: string
-    AND?: ModelWhereInput | ModelWhereInput[]
-    OR?: ModelWhereInput[]
-    NOT?: ModelWhereInput | ModelWhereInput[]
-    name?: StringFilter<"Model"> | string
-    uploaderId?: StringFilter<"Model"> | string
-    size?: StringFilter<"Model"> | string
-    status?: EnumProcessStatusFilter<"Model"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"Model"> | string | null
-    createdAt?: DateTimeFilter<"Model"> | Date | string
-    updatedAt?: DateTimeFilter<"Model"> | Date | string
+    AND?: FileRecordWhereInput | FileRecordWhereInput[]
+    OR?: FileRecordWhereInput[]
+    NOT?: FileRecordWhereInput | FileRecordWhereInput[]
+    name?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
+    extension?: StringNullableFilter<"FileRecord"> | string | null
+    size?: StringFilter<"FileRecord"> | string
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
+    uploaderId?: StringFilter<"FileRecord"> | string
+    postId?: StringNullableFilter<"FileRecord"> | string | null
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
     uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    posts?: PostListRelationFilter
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
   }, "id" | "shortId" | "fileId">
 
-  export type ModelOrderByWithAggregationInput = {
+  export type FileRecordOrderByWithAggregationInput = {
     id?: SortOrder
-    shortId?: SortOrder
+    shortId?: SortOrderInput | SortOrder
     name?: SortOrder
     fileId?: SortOrder
-    uploaderId?: SortOrder
+    viewerFileId?: SortOrderInput | SortOrder
+    category?: SortOrder
+    extension?: SortOrderInput | SortOrder
     size?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrderInput | SortOrder
+    uploaderId?: SortOrder
+    postId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: ModelCountOrderByAggregateInput
-    _max?: ModelMaxOrderByAggregateInput
-    _min?: ModelMinOrderByAggregateInput
+    _count?: FileRecordCountOrderByAggregateInput
+    _max?: FileRecordMaxOrderByAggregateInput
+    _min?: FileRecordMinOrderByAggregateInput
   }
 
-  export type ModelScalarWhereWithAggregatesInput = {
-    AND?: ModelScalarWhereWithAggregatesInput | ModelScalarWhereWithAggregatesInput[]
-    OR?: ModelScalarWhereWithAggregatesInput[]
-    NOT?: ModelScalarWhereWithAggregatesInput | ModelScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Model"> | string
-    shortId?: StringWithAggregatesFilter<"Model"> | string
-    name?: StringWithAggregatesFilter<"Model"> | string
-    fileId?: StringWithAggregatesFilter<"Model"> | string
-    uploaderId?: StringWithAggregatesFilter<"Model"> | string
-    size?: StringWithAggregatesFilter<"Model"> | string
-    status?: EnumProcessStatusWithAggregatesFilter<"Model"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableWithAggregatesFilter<"Model"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Model"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Model"> | Date | string
+  export type FileRecordScalarWhereWithAggregatesInput = {
+    AND?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[]
+    OR?: FileRecordScalarWhereWithAggregatesInput[]
+    NOT?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FileRecord"> | string
+    shortId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
+    name?: StringWithAggregatesFilter<"FileRecord"> | string
+    fileId?: StringWithAggregatesFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
+    category?: EnumFileCategoryWithAggregatesFilter<"FileRecord"> | $Enums.FileCategory
+    extension?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
+    size?: StringWithAggregatesFilter<"FileRecord"> | string
+    status?: EnumProcessStatusWithAggregatesFilter<"FileRecord"> | $Enums.ProcessStatus
+    errorMessage?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
+    uploaderId?: StringWithAggregatesFilter<"FileRecord"> | string
+    postId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string
   }
 
-  export type PdfWhereInput = {
-    AND?: PdfWhereInput | PdfWhereInput[]
-    OR?: PdfWhereInput[]
-    NOT?: PdfWhereInput | PdfWhereInput[]
-    id?: StringFilter<"Pdf"> | string
-    name?: StringFilter<"Pdf"> | string
-    fileId?: StringFilter<"Pdf"> | string
-    uploaderId?: StringFilter<"Pdf"> | string
-    createdAt?: DateTimeFilter<"Pdf"> | Date | string
-    updatedAt?: DateTimeFilter<"Pdf"> | Date | string
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    posts?: PostListRelationFilter
+  export type PhaseWhereInput = {
+    AND?: PhaseWhereInput | PhaseWhereInput[]
+    OR?: PhaseWhereInput[]
+    NOT?: PhaseWhereInput | PhaseWhereInput[]
+    id?: StringFilter<"Phase"> | string
+    name?: StringFilter<"Phase"> | string
+    sortOrder?: IntFilter<"Phase"> | number
+    projectId?: StringFilter<"Phase"> | string
+    createdAt?: DateTimeFilter<"Phase"> | Date | string
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    projectAssets?: ProjectAssetListRelationFilter
   }
 
-  export type PdfOrderByWithRelationInput = {
+  export type PhaseOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    fileId?: SortOrder
-    uploaderId?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    uploader?: UserOrderByWithRelationInput
-    posts?: PostOrderByRelationAggregateInput
+    project?: ProjectOrderByWithRelationInput
+    projectAssets?: ProjectAssetOrderByRelationAggregateInput
   }
 
-  export type PdfWhereUniqueInput = Prisma.AtLeast<{
+  export type PhaseWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    fileId?: string
-    AND?: PdfWhereInput | PdfWhereInput[]
-    OR?: PdfWhereInput[]
-    NOT?: PdfWhereInput | PdfWhereInput[]
-    name?: StringFilter<"Pdf"> | string
-    uploaderId?: StringFilter<"Pdf"> | string
-    createdAt?: DateTimeFilter<"Pdf"> | Date | string
-    updatedAt?: DateTimeFilter<"Pdf"> | Date | string
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    posts?: PostListRelationFilter
-  }, "id" | "fileId">
+    AND?: PhaseWhereInput | PhaseWhereInput[]
+    OR?: PhaseWhereInput[]
+    NOT?: PhaseWhereInput | PhaseWhereInput[]
+    name?: StringFilter<"Phase"> | string
+    sortOrder?: IntFilter<"Phase"> | number
+    projectId?: StringFilter<"Phase"> | string
+    createdAt?: DateTimeFilter<"Phase"> | Date | string
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    projectAssets?: ProjectAssetListRelationFilter
+  }, "id">
 
-  export type PdfOrderByWithAggregationInput = {
+  export type PhaseOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    fileId?: SortOrder
-    uploaderId?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: PdfCountOrderByAggregateInput
-    _max?: PdfMaxOrderByAggregateInput
-    _min?: PdfMinOrderByAggregateInput
+    _count?: PhaseCountOrderByAggregateInput
+    _avg?: PhaseAvgOrderByAggregateInput
+    _max?: PhaseMaxOrderByAggregateInput
+    _min?: PhaseMinOrderByAggregateInput
+    _sum?: PhaseSumOrderByAggregateInput
   }
 
-  export type PdfScalarWhereWithAggregatesInput = {
-    AND?: PdfScalarWhereWithAggregatesInput | PdfScalarWhereWithAggregatesInput[]
-    OR?: PdfScalarWhereWithAggregatesInput[]
-    NOT?: PdfScalarWhereWithAggregatesInput | PdfScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Pdf"> | string
-    name?: StringWithAggregatesFilter<"Pdf"> | string
-    fileId?: StringWithAggregatesFilter<"Pdf"> | string
-    uploaderId?: StringWithAggregatesFilter<"Pdf"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Pdf"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Pdf"> | Date | string
+  export type PhaseScalarWhereWithAggregatesInput = {
+    AND?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[]
+    OR?: PhaseScalarWhereWithAggregatesInput[]
+    NOT?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Phase"> | string
+    name?: StringWithAggregatesFilter<"Phase"> | string
+    sortOrder?: IntWithAggregatesFilter<"Phase"> | number
+    projectId?: StringWithAggregatesFilter<"Phase"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string
   }
 
   export type PostWhereInput = {
@@ -14272,12 +14393,11 @@ export namespace Prisma {
     teamId?: StringNullableFilter<"Post"> | string | null
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
-    models?: ModelListRelationFilter
-    pdfIds?: PdfListRelationFilter
+    files?: FileRecordListRelationFilter
     uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    nodes?: ProjectNodeListRelationFilter
     comments?: CommentListRelationFilter
+    projectAssets?: ProjectAssetListRelationFilter
   }
 
   export type PostOrderByWithRelationInput = {
@@ -14296,12 +14416,11 @@ export namespace Prisma {
     teamId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    models?: ModelOrderByRelationAggregateInput
-    pdfIds?: PdfOrderByRelationAggregateInput
+    files?: FileRecordOrderByRelationAggregateInput
     uploader?: UserOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
-    nodes?: ProjectNodeOrderByRelationAggregateInput
     comments?: CommentOrderByRelationAggregateInput
+    projectAssets?: ProjectAssetOrderByRelationAggregateInput
   }
 
   export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -14323,12 +14442,11 @@ export namespace Prisma {
     teamId?: StringNullableFilter<"Post"> | string | null
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
-    models?: ModelListRelationFilter
-    pdfIds?: PdfListRelationFilter
+    files?: FileRecordListRelationFilter
     uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
     team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    nodes?: ProjectNodeListRelationFilter
     comments?: CommentListRelationFilter
+    projectAssets?: ProjectAssetListRelationFilter
   }, "id" | "shortId">
 
   export type PostOrderByWithAggregationInput = {
@@ -14380,26 +14498,36 @@ export namespace Prisma {
     id?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
     description?: StringNullableFilter<"Project"> | string | null
+    client?: StringNullableFilter<"Project"> | string | null
+    location?: StringNullableFilter<"Project"> | string | null
+    coverImage?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    teamId?: StringFilter<"Project"> | string
+    creatorId?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
-    ownerId?: StringFilter<"Project"> | string
-    teamId?: StringNullableFilter<"Project"> | string | null
-    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    nodes?: ProjectNodeListRelationFilter
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    phases?: PhaseListRelationFilter
+    assets?: ProjectAssetListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    client?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    coverImage?: SortOrderInput | SortOrder
+    status?: SortOrder
+    teamId?: SortOrder
+    creatorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ownerId?: SortOrder
-    teamId?: SortOrderInput | SortOrder
-    owner?: UserOrderByWithRelationInput
     team?: TeamOrderByWithRelationInput
-    nodes?: ProjectNodeOrderByRelationAggregateInput
+    creator?: UserOrderByWithRelationInput
+    phases?: PhaseOrderByRelationAggregateInput
+    assets?: ProjectAssetOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -14409,23 +14537,32 @@ export namespace Prisma {
     NOT?: ProjectWhereInput | ProjectWhereInput[]
     name?: StringFilter<"Project"> | string
     description?: StringNullableFilter<"Project"> | string | null
+    client?: StringNullableFilter<"Project"> | string | null
+    location?: StringNullableFilter<"Project"> | string | null
+    coverImage?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    teamId?: StringFilter<"Project"> | string
+    creatorId?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
-    ownerId?: StringFilter<"Project"> | string
-    teamId?: StringNullableFilter<"Project"> | string | null
-    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    nodes?: ProjectNodeListRelationFilter
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    phases?: PhaseListRelationFilter
+    assets?: ProjectAssetListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
+    client?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    coverImage?: SortOrderInput | SortOrder
+    status?: SortOrder
+    teamId?: SortOrder
+    creatorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ownerId?: SortOrder
-    teamId?: SortOrderInput | SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
     _min?: ProjectMinOrderByAggregateInput
@@ -14438,69 +14575,83 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Project"> | string
     name?: StringWithAggregatesFilter<"Project"> | string
     description?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    client?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    location?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    coverImage?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    status?: EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
+    teamId?: StringWithAggregatesFilter<"Project"> | string
+    creatorId?: StringWithAggregatesFilter<"Project"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
-    ownerId?: StringWithAggregatesFilter<"Project"> | string
-    teamId?: StringNullableWithAggregatesFilter<"Project"> | string | null
   }
 
-  export type ProjectNodeWhereInput = {
-    AND?: ProjectNodeWhereInput | ProjectNodeWhereInput[]
-    OR?: ProjectNodeWhereInput[]
-    NOT?: ProjectNodeWhereInput | ProjectNodeWhereInput[]
-    id?: StringFilter<"ProjectNode"> | string
-    name?: StringFilter<"ProjectNode"> | string
-    projectId?: StringFilter<"ProjectNode"> | string
-    parentId?: StringNullableFilter<"ProjectNode"> | string | null
+  export type ProjectAssetWhereInput = {
+    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
+    OR?: ProjectAssetWhereInput[]
+    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
+    id?: StringFilter<"ProjectAsset"> | string
+    sortOrder?: IntFilter<"ProjectAsset"> | number
+    projectId?: StringFilter<"ProjectAsset"> | string
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
+    postId?: StringFilter<"ProjectAsset"> | string
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    parent?: XOR<ProjectNodeNullableScalarRelationFilter, ProjectNodeWhereInput> | null
-    children?: ProjectNodeListRelationFilter
-    posts?: PostListRelationFilter
+    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
   }
 
-  export type ProjectNodeOrderByWithRelationInput = {
+  export type ProjectAssetOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    sortOrder?: SortOrder
     projectId?: SortOrder
-    parentId?: SortOrderInput | SortOrder
+    phaseId?: SortOrderInput | SortOrder
+    postId?: SortOrder
+    createdAt?: SortOrder
     project?: ProjectOrderByWithRelationInput
-    parent?: ProjectNodeOrderByWithRelationInput
-    children?: ProjectNodeOrderByRelationAggregateInput
-    posts?: PostOrderByRelationAggregateInput
+    phase?: PhaseOrderByWithRelationInput
+    post?: PostOrderByWithRelationInput
   }
 
-  export type ProjectNodeWhereUniqueInput = Prisma.AtLeast<{
+  export type ProjectAssetWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: ProjectNodeWhereInput | ProjectNodeWhereInput[]
-    OR?: ProjectNodeWhereInput[]
-    NOT?: ProjectNodeWhereInput | ProjectNodeWhereInput[]
-    name?: StringFilter<"ProjectNode"> | string
-    projectId?: StringFilter<"ProjectNode"> | string
-    parentId?: StringNullableFilter<"ProjectNode"> | string | null
+    projectId_phaseId_postId?: ProjectAssetProjectIdPhaseIdPostIdCompoundUniqueInput
+    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
+    OR?: ProjectAssetWhereInput[]
+    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
+    sortOrder?: IntFilter<"ProjectAsset"> | number
+    projectId?: StringFilter<"ProjectAsset"> | string
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
+    postId?: StringFilter<"ProjectAsset"> | string
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    parent?: XOR<ProjectNodeNullableScalarRelationFilter, ProjectNodeWhereInput> | null
-    children?: ProjectNodeListRelationFilter
-    posts?: PostListRelationFilter
-  }, "id">
+    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+  }, "id" | "projectId_phaseId_postId">
 
-  export type ProjectNodeOrderByWithAggregationInput = {
+  export type ProjectAssetOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    sortOrder?: SortOrder
     projectId?: SortOrder
-    parentId?: SortOrderInput | SortOrder
-    _count?: ProjectNodeCountOrderByAggregateInput
-    _max?: ProjectNodeMaxOrderByAggregateInput
-    _min?: ProjectNodeMinOrderByAggregateInput
+    phaseId?: SortOrderInput | SortOrder
+    postId?: SortOrder
+    createdAt?: SortOrder
+    _count?: ProjectAssetCountOrderByAggregateInput
+    _avg?: ProjectAssetAvgOrderByAggregateInput
+    _max?: ProjectAssetMaxOrderByAggregateInput
+    _min?: ProjectAssetMinOrderByAggregateInput
+    _sum?: ProjectAssetSumOrderByAggregateInput
   }
 
-  export type ProjectNodeScalarWhereWithAggregatesInput = {
-    AND?: ProjectNodeScalarWhereWithAggregatesInput | ProjectNodeScalarWhereWithAggregatesInput[]
-    OR?: ProjectNodeScalarWhereWithAggregatesInput[]
-    NOT?: ProjectNodeScalarWhereWithAggregatesInput | ProjectNodeScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"ProjectNode"> | string
-    name?: StringWithAggregatesFilter<"ProjectNode"> | string
-    projectId?: StringWithAggregatesFilter<"ProjectNode"> | string
-    parentId?: StringNullableWithAggregatesFilter<"ProjectNode"> | string | null
+  export type ProjectAssetScalarWhereWithAggregatesInput = {
+    AND?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
+    OR?: ProjectAssetScalarWhereWithAggregatesInput[]
+    NOT?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProjectAsset"> | string
+    sortOrder?: IntWithAggregatesFilter<"ProjectAsset"> | number
+    projectId?: StringWithAggregatesFilter<"ProjectAsset"> | string
+    phaseId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
+    postId?: StringWithAggregatesFilter<"ProjectAsset"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string
   }
 
   export type TeamWhereInput = {
@@ -14647,8 +14798,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     teamMembers?: TeamMemberListRelationFilter
     accounts?: AccountListRelationFilter
-    models?: ModelListRelationFilter
-    pdfs?: PdfListRelationFilter
+    fileRecords?: FileRecordListRelationFilter
     posts?: PostListRelationFilter
     comments?: CommentListRelationFilter
     projects?: ProjectListRelationFilter
@@ -14665,8 +14815,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teamMembers?: TeamMemberOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
-    models?: ModelOrderByRelationAggregateInput
-    pdfs?: PdfOrderByRelationAggregateInput
+    fileRecords?: FileRecordOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     comments?: CommentOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
@@ -14686,8 +14835,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     teamMembers?: TeamMemberListRelationFilter
     accounts?: AccountListRelationFilter
-    models?: ModelListRelationFilter
-    pdfs?: PdfListRelationFilter
+    fileRecords?: FileRecordListRelationFilter
     posts?: PostListRelationFilter
     comments?: CommentListRelationFilter
     projects?: ProjectListRelationFilter
@@ -14861,80 +15009,99 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ModelCreateInput = {
+  export type FileRecordCreateInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    uploader: UserCreateNestedOneWithoutModelsInput
-    posts?: PostCreateNestedManyWithoutModelsInput
+    uploader: UserCreateNestedOneWithoutFileRecordsInput
+    post?: PostCreateNestedOneWithoutFilesInput
   }
 
-  export type ModelUncheckedCreateInput = {
+  export type FileRecordUncheckedCreateInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
-    uploaderId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
+    uploaderId: string
+    postId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    posts?: PostUncheckedCreateNestedManyWithoutModelsInput
   }
 
-  export type ModelUpdateInput = {
+  export type FileRecordUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutModelsNestedInput
-    posts?: PostUpdateManyWithoutModelsNestedInput
+    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput
+    post?: PostUpdateOneWithoutFilesNestedInput
   }
 
-  export type ModelUncheckedUpdateInput = {
+  export type FileRecordUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: StringFieldUpdateOperationsInput | string
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     uploaderId?: StringFieldUpdateOperationsInput | string
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUncheckedUpdateManyWithoutModelsNestedInput
   }
 
-  export type ModelCreateManyInput = {
+  export type FileRecordCreateManyInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
-    uploaderId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
+    uploaderId: string
+    postId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ModelUpdateManyMutationInput = {
+  export type FileRecordUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14942,81 +15109,85 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ModelUncheckedUpdateManyInput = {
+  export type FileRecordUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
-    uploaderId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PdfCreateInput = {
-    id?: string
-    name: string
-    fileId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    uploader: UserCreateNestedOneWithoutPdfsInput
-    posts?: PostCreateNestedManyWithoutPdfIdsInput
-  }
-
-  export type PdfUncheckedCreateInput = {
-    id?: string
-    name: string
-    fileId: string
-    uploaderId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    posts?: PostUncheckedCreateNestedManyWithoutPdfIdsInput
-  }
-
-  export type PdfUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutPdfsNestedInput
-    posts?: PostUpdateManyWithoutPdfIdsNestedInput
-  }
-
-  export type PdfUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
     uploaderId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUncheckedUpdateManyWithoutPdfIdsNestedInput
   }
 
-  export type PdfCreateManyInput = {
+  export type PhaseCreateInput = {
     id?: string
     name: string
-    fileId: string
-    uploaderId: string
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    project: ProjectCreateNestedOneWithoutPhasesInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
+  }
+
+  export type PhaseUncheckedCreateInput = {
+    id?: string
+    name: string
+    sortOrder?: number
+    projectId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
+  }
+
+  export type PhaseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
+  }
+
+  export type PhaseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
+  }
+
+  export type PhaseCreateManyInput = {
+    id?: string
+    name: string
+    sortOrder?: number
+    projectId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type PdfUpdateManyMutationInput = {
+  export type PhaseUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PdfUncheckedUpdateManyInput = {
+  export type PhaseUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    uploaderId?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15035,12 +15206,11 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
+    files?: FileRecordCreateNestedManyWithoutPostInput
     uploader: UserCreateNestedOneWithoutPostsInput
     team?: TeamCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
     comments?: CommentCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateInput = {
@@ -15059,10 +15229,9 @@ export namespace Prisma {
     teamId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostUpdateInput = {
@@ -15079,12 +15248,11 @@ export namespace Prisma {
     permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUpdateManyWithoutPostNestedInput
     uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
     team?: TeamUpdateOneWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
     comments?: CommentUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateInput = {
@@ -15103,10 +15271,9 @@ export namespace Prisma {
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
     comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostCreateManyInput = {
@@ -15165,60 +15332,88 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutProjectsInput
-    team?: TeamCreateNestedOneWithoutProjectsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutProjectInput
+    team: TeamCreateNestedOneWithoutProjectsInput
+    creator: UserCreateNestedOneWithoutProjectsInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
+    creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    ownerId: string
-    teamId?: string | null
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutProjectInput
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    team?: TeamUpdateOneWithoutProjectsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutProjectNestedInput
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    phases?: PhaseUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
+    creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ownerId?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutProjectNestedInput
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
+    creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    ownerId: string
-    teamId?: string | null
   }
 
   export type ProjectUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15227,65 +15422,74 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
+    creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ownerId?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ProjectNodeCreateInput = {
+  export type ProjectAssetCreateInput = {
     id?: string
-    name: string
-    project: ProjectCreateNestedOneWithoutNodesInput
-    parent?: ProjectNodeCreateNestedOneWithoutChildrenInput
-    children?: ProjectNodeCreateNestedManyWithoutParentInput
-    posts?: PostCreateNestedManyWithoutNodesInput
+    sortOrder?: number
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutAssetsInput
+    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
+    post: PostCreateNestedOneWithoutProjectAssetsInput
   }
 
-  export type ProjectNodeUncheckedCreateInput = {
+  export type ProjectAssetUncheckedCreateInput = {
     id?: string
-    name: string
+    sortOrder?: number
     projectId: string
-    parentId?: string | null
-    children?: ProjectNodeUncheckedCreateNestedManyWithoutParentInput
-    posts?: PostUncheckedCreateNestedManyWithoutNodesInput
+    phaseId?: string | null
+    postId: string
+    createdAt?: Date | string
   }
 
-  export type ProjectNodeUpdateInput = {
+  export type ProjectAssetUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    project?: ProjectUpdateOneRequiredWithoutNodesNestedInput
-    parent?: ProjectNodeUpdateOneWithoutChildrenNestedInput
-    children?: ProjectNodeUpdateManyWithoutParentNestedInput
-    posts?: PostUpdateManyWithoutNodesNestedInput
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
+    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
   }
 
-  export type ProjectNodeUncheckedUpdateInput = {
+  export type ProjectAssetUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
     projectId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    children?: ProjectNodeUncheckedUpdateManyWithoutParentNestedInput
-    posts?: PostUncheckedUpdateManyWithoutNodesNestedInput
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProjectNodeCreateManyInput = {
+  export type ProjectAssetCreateManyInput = {
     id?: string
-    name: string
+    sortOrder?: number
     projectId: string
-    parentId?: string | null
+    phaseId?: string | null
+    postId: string
+    createdAt?: Date | string
   }
 
-  export type ProjectNodeUpdateManyMutationInput = {
+  export type ProjectAssetUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProjectNodeUncheckedUpdateManyInput = {
+  export type ProjectAssetUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
     projectId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamCreateInput = {
@@ -15435,11 +15639,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
     posts?: PostCreateNestedManyWithoutUploaderInput
     comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -15453,11 +15656,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
     posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUpdateInput = {
@@ -15471,11 +15673,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
     posts?: PostUpdateManyWithoutUploaderNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -15489,11 +15690,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
     posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -15715,6 +15915,13 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumFileCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory
+  }
+
   export type EnumProcessStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
@@ -15722,53 +15929,70 @@ export namespace Prisma {
     not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus
   }
 
-  export type PostListRelationFilter = {
-    every?: PostWhereInput
-    some?: PostWhereInput
-    none?: PostWhereInput
+  export type PostNullableScalarRelationFilter = {
+    is?: PostWhereInput | null
+    isNot?: PostWhereInput | null
   }
 
-  export type PostOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ModelCountOrderByAggregateInput = {
+  export type FileRecordCountOrderByAggregateInput = {
     id?: SortOrder
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
-    uploaderId?: SortOrder
+    viewerFileId?: SortOrder
+    category?: SortOrder
+    extension?: SortOrder
     size?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
+    uploaderId?: SortOrder
+    postId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ModelMaxOrderByAggregateInput = {
+  export type FileRecordMaxOrderByAggregateInput = {
     id?: SortOrder
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
-    uploaderId?: SortOrder
+    viewerFileId?: SortOrder
+    category?: SortOrder
+    extension?: SortOrder
     size?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
+    uploaderId?: SortOrder
+    postId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ModelMinOrderByAggregateInput = {
+  export type FileRecordMinOrderByAggregateInput = {
     id?: SortOrder
     shortId?: SortOrder
     name?: SortOrder
     fileId?: SortOrder
-    uploaderId?: SortOrder
+    viewerFileId?: SortOrder
+    category?: SortOrder
+    extension?: SortOrder
     size?: SortOrder
     status?: SortOrder
     errorMessage?: SortOrder
+    uploaderId?: SortOrder
+    postId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumFileCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFileCategoryFilter<$PrismaModel>
+    _max?: NestedEnumFileCategoryFilter<$PrismaModel>
   }
 
   export type EnumProcessStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -15781,31 +16005,81 @@ export namespace Prisma {
     _max?: NestedEnumProcessStatusFilter<$PrismaModel>
   }
 
-  export type PdfCountOrderByAggregateInput = {
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ProjectScalarRelationFilter = {
+    is?: ProjectWhereInput
+    isNot?: ProjectWhereInput
+  }
+
+  export type ProjectAssetListRelationFilter = {
+    every?: ProjectAssetWhereInput
+    some?: ProjectAssetWhereInput
+    none?: ProjectAssetWhereInput
+  }
+
+  export type ProjectAssetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PhaseCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    fileId?: SortOrder
-    uploaderId?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type PdfMaxOrderByAggregateInput = {
+  export type PhaseAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type PhaseMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    fileId?: SortOrder
-    uploaderId?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type PdfMinOrderByAggregateInput = {
+  export type PhaseMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    fileId?: SortOrder
-    uploaderId?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PhaseSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type StringNullableListFilter<$PrismaModel = never> = {
@@ -15816,16 +16090,10 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type ModelListRelationFilter = {
-    every?: ModelWhereInput
-    some?: ModelWhereInput
-    none?: ModelWhereInput
-  }
-
-  export type PdfListRelationFilter = {
-    every?: PdfWhereInput
-    some?: PdfWhereInput
-    none?: PdfWhereInput
+  export type FileRecordListRelationFilter = {
+    every?: FileRecordWhereInput
+    some?: FileRecordWhereInput
+    none?: FileRecordWhereInput
   }
 
   export type TeamNullableScalarRelationFilter = {
@@ -15833,21 +16101,7 @@ export namespace Prisma {
     isNot?: TeamWhereInput | null
   }
 
-  export type ProjectNodeListRelationFilter = {
-    every?: ProjectNodeWhereInput
-    some?: ProjectNodeWhereInput
-    none?: ProjectNodeWhereInput
-  }
-
-  export type ModelOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type PdfOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ProjectNodeOrderByRelationAggregateInput = {
+  export type FileRecordOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15899,71 +16153,136 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumProjectStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+  }
+
+  export type TeamScalarRelationFilter = {
+    is?: TeamWhereInput
+    isNot?: TeamWhereInput
+  }
+
+  export type PhaseListRelationFilter = {
+    every?: PhaseWhereInput
+    some?: PhaseWhereInput
+    none?: PhaseWhereInput
+  }
+
+  export type PhaseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ProjectCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    client?: SortOrder
+    location?: SortOrder
+    coverImage?: SortOrder
+    status?: SortOrder
+    teamId?: SortOrder
+    creatorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ownerId?: SortOrder
-    teamId?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    client?: SortOrder
+    location?: SortOrder
+    coverImage?: SortOrder
+    status?: SortOrder
+    teamId?: SortOrder
+    creatorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ownerId?: SortOrder
-    teamId?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
+    client?: SortOrder
+    location?: SortOrder
+    coverImage?: SortOrder
+    status?: SortOrder
+    teamId?: SortOrder
+    creatorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    ownerId?: SortOrder
-    teamId?: SortOrder
   }
 
-  export type ProjectScalarRelationFilter = {
-    is?: ProjectWhereInput
-    isNot?: ProjectWhereInput
+  export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
   }
 
-  export type ProjectNodeNullableScalarRelationFilter = {
-    is?: ProjectNodeWhereInput | null
-    isNot?: ProjectNodeWhereInput | null
+  export type PhaseNullableScalarRelationFilter = {
+    is?: PhaseWhereInput | null
+    isNot?: PhaseWhereInput | null
   }
 
-  export type ProjectNodeCountOrderByAggregateInput = {
+  export type ProjectAssetProjectIdPhaseIdPostIdCompoundUniqueInput = {
+    projectId: string
+    phaseId: string
+    postId: string
+  }
+
+  export type ProjectAssetCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    sortOrder?: SortOrder
     projectId?: SortOrder
-    parentId?: SortOrder
+    phaseId?: SortOrder
+    postId?: SortOrder
+    createdAt?: SortOrder
   }
 
-  export type ProjectNodeMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    projectId?: SortOrder
-    parentId?: SortOrder
+  export type ProjectAssetAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
-  export type ProjectNodeMinOrderByAggregateInput = {
+  export type ProjectAssetMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    sortOrder?: SortOrder
     projectId?: SortOrder
-    parentId?: SortOrder
+    phaseId?: SortOrder
+    postId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectAssetMinOrderByAggregateInput = {
+    id?: SortOrder
+    sortOrder?: SortOrder
+    projectId?: SortOrder
+    phaseId?: SortOrder
+    postId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectAssetSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
   }
 
   export type TeamMemberListRelationFilter = {
     every?: TeamMemberWhereInput
     some?: TeamMemberWhereInput
     none?: TeamMemberWhereInput
+  }
+
+  export type PostListRelationFilter = {
+    every?: PostWhereInput
+    some?: PostWhereInput
+    none?: PostWhereInput
   }
 
   export type ProjectListRelationFilter = {
@@ -15973,6 +16292,10 @@ export namespace Prisma {
   }
 
   export type TeamMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PostOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16015,11 +16338,6 @@ export namespace Prisma {
     in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole
-  }
-
-  export type TeamScalarRelationFilter = {
-    is?: TeamWhereInput
-    isNot?: TeamWhereInput
   }
 
   export type TeamMemberTeamIdUserIdCompoundUniqueInput = {
@@ -16231,112 +16549,106 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutModelsInput = {
-    create?: XOR<UserCreateWithoutModelsInput, UserUncheckedCreateWithoutModelsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutModelsInput
+  export type UserCreateNestedOneWithoutFileRecordsInput = {
+    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput
     connect?: UserWhereUniqueInput
   }
 
-  export type PostCreateNestedManyWithoutModelsInput = {
-    create?: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput> | PostCreateWithoutModelsInput[] | PostUncheckedCreateWithoutModelsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutModelsInput | PostCreateOrConnectWithoutModelsInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  export type PostCreateNestedOneWithoutFilesInput = {
+    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: PostCreateOrConnectWithoutFilesInput
+    connect?: PostWhereUniqueInput
   }
 
-  export type PostUncheckedCreateNestedManyWithoutModelsInput = {
-    create?: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput> | PostCreateWithoutModelsInput[] | PostUncheckedCreateWithoutModelsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutModelsInput | PostCreateOrConnectWithoutModelsInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  export type EnumFileCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.FileCategory
   }
 
   export type EnumProcessStatusFieldUpdateOperationsInput = {
     set?: $Enums.ProcessStatus
   }
 
-  export type UserUpdateOneRequiredWithoutModelsNestedInput = {
-    create?: XOR<UserCreateWithoutModelsInput, UserUncheckedCreateWithoutModelsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutModelsInput
-    upsert?: UserUpsertWithoutModelsInput
+  export type UserUpdateOneRequiredWithoutFileRecordsNestedInput = {
+    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput
+    upsert?: UserUpsertWithoutFileRecordsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutModelsInput, UserUpdateWithoutModelsInput>, UserUncheckedUpdateWithoutModelsInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFileRecordsInput, UserUpdateWithoutFileRecordsInput>, UserUncheckedUpdateWithoutFileRecordsInput>
   }
 
-  export type PostUpdateManyWithoutModelsNestedInput = {
-    create?: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput> | PostCreateWithoutModelsInput[] | PostUncheckedCreateWithoutModelsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutModelsInput | PostCreateOrConnectWithoutModelsInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutModelsInput | PostUpsertWithWhereUniqueWithoutModelsInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutModelsInput | PostUpdateWithWhereUniqueWithoutModelsInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutModelsInput | PostUpdateManyWithWhereWithoutModelsInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  export type PostUpdateOneWithoutFilesNestedInput = {
+    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: PostCreateOrConnectWithoutFilesInput
+    upsert?: PostUpsertWithoutFilesInput
+    disconnect?: PostWhereInput | boolean
+    delete?: PostWhereInput | boolean
+    connect?: PostWhereUniqueInput
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutFilesInput, PostUpdateWithoutFilesInput>, PostUncheckedUpdateWithoutFilesInput>
   }
 
-  export type PostUncheckedUpdateManyWithoutModelsNestedInput = {
-    create?: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput> | PostCreateWithoutModelsInput[] | PostUncheckedCreateWithoutModelsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutModelsInput | PostCreateOrConnectWithoutModelsInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutModelsInput | PostUpsertWithWhereUniqueWithoutModelsInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutModelsInput | PostUpdateWithWhereUniqueWithoutModelsInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutModelsInput | PostUpdateManyWithWhereWithoutModelsInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  export type ProjectCreateNestedOneWithoutPhasesInput = {
+    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput
+    connect?: ProjectWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutPdfsInput = {
-    create?: XOR<UserCreateWithoutPdfsInput, UserUncheckedCreateWithoutPdfsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPdfsInput
-    connect?: UserWhereUniqueInput
+  export type ProjectAssetCreateNestedManyWithoutPhaseInput = {
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
   }
 
-  export type PostCreateNestedManyWithoutPdfIdsInput = {
-    create?: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput> | PostCreateWithoutPdfIdsInput[] | PostUncheckedCreateWithoutPdfIdsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutPdfIdsInput | PostCreateOrConnectWithoutPdfIdsInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  export type ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput = {
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
   }
 
-  export type PostUncheckedCreateNestedManyWithoutPdfIdsInput = {
-    create?: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput> | PostCreateWithoutPdfIdsInput[] | PostUncheckedCreateWithoutPdfIdsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutPdfIdsInput | PostCreateOrConnectWithoutPdfIdsInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
-  export type UserUpdateOneRequiredWithoutPdfsNestedInput = {
-    create?: XOR<UserCreateWithoutPdfsInput, UserUncheckedCreateWithoutPdfsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPdfsInput
-    upsert?: UserUpsertWithoutPdfsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPdfsInput, UserUpdateWithoutPdfsInput>, UserUncheckedUpdateWithoutPdfsInput>
+  export type ProjectUpdateOneRequiredWithoutPhasesNestedInput = {
+    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput
+    upsert?: ProjectUpsertWithoutPhasesInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPhasesInput, ProjectUpdateWithoutPhasesInput>, ProjectUncheckedUpdateWithoutPhasesInput>
   }
 
-  export type PostUpdateManyWithoutPdfIdsNestedInput = {
-    create?: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput> | PostCreateWithoutPdfIdsInput[] | PostUncheckedCreateWithoutPdfIdsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutPdfIdsInput | PostCreateOrConnectWithoutPdfIdsInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutPdfIdsInput | PostUpsertWithWhereUniqueWithoutPdfIdsInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutPdfIdsInput | PostUpdateWithWhereUniqueWithoutPdfIdsInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutPdfIdsInput | PostUpdateManyWithWhereWithoutPdfIdsInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  export type ProjectAssetUpdateManyWithoutPhaseNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[]
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
-  export type PostUncheckedUpdateManyWithoutPdfIdsNestedInput = {
-    create?: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput> | PostCreateWithoutPdfIdsInput[] | PostUncheckedCreateWithoutPdfIdsInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutPdfIdsInput | PostCreateOrConnectWithoutPdfIdsInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutPdfIdsInput | PostUpsertWithWhereUniqueWithoutPdfIdsInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutPdfIdsInput | PostUpdateWithWhereUniqueWithoutPdfIdsInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutPdfIdsInput | PostUpdateManyWithWhereWithoutPdfIdsInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  export type ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[]
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
   export type PostCreatekeywordsInput = {
@@ -16351,16 +16663,11 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type ModelCreateNestedManyWithoutPostsInput = {
-    create?: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput> | ModelCreateWithoutPostsInput[] | ModelUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutPostsInput | ModelCreateOrConnectWithoutPostsInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-  }
-
-  export type PdfCreateNestedManyWithoutPostsInput = {
-    create?: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput> | PdfCreateWithoutPostsInput[] | PdfUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutPostsInput | PdfCreateOrConnectWithoutPostsInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
+  export type FileRecordCreateNestedManyWithoutPostInput = {
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
+    createMany?: FileRecordCreateManyPostInputEnvelope
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
@@ -16375,12 +16682,6 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
-  export type ProjectNodeCreateNestedManyWithoutPostsInput = {
-    create?: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput> | ProjectNodeCreateWithoutPostsInput[] | ProjectNodeUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutPostsInput | ProjectNodeCreateOrConnectWithoutPostsInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-  }
-
   export type CommentCreateNestedManyWithoutPostInput = {
     create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
     connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
@@ -16388,22 +16689,18 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
-  export type ModelUncheckedCreateNestedManyWithoutPostsInput = {
-    create?: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput> | ModelCreateWithoutPostsInput[] | ModelUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutPostsInput | ModelCreateOrConnectWithoutPostsInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
+  export type ProjectAssetCreateNestedManyWithoutPostInput = {
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
+    createMany?: ProjectAssetCreateManyPostInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
   }
 
-  export type PdfUncheckedCreateNestedManyWithoutPostsInput = {
-    create?: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput> | PdfCreateWithoutPostsInput[] | PdfUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutPostsInput | PdfCreateOrConnectWithoutPostsInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-  }
-
-  export type ProjectNodeUncheckedCreateNestedManyWithoutPostsInput = {
-    create?: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput> | ProjectNodeCreateWithoutPostsInput[] | ProjectNodeUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutPostsInput | ProjectNodeCreateOrConnectWithoutPostsInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
+  export type FileRecordUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
+    createMany?: FileRecordCreateManyPostInputEnvelope
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
   }
 
   export type CommentUncheckedCreateNestedManyWithoutPostInput = {
@@ -16411,6 +16708,13 @@ export namespace Prisma {
     connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
     createMany?: CommentCreateManyPostInputEnvelope
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type ProjectAssetUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
+    createMany?: ProjectAssetCreateManyPostInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
   }
 
   export type PostUpdatekeywordsInput = {
@@ -16428,30 +16732,18 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type ModelUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput> | ModelCreateWithoutPostsInput[] | ModelUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutPostsInput | ModelCreateOrConnectWithoutPostsInput[]
-    upsert?: ModelUpsertWithWhereUniqueWithoutPostsInput | ModelUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    disconnect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    delete?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    update?: ModelUpdateWithWhereUniqueWithoutPostsInput | ModelUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: ModelUpdateManyWithWhereWithoutPostsInput | ModelUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: ModelScalarWhereInput | ModelScalarWhereInput[]
-  }
-
-  export type PdfUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput> | PdfCreateWithoutPostsInput[] | PdfUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutPostsInput | PdfCreateOrConnectWithoutPostsInput[]
-    upsert?: PdfUpsertWithWhereUniqueWithoutPostsInput | PdfUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    disconnect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    delete?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    update?: PdfUpdateWithWhereUniqueWithoutPostsInput | PdfUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: PdfUpdateManyWithWhereWithoutPostsInput | PdfUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: PdfScalarWhereInput | PdfScalarWhereInput[]
+  export type FileRecordUpdateManyWithoutPostNestedInput = {
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: FileRecordCreateManyPostInputEnvelope
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
   }
 
   export type UserUpdateOneRequiredWithoutPostsNestedInput = {
@@ -16472,19 +16764,6 @@ export namespace Prisma {
     update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutPostsInput, TeamUpdateWithoutPostsInput>, TeamUncheckedUpdateWithoutPostsInput>
   }
 
-  export type ProjectNodeUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput> | ProjectNodeCreateWithoutPostsInput[] | ProjectNodeUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutPostsInput | ProjectNodeCreateOrConnectWithoutPostsInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutPostsInput | ProjectNodeUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutPostsInput | ProjectNodeUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutPostsInput | ProjectNodeUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
-  }
-
   export type CommentUpdateManyWithoutPostNestedInput = {
     create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
     connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
@@ -16499,43 +16778,32 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
-  export type ModelUncheckedUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput> | ModelCreateWithoutPostsInput[] | ModelUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutPostsInput | ModelCreateOrConnectWithoutPostsInput[]
-    upsert?: ModelUpsertWithWhereUniqueWithoutPostsInput | ModelUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    disconnect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    delete?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    update?: ModelUpdateWithWhereUniqueWithoutPostsInput | ModelUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: ModelUpdateManyWithWhereWithoutPostsInput | ModelUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: ModelScalarWhereInput | ModelScalarWhereInput[]
+  export type ProjectAssetUpdateManyWithoutPostNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: ProjectAssetCreateManyPostInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
-  export type PdfUncheckedUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput> | PdfCreateWithoutPostsInput[] | PdfUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutPostsInput | PdfCreateOrConnectWithoutPostsInput[]
-    upsert?: PdfUpsertWithWhereUniqueWithoutPostsInput | PdfUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    disconnect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    delete?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    update?: PdfUpdateWithWhereUniqueWithoutPostsInput | PdfUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: PdfUpdateManyWithWhereWithoutPostsInput | PdfUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: PdfScalarWhereInput | PdfScalarWhereInput[]
-  }
-
-  export type ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput> | ProjectNodeCreateWithoutPostsInput[] | ProjectNodeUncheckedCreateWithoutPostsInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutPostsInput | ProjectNodeCreateOrConnectWithoutPostsInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutPostsInput | ProjectNodeUpsertWithWhereUniqueWithoutPostsInput[]
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutPostsInput | ProjectNodeUpdateWithWhereUniqueWithoutPostsInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutPostsInput | ProjectNodeUpdateManyWithWhereWithoutPostsInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
+  export type FileRecordUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: FileRecordCreateManyPostInputEnvelope
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
   }
 
   export type CommentUncheckedUpdateManyWithoutPostNestedInput = {
@@ -16552,10 +16820,18 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutProjectsInput = {
-    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput
-    connect?: UserWhereUniqueInput
+  export type ProjectAssetUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: ProjectAssetCreateManyPostInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
   export type TeamCreateNestedOneWithoutProjectsInput = {
@@ -16564,18 +16840,50 @@ export namespace Prisma {
     connect?: TeamWhereUniqueInput
   }
 
-  export type ProjectNodeCreateNestedManyWithoutProjectInput = {
-    create?: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput> | ProjectNodeCreateWithoutProjectInput[] | ProjectNodeUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutProjectInput | ProjectNodeCreateOrConnectWithoutProjectInput[]
-    createMany?: ProjectNodeCreateManyProjectInputEnvelope
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
+  export type UserCreateNestedOneWithoutProjectsInput = {
+    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type ProjectNodeUncheckedCreateNestedManyWithoutProjectInput = {
-    create?: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput> | ProjectNodeCreateWithoutProjectInput[] | ProjectNodeUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutProjectInput | ProjectNodeCreateOrConnectWithoutProjectInput[]
-    createMany?: ProjectNodeCreateManyProjectInputEnvelope
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
+  export type PhaseCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
+    createMany?: PhaseCreateManyProjectInputEnvelope
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+  }
+
+  export type ProjectAssetCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+  }
+
+  export type PhaseUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
+    createMany?: PhaseCreateManyProjectInputEnvelope
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+  }
+
+  export type ProjectAssetUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+  }
+
+  export type EnumProjectStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProjectStatus
+  }
+
+  export type TeamUpdateOneRequiredWithoutProjectsNestedInput = {
+    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput
+    upsert?: TeamUpsertWithoutProjectsInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutProjectsInput, TeamUpdateWithoutProjectsInput>, TeamUncheckedUpdateWithoutProjectsInput>
   }
 
   export type UserUpdateOneRequiredWithoutProjectsNestedInput = {
@@ -16586,152 +16894,104 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectsInput, UserUpdateWithoutProjectsInput>, UserUncheckedUpdateWithoutProjectsInput>
   }
 
-  export type TeamUpdateOneWithoutProjectsNestedInput = {
-    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput
-    upsert?: TeamUpsertWithoutProjectsInput
-    disconnect?: TeamWhereInput | boolean
-    delete?: TeamWhereInput | boolean
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutProjectsInput, TeamUpdateWithoutProjectsInput>, TeamUncheckedUpdateWithoutProjectsInput>
+  export type PhaseUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
+    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PhaseCreateManyProjectInputEnvelope
+    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
   }
 
-  export type ProjectNodeUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput> | ProjectNodeCreateWithoutProjectInput[] | ProjectNodeUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutProjectInput | ProjectNodeCreateOrConnectWithoutProjectInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutProjectInput | ProjectNodeUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: ProjectNodeCreateManyProjectInputEnvelope
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutProjectInput | ProjectNodeUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutProjectInput | ProjectNodeUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
+  export type ProjectAssetUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
   }
 
-  export type ProjectNodeUncheckedUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput> | ProjectNodeCreateWithoutProjectInput[] | ProjectNodeUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutProjectInput | ProjectNodeCreateOrConnectWithoutProjectInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutProjectInput | ProjectNodeUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: ProjectNodeCreateManyProjectInputEnvelope
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutProjectInput | ProjectNodeUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutProjectInput | ProjectNodeUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
+  export type PhaseUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
+    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PhaseCreateManyProjectInputEnvelope
+    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
   }
 
-  export type ProjectCreateNestedOneWithoutNodesInput = {
-    create?: XOR<ProjectCreateWithoutNodesInput, ProjectUncheckedCreateWithoutNodesInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutNodesInput
+  export type ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+  }
+
+  export type ProjectCreateNestedOneWithoutAssetsInput = {
+    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput
     connect?: ProjectWhereUniqueInput
   }
 
-  export type ProjectNodeCreateNestedOneWithoutChildrenInput = {
-    create?: XOR<ProjectNodeCreateWithoutChildrenInput, ProjectNodeUncheckedCreateWithoutChildrenInput>
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutChildrenInput
-    connect?: ProjectNodeWhereUniqueInput
+  export type PhaseCreateNestedOneWithoutProjectAssetsInput = {
+    create?: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectAssetsInput
+    connect?: PhaseWhereUniqueInput
   }
 
-  export type ProjectNodeCreateNestedManyWithoutParentInput = {
-    create?: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput> | ProjectNodeCreateWithoutParentInput[] | ProjectNodeUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutParentInput | ProjectNodeCreateOrConnectWithoutParentInput[]
-    createMany?: ProjectNodeCreateManyParentInputEnvelope
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
+  export type PostCreateNestedOneWithoutProjectAssetsInput = {
+    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
+    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
+    connect?: PostWhereUniqueInput
   }
 
-  export type PostCreateNestedManyWithoutNodesInput = {
-    create?: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput> | PostCreateWithoutNodesInput[] | PostUncheckedCreateWithoutNodesInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutNodesInput | PostCreateOrConnectWithoutNodesInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-  }
-
-  export type ProjectNodeUncheckedCreateNestedManyWithoutParentInput = {
-    create?: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput> | ProjectNodeCreateWithoutParentInput[] | ProjectNodeUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutParentInput | ProjectNodeCreateOrConnectWithoutParentInput[]
-    createMany?: ProjectNodeCreateManyParentInputEnvelope
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-  }
-
-  export type PostUncheckedCreateNestedManyWithoutNodesInput = {
-    create?: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput> | PostCreateWithoutNodesInput[] | PostUncheckedCreateWithoutNodesInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutNodesInput | PostCreateOrConnectWithoutNodesInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-  }
-
-  export type ProjectUpdateOneRequiredWithoutNodesNestedInput = {
-    create?: XOR<ProjectCreateWithoutNodesInput, ProjectUncheckedCreateWithoutNodesInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutNodesInput
-    upsert?: ProjectUpsertWithoutNodesInput
+  export type ProjectUpdateOneRequiredWithoutAssetsNestedInput = {
+    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput
+    upsert?: ProjectUpsertWithoutAssetsInput
     connect?: ProjectWhereUniqueInput
-    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutNodesInput, ProjectUpdateWithoutNodesInput>, ProjectUncheckedUpdateWithoutNodesInput>
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutAssetsInput, ProjectUpdateWithoutAssetsInput>, ProjectUncheckedUpdateWithoutAssetsInput>
   }
 
-  export type ProjectNodeUpdateOneWithoutChildrenNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutChildrenInput, ProjectNodeUncheckedCreateWithoutChildrenInput>
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutChildrenInput
-    upsert?: ProjectNodeUpsertWithoutChildrenInput
-    disconnect?: ProjectNodeWhereInput | boolean
-    delete?: ProjectNodeWhereInput | boolean
-    connect?: ProjectNodeWhereUniqueInput
-    update?: XOR<XOR<ProjectNodeUpdateToOneWithWhereWithoutChildrenInput, ProjectNodeUpdateWithoutChildrenInput>, ProjectNodeUncheckedUpdateWithoutChildrenInput>
+  export type PhaseUpdateOneWithoutProjectAssetsNestedInput = {
+    create?: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectAssetsInput
+    upsert?: PhaseUpsertWithoutProjectAssetsInput
+    disconnect?: PhaseWhereInput | boolean
+    delete?: PhaseWhereInput | boolean
+    connect?: PhaseWhereUniqueInput
+    update?: XOR<XOR<PhaseUpdateToOneWithWhereWithoutProjectAssetsInput, PhaseUpdateWithoutProjectAssetsInput>, PhaseUncheckedUpdateWithoutProjectAssetsInput>
   }
 
-  export type ProjectNodeUpdateManyWithoutParentNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput> | ProjectNodeCreateWithoutParentInput[] | ProjectNodeUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutParentInput | ProjectNodeCreateOrConnectWithoutParentInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutParentInput | ProjectNodeUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: ProjectNodeCreateManyParentInputEnvelope
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutParentInput | ProjectNodeUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutParentInput | ProjectNodeUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
-  }
-
-  export type PostUpdateManyWithoutNodesNestedInput = {
-    create?: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput> | PostCreateWithoutNodesInput[] | PostUncheckedCreateWithoutNodesInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutNodesInput | PostCreateOrConnectWithoutNodesInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutNodesInput | PostUpsertWithWhereUniqueWithoutNodesInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutNodesInput | PostUpdateWithWhereUniqueWithoutNodesInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutNodesInput | PostUpdateManyWithWhereWithoutNodesInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
-  }
-
-  export type ProjectNodeUncheckedUpdateManyWithoutParentNestedInput = {
-    create?: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput> | ProjectNodeCreateWithoutParentInput[] | ProjectNodeUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectNodeCreateOrConnectWithoutParentInput | ProjectNodeCreateOrConnectWithoutParentInput[]
-    upsert?: ProjectNodeUpsertWithWhereUniqueWithoutParentInput | ProjectNodeUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: ProjectNodeCreateManyParentInputEnvelope
-    set?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    disconnect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    delete?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    connect?: ProjectNodeWhereUniqueInput | ProjectNodeWhereUniqueInput[]
-    update?: ProjectNodeUpdateWithWhereUniqueWithoutParentInput | ProjectNodeUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: ProjectNodeUpdateManyWithWhereWithoutParentInput | ProjectNodeUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
-  }
-
-  export type PostUncheckedUpdateManyWithoutNodesNestedInput = {
-    create?: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput> | PostCreateWithoutNodesInput[] | PostUncheckedCreateWithoutNodesInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutNodesInput | PostCreateOrConnectWithoutNodesInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutNodesInput | PostUpsertWithWhereUniqueWithoutNodesInput[]
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutNodesInput | PostUpdateWithWhereUniqueWithoutNodesInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutNodesInput | PostUpdateManyWithWhereWithoutNodesInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  export type PostUpdateOneRequiredWithoutProjectAssetsNestedInput = {
+    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
+    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
+    upsert?: PostUpsertWithoutProjectAssetsInput
+    connect?: PostWhereUniqueInput
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutProjectAssetsInput, PostUpdateWithoutProjectAssetsInput>, PostUncheckedUpdateWithoutProjectAssetsInput>
   }
 
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
@@ -16910,18 +17170,11 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type ModelCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput> | ModelCreateWithoutUploaderInput[] | ModelUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutUploaderInput | ModelCreateOrConnectWithoutUploaderInput[]
-    createMany?: ModelCreateManyUploaderInputEnvelope
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-  }
-
-  export type PdfCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput> | PdfCreateWithoutUploaderInput[] | PdfUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutUploaderInput | PdfCreateOrConnectWithoutUploaderInput[]
-    createMany?: PdfCreateManyUploaderInputEnvelope
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
+  export type FileRecordCreateNestedManyWithoutUploaderInput = {
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
+    createMany?: FileRecordCreateManyUploaderInputEnvelope
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
   }
 
   export type PostCreateNestedManyWithoutUploaderInput = {
@@ -16938,10 +17191,10 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
-  export type ProjectCreateNestedManyWithoutOwnerInput = {
-    create?: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput> | ProjectCreateWithoutOwnerInput[] | ProjectUncheckedCreateWithoutOwnerInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutOwnerInput | ProjectCreateOrConnectWithoutOwnerInput[]
-    createMany?: ProjectCreateManyOwnerInputEnvelope
+  export type ProjectCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
+    createMany?: ProjectCreateManyCreatorInputEnvelope
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
   }
 
@@ -16959,18 +17212,11 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type ModelUncheckedCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput> | ModelCreateWithoutUploaderInput[] | ModelUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutUploaderInput | ModelCreateOrConnectWithoutUploaderInput[]
-    createMany?: ModelCreateManyUploaderInputEnvelope
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-  }
-
-  export type PdfUncheckedCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput> | PdfCreateWithoutUploaderInput[] | PdfUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutUploaderInput | PdfCreateOrConnectWithoutUploaderInput[]
-    createMany?: PdfCreateManyUploaderInputEnvelope
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
+  export type FileRecordUncheckedCreateNestedManyWithoutUploaderInput = {
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
+    createMany?: FileRecordCreateManyUploaderInputEnvelope
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
   }
 
   export type PostUncheckedCreateNestedManyWithoutUploaderInput = {
@@ -16987,10 +17233,10 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
-  export type ProjectUncheckedCreateNestedManyWithoutOwnerInput = {
-    create?: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput> | ProjectCreateWithoutOwnerInput[] | ProjectUncheckedCreateWithoutOwnerInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutOwnerInput | ProjectCreateOrConnectWithoutOwnerInput[]
-    createMany?: ProjectCreateManyOwnerInputEnvelope
+  export type ProjectUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
+    createMany?: ProjectCreateManyCreatorInputEnvelope
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
   }
 
@@ -17031,32 +17277,18 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type ModelUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput> | ModelCreateWithoutUploaderInput[] | ModelUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutUploaderInput | ModelCreateOrConnectWithoutUploaderInput[]
-    upsert?: ModelUpsertWithWhereUniqueWithoutUploaderInput | ModelUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: ModelCreateManyUploaderInputEnvelope
-    set?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    disconnect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    delete?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    update?: ModelUpdateWithWhereUniqueWithoutUploaderInput | ModelUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: ModelUpdateManyWithWhereWithoutUploaderInput | ModelUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: ModelScalarWhereInput | ModelScalarWhereInput[]
-  }
-
-  export type PdfUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput> | PdfCreateWithoutUploaderInput[] | PdfUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutUploaderInput | PdfCreateOrConnectWithoutUploaderInput[]
-    upsert?: PdfUpsertWithWhereUniqueWithoutUploaderInput | PdfUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: PdfCreateManyUploaderInputEnvelope
-    set?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    disconnect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    delete?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    update?: PdfUpdateWithWhereUniqueWithoutUploaderInput | PdfUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: PdfUpdateManyWithWhereWithoutUploaderInput | PdfUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: PdfScalarWhereInput | PdfScalarWhereInput[]
+  export type FileRecordUpdateManyWithoutUploaderNestedInput = {
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[]
+    createMany?: FileRecordCreateManyUploaderInputEnvelope
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[]
+    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[]
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
   }
 
   export type PostUpdateManyWithoutUploaderNestedInput = {
@@ -17087,17 +17319,17 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
-  export type ProjectUpdateManyWithoutOwnerNestedInput = {
-    create?: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput> | ProjectCreateWithoutOwnerInput[] | ProjectUncheckedCreateWithoutOwnerInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutOwnerInput | ProjectCreateOrConnectWithoutOwnerInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutOwnerInput | ProjectUpsertWithWhereUniqueWithoutOwnerInput[]
-    createMany?: ProjectCreateManyOwnerInputEnvelope
+  export type ProjectUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
+    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: ProjectCreateManyCreatorInputEnvelope
     set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutOwnerInput | ProjectUpdateWithWhereUniqueWithoutOwnerInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutOwnerInput | ProjectUpdateManyWithWhereWithoutOwnerInput[]
+    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
   }
 
@@ -17129,32 +17361,18 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type ModelUncheckedUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput> | ModelCreateWithoutUploaderInput[] | ModelUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: ModelCreateOrConnectWithoutUploaderInput | ModelCreateOrConnectWithoutUploaderInput[]
-    upsert?: ModelUpsertWithWhereUniqueWithoutUploaderInput | ModelUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: ModelCreateManyUploaderInputEnvelope
-    set?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    disconnect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    delete?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    connect?: ModelWhereUniqueInput | ModelWhereUniqueInput[]
-    update?: ModelUpdateWithWhereUniqueWithoutUploaderInput | ModelUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: ModelUpdateManyWithWhereWithoutUploaderInput | ModelUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: ModelScalarWhereInput | ModelScalarWhereInput[]
-  }
-
-  export type PdfUncheckedUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput> | PdfCreateWithoutUploaderInput[] | PdfUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PdfCreateOrConnectWithoutUploaderInput | PdfCreateOrConnectWithoutUploaderInput[]
-    upsert?: PdfUpsertWithWhereUniqueWithoutUploaderInput | PdfUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: PdfCreateManyUploaderInputEnvelope
-    set?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    disconnect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    delete?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    connect?: PdfWhereUniqueInput | PdfWhereUniqueInput[]
-    update?: PdfUpdateWithWhereUniqueWithoutUploaderInput | PdfUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: PdfUpdateManyWithWhereWithoutUploaderInput | PdfUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: PdfScalarWhereInput | PdfScalarWhereInput[]
+  export type FileRecordUncheckedUpdateManyWithoutUploaderNestedInput = {
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[]
+    createMany?: FileRecordCreateManyUploaderInputEnvelope
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[]
+    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[]
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
   }
 
   export type PostUncheckedUpdateManyWithoutUploaderNestedInput = {
@@ -17185,17 +17403,17 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
-  export type ProjectUncheckedUpdateManyWithoutOwnerNestedInput = {
-    create?: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput> | ProjectCreateWithoutOwnerInput[] | ProjectUncheckedCreateWithoutOwnerInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutOwnerInput | ProjectCreateOrConnectWithoutOwnerInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutOwnerInput | ProjectUpsertWithWhereUniqueWithoutOwnerInput[]
-    createMany?: ProjectCreateManyOwnerInputEnvelope
+  export type ProjectUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
+    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: ProjectCreateManyCreatorInputEnvelope
     set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutOwnerInput | ProjectUpdateWithWhereUniqueWithoutOwnerInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutOwnerInput | ProjectUpdateManyWithWhereWithoutOwnerInput[]
+    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
   }
 
@@ -17308,11 +17526,28 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumFileCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory
+  }
+
   export type NestedEnumProcessStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus
+  }
+
+  export type NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFileCategoryFilter<$PrismaModel>
+    _max?: NestedEnumFileCategoryFilter<$PrismaModel>
   }
 
   export type NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17323,6 +17558,50 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProcessStatusFilter<$PrismaModel>
     _max?: NestedEnumProcessStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumProjectStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+  }
+
+  export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumTeamRoleFilter<$PrismaModel = never> = {
@@ -17369,11 +17648,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
     posts?: PostCreateNestedManyWithoutUploaderInput
     comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -17386,11 +17664,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
     posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -17419,11 +17696,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
     posts?: PostUpdateManyWithoutUploaderNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -17436,11 +17712,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
     posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type PostCreateWithoutCommentsInput = {
@@ -17457,11 +17732,10 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
+    files?: FileRecordCreateNestedManyWithoutPostInput
     uploader: UserCreateNestedOneWithoutPostsInput
     team?: TeamCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutCommentsInput = {
@@ -17480,9 +17754,8 @@ export namespace Prisma {
     teamId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutCommentsInput = {
@@ -17501,10 +17774,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
     posts?: PostCreateNestedManyWithoutUploaderInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutCommentsInput = {
@@ -17518,10 +17790,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
     posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutCommentsInput = {
@@ -17609,11 +17880,10 @@ export namespace Prisma {
     permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUpdateManyWithoutPostNestedInput
     uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
     team?: TeamUpdateOneWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutCommentsInput = {
@@ -17632,9 +17902,8 @@ export namespace Prisma {
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type UserUpsertWithoutCommentsInput = {
@@ -17659,10 +17928,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
     posts?: PostUpdateManyWithoutUploaderNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -17676,10 +17944,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
     posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type CommentUpsertWithoutRepliesInput = {
@@ -17742,7 +18009,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
   }
 
-  export type UserCreateWithoutModelsInput = {
+  export type UserCreateWithoutFileRecordsInput = {
     id?: string
     userName: string
     email: string
@@ -17753,13 +18020,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
     posts?: PostCreateNestedManyWithoutUploaderInput
     comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
-  export type UserUncheckedCreateWithoutModelsInput = {
+  export type UserUncheckedCreateWithoutFileRecordsInput = {
     id?: string
     userName: string
     email: string
@@ -17770,18 +18036,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
     posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
-  export type UserCreateOrConnectWithoutModelsInput = {
+  export type UserCreateOrConnectWithoutFileRecordsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutModelsInput, UserUncheckedCreateWithoutModelsInput>
+    create: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
   }
 
-  export type PostCreateWithoutModelsInput = {
+  export type PostCreateWithoutFilesInput = {
     id?: string
     shortId: string
     title: string
@@ -17795,14 +18060,13 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
     uploader: UserCreateNestedOneWithoutPostsInput
     team?: TeamCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
     comments?: CommentCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
   }
 
-  export type PostUncheckedCreateWithoutModelsInput = {
+  export type PostUncheckedCreateWithoutFilesInput = {
     id?: string
     shortId: string
     title: string
@@ -17818,28 +18082,27 @@ export namespace Prisma {
     teamId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
   }
 
-  export type PostCreateOrConnectWithoutModelsInput = {
+  export type PostCreateOrConnectWithoutFilesInput = {
     where: PostWhereUniqueInput
-    create: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput>
+    create: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
   }
 
-  export type UserUpsertWithoutModelsInput = {
-    update: XOR<UserUpdateWithoutModelsInput, UserUncheckedUpdateWithoutModelsInput>
-    create: XOR<UserCreateWithoutModelsInput, UserUncheckedCreateWithoutModelsInput>
+  export type UserUpsertWithoutFileRecordsInput = {
+    update: XOR<UserUpdateWithoutFileRecordsInput, UserUncheckedUpdateWithoutFileRecordsInput>
+    create: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutModelsInput = {
+  export type UserUpdateToOneWithWhereWithoutFileRecordsInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutModelsInput, UserUncheckedUpdateWithoutModelsInput>
+    data: XOR<UserUpdateWithoutFileRecordsInput, UserUncheckedUpdateWithoutFileRecordsInput>
   }
 
-  export type UserUpdateWithoutModelsInput = {
+  export type UserUpdateWithoutFileRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -17850,13 +18113,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
     posts?: PostUpdateManyWithoutUploaderNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutModelsInput = {
+  export type UserUncheckedUpdateWithoutFileRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -17867,248 +18129,232 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
     posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
-  export type PostUpsertWithWhereUniqueWithoutModelsInput = {
-    where: PostWhereUniqueInput
-    update: XOR<PostUpdateWithoutModelsInput, PostUncheckedUpdateWithoutModelsInput>
-    create: XOR<PostCreateWithoutModelsInput, PostUncheckedCreateWithoutModelsInput>
+  export type PostUpsertWithoutFilesInput = {
+    update: XOR<PostUpdateWithoutFilesInput, PostUncheckedUpdateWithoutFilesInput>
+    create: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
+    where?: PostWhereInput
   }
 
-  export type PostUpdateWithWhereUniqueWithoutModelsInput = {
-    where: PostWhereUniqueInput
-    data: XOR<PostUpdateWithoutModelsInput, PostUncheckedUpdateWithoutModelsInput>
+  export type PostUpdateToOneWithWhereWithoutFilesInput = {
+    where?: PostWhereInput
+    data: XOR<PostUpdateWithoutFilesInput, PostUncheckedUpdateWithoutFilesInput>
   }
 
-  export type PostUpdateManyWithWhereWithoutModelsInput = {
-    where: PostScalarWhereInput
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutModelsInput>
-  }
-
-  export type PostScalarWhereInput = {
-    AND?: PostScalarWhereInput | PostScalarWhereInput[]
-    OR?: PostScalarWhereInput[]
-    NOT?: PostScalarWhereInput | PostScalarWhereInput[]
-    id?: StringFilter<"Post"> | string
-    shortId?: StringFilter<"Post"> | string
-    title?: StringFilter<"Post"> | string
-    category?: StringFilter<"Post"> | string
-    description?: StringNullableFilter<"Post"> | string | null
-    type?: StringFilter<"Post"> | string
-    keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringFilter<"Post"> | string
-    images?: StringNullableListFilter<"Post">
-    uploaderId?: StringFilter<"Post"> | string
-    relatedPosts?: StringNullableListFilter<"Post">
-    permission?: StringFilter<"Post"> | string
-    teamId?: StringNullableFilter<"Post"> | string | null
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-  }
-
-  export type UserCreateWithoutPdfsInput = {
-    id?: string
-    userName: string
-    email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
-  }
-
-  export type UserUncheckedCreateWithoutPdfsInput = {
-    id?: string
-    userName: string
-    email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
-  }
-
-  export type UserCreateOrConnectWithoutPdfsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutPdfsInput, UserUncheckedCreateWithoutPdfsInput>
-  }
-
-  export type PostCreateWithoutPdfIdsInput = {
-    id?: string
-    shortId: string
-    title: string
-    category: string
-    description?: string | null
-    type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
-    permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    uploader: UserCreateNestedOneWithoutPostsInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
-  }
-
-  export type PostUncheckedCreateWithoutPdfIdsInput = {
-    id?: string
-    shortId: string
-    title: string
-    category: string
-    description?: string | null
-    type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
-    images?: PostCreateimagesInput | string[]
-    uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
-    permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
-  }
-
-  export type PostCreateOrConnectWithoutPdfIdsInput = {
-    where: PostWhereUniqueInput
-    create: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput>
-  }
-
-  export type UserUpsertWithoutPdfsInput = {
-    update: XOR<UserUpdateWithoutPdfsInput, UserUncheckedUpdateWithoutPdfsInput>
-    create: XOR<UserCreateWithoutPdfsInput, UserUncheckedCreateWithoutPdfsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutPdfsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutPdfsInput, UserUncheckedUpdateWithoutPdfsInput>
-  }
-
-  export type UserUpdateWithoutPdfsInput = {
+  export type PostUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
+    shortId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    keywords?: PostUpdatekeywordsInput | string[]
+    coverImage?: StringFieldUpdateOperationsInput | string
+    images?: PostUpdateimagesInput | string[]
+    relatedPosts?: PostUpdaterelatedPostsInput | string[]
+    permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
+    team?: TeamUpdateOneWithoutPostsNestedInput
+    comments?: CommentUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutPdfsInput = {
+  export type PostUncheckedUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
+    shortId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    keywords?: PostUpdatekeywordsInput | string[]
+    coverImage?: StringFieldUpdateOperationsInput | string
+    images?: PostUpdateimagesInput | string[]
+    uploaderId?: StringFieldUpdateOperationsInput | string
+    relatedPosts?: PostUpdaterelatedPostsInput | string[]
+    permission?: StringFieldUpdateOperationsInput | string
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
   }
 
-  export type PostUpsertWithWhereUniqueWithoutPdfIdsInput = {
-    where: PostWhereUniqueInput
-    update: XOR<PostUpdateWithoutPdfIdsInput, PostUncheckedUpdateWithoutPdfIdsInput>
-    create: XOR<PostCreateWithoutPdfIdsInput, PostUncheckedCreateWithoutPdfIdsInput>
-  }
-
-  export type PostUpdateWithWhereUniqueWithoutPdfIdsInput = {
-    where: PostWhereUniqueInput
-    data: XOR<PostUpdateWithoutPdfIdsInput, PostUncheckedUpdateWithoutPdfIdsInput>
-  }
-
-  export type PostUpdateManyWithWhereWithoutPdfIdsInput = {
-    where: PostScalarWhereInput
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutPdfIdsInput>
-  }
-
-  export type ModelCreateWithoutPostsInput = {
+  export type ProjectCreateWithoutPhasesInput = {
     id?: string
-    shortId: string
+    name: string
+    description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutProjectsInput
+    creator: UserCreateNestedOneWithoutProjectsInput
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutPhasesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
+    creatorId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutPhasesInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
+  }
+
+  export type ProjectAssetCreateWithoutPhaseInput = {
+    id?: string
+    sortOrder?: number
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutAssetsInput
+    post: PostCreateNestedOneWithoutProjectAssetsInput
+  }
+
+  export type ProjectAssetUncheckedCreateWithoutPhaseInput = {
+    id?: string
+    sortOrder?: number
+    projectId: string
+    postId: string
+    createdAt?: Date | string
+  }
+
+  export type ProjectAssetCreateOrConnectWithoutPhaseInput = {
+    where: ProjectAssetWhereUniqueInput
+    create: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput>
+  }
+
+  export type ProjectAssetCreateManyPhaseInputEnvelope = {
+    data: ProjectAssetCreateManyPhaseInput | ProjectAssetCreateManyPhaseInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProjectUpsertWithoutPhasesInput = {
+    update: XOR<ProjectUpdateWithoutPhasesInput, ProjectUncheckedUpdateWithoutPhasesInput>
+    create: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutPhasesInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutPhasesInput, ProjectUncheckedUpdateWithoutPhasesInput>
+  }
+
+  export type ProjectUpdateWithoutPhasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutPhasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
+    creatorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput = {
+    where: ProjectAssetWhereUniqueInput
+    update: XOR<ProjectAssetUpdateWithoutPhaseInput, ProjectAssetUncheckedUpdateWithoutPhaseInput>
+    create: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput>
+  }
+
+  export type ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput = {
+    where: ProjectAssetWhereUniqueInput
+    data: XOR<ProjectAssetUpdateWithoutPhaseInput, ProjectAssetUncheckedUpdateWithoutPhaseInput>
+  }
+
+  export type ProjectAssetUpdateManyWithWhereWithoutPhaseInput = {
+    where: ProjectAssetScalarWhereInput
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyWithoutPhaseInput>
+  }
+
+  export type ProjectAssetScalarWhereInput = {
+    AND?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    OR?: ProjectAssetScalarWhereInput[]
+    NOT?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    id?: StringFilter<"ProjectAsset"> | string
+    sortOrder?: IntFilter<"ProjectAsset"> | number
+    projectId?: StringFilter<"ProjectAsset"> | string
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
+    postId?: StringFilter<"ProjectAsset"> | string
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+  }
+
+  export type FileRecordCreateWithoutPostInput = {
+    id?: string
+    shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    uploader: UserCreateNestedOneWithoutModelsInput
+    uploader: UserCreateNestedOneWithoutFileRecordsInput
   }
 
-  export type ModelUncheckedCreateWithoutPostsInput = {
+  export type FileRecordUncheckedCreateWithoutPostInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
-    uploaderId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ModelCreateOrConnectWithoutPostsInput = {
-    where: ModelWhereUniqueInput
-    create: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput>
-  }
-
-  export type PdfCreateWithoutPostsInput = {
-    id?: string
-    name: string
-    fileId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    uploader: UserCreateNestedOneWithoutPdfsInput
-  }
-
-  export type PdfUncheckedCreateWithoutPostsInput = {
-    id?: string
-    name: string
-    fileId: string
     uploaderId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type PdfCreateOrConnectWithoutPostsInput = {
-    where: PdfWhereUniqueInput
-    create: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput>
+  export type FileRecordCreateOrConnectWithoutPostInput = {
+    where: FileRecordWhereUniqueInput
+    create: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput>
+  }
+
+  export type FileRecordCreateManyPostInputEnvelope = {
+    data: FileRecordCreateManyPostInput | FileRecordCreateManyPostInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserCreateWithoutPostsInput = {
@@ -18122,10 +18368,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
     comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -18139,10 +18384,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -18179,27 +18423,6 @@ export namespace Prisma {
     create: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput>
   }
 
-  export type ProjectNodeCreateWithoutPostsInput = {
-    id?: string
-    name: string
-    project: ProjectCreateNestedOneWithoutNodesInput
-    parent?: ProjectNodeCreateNestedOneWithoutChildrenInput
-    children?: ProjectNodeCreateNestedManyWithoutParentInput
-  }
-
-  export type ProjectNodeUncheckedCreateWithoutPostsInput = {
-    id?: string
-    name: string
-    projectId: string
-    parentId?: string | null
-    children?: ProjectNodeUncheckedCreateNestedManyWithoutParentInput
-  }
-
-  export type ProjectNodeCreateOrConnectWithoutPostsInput = {
-    where: ProjectNodeWhereUniqueInput
-    create: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput>
-  }
-
   export type CommentCreateWithoutPostInput = {
     id?: string
     content: string
@@ -18230,64 +18453,66 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ModelUpsertWithWhereUniqueWithoutPostsInput = {
-    where: ModelWhereUniqueInput
-    update: XOR<ModelUpdateWithoutPostsInput, ModelUncheckedUpdateWithoutPostsInput>
-    create: XOR<ModelCreateWithoutPostsInput, ModelUncheckedCreateWithoutPostsInput>
+  export type ProjectAssetCreateWithoutPostInput = {
+    id?: string
+    sortOrder?: number
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutAssetsInput
+    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
   }
 
-  export type ModelUpdateWithWhereUniqueWithoutPostsInput = {
-    where: ModelWhereUniqueInput
-    data: XOR<ModelUpdateWithoutPostsInput, ModelUncheckedUpdateWithoutPostsInput>
+  export type ProjectAssetUncheckedCreateWithoutPostInput = {
+    id?: string
+    sortOrder?: number
+    projectId: string
+    phaseId?: string | null
+    createdAt?: Date | string
   }
 
-  export type ModelUpdateManyWithWhereWithoutPostsInput = {
-    where: ModelScalarWhereInput
-    data: XOR<ModelUpdateManyMutationInput, ModelUncheckedUpdateManyWithoutPostsInput>
+  export type ProjectAssetCreateOrConnectWithoutPostInput = {
+    where: ProjectAssetWhereUniqueInput
+    create: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput>
   }
 
-  export type ModelScalarWhereInput = {
-    AND?: ModelScalarWhereInput | ModelScalarWhereInput[]
-    OR?: ModelScalarWhereInput[]
-    NOT?: ModelScalarWhereInput | ModelScalarWhereInput[]
-    id?: StringFilter<"Model"> | string
-    shortId?: StringFilter<"Model"> | string
-    name?: StringFilter<"Model"> | string
-    fileId?: StringFilter<"Model"> | string
-    uploaderId?: StringFilter<"Model"> | string
-    size?: StringFilter<"Model"> | string
-    status?: EnumProcessStatusFilter<"Model"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"Model"> | string | null
-    createdAt?: DateTimeFilter<"Model"> | Date | string
-    updatedAt?: DateTimeFilter<"Model"> | Date | string
+  export type ProjectAssetCreateManyPostInputEnvelope = {
+    data: ProjectAssetCreateManyPostInput | ProjectAssetCreateManyPostInput[]
+    skipDuplicates?: boolean
   }
 
-  export type PdfUpsertWithWhereUniqueWithoutPostsInput = {
-    where: PdfWhereUniqueInput
-    update: XOR<PdfUpdateWithoutPostsInput, PdfUncheckedUpdateWithoutPostsInput>
-    create: XOR<PdfCreateWithoutPostsInput, PdfUncheckedCreateWithoutPostsInput>
+  export type FileRecordUpsertWithWhereUniqueWithoutPostInput = {
+    where: FileRecordWhereUniqueInput
+    update: XOR<FileRecordUpdateWithoutPostInput, FileRecordUncheckedUpdateWithoutPostInput>
+    create: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput>
   }
 
-  export type PdfUpdateWithWhereUniqueWithoutPostsInput = {
-    where: PdfWhereUniqueInput
-    data: XOR<PdfUpdateWithoutPostsInput, PdfUncheckedUpdateWithoutPostsInput>
+  export type FileRecordUpdateWithWhereUniqueWithoutPostInput = {
+    where: FileRecordWhereUniqueInput
+    data: XOR<FileRecordUpdateWithoutPostInput, FileRecordUncheckedUpdateWithoutPostInput>
   }
 
-  export type PdfUpdateManyWithWhereWithoutPostsInput = {
-    where: PdfScalarWhereInput
-    data: XOR<PdfUpdateManyMutationInput, PdfUncheckedUpdateManyWithoutPostsInput>
+  export type FileRecordUpdateManyWithWhereWithoutPostInput = {
+    where: FileRecordScalarWhereInput
+    data: XOR<FileRecordUpdateManyMutationInput, FileRecordUncheckedUpdateManyWithoutPostInput>
   }
 
-  export type PdfScalarWhereInput = {
-    AND?: PdfScalarWhereInput | PdfScalarWhereInput[]
-    OR?: PdfScalarWhereInput[]
-    NOT?: PdfScalarWhereInput | PdfScalarWhereInput[]
-    id?: StringFilter<"Pdf"> | string
-    name?: StringFilter<"Pdf"> | string
-    fileId?: StringFilter<"Pdf"> | string
-    uploaderId?: StringFilter<"Pdf"> | string
-    createdAt?: DateTimeFilter<"Pdf"> | Date | string
-    updatedAt?: DateTimeFilter<"Pdf"> | Date | string
+  export type FileRecordScalarWhereInput = {
+    AND?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    OR?: FileRecordScalarWhereInput[]
+    NOT?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    id?: StringFilter<"FileRecord"> | string
+    shortId?: StringNullableFilter<"FileRecord"> | string | null
+    name?: StringFilter<"FileRecord"> | string
+    fileId?: StringFilter<"FileRecord"> | string
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
+    extension?: StringNullableFilter<"FileRecord"> | string | null
+    size?: StringFilter<"FileRecord"> | string
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
+    uploaderId?: StringFilter<"FileRecord"> | string
+    postId?: StringNullableFilter<"FileRecord"> | string | null
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
   }
 
   export type UserUpsertWithoutPostsInput = {
@@ -18312,10 +18537,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -18329,10 +18553,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type TeamUpsertWithoutPostsInput = {
@@ -18370,32 +18593,6 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput
   }
 
-  export type ProjectNodeUpsertWithWhereUniqueWithoutPostsInput = {
-    where: ProjectNodeWhereUniqueInput
-    update: XOR<ProjectNodeUpdateWithoutPostsInput, ProjectNodeUncheckedUpdateWithoutPostsInput>
-    create: XOR<ProjectNodeCreateWithoutPostsInput, ProjectNodeUncheckedCreateWithoutPostsInput>
-  }
-
-  export type ProjectNodeUpdateWithWhereUniqueWithoutPostsInput = {
-    where: ProjectNodeWhereUniqueInput
-    data: XOR<ProjectNodeUpdateWithoutPostsInput, ProjectNodeUncheckedUpdateWithoutPostsInput>
-  }
-
-  export type ProjectNodeUpdateManyWithWhereWithoutPostsInput = {
-    where: ProjectNodeScalarWhereInput
-    data: XOR<ProjectNodeUpdateManyMutationInput, ProjectNodeUncheckedUpdateManyWithoutPostsInput>
-  }
-
-  export type ProjectNodeScalarWhereInput = {
-    AND?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
-    OR?: ProjectNodeScalarWhereInput[]
-    NOT?: ProjectNodeScalarWhereInput | ProjectNodeScalarWhereInput[]
-    id?: StringFilter<"ProjectNode"> | string
-    name?: StringFilter<"ProjectNode"> | string
-    projectId?: StringFilter<"ProjectNode"> | string
-    parentId?: StringNullableFilter<"ProjectNode"> | string | null
-  }
-
   export type CommentUpsertWithWhereUniqueWithoutPostInput = {
     where: CommentWhereUniqueInput
     update: XOR<CommentUpdateWithoutPostInput, CommentUncheckedUpdateWithoutPostInput>
@@ -18412,43 +18609,20 @@ export namespace Prisma {
     data: XOR<CommentUpdateManyMutationInput, CommentUncheckedUpdateManyWithoutPostInput>
   }
 
-  export type UserCreateWithoutProjectsInput = {
-    id?: string
-    userName: string
-    email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
+  export type ProjectAssetUpsertWithWhereUniqueWithoutPostInput = {
+    where: ProjectAssetWhereUniqueInput
+    update: XOR<ProjectAssetUpdateWithoutPostInput, ProjectAssetUncheckedUpdateWithoutPostInput>
+    create: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput>
   }
 
-  export type UserUncheckedCreateWithoutProjectsInput = {
-    id?: string
-    userName: string
-    email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
+  export type ProjectAssetUpdateWithWhereUniqueWithoutPostInput = {
+    where: ProjectAssetWhereUniqueInput
+    data: XOR<ProjectAssetUpdateWithoutPostInput, ProjectAssetUncheckedUpdateWithoutPostInput>
   }
 
-  export type UserCreateOrConnectWithoutProjectsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
+  export type ProjectAssetUpdateManyWithWhereWithoutPostInput = {
+    where: ProjectAssetScalarWhereInput
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyWithoutPostInput>
   }
 
   export type TeamCreateWithoutProjectsInput = {
@@ -18480,75 +18654,95 @@ export namespace Prisma {
     create: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
   }
 
-  export type ProjectNodeCreateWithoutProjectInput = {
+  export type UserCreateWithoutProjectsInput = {
+    id?: string
+    userName: string
+    email: string
+    role?: $Enums.Role
+    image?: string | null
+    userCollection?: UserCreateuserCollectionInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
+    posts?: PostCreateNestedManyWithoutUploaderInput
+    comments?: CommentCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutProjectsInput = {
+    id?: string
+    userName: string
+    email: string
+    role?: $Enums.Role
+    image?: string | null
+    userCollection?: UserCreateuserCollectionInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutProjectsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type PhaseCreateWithoutProjectInput = {
     id?: string
     name: string
-    parent?: ProjectNodeCreateNestedOneWithoutChildrenInput
-    children?: ProjectNodeCreateNestedManyWithoutParentInput
-    posts?: PostCreateNestedManyWithoutNodesInput
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
   }
 
-  export type ProjectNodeUncheckedCreateWithoutProjectInput = {
+  export type PhaseUncheckedCreateWithoutProjectInput = {
     id?: string
     name: string
-    parentId?: string | null
-    children?: ProjectNodeUncheckedCreateNestedManyWithoutParentInput
-    posts?: PostUncheckedCreateNestedManyWithoutNodesInput
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
   }
 
-  export type ProjectNodeCreateOrConnectWithoutProjectInput = {
-    where: ProjectNodeWhereUniqueInput
-    create: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput>
+  export type PhaseCreateOrConnectWithoutProjectInput = {
+    where: PhaseWhereUniqueInput
+    create: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput>
   }
 
-  export type ProjectNodeCreateManyProjectInputEnvelope = {
-    data: ProjectNodeCreateManyProjectInput | ProjectNodeCreateManyProjectInput[]
+  export type PhaseCreateManyProjectInputEnvelope = {
+    data: PhaseCreateManyProjectInput | PhaseCreateManyProjectInput[]
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutProjectsInput = {
-    update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
-    create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-    where?: UserWhereInput
+  export type ProjectAssetCreateWithoutProjectInput = {
+    id?: string
+    sortOrder?: number
+    createdAt?: Date | string
+    phase?: PhaseCreateNestedOneWithoutProjectAssetsInput
+    post: PostCreateNestedOneWithoutProjectAssetsInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutProjectsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
+  export type ProjectAssetUncheckedCreateWithoutProjectInput = {
+    id?: string
+    sortOrder?: number
+    phaseId?: string | null
+    postId: string
+    createdAt?: Date | string
   }
 
-  export type UserUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
+  export type ProjectAssetCreateOrConnectWithoutProjectInput = {
+    where: ProjectAssetWhereUniqueInput
+    create: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput>
   }
 
-  export type UserUncheckedUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
+  export type ProjectAssetCreateManyProjectInputEnvelope = {
+    data: ProjectAssetCreateManyProjectInput | ProjectAssetCreateManyProjectInput[]
+    skipDuplicates?: boolean
   }
 
   export type TeamUpsertWithoutProjectsInput = {
@@ -18586,95 +18780,152 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutTeamNestedInput
   }
 
-  export type ProjectNodeUpsertWithWhereUniqueWithoutProjectInput = {
-    where: ProjectNodeWhereUniqueInput
-    update: XOR<ProjectNodeUpdateWithoutProjectInput, ProjectNodeUncheckedUpdateWithoutProjectInput>
-    create: XOR<ProjectNodeCreateWithoutProjectInput, ProjectNodeUncheckedCreateWithoutProjectInput>
+  export type UserUpsertWithoutProjectsInput = {
+    update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
+    create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
+    where?: UserWhereInput
   }
 
-  export type ProjectNodeUpdateWithWhereUniqueWithoutProjectInput = {
-    where: ProjectNodeWhereUniqueInput
-    data: XOR<ProjectNodeUpdateWithoutProjectInput, ProjectNodeUncheckedUpdateWithoutProjectInput>
+  export type UserUpdateToOneWithWhereWithoutProjectsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
   }
 
-  export type ProjectNodeUpdateManyWithWhereWithoutProjectInput = {
-    where: ProjectNodeScalarWhereInput
-    data: XOR<ProjectNodeUpdateManyMutationInput, ProjectNodeUncheckedUpdateManyWithoutProjectInput>
+  export type UserUpdateWithoutProjectsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    userCollection?: UserUpdateuserCollectionInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
+    posts?: PostUpdateManyWithoutUploaderNestedInput
+    comments?: CommentUpdateManyWithoutUserNestedInput
   }
 
-  export type ProjectCreateWithoutNodesInput = {
+  export type UserUncheckedUpdateWithoutProjectsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    userCollection?: UserUpdateuserCollectionInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type PhaseUpsertWithWhereUniqueWithoutProjectInput = {
+    where: PhaseWhereUniqueInput
+    update: XOR<PhaseUpdateWithoutProjectInput, PhaseUncheckedUpdateWithoutProjectInput>
+    create: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput>
+  }
+
+  export type PhaseUpdateWithWhereUniqueWithoutProjectInput = {
+    where: PhaseWhereUniqueInput
+    data: XOR<PhaseUpdateWithoutProjectInput, PhaseUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type PhaseUpdateManyWithWhereWithoutProjectInput = {
+    where: PhaseScalarWhereInput
+    data: XOR<PhaseUpdateManyMutationInput, PhaseUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type PhaseScalarWhereInput = {
+    AND?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
+    OR?: PhaseScalarWhereInput[]
+    NOT?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
+    id?: StringFilter<"Phase"> | string
+    name?: StringFilter<"Phase"> | string
+    sortOrder?: IntFilter<"Phase"> | number
+    projectId?: StringFilter<"Phase"> | string
+    createdAt?: DateTimeFilter<"Phase"> | Date | string
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string
+  }
+
+  export type ProjectAssetUpsertWithWhereUniqueWithoutProjectInput = {
+    where: ProjectAssetWhereUniqueInput
+    update: XOR<ProjectAssetUpdateWithoutProjectInput, ProjectAssetUncheckedUpdateWithoutProjectInput>
+    create: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectAssetUpdateWithWhereUniqueWithoutProjectInput = {
+    where: ProjectAssetWhereUniqueInput
+    data: XOR<ProjectAssetUpdateWithoutProjectInput, ProjectAssetUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type ProjectAssetUpdateManyWithWhereWithoutProjectInput = {
+    where: ProjectAssetScalarWhereInput
+    data: XOR<ProjectAssetUpdateManyMutationInput, ProjectAssetUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type ProjectCreateWithoutAssetsInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutProjectsInput
-    team?: TeamCreateNestedOneWithoutProjectsInput
+    team: TeamCreateNestedOneWithoutProjectsInput
+    creator: UserCreateNestedOneWithoutProjectsInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput
   }
 
-  export type ProjectUncheckedCreateWithoutNodesInput = {
+  export type ProjectUncheckedCreateWithoutAssetsInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
+    creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    ownerId: string
-    teamId?: string | null
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
   }
 
-  export type ProjectCreateOrConnectWithoutNodesInput = {
+  export type ProjectCreateOrConnectWithoutAssetsInput = {
     where: ProjectWhereUniqueInput
-    create: XOR<ProjectCreateWithoutNodesInput, ProjectUncheckedCreateWithoutNodesInput>
+    create: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
   }
 
-  export type ProjectNodeCreateWithoutChildrenInput = {
+  export type PhaseCreateWithoutProjectAssetsInput = {
     id?: string
     name: string
-    project: ProjectCreateNestedOneWithoutNodesInput
-    parent?: ProjectNodeCreateNestedOneWithoutChildrenInput
-    posts?: PostCreateNestedManyWithoutNodesInput
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    project: ProjectCreateNestedOneWithoutPhasesInput
   }
 
-  export type ProjectNodeUncheckedCreateWithoutChildrenInput = {
+  export type PhaseUncheckedCreateWithoutProjectAssetsInput = {
     id?: string
     name: string
+    sortOrder?: number
     projectId: string
-    parentId?: string | null
-    posts?: PostUncheckedCreateNestedManyWithoutNodesInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ProjectNodeCreateOrConnectWithoutChildrenInput = {
-    where: ProjectNodeWhereUniqueInput
-    create: XOR<ProjectNodeCreateWithoutChildrenInput, ProjectNodeUncheckedCreateWithoutChildrenInput>
+  export type PhaseCreateOrConnectWithoutProjectAssetsInput = {
+    where: PhaseWhereUniqueInput
+    create: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
   }
 
-  export type ProjectNodeCreateWithoutParentInput = {
-    id?: string
-    name: string
-    project: ProjectCreateNestedOneWithoutNodesInput
-    children?: ProjectNodeCreateNestedManyWithoutParentInput
-    posts?: PostCreateNestedManyWithoutNodesInput
-  }
-
-  export type ProjectNodeUncheckedCreateWithoutParentInput = {
-    id?: string
-    name: string
-    projectId: string
-    children?: ProjectNodeUncheckedCreateNestedManyWithoutParentInput
-    posts?: PostUncheckedCreateNestedManyWithoutNodesInput
-  }
-
-  export type ProjectNodeCreateOrConnectWithoutParentInput = {
-    where: ProjectNodeWhereUniqueInput
-    create: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput>
-  }
-
-  export type ProjectNodeCreateManyParentInputEnvelope = {
-    data: ProjectNodeCreateManyParentInput | ProjectNodeCreateManyParentInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type PostCreateWithoutNodesInput = {
+  export type PostCreateWithoutProjectAssetsInput = {
     id?: string
     shortId: string
     title: string
@@ -18688,14 +18939,13 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
+    files?: FileRecordCreateNestedManyWithoutPostInput
     uploader: UserCreateNestedOneWithoutPostsInput
     team?: TeamCreateNestedOneWithoutPostsInput
     comments?: CommentCreateNestedManyWithoutPostInput
   }
 
-  export type PostUncheckedCreateWithoutNodesInput = {
+  export type PostUncheckedCreateWithoutProjectAssetsInput = {
     id?: string
     shortId: string
     title: string
@@ -18711,104 +18961,134 @@ export namespace Prisma {
     teamId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
   }
 
-  export type PostCreateOrConnectWithoutNodesInput = {
+  export type PostCreateOrConnectWithoutProjectAssetsInput = {
     where: PostWhereUniqueInput
-    create: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput>
+    create: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
   }
 
-  export type ProjectUpsertWithoutNodesInput = {
-    update: XOR<ProjectUpdateWithoutNodesInput, ProjectUncheckedUpdateWithoutNodesInput>
-    create: XOR<ProjectCreateWithoutNodesInput, ProjectUncheckedCreateWithoutNodesInput>
+  export type ProjectUpsertWithoutAssetsInput = {
+    update: XOR<ProjectUpdateWithoutAssetsInput, ProjectUncheckedUpdateWithoutAssetsInput>
+    create: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
     where?: ProjectWhereInput
   }
 
-  export type ProjectUpdateToOneWithWhereWithoutNodesInput = {
+  export type ProjectUpdateToOneWithWhereWithoutAssetsInput = {
     where?: ProjectWhereInput
-    data: XOR<ProjectUpdateWithoutNodesInput, ProjectUncheckedUpdateWithoutNodesInput>
+    data: XOR<ProjectUpdateWithoutAssetsInput, ProjectUncheckedUpdateWithoutAssetsInput>
   }
 
-  export type ProjectUpdateWithoutNodesInput = {
+  export type ProjectUpdateWithoutAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    team?: TeamUpdateOneWithoutProjectsNestedInput
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    phases?: PhaseUpdateManyWithoutProjectNestedInput
   }
 
-  export type ProjectUncheckedUpdateWithoutNodesInput = {
+  export type ProjectUncheckedUpdateWithoutAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
+    creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ownerId?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
   }
 
-  export type ProjectNodeUpsertWithoutChildrenInput = {
-    update: XOR<ProjectNodeUpdateWithoutChildrenInput, ProjectNodeUncheckedUpdateWithoutChildrenInput>
-    create: XOR<ProjectNodeCreateWithoutChildrenInput, ProjectNodeUncheckedCreateWithoutChildrenInput>
-    where?: ProjectNodeWhereInput
+  export type PhaseUpsertWithoutProjectAssetsInput = {
+    update: XOR<PhaseUpdateWithoutProjectAssetsInput, PhaseUncheckedUpdateWithoutProjectAssetsInput>
+    create: XOR<PhaseCreateWithoutProjectAssetsInput, PhaseUncheckedCreateWithoutProjectAssetsInput>
+    where?: PhaseWhereInput
   }
 
-  export type ProjectNodeUpdateToOneWithWhereWithoutChildrenInput = {
-    where?: ProjectNodeWhereInput
-    data: XOR<ProjectNodeUpdateWithoutChildrenInput, ProjectNodeUncheckedUpdateWithoutChildrenInput>
+  export type PhaseUpdateToOneWithWhereWithoutProjectAssetsInput = {
+    where?: PhaseWhereInput
+    data: XOR<PhaseUpdateWithoutProjectAssetsInput, PhaseUncheckedUpdateWithoutProjectAssetsInput>
   }
 
-  export type ProjectNodeUpdateWithoutChildrenInput = {
+  export type PhaseUpdateWithoutProjectAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    project?: ProjectUpdateOneRequiredWithoutNodesNestedInput
-    parent?: ProjectNodeUpdateOneWithoutChildrenNestedInput
-    posts?: PostUpdateManyWithoutNodesNestedInput
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
   }
 
-  export type ProjectNodeUncheckedUpdateWithoutChildrenInput = {
+  export type PhaseUncheckedUpdateWithoutProjectAssetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
     projectId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    posts?: PostUncheckedUpdateManyWithoutNodesNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProjectNodeUpsertWithWhereUniqueWithoutParentInput = {
-    where: ProjectNodeWhereUniqueInput
-    update: XOR<ProjectNodeUpdateWithoutParentInput, ProjectNodeUncheckedUpdateWithoutParentInput>
-    create: XOR<ProjectNodeCreateWithoutParentInput, ProjectNodeUncheckedCreateWithoutParentInput>
+  export type PostUpsertWithoutProjectAssetsInput = {
+    update: XOR<PostUpdateWithoutProjectAssetsInput, PostUncheckedUpdateWithoutProjectAssetsInput>
+    create: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
+    where?: PostWhereInput
   }
 
-  export type ProjectNodeUpdateWithWhereUniqueWithoutParentInput = {
-    where: ProjectNodeWhereUniqueInput
-    data: XOR<ProjectNodeUpdateWithoutParentInput, ProjectNodeUncheckedUpdateWithoutParentInput>
+  export type PostUpdateToOneWithWhereWithoutProjectAssetsInput = {
+    where?: PostWhereInput
+    data: XOR<PostUpdateWithoutProjectAssetsInput, PostUncheckedUpdateWithoutProjectAssetsInput>
   }
 
-  export type ProjectNodeUpdateManyWithWhereWithoutParentInput = {
-    where: ProjectNodeScalarWhereInput
-    data: XOR<ProjectNodeUpdateManyMutationInput, ProjectNodeUncheckedUpdateManyWithoutParentInput>
+  export type PostUpdateWithoutProjectAssetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    shortId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    keywords?: PostUpdatekeywordsInput | string[]
+    coverImage?: StringFieldUpdateOperationsInput | string
+    images?: PostUpdateimagesInput | string[]
+    relatedPosts?: PostUpdaterelatedPostsInput | string[]
+    permission?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileRecordUpdateManyWithoutPostNestedInput
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
+    team?: TeamUpdateOneWithoutPostsNestedInput
+    comments?: CommentUpdateManyWithoutPostNestedInput
   }
 
-  export type PostUpsertWithWhereUniqueWithoutNodesInput = {
-    where: PostWhereUniqueInput
-    update: XOR<PostUpdateWithoutNodesInput, PostUncheckedUpdateWithoutNodesInput>
-    create: XOR<PostCreateWithoutNodesInput, PostUncheckedCreateWithoutNodesInput>
-  }
-
-  export type PostUpdateWithWhereUniqueWithoutNodesInput = {
-    where: PostWhereUniqueInput
-    data: XOR<PostUpdateWithoutNodesInput, PostUncheckedUpdateWithoutNodesInput>
-  }
-
-  export type PostUpdateManyWithWhereWithoutNodesInput = {
-    where: PostScalarWhereInput
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutNodesInput>
+  export type PostUncheckedUpdateWithoutProjectAssetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    shortId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    keywords?: PostUpdatekeywordsInput | string[]
+    coverImage?: StringFieldUpdateOperationsInput | string
+    images?: PostUpdateimagesInput | string[]
+    uploaderId?: StringFieldUpdateOperationsInput | string
+    relatedPosts?: PostUpdaterelatedPostsInput | string[]
+    permission?: StringFieldUpdateOperationsInput | string
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
@@ -18849,11 +19129,10 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
+    files?: FileRecordCreateNestedManyWithoutPostInput
     uploader: UserCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
     comments?: CommentCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutTeamInput = {
@@ -18871,10 +19150,9 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutTeamInput = {
@@ -18891,20 +19169,30 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutProjectsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutProjectInput
+    creator: UserCreateNestedOneWithoutProjectsInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutTeamInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    ownerId: string
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutProjectInput
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutTeamInput = {
@@ -18960,6 +19248,27 @@ export namespace Prisma {
     data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type PostScalarWhereInput = {
+    AND?: PostScalarWhereInput | PostScalarWhereInput[]
+    OR?: PostScalarWhereInput[]
+    NOT?: PostScalarWhereInput | PostScalarWhereInput[]
+    id?: StringFilter<"Post"> | string
+    shortId?: StringFilter<"Post"> | string
+    title?: StringFilter<"Post"> | string
+    category?: StringFilter<"Post"> | string
+    description?: StringNullableFilter<"Post"> | string | null
+    type?: StringFilter<"Post"> | string
+    keywords?: StringNullableListFilter<"Post">
+    coverImage?: StringFilter<"Post"> | string
+    images?: StringNullableListFilter<"Post">
+    uploaderId?: StringFilter<"Post"> | string
+    relatedPosts?: StringNullableListFilter<"Post">
+    permission?: StringFilter<"Post"> | string
+    teamId?: StringNullableFilter<"Post"> | string | null
+    createdAt?: DateTimeFilter<"Post"> | Date | string
+    updatedAt?: DateTimeFilter<"Post"> | Date | string
+  }
+
   export type ProjectUpsertWithWhereUniqueWithoutTeamInput = {
     where: ProjectWhereUniqueInput
     update: XOR<ProjectUpdateWithoutTeamInput, ProjectUncheckedUpdateWithoutTeamInput>
@@ -18983,10 +19292,14 @@ export namespace Prisma {
     id?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
     description?: StringNullableFilter<"Project"> | string | null
+    client?: StringNullableFilter<"Project"> | string | null
+    location?: StringNullableFilter<"Project"> | string | null
+    coverImage?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    teamId?: StringFilter<"Project"> | string
+    creatorId?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
-    ownerId?: StringFilter<"Project"> | string
-    teamId?: StringNullableFilter<"Project"> | string | null
   }
 
   export type TeamCreateWithoutMembersInput = {
@@ -19028,11 +19341,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    models?: ModelCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
     posts?: PostCreateNestedManyWithoutUploaderInput
     comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutOwnerInput
+    projects?: ProjectCreateNestedManyWithoutCreatorInput
   }
 
   export type UserUncheckedCreateWithoutTeamMembersInput = {
@@ -19045,11 +19357,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    models?: ModelUncheckedCreateNestedManyWithoutUploaderInput
-    pdfs?: PdfUncheckedCreateNestedManyWithoutUploaderInput
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
     posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutOwnerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
   }
 
   export type UserCreateOrConnectWithoutTeamMembersInput = {
@@ -19113,11 +19424,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    models?: ModelUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
     posts?: PostUpdateManyWithoutUploaderNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamMembersInput = {
@@ -19130,11 +19440,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    models?: ModelUncheckedUpdateManyWithoutUploaderNestedInput
-    pdfs?: PdfUncheckedUpdateManyWithoutUploaderNestedInput
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
     posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type TeamMemberCreateWithoutUserInput = {
@@ -19189,67 +19498,45 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ModelCreateWithoutUploaderInput = {
+  export type FileRecordCreateWithoutUploaderInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    posts?: PostCreateNestedManyWithoutModelsInput
+    post?: PostCreateNestedOneWithoutFilesInput
   }
 
-  export type ModelUncheckedCreateWithoutUploaderInput = {
+  export type FileRecordUncheckedCreateWithoutUploaderInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
+    postId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    posts?: PostUncheckedCreateNestedManyWithoutModelsInput
   }
 
-  export type ModelCreateOrConnectWithoutUploaderInput = {
-    where: ModelWhereUniqueInput
-    create: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput>
+  export type FileRecordCreateOrConnectWithoutUploaderInput = {
+    where: FileRecordWhereUniqueInput
+    create: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput>
   }
 
-  export type ModelCreateManyUploaderInputEnvelope = {
-    data: ModelCreateManyUploaderInput | ModelCreateManyUploaderInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type PdfCreateWithoutUploaderInput = {
-    id?: string
-    name: string
-    fileId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    posts?: PostCreateNestedManyWithoutPdfIdsInput
-  }
-
-  export type PdfUncheckedCreateWithoutUploaderInput = {
-    id?: string
-    name: string
-    fileId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    posts?: PostUncheckedCreateNestedManyWithoutPdfIdsInput
-  }
-
-  export type PdfCreateOrConnectWithoutUploaderInput = {
-    where: PdfWhereUniqueInput
-    create: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput>
-  }
-
-  export type PdfCreateManyUploaderInputEnvelope = {
-    data: PdfCreateManyUploaderInput | PdfCreateManyUploaderInput[]
+  export type FileRecordCreateManyUploaderInputEnvelope = {
+    data: FileRecordCreateManyUploaderInput | FileRecordCreateManyUploaderInput[]
     skipDuplicates?: boolean
   }
 
@@ -19267,11 +19554,10 @@ export namespace Prisma {
     permission: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfCreateNestedManyWithoutPostsInput
+    files?: FileRecordCreateNestedManyWithoutPostInput
     team?: TeamCreateNestedOneWithoutPostsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutPostsInput
     comments?: CommentCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutUploaderInput = {
@@ -19289,10 +19575,9 @@ export namespace Prisma {
     teamId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    models?: ModelUncheckedCreateNestedManyWithoutPostsInput
-    pdfIds?: PdfUncheckedCreateNestedManyWithoutPostsInput
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutPostsInput
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
     comments?: CommentUncheckedCreateNestedManyWithoutPostInput
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutUploaderInput = {
@@ -19335,33 +19620,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ProjectCreateWithoutOwnerInput = {
+  export type ProjectCreateWithoutCreatorInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    team?: TeamCreateNestedOneWithoutProjectsInput
-    nodes?: ProjectNodeCreateNestedManyWithoutProjectInput
+    team: TeamCreateNestedOneWithoutProjectsInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
   }
 
-  export type ProjectUncheckedCreateWithoutOwnerInput = {
+  export type ProjectUncheckedCreateWithoutCreatorInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    teamId?: string | null
-    nodes?: ProjectNodeUncheckedCreateNestedManyWithoutProjectInput
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
   }
 
-  export type ProjectCreateOrConnectWithoutOwnerInput = {
+  export type ProjectCreateOrConnectWithoutCreatorInput = {
     where: ProjectWhereUniqueInput
-    create: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput>
+    create: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput>
   }
 
-  export type ProjectCreateManyOwnerInputEnvelope = {
-    data: ProjectCreateManyOwnerInput | ProjectCreateManyOwnerInput[]
+  export type ProjectCreateManyCreatorInputEnvelope = {
+    data: ProjectCreateManyCreatorInput | ProjectCreateManyCreatorInput[]
     skipDuplicates?: boolean
   }
 
@@ -19410,36 +19705,20 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
   }
 
-  export type ModelUpsertWithWhereUniqueWithoutUploaderInput = {
-    where: ModelWhereUniqueInput
-    update: XOR<ModelUpdateWithoutUploaderInput, ModelUncheckedUpdateWithoutUploaderInput>
-    create: XOR<ModelCreateWithoutUploaderInput, ModelUncheckedCreateWithoutUploaderInput>
+  export type FileRecordUpsertWithWhereUniqueWithoutUploaderInput = {
+    where: FileRecordWhereUniqueInput
+    update: XOR<FileRecordUpdateWithoutUploaderInput, FileRecordUncheckedUpdateWithoutUploaderInput>
+    create: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput>
   }
 
-  export type ModelUpdateWithWhereUniqueWithoutUploaderInput = {
-    where: ModelWhereUniqueInput
-    data: XOR<ModelUpdateWithoutUploaderInput, ModelUncheckedUpdateWithoutUploaderInput>
+  export type FileRecordUpdateWithWhereUniqueWithoutUploaderInput = {
+    where: FileRecordWhereUniqueInput
+    data: XOR<FileRecordUpdateWithoutUploaderInput, FileRecordUncheckedUpdateWithoutUploaderInput>
   }
 
-  export type ModelUpdateManyWithWhereWithoutUploaderInput = {
-    where: ModelScalarWhereInput
-    data: XOR<ModelUpdateManyMutationInput, ModelUncheckedUpdateManyWithoutUploaderInput>
-  }
-
-  export type PdfUpsertWithWhereUniqueWithoutUploaderInput = {
-    where: PdfWhereUniqueInput
-    update: XOR<PdfUpdateWithoutUploaderInput, PdfUncheckedUpdateWithoutUploaderInput>
-    create: XOR<PdfCreateWithoutUploaderInput, PdfUncheckedCreateWithoutUploaderInput>
-  }
-
-  export type PdfUpdateWithWhereUniqueWithoutUploaderInput = {
-    where: PdfWhereUniqueInput
-    data: XOR<PdfUpdateWithoutUploaderInput, PdfUncheckedUpdateWithoutUploaderInput>
-  }
-
-  export type PdfUpdateManyWithWhereWithoutUploaderInput = {
-    where: PdfScalarWhereInput
-    data: XOR<PdfUpdateManyMutationInput, PdfUncheckedUpdateManyWithoutUploaderInput>
+  export type FileRecordUpdateManyWithWhereWithoutUploaderInput = {
+    where: FileRecordScalarWhereInput
+    data: XOR<FileRecordUpdateManyMutationInput, FileRecordUncheckedUpdateManyWithoutUploaderInput>
   }
 
   export type PostUpsertWithWhereUniqueWithoutUploaderInput = {
@@ -19474,20 +19753,20 @@ export namespace Prisma {
     data: XOR<CommentUpdateManyMutationInput, CommentUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type ProjectUpsertWithWhereUniqueWithoutOwnerInput = {
+  export type ProjectUpsertWithWhereUniqueWithoutCreatorInput = {
     where: ProjectWhereUniqueInput
-    update: XOR<ProjectUpdateWithoutOwnerInput, ProjectUncheckedUpdateWithoutOwnerInput>
-    create: XOR<ProjectCreateWithoutOwnerInput, ProjectUncheckedCreateWithoutOwnerInput>
+    update: XOR<ProjectUpdateWithoutCreatorInput, ProjectUncheckedUpdateWithoutCreatorInput>
+    create: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput>
   }
 
-  export type ProjectUpdateWithWhereUniqueWithoutOwnerInput = {
+  export type ProjectUpdateWithWhereUniqueWithoutCreatorInput = {
     where: ProjectWhereUniqueInput
-    data: XOR<ProjectUpdateWithoutOwnerInput, ProjectUncheckedUpdateWithoutOwnerInput>
+    data: XOR<ProjectUpdateWithoutCreatorInput, ProjectUncheckedUpdateWithoutCreatorInput>
   }
 
-  export type ProjectUpdateManyWithWhereWithoutOwnerInput = {
+  export type ProjectUpdateManyWithWhereWithoutCreatorInput = {
     where: ProjectScalarWhereInput
-    data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyWithoutOwnerInput>
+    data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyWithoutCreatorInput>
   }
 
   export type CommentCreateManyParentInput = {
@@ -19528,124 +19807,52 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PostUpdateWithoutModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
+  export type ProjectAssetCreateManyPhaseInput = {
+    id?: string
+    sortOrder?: number
+    projectId: string
+    postId: string
+    createdAt?: Date | string
   }
 
-  export type PostUncheckedUpdateWithoutModelsInput = {
+  export type ProjectAssetUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
+    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
   }
 
-  export type PostUncheckedUpdateManyWithoutModelsInput = {
+  export type ProjectAssetUncheckedUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PostUpdateWithoutPdfIdsInput = {
+  export type ProjectAssetUncheckedUpdateManyWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
   }
 
-  export type PostUncheckedUpdateWithoutPdfIdsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
-  }
-
-  export type PostUncheckedUpdateManyWithoutPdfIdsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type FileRecordCreateManyPostInput = {
+    id?: string
+    shortId?: string | null
+    name: string
+    fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
+    size?: string
+    status?: $Enums.ProcessStatus
+    errorMessage?: string | null
+    uploaderId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CommentCreateManyPostInput = {
@@ -19657,93 +19864,60 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type ModelUpdateWithoutPostsInput = {
+  export type ProjectAssetCreateManyPostInput = {
+    id?: string
+    sortOrder?: number
+    projectId: string
+    phaseId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FileRecordUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutModelsNestedInput
+    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput
   }
 
-  export type ModelUncheckedUpdateWithoutPostsInput = {
+  export type FileRecordUncheckedUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
-    uploaderId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    uploaderId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ModelUncheckedUpdateManyWithoutPostsInput = {
+  export type FileRecordUncheckedUpdateManyWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
-    uploaderId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PdfUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutPdfsNestedInput
-  }
-
-  export type PdfUncheckedUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
     uploaderId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PdfUncheckedUpdateManyWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ProjectNodeUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    project?: ProjectUpdateOneRequiredWithoutNodesNestedInput
-    parent?: ProjectNodeUpdateOneWithoutChildrenNestedInput
-    children?: ProjectNodeUpdateManyWithoutParentNestedInput
-  }
-
-  export type ProjectNodeUncheckedUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    children?: ProjectNodeUncheckedUpdateManyWithoutParentNestedInput
-  }
-
-  export type ProjectNodeUncheckedUpdateManyWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentUpdateWithoutPostInput = {
@@ -19775,120 +19949,94 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProjectNodeCreateManyProjectInput = {
+  export type ProjectAssetUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
+    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
+  }
+
+  export type ProjectAssetUncheckedUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAssetUncheckedUpdateManyWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    projectId?: StringFieldUpdateOperationsInput | string
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhaseCreateManyProjectInput = {
     id?: string
     name: string
-    parentId?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ProjectNodeUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    parent?: ProjectNodeUpdateOneWithoutChildrenNestedInput
-    children?: ProjectNodeUpdateManyWithoutParentNestedInput
-    posts?: PostUpdateManyWithoutNodesNestedInput
-  }
-
-  export type ProjectNodeUncheckedUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    children?: ProjectNodeUncheckedUpdateManyWithoutParentNestedInput
-    posts?: PostUncheckedUpdateManyWithoutNodesNestedInput
-  }
-
-  export type ProjectNodeUncheckedUpdateManyWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjectNodeCreateManyParentInput = {
+  export type ProjectAssetCreateManyProjectInput = {
     id?: string
-    name: string
-    projectId: string
+    sortOrder?: number
+    phaseId?: string | null
+    postId: string
+    createdAt?: Date | string
   }
 
-  export type ProjectNodeUpdateWithoutParentInput = {
+  export type PhaseUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    project?: ProjectUpdateOneRequiredWithoutNodesNestedInput
-    children?: ProjectNodeUpdateManyWithoutParentNestedInput
-    posts?: PostUpdateManyWithoutNodesNestedInput
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
   }
 
-  export type ProjectNodeUncheckedUpdateWithoutParentInput = {
+  export type PhaseUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
-    children?: ProjectNodeUncheckedUpdateManyWithoutParentNestedInput
-    posts?: PostUncheckedUpdateManyWithoutNodesNestedInput
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
   }
 
-  export type ProjectNodeUncheckedUpdateManyWithoutParentInput = {
+  export type PhaseUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type PostUpdateWithoutNodesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
   }
 
-  export type PostUncheckedUpdateWithoutNodesInput = {
+  export type ProjectAssetUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    phase?: PhaseUpdateOneWithoutProjectAssetsNestedInput
+    post?: PostUpdateOneRequiredWithoutProjectAssetsNestedInput
   }
 
-  export type PostUncheckedUpdateManyWithoutNodesInput = {
+  export type ProjectAssetUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAssetUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamMemberCreateManyTeamInput = {
@@ -19919,9 +20067,13 @@ export namespace Prisma {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    ownerId: string
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
@@ -19959,11 +20111,10 @@ export namespace Prisma {
     permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUpdateManyWithoutPostNestedInput
     uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
     comments?: CommentUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutTeamInput = {
@@ -19981,10 +20132,9 @@ export namespace Prisma {
     permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
     comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateManyWithoutTeamInput = {
@@ -20008,29 +20158,43 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutProjectNestedInput
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    phases?: PhaseUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ownerId?: StringFieldUpdateOperationsInput | string
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutProjectNestedInput
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutTeamInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    ownerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TeamMemberCreateManyUserInput = {
@@ -20049,22 +20213,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type ModelCreateManyUploaderInput = {
+  export type FileRecordCreateManyUploaderInput = {
     id?: string
-    shortId: string
+    shortId?: string | null
     name: string
     fileId: string
+    viewerFileId?: string | null
+    category?: $Enums.FileCategory
+    extension?: string | null
     size?: string
     status?: $Enums.ProcessStatus
     errorMessage?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type PdfCreateManyUploaderInput = {
-    id?: string
-    name: string
-    fileId: string
+    postId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20095,13 +20255,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type ProjectCreateManyOwnerInput = {
+  export type ProjectCreateManyCreatorInput = {
     id?: string
     name: string
     description?: string | null
+    client?: string | null
+    location?: string | null
+    coverImage?: string | null
+    status?: $Enums.ProjectStatus
+    teamId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    teamId?: string | null
   }
 
   export type TeamMemberUpdateWithoutUserInput = {
@@ -20152,66 +20316,50 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ModelUpdateWithoutUploaderInput = {
+  export type FileRecordUpdateWithoutUploaderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUpdateManyWithoutModelsNestedInput
+    post?: PostUpdateOneWithoutFilesNestedInput
   }
 
-  export type ModelUncheckedUpdateWithoutUploaderInput = {
+  export type FileRecordUncheckedUpdateWithoutUploaderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUncheckedUpdateManyWithoutModelsNestedInput
   }
 
-  export type ModelUncheckedUpdateManyWithoutUploaderInput = {
+  export type FileRecordUncheckedUpdateManyWithoutUploaderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     fileId?: StringFieldUpdateOperationsInput | string
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
     size?: StringFieldUpdateOperationsInput | string
     status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PdfUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUpdateManyWithoutPdfIdsNestedInput
-  }
-
-  export type PdfUncheckedUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUncheckedUpdateManyWithoutPdfIdsNestedInput
-  }
-
-  export type PdfUncheckedUpdateManyWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
+    postId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20230,11 +20378,10 @@ export namespace Prisma {
     permission?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUpdateManyWithoutPostNestedInput
     team?: TeamUpdateOneWithoutPostsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutPostsNestedInput
     comments?: CommentUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutUploaderInput = {
@@ -20252,10 +20399,9 @@ export namespace Prisma {
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    models?: ModelUncheckedUpdateManyWithoutPostsNestedInput
-    pdfIds?: PdfUncheckedUpdateManyWithoutPostsNestedInput
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutPostsNestedInput
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
     comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateManyWithoutUploaderInput = {
@@ -20304,33 +20450,47 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProjectUpdateWithoutOwnerInput = {
+  export type ProjectUpdateWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneWithoutProjectsNestedInput
-    nodes?: ProjectNodeUpdateManyWithoutProjectNestedInput
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
+    phases?: PhaseUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
   }
 
-  export type ProjectUncheckedUpdateWithoutOwnerInput = {
+  export type ProjectUncheckedUpdateWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    nodes?: ProjectNodeUncheckedUpdateManyWithoutProjectNestedInput
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
   }
 
-  export type ProjectUncheckedUpdateManyWithoutOwnerInput = {
+  export type ProjectUncheckedUpdateManyWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    teamId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

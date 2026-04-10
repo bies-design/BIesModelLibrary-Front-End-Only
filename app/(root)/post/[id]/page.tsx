@@ -7,6 +7,7 @@ import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
 import CommentSection from '@/components/post/CommentSection';
 import PostCard from '@/components/cards/PostCard';
+import Footer from '@/components/Footer';
 import { verifyToken } from '@/app/api/generate-token/verifyToken';
 
 export default async function PostDetailPage({ 
@@ -66,7 +67,7 @@ export default async function PostDetailPage({
     }
 
     return (
-        <div className="min-h-screen  text-[#E4E4E7] pt-24 pb-20 font-abeezee">
+        <div className=" min-h-screen text-[#E4E4E7] pt-12 font-abeezee">
             {/* 頂部麵包屑 (Breadcrumbs) */}
             <div className="max-w-[1400px] mx-auto px-6 mb-6 text-sm text-[#A1A1AA]">
                 <Link href="/" className="hover:text-white transition">Home</Link>
@@ -74,7 +75,7 @@ export default async function PostDetailPage({
                 <span className="text-black/80 dark:text-amber-50">{post.title}</span>
             </div>
 
-            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+            <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 mb-4">
                 
                 {/* ================= 左側：主要內容區 ================= */}
                 <div className="flex flex-col gap-8 min-w-0">
@@ -219,6 +220,7 @@ export default async function PostDetailPage({
                 </div>
                 
             </div>
+            <Footer/>
         </div>
     );
 }
