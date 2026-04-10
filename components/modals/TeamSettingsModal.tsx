@@ -22,11 +22,19 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploadingAvatar, setIsUploadingAvatar] = useState<boolean>(false);
 
+    // 1. 新增兩個 State，用來記錄「準備要上傳的檔案」跟「本地預覽網址」
+    const [pendingFile, setPendingFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     // 當 teamData 改變時同步更新內部 state
     useEffect(() => {
         if (isOpen) {
             // 每次打開時，如果是編輯模式就帶入資料，如果是建立模式就給乾淨的預設值
             setFormData(teamData || defaultData);
+        }
+        if (!isOpen) {
+            setPendingFile(null);
+            if (previewUrl) URL.revokeObjectURL(previewUrl); // 釋放記憶體
+            setPreviewUrl(null);
         }
     }, [teamData, isOpen]);
 
@@ -36,6 +44,9 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
         return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
     };
 
+    // 2. 獲取圖片 URL 的邏輯稍微調整：優先顯示本地預覽圖
+    const displayAvatarUrl = previewUrl || getImageUrl(formData.avatar);
+    // 3. 處理選擇圖片 (不再打 API，只產生預覽)
     const handleAvatarUpload = async (e:React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if(!file) return;
@@ -46,34 +57,13 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
             return;
         }
 
-        setIsUploadingAvatar(true);
-        try{
-            // get upload url and public image url
-            const urlResult = await getAvatarUploadUrl(file.name, file.type);
-            if(!urlResult.success || ! urlResult.signedUrl || !urlResult.imageKey){
-                throw new Error(urlResult.error);
-            }
-            // PUT image to minio
-            const uploadRes = await fetch(urlResult.signedUrl, {
-                method: "PUT",
-                body: file,
-                headers:{"Content-Type": file.type}
-            });
+        // 記錄檔案，並產生本地預覽網址
+        setPendingFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
 
-            if(!uploadRes.ok) throw new Error("Failed to upload image to S3");
-
-            // 成功後，更新 Modal 內的 formData 狀態 (先存 imageKey，等按下 Save 才存入 DB)
-            setFormData(prev => ({...prev, avatar:urlResult.imageKey}));
-            addToast({ description: "Team icon updated!", color: "success" });
-        }catch(error){
-            console.error("錯誤在這",error);
-            alert("Failed to update profile icon.");
-        } finally {
-            setIsUploadingAvatar(false);
-            // 清空 input，確保使用者選同一張照片也能觸發 onChange
-            if (fileInputRef.current) fileInputRef.current.value = "";
-        }
-    }
+        // 清空 input 確保重複選同一張也能觸發
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
 
     const handleSave = async () => {
         
@@ -83,9 +73,38 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
         }
 
         setIsSubmitting(true);
-        await onSubmit(formData);
-        setIsSubmitting(false);
-        onOpenChange(false);
+        let finalAvatarKey = formData.avatar;
+
+        try {
+            // 如果有新選的圖片，就在這裡執行上傳
+            if (pendingFile) {
+                const urlResult = await getAvatarUploadUrl(pendingFile.name, pendingFile.type);
+                if (!urlResult.success || !urlResult.signedUrl || !urlResult.imageKey) {
+                    throw new Error(urlResult.error);
+                }
+                
+                const uploadRes = await fetch(urlResult.signedUrl, {
+                    method: "PUT",
+                    body: pendingFile,
+                    headers: { "Content-Type": pendingFile.type }
+                });
+
+                if (!uploadRes.ok) throw new Error("Failed to upload image to S3");
+                
+                finalAvatarKey = urlResult.imageKey; // 更新為新的 S3 Key
+                addToast({ description: "Team icon uploaded!", color: "success" });
+            }
+
+            // 把最終的 avatar key 塞進資料裡往上送
+            await onSubmit({ ...formData, avatar: finalAvatarKey });
+            
+            onOpenChange(false);
+        } catch (error) {
+            console.error("Save error", error);
+            addToast({ description: "Failed to save changes.", color: "danger" });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const titleText = mode === 'create' ? "Create New Team" : "Team Settings";
@@ -119,7 +138,7 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
                             onClick={() => !isUploadingAvatar && fileInputRef.current?.click()}
                         >
                             <Avatar 
-                                src={getImageUrl(formData.avatar)} 
+                                src={displayAvatarUrl} 
                                 name={formData.name}
                                 className="w-24 h-24 text-large" 
                                 showFallback 

@@ -14,7 +14,8 @@ import {
   ModalHeader, 
   ModalBody, 
   ModalFooter,
-  useDisclosure 
+  useDisclosure, 
+  Checkbox
 } from "@heroui/react";
 import { 
   PanelLeftClose, 
@@ -37,7 +38,7 @@ import {
 import * as OBC from "@thatopen/components";
 import { useUpload } from "@/context/UploadContext";
 // 🚀 替換為我們新寫的 File API
-import { getUserFiles, deleteFileRecord } from '@/lib/actions/file.action'; 
+import { getUserFiles, deleteFileRecord, getFileDownloadUrl } from '@/lib/actions/file.action'; 
 import * as THREE from 'three';
 import { FileItem } from '@/app/(uploadAndDashboard)/upload/page';
 import { FileCategory } from '@/prisma/generated/prisma';
@@ -65,7 +66,8 @@ interface ModelUploadSidebarProps {
   onFocusModel: (modelId: string) => void;
   onDeleteModel: (modelId: string) => void;  
   preLoadedModels?: FileItem[];
-  // 🚀 移除了 postType 和 setPostType
+  selectedPublishIds: string[];
+  onTogglePublish: (id: string) => void;
 }
 
 const ModelUploadSidebar = ({ 
@@ -79,7 +81,9 @@ const ModelUploadSidebar = ({
   onFocusAllModel,
   onFocusModel, 
   onDeleteModel,
-  preLoadedModels
+  preLoadedModels,
+  selectedPublishIds,
+  onTogglePublish
 }: ModelUploadSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -186,7 +190,7 @@ const ModelUploadSidebar = ({
     fetchUserFilesData(); // 重新整理列表
   };
 
-  // 下載並載入 3D 模型
+  // 下載並載入 ifc 模型
   const downloadAndLoadFrag = async(dbId: string, fileId: string, viewerFileId: string | null | undefined, modelName: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if(loadingModelId) return;
@@ -194,24 +198,69 @@ const ModelUploadSidebar = ({
     try {
       setLoadingModelId(modelName);
       if(!viewerFileId) throw new Error("該檔案目前不支援預覽!");
-      const response = await fetch(`/api/frags/${viewerFileId}`);
+      const response = await fetch(`/api/viewfile/${viewerFileId}`);
       if (!response.ok) throw new Error("下載失敗");
 
       const buffer = await response.arrayBuffer();
-      onLoadModel(buffer, modelName);
+
+      const real3dFile = new File([buffer], modelName, { type: 'application/octet-stream' });
 
       const newLoadedItem: FileItem = {
         dbId: dbId,
-        file: new File([], modelName, { type: 'application/octet-stream' }),
+        file: real3dFile,
         type: '3d',
         name: modelName,
         fileId: fileId,
       };
+
+      setLoadedFiles(prev => [...prev, newLoadedItem]);
+      onSelectFile(newLoadedItem);
+      
+
+      
+    } catch (error) {
+      console.error("載入失敗:", error);
+    } finally {
+      setLoadingModelId(null);
+    }
+  };
+
+  // 下載並預覽 PDF
+  const downloadAndLoadPdf = async (dbId: string, fileId: string, fileName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if(loadingModelId) return;
+
+    try {
+      setLoadingModelId(fileName); // 讓這筆檔案顯示 Spinner
+      
+      const urlResult = await getFileDownloadUrl(fileId, fileName); 
+      if (!urlResult.success || !urlResult.url) {
+          throw new Error(urlResult.error || "無法取得檔案下載權限");
+      }
+
+      const response = await fetch(urlResult.url);
+      if (!response.ok) throw new Error("PDF 下載失敗");
+
+      // 1. 將回傳資料轉成 Blob
+      const blob = await response.blob();
+      
+      // 2. 將 Blob 包裝成真正的 File 物件
+      const realPdfFile = new File([blob], fileName, { type: 'application/pdf' });
+
+      const newLoadedItem: FileItem = {
+        dbId: dbId,
+        file: realPdfFile, 
+        type: 'pdf',
+        name: fileName,
+        fileId: fileId,
+      };
+      
       setLoadedFiles(prev => [...prev, newLoadedItem]);
       onSelectFile(newLoadedItem);
 
     } catch (error) {
-      console.error("載入失敗:", error);
+      console.error("載入 PDF 失敗:", error);
+      alert("載入 PDF 失敗，請稍後再試");
     } finally {
       setLoadingModelId(null);
     }
@@ -285,65 +334,70 @@ const ModelUploadSidebar = ({
             {isLoading ? (
               <div className="flex justify-center p-2"><Spinner size="sm" /></div>
             ) : (
-              sectionFiles.map((item) => (
-                <div 
-                  key={item.id}
-                  onClick={() => {
-                    // 非 3D 模型可以直接透過點擊來 Preview
-                    if (category !== FileCategory.MODEL_3D) {
-                      onSelectFile({
-                          dbId: item.id,
-                          file: new File([], item.name, { type: 'application/octet-stream' }),
-                          type: 'pdf',
-                          name: item.name,
-                          fileId: item.fileId,
-                        });
-                    }
-                  }}
-                  className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
-                    selectedFileId === item.id
-                    ? 'bg-[#D70036] text-white shadow-lg' 
-                    : 'bg-[#27272A] text-gray-300 hover:bg-[#3F3F46]'
-                  }`}
-                >
-                  <Tooltip content={`${item.name}`} placement='bottom' className='bg-black text-white'>
-                    <span className="text-sm truncate flex-grow">{item.name}</span>
-                  </Tooltip>
-                  
-                  {item.name === loadingModelId ? (<Loader2 size={16} className="animate-spin"/>) : ( 
-                    <>
-                      {/* 只有 3D 模型顯示載入按鈕 */}
-                      {category === FileCategory.MODEL_3D && (
-                        <Tooltip content={`Load to Scene`} placement='bottom' className='bg-black text-white'>
-                          <button
-                            onClick={(e) => downloadAndLoadFrag(item.id, item.fileId,item.viewerFileId, item.name, e)}
-                            className="text-gray-300 hover:text-white"
-                          >
-                            <CloudDownload size={16}/>
-                          </button>
-                        </Tooltip>
-                      )}
-                      
-                      {/* 刪除選單 */}
-                      <Dropdown placement='right-start' classNames={{ content:"bg-black" }}>
-                        <DropdownTrigger>
-                            <button><ChevronRight size={16} className="shrink-0" /></button>
-                        </DropdownTrigger>  
-                        <DropdownMenu aria-label='more options' variant='flat' itemClasses={{ base:"text-white" }}>
-                          <DropdownItem 
-                            key="Delete" 
-                            onPress={() => openDeleteModal(item.name, item.fileId)} 
-                            endContent={<Trash2 size={20} className='text-danger'/>}
-                            className="text-danger"
-                          >
-                            Delete From Storage
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </>
-                  )}
-                </div>
-              ))
+              sectionFiles.map((item) => {
+                const lowerName = item.name.toLowerCase();
+                const isIfc = lowerName.endsWith('.ifc');
+                const isPdf = lowerName.endsWith('.pdf');
+                const isViewable = isIfc || isPdf;
+                return(
+                  <div 
+                    key={item.id}
+                    className="group flex items-center gap-3 p-3 rounded-xl bg-[#27272A] text-gray-300 border border-transparent hover:border-white/10 transition-all"
+                  >
+                    {/* 發布用的打勾框 */}
+                    <Checkbox 
+                      color="danger" // 紅色比較符合你的 UI 風格
+                      isSelected={selectedPublishIds.includes(item.id)}
+                      onValueChange={() => onTogglePublish(item.id)}
+                    />
+                    <Tooltip content={`${item.name}`} placement='bottom' className='bg-black text-white'>
+                      <span className="text-sm truncate flex-grow">{item.name}</span>
+                    </Tooltip>
+                    
+                    {item.name === loadingModelId ? (<Loader2 size={16} className="animate-spin"/>) : ( 
+                      <>
+                        {/* 只有 3D 模型顯示載入按鈕 */}
+                        {isViewable && (
+                          <Tooltip content="Load to Viewer" placement='bottom' className='bg-black text-white'>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (isIfc) {
+                                  // 載入 ifc 模型
+                                  downloadAndLoadFrag(item.id, item.fileId, item.viewerFileId, item.name, e);
+                                } else if (isPdf) {
+                                  // 載入 PDF 
+                                  downloadAndLoadPdf(item.id, item.fileId, item.name, e);
+                                }
+                              }}
+                              className="text-gray-400 hover:text-[#10B981] transition-colors"
+                            >
+                              <CloudDownload size={16}/>
+                            </button>
+                          </Tooltip>
+                        )}
+                        
+                        {/* 刪除選單 */}
+                        <Dropdown placement='right-start' classNames={{ content:"bg-black" }}>
+                          <DropdownTrigger>
+                              <button><ChevronRight size={16} className="shrink-0" /></button>
+                          </DropdownTrigger>  
+                          <DropdownMenu aria-label='more options' variant='flat' itemClasses={{ base:"text-white" }}>
+                            <DropdownItem 
+                              key="Delete" 
+                              onPress={() => openDeleteModal(item.name, item.fileId)} 
+                              endContent={<Trash2 size={20} className='text-danger'/>}
+                              className="text-danger"
+                            >
+                              Delete From Storage
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
@@ -372,25 +426,25 @@ const ModelUploadSidebar = ({
       
       {/* 標題欄 */}
       <div className="p-4 flex justify-between items-center border-b border-[#FFFFFF1A]">
-         <div className="font-inter text-[#A1A1AA] flex items-center gap-2">
-            <FileBox size={18} />
-            <span className="font-bold text-white">Project Assets</span>
-         </div>
-         <div className="flex items-center gap-2">
-            <Tooltip content="Refresh Files" placement='bottom' className='bg-black text-white'>
-              <button onClick={() => fetchUserFilesData()} className="text-[#A1A1AA] hover:text-white">
-                <RefreshCw size={16} />
-              </button>
-            </Tooltip>
-            <Button
-              isIconOnly
-              variant="light"
-              onPress={() => setIsCollapsed(true)}
-              className="text-white rounded-xl bg-[#3F3F46] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] ml-2"
-            >
-              <PanelLeftClose size={20} />
-            </Button>
-         </div>
+          <div className="font-inter text-[#A1A1AA] flex items-center gap-2">
+              <FileBox size={18} />
+              <span className="font-bold text-white">Project Assets</span>
+          </div>
+          <div className="flex items-center gap-2">
+              <Tooltip content="Refresh Files" placement='bottom' className='bg-black text-white'>
+                <button onClick={() => fetchUserFilesData()} className="text-[#A1A1AA] hover:text-white">
+                  <RefreshCw size={16} />
+                </button>
+              </Tooltip>
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={() => setIsCollapsed(true)}
+                className="text-white rounded-xl bg-[#3F3F46] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] ml-2"
+              >
+                <PanelLeftClose size={20} />
+              </Button>
+          </div>
       </div>
 
       {/* 🚀 上傳區域 (含分類選擇器) */}
@@ -443,34 +497,65 @@ const ModelUploadSidebar = ({
         
         {/* 1. 已載入場景的 3D 模型 */}
         {loadedFiles.length > 0 && (
-           <div className="flex flex-col mb-4">
-              <div className="flex items-center justify-between cursor-pointer px-2 mb-2 group" onClick={() => toggleSection('LOADED')}>
-                <div className="flex items-center gap-2">
-                  <Box size={14} className="text-[#10B981]" />
-                  <p className="font-inter text-[#10B981] font-bold text-xs uppercase group-hover:text-green-400">
-                    Loaded Scene ({loadedFiles.length})
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={(e) => { e.stopPropagation(); onFocusAllModel(); }} className="text-[#10B981] hover:text-green-400"><Focus size={14} /></button>
-                  <ChevronDown size={14} className={`text-[#10B981] transition-transform ${expandedSections['LOADED'] ? "rotate-180" : "rotate-0"}`} />
-                </div>
+          <div className="flex flex-col mb-4">
+            <div className="flex items-center justify-between cursor-pointer px-2 mb-2 group" onClick={() => toggleSection('LOADED')}>
+              <div className="flex items-center gap-2">
+                <Box size={14} className="text-[#10B981]" />
+                <p className="font-inter text-[#10B981] font-bold text-xs uppercase group-hover:text-green-400">
+                  Loaded Files ({loadedFiles.length})
+                </p>
               </div>
-              
-              <div className={`grid transition-all duration-300 ${expandedSections['LOADED'] ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                <div className="overflow-hidden flex flex-col gap-2 px-1">
-                  {loadedFiles.map((item)=>(
-                    <div key={item.dbId} className="group flex items-center gap-3 p-3 rounded-xl bg-[#27272A] border border-[#10B981]/30">
-                      <Tooltip content={`${item.name}`} placement='bottom' className='bg-black text-white'>
-                        <span className="text-sm text-gray-200 truncate flex-grow">{item.name}</span>
-                      </Tooltip>
-                      <button onClick={(e) => focusModel(item.name, e)} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
-                      <button onClick={() => removeModelFromScene(item.name)} className="text-gray-400 hover:text-danger"><BrushCleaning size={16}/></button>
+              <div className="flex items-center gap-2">
+                <button onClick={(e) => { e.stopPropagation(); onFocusAllModel(); }} className="text-[#10B981] hover:text-green-400"><Focus size={14} /></button>
+                <ChevronDown size={14} className={`text-[#10B981] transition-transform ${expandedSections['LOADED'] ? "rotate-180" : "rotate-0"}`} />
+              </div>
+            </div>
+            
+            <div className={`grid transition-all duration-300 ${expandedSections['LOADED'] ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+              <div className="overflow-hidden flex flex-col gap-2 px-1">
+                {loadedFiles.map((item)=>(
+                  <div 
+                    key={item.dbId} 
+                    // 🚀 點擊整列時，將其設為當前預覽檔案
+                    onClick={() => onSelectFile(item)} 
+                    className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${
+                      // 🚀 如果是當前選中的檔案，給予高亮樣式
+                      selectedFileId === item.dbId 
+                        ? 'bg-white/10 border-[#10B981] shadow-[0_0_10px_rgba(16,185,129,0.2)]' 
+                        : 'bg-[#27272A] border-[#10B981]/30 hover:bg-[#3F3F46]'
+                    }`}
+                  >
+                    {/* 阻擋冒泡：點擊 Checkbox 時不要觸發整列的選取 */}
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <Checkbox 
+                          color="danger"
+                          isSelected={selectedPublishIds.includes(item.dbId)}
+                          onValueChange={() => onTogglePublish(item.dbId)}
+                      />
                     </div>
-                  ))}
-                </div>
+                    
+                    {/* 🚀 加上小圖示區分 3D 還是 PDF */}
+                    {item.type === '3d' ? <Box size={14} className="text-blue-400 shrink-0"/> : <FileText size={14} className="text-orange-400 shrink-0"/>}
+
+                    <Tooltip content={`${item.name}`} placement='bottom' className='bg-black text-white'>
+                      <span className={`text-sm truncate flex-grow ${selectedPublishIds.includes(item.dbId) ? 'text-white font-bold' : 'text-gray-200'}`}>
+                          {item.name}
+                      </span>
+                    </Tooltip>
+                    
+                    {/* 阻擋冒泡：點擊按鈕時不要觸發整列的選取 */}
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                      {/* 🚀 只有 3D 模型才顯示 Focus 按鈕 */}
+                      {item.type === '3d' && (
+                        <button onClick={(e) => focusModel(item.name, e)} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
+                      )}
+                      <button onClick={(e) => { removeModelFromScene(item.name); }} className="text-gray-400 hover:text-danger"><BrushCleaning size={16}/></button>
+                    </div>
+                  </div>
+                ))}
               </div>
-           </div>
+            </div>
+          </div>
         )}
 
         {/* 2. 雲端庫存 (分類顯示) */}

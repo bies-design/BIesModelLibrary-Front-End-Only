@@ -27,10 +27,6 @@ model User {
   // 建立與 Account 的關聯 (User 能有多個 Account) provider不同會有不同account
   accounts Account[]
 
-  //之後清理掉
-  models Model[]
-  pdfs Pdf[]
-
   fileRecords FileRecord[]
 
   posts     Post[]

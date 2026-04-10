@@ -13,22 +13,18 @@ import { error } from "console";
 
 interface UpdatePostParams {
     shortId: string;
-    postType: '2D' | '3D';
     metadata: Metadata;
     coverImageKey: string | null;
     imageKeys: string[];
-    modelIds?: string[];
-    pdfIds?: string[];
-    pdfsToDelete?: string[];
+    fileIds?: string[];
+    filesToDelete?: string[]; 
 }
 
 interface CreatePostParams {
-    postType: '2D' | '3D';
     metadata: Metadata;
     coverImageKey: string | null;
     imageKeys: string[];
-    modelIds?: string[];
-    pdfIds?: string[];
+    fileIds?: string[];
 }
 // This is for both 3d and 2d post
 export async function createPost(params: CreatePostParams) {
@@ -38,15 +34,52 @@ export async function createPost(params: CreatePostParams) {
         return { success: false, error: "Unauthorized" };
     }
     const { 
-        postType,
         metadata, 
         coverImageKey, 
         imageKeys, 
-        modelIds = [], 
-        pdfIds = [] 
+        fileIds = [],
     } = params;
     const isTeamPost = metadata.team && metadata.team !== "none" && metadata.team.trim() !== "";
     try {
+        let postType = "OTHER";
+
+        if (fileIds.length > 0) {
+            // 乖乖去資料庫把這些 ID 的真實檔名或 S3 fileId 撈出來
+            const fileRecords = await prisma.fileRecord.findMany({
+                where: { id: { in: fileIds } },
+                select: { fileId: true, name: true }
+            });
+
+            const types = fileRecords.map(record => {
+                // 優先使用 S3 的 fileId，如果沒有再看 name
+                const lowerName = (record.fileId || record.name || "").toLowerCase();
+                
+                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) {
+                    return 'MODEL_3D'; 
+                }
+                if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) {
+                    return 'DOCUMENT';
+                }
+                if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png')) { 
+                    return 'DRAWING';
+                }
+                if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
+                    return 'IMAGE';
+                }
+                return 'OTHER';
+            });
+
+            // 萃取出不重複的類別清單
+            const uniqueTypes = Array.from(new Set(types));
+
+            if (uniqueTypes.length === 1) {
+                // 只有一種檔案類型
+                postType = uniqueTypes[0];
+            } else if (uniqueTypes.length > 1) {
+                // 超過一種檔案類型，設定為 MIX
+                postType = "MIX";
+            }
+        }
         // 🚀 1. 準備基礎資料 (不包含關聯物件)
         const data: any = {
             shortId: shortId,
@@ -57,26 +90,41 @@ export async function createPost(params: CreatePostParams) {
             keywords: params.metadata.keywords,
             coverImage: params.coverImageKey!,
             images: params.imageKeys,
-            uploaderId: session.user.id,
+            uploader: {
+                connect: {id: session.user.id}
+            },
             relatedPosts: params.metadata.relatedPosts.map(post => post.id),
             permission: params.metadata.permission,
-            models: {
-                connect: modelIds.map(id => ({ id }))
-            },
-            pdfIds: {
-                connect: pdfIds.map(id => ({ id }))
-            },
+            files: {
+                connect: fileIds.map(id => ({ id }))
+            }
         };
 
-        // 🚀 2. 只有在確定有團隊時，才把 team 物件塞進去
-        if (isTeamPost) {
-            data.teamId = metadata.team;
+        if(isTeamPost){
+            data.team = {
+                connect: { id: metadata.team}
+            };
         }
-
         // 寫入 PostgreSQL
         const newPost = await prisma.post.create({
             data: data
         });
+
+        if (metadata.associations && metadata.associations.length > 0) {
+            // 過濾掉沒有 projectId 的無效資料 (防呆)
+            const validAssociations = metadata.associations.filter(a => a.projectId);
+            
+            if (validAssociations.length > 0) {
+                await prisma.projectAsset.createMany({
+                    data: validAssociations.map(assoc => ({
+                        postId: newPost.id,          // 剛剛建立的 Post ID
+                        projectId: assoc.projectId,  // 關聯的專案 ID
+                        phaseId: assoc.phaseId,      // 關聯的階段 ID (可能為 null，代表未分類)
+                        sortOrder: 0                 // 預設排序
+                    }))
+                });
+            }
+        }
 
         return { success: true, postId: newPost.id };
 
@@ -94,13 +142,11 @@ export async function updatePost(params: UpdatePostParams) {
 
     const { 
         shortId,
-        postType,
         metadata, 
         coverImageKey, 
         imageKeys, 
-        modelIds = [], 
-        pdfIds = [] ,
-        pdfsToDelete
+        fileIds = [], 
+        filesToDelete = []
     } = params;
 
     try {
@@ -113,7 +159,7 @@ export async function updatePost(params: UpdatePostParams) {
             return { success: false, error: "Post not found" };
         }
 
-        // 🛡️ 權限二次驗證 (Server 端防護)
+        // 🛡️ 權限二次驗證
         const isOwner = oldPost.uploaderId === session.user.id;
         const isTeamEditor = oldPost.team?.members.some(
             m => m.userId === session.user.id && ['OWNER', 'ADMIN', 'EDITOR'].includes(m.role)
@@ -123,51 +169,44 @@ export async function updatePost(params: UpdatePostParams) {
             return { success: false, error: "Permission denied" };
         }
 
-        // S3 垃圾回收 
+        // 🚀 1. 自動判斷 Post Type (跟 create 邏輯一模一樣)
+        let postType = "OTHER";
+        if (fileIds.length > 0) {
+            const fileRecords = await prisma.fileRecord.findMany({
+                where: { id: { in: fileIds } },
+                select: { fileId: true, name: true }
+            });
+
+            const types = fileRecords.map(record => {
+                const lowerName = (record.fileId || record.name || "").toLowerCase();
+                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) return 'MODEL_3D'; 
+                if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) return 'DOCUMENT';
+                if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png') || lowerName.endsWith('.dxf')) return 'DRAWING';
+                if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) return 'IMAGE';
+                return 'OTHER';
+            });
+
+            const uniqueTypes = Array.from(new Set(types));
+            postType = uniqueTypes.length === 1 ? uniqueTypes[0] : "MIX";
+        }
+
+        // 🚀 2. 處理 S3 垃圾回收 (Images & Files)
         const s3DeletePromises: Promise<any>[] = [];
         
-        // 判斷封面是否更換：如果有舊封面，且新封面 Key 跟舊的不同，就把舊的刪掉
+        // 處理舊封面
         if (oldPost.coverImage && oldPost.coverImage !== coverImageKey) {
-            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: oldPost.coverImage });
-            s3DeletePromises.push(
-                s3Client.send(command).catch(err => console.error(`刪除舊封面失敗: ${oldPost.coverImage}`, err))
-            );
+            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET || "images", Key: oldPost.coverImage });
+            s3DeletePromises.push(s3Client.send(command).catch(err => console.error(`刪除舊封面失敗`, err)));
         }
 
-        // 判斷附加圖片是否被刪除：濾出「存在於舊陣列，但不在新陣列」的圖片 Key
+        // 處理附加圖片
         const oldImages = oldPost.images || [];
         const removedImages = oldImages.filter(oldKey => !imageKeys.includes(oldKey));
-        
         removedImages.forEach(key => {
-            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: key });
-            s3DeletePromises.push(
-                s3Client.send(command).catch(err => console.error(`刪除舊圖片失敗: ${key}`, err))
-            );
+            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET || "images", Key: key });
+            s3DeletePromises.push(s3Client.send(command).catch(err => console.error(`刪除舊圖片失敗`, err)));
         });
 
-        if(pdfsToDelete && pdfsToDelete.length > 0){
-            const pdfRecords = await prisma.pdf.findMany({
-                where: {id: { in: pdfsToDelete }},
-                select: {id:true, fileId:true}
-            });
-
-            pdfRecords.forEach(pdf => {
-                if(pdf.fileId){
-                    const command = new DeleteObjectCommand({ Bucket: process.env.S3_PDF_BUCKET, Key: pdf.fileId });
-                    s3DeletePromises.push(
-                        s3Client.send(command)
-                            .then(() => console.log(`MinIO PDF 已刪除: ${pdf.fileId}`))
-                            .catch(err => console.error(`MinIO PDF 刪除失敗: ${pdf.fileId}`, err))
-                    )
-                }
-            });
-
-            await prisma.pdf.deleteMany({
-                where:{id: {in: pdfsToDelete}}
-            });
-            console.log(`✅ 已從資料庫清除 ${pdfsToDelete.length} 個 PDF 紀錄`);
-        }
-        // 執行所有刪除任務 (不阻塞主流程，讓它在背景刪除即可，但這裡用 await 確保穩定也可以)
         await Promise.all(s3DeletePromises);
 
         // 🚀 3. 準備更新資料庫的 payload
@@ -177,36 +216,54 @@ export async function updatePost(params: UpdatePostParams) {
             title: metadata.title,
             category: metadata.category,
             description: metadata.description,
-            type: postType,
+            type: postType, // 👈 塞入重新判斷的 Type
             keywords: metadata.keywords,
             coverImage: coverImageKey!,
             images: imageKeys,
-            // 將 Client 傳來的 {id, title}[] 轉回 Prisma 需要的 string[]
             relatedPosts: metadata.relatedPosts.map(post => post.id), 
             permission: metadata.permission,
-            // 重新設定關聯：使用 set 會自動替換掉舊的關聯，換成這個新的陣列
-            models: {
-                set: modelIds.map(id => ({ id }))
-            },
-            pdfIds: {
-                set: pdfIds.map(id => ({ id }))
-            },
+            files: {
+                // Prisma 的 set 操作會自動幫我們拔掉舊關聯，並綁上這批新的 ID
+                set: fileIds.map(id => ({ id })) 
+            }
         };
 
-        // 處理團隊關聯的切換
+        // 處理團隊關聯
         if (isTeamPost) {
             updateData.teamId = metadata.team;
         } else {
-            updateData.teamId = null; // 如果從有團隊改成「個人(none)」，就要設為 null
+            updateData.teamId = null;
         }
 
-        //  4. 執行 Prisma 更新
+        // 4. 執行 Prisma 更新
         const updatedPost = await prisma.post.update({
             where: { shortId: shortId },
             data: updateData
         });
 
-        // 刷新快取，確保列表頁和詳細頁拿到最新資料
+        // 5. 更新專案關聯 (ProjectAsset) - Wipe and Replace 策略
+        // 先砍掉舊的關聯
+        await prisma.projectAsset.deleteMany({
+            where: { postId: updatedPost.id }
+        });
+
+        // 再寫入新的關聯
+        if (metadata.associations && metadata.associations.length > 0) {
+            const validAssociations = metadata.associations.filter(a => a.projectId);
+            
+            if (validAssociations.length > 0) {
+                await prisma.projectAsset.createMany({
+                    data: validAssociations.map(assoc => ({
+                        postId: updatedPost.id,
+                        projectId: assoc.projectId,
+                        phaseId: assoc.phaseId,
+                        sortOrder: 0
+                    }))
+                });
+                console.log(`✅ 已更新 ${validAssociations.length} 筆專案關聯`);
+            }
+        }
+
         revalidatePath("/");
         revalidatePath(`/post/${updatedPost.shortId}`);
 
@@ -377,57 +434,6 @@ export const getPostsByScroll = async (
     }
 };
 
-// 用來抓取3D post的detail
-export const get3DPostDetail = async (shortId: string) => {
-    try {
-        const post = await prisma.post.findUnique({
-            where: { shortId: shortId },
-            //使用 include 把關聯資料完整打包
-            include: {
-                models: true, // 供下載按鈕與 3D Viewer 使用
-                uploader: {   // 供左下角作者資訊區塊使用
-                    select: { id: true, userName: true, image: true }
-                },
-                // 如果未來有建立留言 (comments) 的關聯，也可以加在這裡
-                // comments: { include: { user: true } } 
-            },
-        });
-
-        if (!post) return { success: false, error: "Post not found" };
-
-        return { success: true, data: post };
-    } catch (error) {
-        console.error("Failed to fetch post detail:", error);
-        return { success: false, error: "Database error" };
-    }
-};
-
-// 用來抓取2D post的detail
-export const get2DPostDetail = async (shortId: string) => {
-    try {
-        const post = await prisma.post.findUnique({
-            where: { shortId: shortId },
-            // 【關鍵】使用 include 把關聯資料完整打包
-            include: {
-                models: true, // 供下載按鈕與 3D Viewer 使用
-                pdfIds: true,   // 供下載與 PDF Viewer 使用
-                uploader: {   // 供左下角作者資訊區塊使用
-                    select: { id: true, userName: true, image: true }
-                },
-                // 如果未來有建立留言 (comments) 的關聯，也可以加在這裡
-                // comments: { include: { user: true } } 
-            },
-        });
-
-        if (!post) return { success: false, error: "Post not found" };
-
-        return { success: true, data: post };
-    } catch (error) {
-        console.error("Failed to fetch post detail:", error);
-        return { success: false, error: "Database error" };
-    }
-};
-
 export const getRelatedPostsByIds = async (postIds: string[]) => {
     // 防呆：如果傳進來的陣列是空的，直接回傳空陣列，不要去吵資料庫
     if (!postIds || postIds.length === 0) {
@@ -493,10 +499,7 @@ export const getPostDetail = async (shortId: string) => {
     try {
         const post = await prisma.post.findUnique({
             where: { shortId: shortId },
-            // 把 models 和 pdfs 一次全部 include 起來
             include: {
-                models: true, 
-                pdfIds: true, // 依照你先前的命名，這裡是 pdfIds
                 files:true,
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
@@ -549,8 +552,8 @@ export const getEditPostDetail = async (shortId: string) => {
             where: { shortId: shortId },
             // 把 models 和 pdfs 一次全部 include 起來
             include: {
-                models: true, 
-                pdfIds: true, // 依照你先前的命名，這裡是 pdfIds
+                files: true,
+                projectAssets:true ,
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
                 },
@@ -574,7 +577,10 @@ export const getEditPostDetail = async (shortId: string) => {
 
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
-        const publicCoverImageUrls = `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
+
+        const publicCoverImageUrls = post.coverImage 
+            ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` 
+            : "";
 
         let publicImagesArray: string[] = [];
         if (post.images && Array.isArray(post.images) && post.images.length > 0) {
@@ -598,6 +604,12 @@ export const getEditPostDetail = async (shortId: string) => {
             
             formattedRelatedPosts = relatedPostsData;
         }
+
+        const associations = post.projectAssets.map(asset => ({
+            projectId: asset.projectId,
+            phaseId: asset.phaseId
+        }));
+
         return { 
             success: true, 
             data: {
@@ -605,6 +617,7 @@ export const getEditPostDetail = async (shortId: string) => {
                 coverImage: publicCoverImageUrls,
                 images: publicImagesArray,
                 relatedPosts: formattedRelatedPosts,
+                associations: associations
             }
         };
     } catch (error) {
@@ -613,130 +626,58 @@ export const getEditPostDetail = async (shortId: string) => {
     }
 };
 
-// Delete 2D post and its related pdf files on db and minio
-export async function delete2DPost(postId: string) {
+export async function deletePost(postId: string){
     try{
-        // 1. 查詢該貼文，並帶出關聯的 PDF 資料
+        // 1. 查詢該貼文，並帶出所有關聯的檔案 (FileRecord)
         const post = await prisma.post.findUnique({
-            where:{id:postId},
-            include:{pdfIds:true}
+            where: { id: postId },
+            include: { files: true } // 🚀 抓取合併後的新檔案關聯
         });
 
-        if(!post){
+        if (!post) {
             return { success: false, error: "找不到該貼文" };
         }
 
         const s3DeletePromises: Promise<void>[] = [];
-
+        
         // ==========================================
-        // 清理圖片 (Cover Image & Additional Images)
+        // 1. 清理圖片 (Images Bucket: 封面 & 附加圖片)
         // ==========================================
         const imageKeysToDelete: string[] = [];
-        if(post.coverImage){
+        if (post.coverImage) {
             imageKeysToDelete.push(post.coverImage);
         }
-        if(post.images && post.images.length > 0){
+        if (post.images && post.images.length > 0) {
             imageKeysToDelete.push(...post.images);
         }
+        
+        const imagesBucket = process.env.S3_IMAGES_BUCKET || "images";
         imageKeysToDelete.forEach((key) => {
-            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: key});
+            const command = new DeleteObjectCommand({ Bucket: imagesBucket, Key: key });
             s3DeletePromises.push(
                 s3Client.send(command)
-                    .then(() => console.log(`minio圖片已刪除: ${key}`))
-                    .catch(err => console.log(`minio圖片刪除失敗: ${key}`,err))
-            )
-        })
+                    .then(() => console.log(`[S3] 圖片已刪除: ${key}`))
+                    .catch(err => console.log(`[S3] 圖片刪除失敗: ${key}`, err))
+            );
+        });
 
         // ==========================================
-        // 清理 PDF (實體檔案 & 資料庫紀錄)
-        // ==========================================
-        if (post.pdfIds && post.pdfIds.length > 0) {
-            // 建立 PDF 實體檔案刪除任務
-            post.pdfIds.forEach((pdf) => {
-                if (pdf.fileId) {
-                    const command = new DeleteObjectCommand({ Bucket: process.env.S3_PDF_BUCKET, Key: pdf.fileId });
-                    s3DeletePromises.push(
-                        s3Client.send(command)
-                            .then(() => console.log(`MinIO PDF 已刪除: ${pdf.fileId}`))
-                            .catch(err => console.error(`MinIO PDF 刪除失敗: ${pdf.fileId}`, err))
-                    );
-                }
-            });
-            
-            // 從資料庫中刪除這些 Pdf 紀錄
-            const pdfDbIds = post.pdfIds.map(pdf => pdf.id);
-            await prisma.pdf.deleteMany({
-                where: {
-                    id: { in: pdfDbIds }
-                }
-            });
-        }
-        // ==========================================
-        // 等待所有 MinIO 刪除任務完成，再刪除貼文
+        // 3. 等待所有 S3 刪除任務完成，再刪除貼文
         // ==========================================
         await Promise.all(s3DeletePromises);
 
-        // 5. 最後刪除貼文本身
+        // 4. 最後刪除貼文本身
         await prisma.post.delete({
             where: { id: postId }
         });
 
-
         // 刪除後更新首頁或列表頁的快取
         revalidatePath("/");
-        return{ success:true };
-    }catch(e){
-        console.error("刪除貼文失敗",e);
-        return {success: false, error:"刪除失敗"};
-    }
-}
+        return { success: true };
 
-export async function delete3DPost(postId: string) {
-    try{
-        const post = await prisma.post.findUnique({
-            where:{id:postId},
-        });
-        
-        if(!post){
-            return { success: false, error: "找不到該貼文" };
-        }
-
-        const s3DeletePromises: Promise<void>[] = [];
-
-        // ==========================================
-        // 清理圖片 (Cover Image & Additional Images)
-        // ==========================================
-        const imageKeysToDelete: string[] = [];
-        if(post.coverImage){
-            imageKeysToDelete.push(post.coverImage);
-        }
-        if(post.images && post.images.length > 0){
-            imageKeysToDelete.push(...post.images);
-        }
-        imageKeysToDelete.forEach((key) => {
-            const command = new DeleteObjectCommand({ Bucket: process.env.S3_IMAGES_BUCKET, Key: key});
-            s3DeletePromises.push(
-                s3Client.send(command)
-                    .then(() => console.log(`minio圖片已刪除: ${key}`))
-                    .catch(err => console.log(`minio圖片刪除失敗: ${key}`,err))
-            )
-        })
-
-        // ==========================================
-        // 等待所有 MinIO 刪除任務完成，再刪除貼文
-        // ==========================================
-        await Promise.all(s3DeletePromises);
-
-        await prisma.post.delete({
-            where: { id:postId }
-        });
-
-        // 刪除後更新首頁或列表頁的快取
-        revalidatePath("/");
-        return{ success:true };
-    }catch(e){
-        console.error("刪除貼文失敗",e);
-        return {success: false, error:"刪除失敗"};
+    } catch (e) {
+        console.error("刪除貼文失敗", e);
+        return { success: false, error: "刪除失敗" };
     }
 }
 

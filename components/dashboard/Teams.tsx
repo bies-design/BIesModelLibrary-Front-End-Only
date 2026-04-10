@@ -474,9 +474,9 @@ const Teams = () => {
                 </Dropdown>
             </div>
 
-            {/* 🚀 動態團隊描述與小圓點 */}
-            <div className='ml-2 md:ml-16 flex flex-col gap-2'>
-                <div className='w-full flex items-center gap-2'>
+            {/*  動態團隊描述與小圓點 */}
+            <div className='ml-2 md:ml-16 flex flex-col md:flex-row gap-2'>
+                <div className='flex items-center gap-2'>
                     {teamDetails?.color && teamDetails.color !== "" && (
                         <span 
                             className="w-3 h-3 rounded-full shrink-0 shadow-sm border border-white/10" 
@@ -491,7 +491,7 @@ const Teams = () => {
                             router.push(`/projects/${currentTeamId}`);
                         }
                     }}
-                    className="w-[150px] hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors"
+                    className="shrink-0 w-[150px] hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors"
                     variant="flat"
                     startContent={<CirclePlus size={16} />}
                 >
@@ -499,7 +499,7 @@ const Teams = () => {
                 </Button>
             </div>
             
-            {/* 🚀 用於編輯的 Modal */}
+            {/* 用於編輯的 Modal */}
             <TeamSettingsModal 
                 isOpen={isSettingsOpen} 
                 onOpenChange={onSettingsChange}

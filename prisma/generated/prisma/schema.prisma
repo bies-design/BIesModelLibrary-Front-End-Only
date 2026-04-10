@@ -99,46 +99,6 @@ enum ProcessStatus {
   error
 }
 
-// prisma/schema/model.prisma
-
-model Model {
-  id      String @id @default(uuid())
-  shortId String @unique // 用於分享的短 ID
-  name    String // 原始檔名
-  fileId  String @unique // MinIO / Tus ID (關鍵關聯)
-
-  // 建立與 User 的關聯
-  uploaderId String // 外鍵欄位
-  uploader   User   @relation(fields: [uploaderId], references: [id])
-  size       String @default("") // 檔案大小 (bytes)
-
-  status       ProcessStatus @default(uploading)
-  errorMessage String?
-
-  // 關聯：Prisma 會自動跨檔案識別 Post 模型
-  posts Post[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// prisma/schema/pdfs.prisma
-
-model Pdf {
-  id     String @id @default(uuid())
-  name   String // 原始檔名
-  fileId String @unique // MinIO / Tus ID (關鍵關聯)
-
-  // 建立與 User 的關聯
-  uploaderId String // 外鍵欄位
-  uploader   User   @relation(fields: [uploaderId], references: [id])
-
-  posts Post[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Phase {
   id        String @id @default(uuid())
   name      String // "概念設計", "細部設計" 等
@@ -168,9 +128,6 @@ model Post {
   coverImage String
   images     String[]
 
-  // 關聯到 Model (3D 檔案)
-  models     Model[]
-  pdfIds     Pdf[]
   // 任何檔案類型都可以兼容
   files      FileRecord[]
   // pdf Pdf @relation(fields: [pdfId], references: [id])
@@ -240,7 +197,6 @@ model ProjectAsset {
 
   createdAt DateTime @default(now())
 
-  // 防呆：同一個專案的同一個階段下，不能重複加入同一篇 Post
   @@unique([projectId, phaseId, postId])
 }
 
@@ -312,10 +268,6 @@ model User {
 
   // 建立與 Account 的關聯 (User 能有多個 Account) provider不同會有不同account
   accounts Account[]
-
-  //之後清理掉
-  models Model[]
-  pdfs   Pdf[]
 
   fileRecords FileRecord[]
 

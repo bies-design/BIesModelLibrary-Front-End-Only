@@ -157,28 +157,6 @@ exports.Prisma.FileRecordScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ModelScalarFieldEnum = {
-  id: 'id',
-  shortId: 'shortId',
-  name: 'name',
-  fileId: 'fileId',
-  uploaderId: 'uploaderId',
-  size: 'size',
-  status: 'status',
-  errorMessage: 'errorMessage',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PdfScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  fileId: 'fileId',
-  uploaderId: 'uploaderId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.PhaseScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -310,8 +288,6 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Comment: 'Comment',
   FileRecord: 'FileRecord',
-  Model: 'Model',
-  Pdf: 'Pdf',
   Phase: 'Phase',
   Post: 'Post',
   Project: 'Project',

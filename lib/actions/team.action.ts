@@ -3,7 +3,8 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
+import { s3Client } from "../s3";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 /**
  * 建立一個新團隊，並自動將建立者設為 OWNER
  */
@@ -395,13 +396,14 @@ export async function updateTeamSettings(
     try {
         // 1. 權限檢查：只有 OWNER 或 ADMIN 可以修改設定
         const member = await prisma.teamMember.findFirst({
-            where: { teamId, userId }
+            where: { teamId, userId },
+            include: { team:true }
         });
 
         if (!member || (member.role !== 'OWNER' && member.role !== 'ADMIN')) {
             return { success: false, error: "權限不足" };
         }
-
+        const oldAvatarKey = member.team.avatar;
         // 2. 更新資料庫
         const updatedTeam = await prisma.team.update({
             where: { id: teamId },
@@ -413,6 +415,23 @@ export async function updateTeamSettings(
             }
         });
 
+        // 若有更新avatar則刪除原先舊的照片
+        // 如果「有傳入新圖片」且「有舊圖片」且「新舊圖片不同」
+        if (data.avatar && oldAvatarKey && data.avatar !== oldAvatarKey) {
+            try {
+                const deleteCommand = new DeleteObjectCommand({
+                    Bucket: process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET!, // 你的 Bucket 名稱
+                    Key: oldAvatarKey, // 舊的檔案名稱
+                });
+                
+                await s3Client.send(deleteCommand);
+                console.log(`✅ 成功從 MinIO 刪除舊的大頭貼: ${oldAvatarKey}`);
+            } catch (s3Error) {
+                // ⚠️ 注意：S3 刪除失敗不應該讓整個 Action 報錯回傳 false
+                // 因為資料庫已經更新成功了。所以這裡只要 catch 起來印個 log 就好。
+                console.error("❌ 從 MinIO 刪除舊大頭貼失敗:", s3Error);
+            }
+        }
         revalidatePath('/dashboard');
         return { success: true, data: updatedTeam };
     } catch (error) {

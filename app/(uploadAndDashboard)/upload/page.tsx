@@ -9,25 +9,25 @@ import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
 import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Loader2,Menu,X } from 'lucide-react';
+import { Box, ChevronLeft, ChevronRight, FileText, Loader2, Menu, X, Image as ImageIcon } from 'lucide-react';
 import { Model,UIModel } from '@/types/upload';
-import { createPdfRecord } from '@/lib/actions/pdf.action';
 import { createPost } from '@/lib/actions/post.action';
 import { SelectedPost } from '@/components/modals/RelatedPostModal';
+import { addToast } from '@heroui/react';
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
     file: File;
-    type: '3d' | 'pdf';
+    type: '3d' | 'pdf' |'other';
     name: string;
     fileId?:string;
 }
 
 const Upload = () => {
+    const coverInputRef = useRef<HTMLInputElement>(null);
     const [isMobileStepNavOpen, setIsMobileStepNavOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [step, setStep] = useState<number>(1);
-    const [postType, setPostType] = useState<'2D' | '3D'>('3D');
     const [uploadedFiles, setUploadedFiles] = useState<FileItem[]>([]);
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
     const [loadedFiles, setLoadedFiles] = useState<FileItem[]>([]);
@@ -46,8 +46,11 @@ const Upload = () => {
         description: "",
         permission: "standard",
         team: "",
+        associations: [],
         relatedPosts: []
     });
+    // 要被送進資料庫的
+    const [selectedPublishIds, setSelectedPublishIds] = useState<string[]>([]);
 
     const viewerRef = useRef<Viewer3DRef>(null);
     const pdfRef = useRef<PDFViewerRef>(null);
@@ -88,23 +91,6 @@ const Upload = () => {
     };
     // 處理下一步按鈕
     const handleNextButton = async () => {
-        if (step === 2) {
-            let screenshotUrl: string | null = null;
-            
-            if (selectedFile?.type === 'pdf' && pdfRef.current) {
-                // 如果 PDFViewer 也是回傳 Base64，建議之後也可以改成 Blob
-                screenshotUrl = await pdfRef.current.takeScreenshot();
-            } else if (viewerRef.current) {
-                screenshotUrl = await viewerRef.current.takeScreenshot();
-            }
-
-            if (screenshotUrl) {
-                // 這裡拿到的 screenshotUrl 現在是 "blob:http://localhost:3000/..."
-                // 短小精幹，不會塞爆記憶體
-                setCoverImage(screenshotUrl);
-                console.log("封面擷取成功！(Blob URL)");
-            }
-        }
         if (step === 3) {
             // 最後一步點擊 Create
             handleCreate();
@@ -113,75 +99,25 @@ const Upload = () => {
         setStep((next) => Math.min(next + 1, 3));
     };
 
-    // 處理最終建立邏輯
+    //  建立貼文
     const handleCreate = async () => {
-        console.log("正在建立模型卡片...", {
-            files: uploadedFiles,
-            cover: coverImage,
-            additionalImages: additionalImages,
-            metadata: metadata 
-        });
-
-        // --- 0. 防呆驗證 ---
-        if(postType === '3D' && loadedFiles.length === 0) {
-            alert("請載入至少一個模型!");
+        // 防呆：如果都沒打勾就擋下來
+        if (selectedPublishIds.length === 0) {
+            addToast({ title: "錯誤", description: "請至少勾選一個要發布的檔案!", color: "danger" });
             return;
         }
-        if(postType === '2D' && uploadedFiles.length === 0) {
-            alert("請至少載入一個PDF!");
+        if(!coverImage){
+            addToast({ title: "錯誤", description: "請上傳一張封面圖!", color: "danger" });
             return;
         }
-
+        if(metadata.title === "" || metadata.title === null){
+            addToast({ title: "錯誤", description: "標題不可為空!", color: "danger" });
+            return;
+        }
         setIsSubmitting(true);
 
         try {
-            let dbPdfIds: string[] = [];
-            let dbModelIds: string[] = [];
-
-            // --- 1. 優先處理核心檔案 (PDF 或 Models) ---
-            console.log("1. 處理核心檔案...");
-            
-            if (postType === '3D') {
-                // 3D 模型已經在前面步驟上傳並建檔完畢，這裡只要整理 ID 即可
-                dbModelIds = loadedFiles.map(file => file.dbId);
-                
-            } else if (postType === '2D') {
-                // 2D 必須先確保 PDF 都能成功上傳，否則直接中斷，不浪費時間傳圖片
-                for(const file of uploadedFiles){
-                    try {
-                        const formData = new FormData();
-                        formData.append("file", file.file);
-
-                        const uploadRes = await fetch("/api/pdfs", { method: "POST", body: formData });
-                        if (!uploadRes.ok) throw new Error(`PDF ${file.name} 上傳 MinIO 失敗`);
-
-                        const uploadData = await uploadRes.json();
-                        const minioFileId = uploadData.key;
-                        
-                        const dbRecord = await createPdfRecord({
-                            name: file.name,
-                            fileId: minioFileId,
-                        });
-
-                        if (!dbRecord.success || !dbRecord.id) {
-                            throw new Error(`PDF ${file.name} 寫入資料庫失敗: ${dbRecord.error}`);
-                        }
-
-                        dbPdfIds.push(dbRecord.id);
-                        console.log(`✅ ${file.name} 上傳並建檔成功，DB_ID: ${dbRecord.id}`);
-                    } catch (error) {
-                        console.error(error);
-                        throw new Error(`處理 PDF 檔案 ${file.name} 時發生錯誤，中止發布`);
-                    }
-                }
-
-                if (dbPdfIds.length === 0) {
-                    throw new Error("沒有成功上傳任何 PDF 檔案");
-                }
-            }
-
-            // --- 2. 核心檔案安全過關後，才開始上傳圖片 ---
-            console.log("2. 核心檔案過關，開始上傳圖片...");
+            console.log("開始上傳封面與展示圖片...");
             let coverKey: string | null = null;
             if (coverImage) {
                 coverKey = await uploadImageToMinIO(coverImage, "cover.png");
@@ -190,14 +126,8 @@ const Upload = () => {
             const imageKeys: string[] = [];
             if (additionalImages.length > 0) {
                 const uploadPromises = additionalImages.map(async (img) => {
-                    // 如果它是一張新圖片 (有實體的 File 物件)
-                    if(img.file){
-                        return await uploadFileDirectly(img.file);
-                    }
-                    //如果它是一張舊圖片 (沒有 file，但有原本的 key)
-                    else if(img.key){
-                        return img.key;
-                    }
+                    if (img.file) return await uploadFileDirectly(img.file);
+                    else if (img.key) return img.key;
                     return null;
                 });
                 const results = await Promise.all(uploadPromises);
@@ -206,19 +136,17 @@ const Upload = () => {
                 });
             }
 
-            // --- 3. 所有檔案都就緒，統一呼叫 Server Action 寫入 Post 資料庫 ---
-            console.log("3. 所有檔案就緒，準備寫入資料庫 Post...");
+            console.log("所有資料就緒，寫入資料庫 Post...");
             const result = await createPost({
-                postType: postType,
                 metadata: metadata,
                 coverImageKey: coverKey,
                 imageKeys: imageKeys,
-                modelIds: dbModelIds, // 3D 的陣列 (2D 時為空)
-                pdfIds: dbPdfIds,     // 2D 的陣列 (3D 時為空)
+                // 🚀 霸氣！直接把打勾的陣列丟給後端，其他分類邏輯全部刪掉！
+                fileIds: selectedPublishIds, 
             });
 
             if (result.success) {
-                console.log("✅ 建立成功！");
+                console.log("✅ 發布成功！");
                 router.push('/?status=success');
             } else {
                 throw new Error(result.error);
@@ -226,13 +154,25 @@ const Upload = () => {
 
         } catch (error) {
             console.error("建立失敗:", error);
-            // 讓使用者知道具體死在哪一步
-            alert(error instanceof Error ? error.message : "建立失敗，請稍後再試");
+            addToast({ title: "發布失敗", description: error instanceof Error ? error.message : "請稍後再試", color: "danger" });
         } finally {
-            setIsSubmitting(false); // 記得加上 finally 來確保按鈕解鎖
+            setIsSubmitting(false); 
         }
     };
 
+    // 處理封面圖上傳的邏輯
+    const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // 如果原本有暫存的預覽圖，先釋放記憶體
+            if (coverImage && coverImage.startsWith('blob:')) {
+                URL.revokeObjectURL(coverImage);
+            }
+            // 產生新的預覽網址
+            const url = URL.createObjectURL(file);
+            setCoverImage(url);
+        }
+    };
     // 直接上傳 File 物件 (給 additionalImages 用)
     const uploadFileDirectly = async (file: File) => {
         const formData = new FormData();
@@ -255,113 +195,203 @@ const Upload = () => {
 
         setStep((prev) => Math.max(prev - 1, 1));
     };
+    // 🚀 動態決定要渲染哪一個 Viewer
+    const renderViewer = () => {
+        // 如果還沒選擇檔案，給一個預設的空狀態畫面
+        if (!selectedFile) {
+            return (
+                <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                    <Box size={48} className="opacity-20 mb-4" />
+                    <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
+                </div>
+            );
+        }
+
+        const lowerName = selectedFile.name.toLowerCase();
+
+        // 1. 判斷 3D 模型 (.ifc, .obj, .gltf 等等)
+        if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || selectedFile.type === '3d') {
+            return (
+                <Viewer3D 
+                    ref={viewerRef} 
+                    allFiles={uploadedFiles} 
+                    file={selectedFile.file} 
+                    onIFCProcessingChange={handleIFCProcessingChange} 
+                />
+            );
+        }
+
+        // 2. 判斷 PDF
+        if (lowerName.endsWith('.pdf') || selectedFile.type === 'pdf') {
+            return (
+                <PDFViewer 
+                    ref={pdfRef} 
+                    file={selectedFile.file} 
+                />
+            );
+        }
+
+        // 3. 💡 未來擴充範例：圖片預覽
+        if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg')) {
+            // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
+            return (
+                <div className="flex items-center justify-center w-full h-full bg-[#18181B] p-4">
+                    {/* 注意：如果是真的要做，記得處理 Blob URL 的釋放 */}
+                    <img src={URL.createObjectURL(selectedFile.file)} alt="preview" className="max-w-full max-h-full object-contain rounded-lg" />
+                </div>
+            );
+        }
+
+        // 4. 都不支援的 Fallback 畫面
+        return (
+            <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                <FileText size={48} className="opacity-20 mb-4" />
+                <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
+            </div>
+        );
+    };
+
     useEffect(() => {
         console.log(`選擇file:${selectedFile?.name}`);
         // console.log(uploadedFiles.map((a)=>(a.name)));   
     },[selectedFile,uploadedFiles])
     
     return (
-    <div className='min-h-screen bg-[#27272A] relative'>
-        {/* 全螢幕遮罩：當 isIFCProcessing 為 true 時顯示 */}
-        {/* {IFCProcessingStatus.isIFCProcessing && ( */}
-            
-        <div className='flex w-full h-screen gap-4 p-2 relative overflow-hidden'>
-            {/* 左側步驟導覽列 */}
-            <div className={`
-                z-60 rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
-                /* 📱 手機版設定：絕對定位、根據狀態滑出或隱藏 */
-                absolute top-0 left-0 h-[100%] w-[250px]
-                ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-full"}
-                /* 💻 電腦版設定 (md 以上)：恢復相對定位，取消隱藏，乖乖待在左邊 */
-                md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0 overflow-visible
-            `}>
-                <button 
-                    onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
-                    className="md:hidden py-2 absolute top-1/2 -translate-y-1/2 rounded-r-lg text-white bg-[#3F3F46] transition-all duration-300 shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]
-                    active:scale-95 left-[104%] -ml-[5px] z-10"
-                >
-                    {isMobileStepNavOpen ? <ChevronLeft size={24}/> : <ChevronRight size={24} />}
-                </button>
-                <SidebarBlobs/>
-                {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
-                <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
-                <SidebarUpload 
-                    currentStep={step}
-                    onNext={isSubmitting ? ()=>Promise<void> : handleNextButton}
-                    onBack={handleBackButton}
-                />
-            </div>
-            
-                {/* 右側 Viewer 區域 */}
-            
-            <div className='flex grow rounded-lg overflow-hidden p-1'>{/*p-1 for showing the outer shadow*/}
-                <div className='relative rounded-lg bg-[#18181B] grow shadow-[0px_3px_1.8px_0px_#FFFFFF29,0px_-2px_1.9px_0px_#00000040,0px_0px_4px_0px_#FBFBFB3D]'>
-                    {/* 內凹陰影裝飾層 */}
-                    <div className='absolute inset-0 z-50 rounded-lg pointer-events-none shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_0px_#00000099]'/>
-                    {/* 根據步驟與檔案類型渲染內容 */}
-                    <div className='rounded-lg w-full h-full overflow-hidden relative'>
-                        <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                            {(postType === '3D') ? (
-                                <Viewer3D 
-                                    ref={viewerRef} 
-                                    allFiles={uploadedFiles} 
-                                    file={selectedFile?.file} 
-                                    onIFCProcessingChange={handleIFCProcessingChange} 
+        <div className='min-h-screen bg-[#27272A] relative'>
+            {isSubmitting && (
+                <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/70 backdrop-blur-md text-white pointer-events-auto">
+                    <Loader2 className="w-16 h-16 animate-spin text-[#D70036] mb-6" />
+                    <h2 className="text-xl font-bold tracking-widest mb-2">正在上傳貼文中...</h2>
+                    <p className="text-sm text-[#A1A1AA]">請勿關閉或重新整理網頁，這可能需要一點時間</p>
+                </div>
+            )}
+                
+            <div className='flex w-full h-screen gap-4 p-2 relative overflow-hidden'>
+                {/* 左側步驟導覽列 */}
+                <div className={`
+                    z-60 rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
+                    /* 📱 手機版設定：絕對定位、根據狀態滑出或隱藏 */
+                    absolute top-0 left-0 h-[100%] w-[250px]
+                    ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-full"}
+                    /* 💻 電腦版設定 (md 以上)：恢復相對定位，取消隱藏，乖乖待在左邊 */
+                    md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0 overflow-visible
+                `}>
+                    <button 
+                        onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
+                        className="md:hidden py-2 absolute top-1/2 -translate-y-1/2 rounded-r-lg text-white bg-[#3F3F46] transition-all duration-300 shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]
+                        active:scale-95 left-[104%] -ml-[5px] z-10"
+                    >
+                        {isMobileStepNavOpen ? <ChevronLeft size={24}/> : <ChevronRight size={24} />}
+                    </button>
+                    <SidebarBlobs/>
+                    {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
+                    <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
+                    <SidebarUpload 
+                        currentStep={step}
+                        onNext={isSubmitting ? ()=>Promise<void> : handleNextButton}
+                        onBack={handleBackButton}
+                    />
+                </div>
+                
+                    {/* 右側 Viewer 區域 */}
+                
+                <div className='flex grow rounded-lg overflow-hidden p-1'>{/*p-1 for showing the outer shadow*/}
+                    <div className='relative rounded-lg bg-[#18181B] grow shadow-[0px_3px_1.8px_0px_#FFFFFF29,0px_-2px_1.9px_0px_#00000040,0px_0px_4px_0px_#FBFBFB3D]'>
+                        {/* 內凹陰影裝飾層 */}
+                        <div className='absolute inset-0 z-50 rounded-lg pointer-events-none shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_0px_#00000099]'/>
+                        {/* 根據步驟與檔案類型渲染內容 */}
+                        <div className='rounded-lg w-full h-full overflow-hidden relative'>
+                            <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
+                                {renderViewer()}
+                            </div>
+                            <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
+                                <ModelUploadSidebar 
+                                    getComponents={() => viewerRef.current?.getComponents() || null}
+                                    onFilesChange={setUploadedFiles}
+                                    onSelectFile={setSelectedFile}
+                                    selectedFileId={selectedFile?.dbId || null}
+                                    loadedFiles={loadedFiles}
+                                    setLoadedFiles={setLoadedFiles}
+                                    onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
+                                    onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
+                                    onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
+                                    onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
+                                    selectedPublishIds={selectedPublishIds}
+                                    onTogglePublish={(id) => setSelectedPublishIds(prev => 
+                                        prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+                                    )}
                                 />
-                            ) : (
-                                <PDFViewer 
-                                    ref={pdfRef} 
-                                    file={selectedFile?.file || null} 
-                                />
+                            </div>
+                            {step === 2 && (
+                                <div className='absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#18181B] p-6'>
+                                    <div className="max-w-lg w-full flex flex-col items-center">
+                                        <h2 className="text-2xl font-bold text-white mb-2">Cover Image</h2>
+                                        <p className="text-[#A1A1AA] text-sm mb-8 text-center">
+                                            上傳你的封面圖 <br/>
+                                            若無上傳封面圖，將會顯示站位圖
+                                        </p>
+                                        
+                                        <div 
+                                            className="w-full aspect-video border-2 border-dashed border-[#3F3F46] hover:border-[#D70036] rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all bg-[#27272A] relative overflow-hidden group"
+                                            onClick={() => coverInputRef.current?.click()}
+                                        >
+                                            {coverImage ? (
+                                                <>
+                                                    {/* 使用 img 標籤做純客戶端預覽最穩 */}
+                                                    <img src={coverImage} alt="Cover Preview" className="w-full h-full object-cover" />
+                                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                        <span className="text-white font-medium tracking-wider">Click to change</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex flex-col items-center text-[#A1A1AA] group-hover:text-white transition-colors">
+                                                    <ImageIcon size={48} className="mb-4 opacity-50 group-hover:opacity-100" />
+                                                    <p className="font-medium">Click or drag to upload</p>
+                                                    <p className="text-xs mt-2 opacity-60">Supported formats: JPG, PNG, WEBP</p>
+                                                </div>
+                                            )}
+                                            {/* 隱藏的 Input */}
+                                            <input 
+                                                type="file" 
+                                                ref={coverInputRef} 
+                                                className="hidden" 
+                                                accept="image/png, image/jpeg, image/jpg, image/webp" 
+                                                onChange={handleCoverUpload} 
+                                            />
+                                        </div>
+
+                                        {coverImage && (
+                                            <button 
+                                                onClick={() => setCoverImage(null)} 
+                                                className="mt-6 text-danger hover:text-red-400 text-sm font-medium transition-colors"
+                                            >
+                                                Remove Cover Image
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            {step === 3 && (
+                                <div className='w-full h-full p-8 bg-[#27272A] overflow-y-auto'>
+                                    <div className='max-w-[90%] mx-auto w-full font-inter'>
+                                        <h2 className="text-xl text-white">Metadata</h2>
+                                        <p className='text-xs text-[#A1A1AA] mb-2'>Fill in the model metadata make people more understand your model</p>
+                                        <MetadataForm
+                                            coverImage={coverImage}
+                                            onCoverChange={setCoverImage}
+                                            additionalImages={additionalImages}
+                                            onAdditionalImagesChange={setAdditionalImages}
+                                            metadata={metadata}
+                                            onMetadataChange={setMetadata}
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
-                        <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
-                            <ModelUploadSidebar 
-                                getComponents={() => viewerRef.current?.getComponents() || null}
-                                onFilesChange={setUploadedFiles}
-                                onSelectFile={setSelectedFile}
-                                selectedFileId={selectedFile?.dbId || null}
-                                loadedFiles={loadedFiles}
-                                setLoadedFiles={setLoadedFiles}
-                                onLoadModel={(buffer,modelName)=>viewerRef.current?.loadModel(buffer,modelName)}
-                                onFocusAllModel={()=>viewerRef.current?.focusAllModel()}
-                                onFocusModel={(modelId) => viewerRef.current?.focusModel(modelId)}
-                                onDeleteModel={(modelId) => viewerRef.current?.deleteModel(modelId)}
-                            />
-                        </div>
-                        {step === 2 && (
-                            <div className='w-full h-full flex items-center justify-center text-white relative pointer-events-none'>
-                                
-                                {/* 封面擷取範圍框 (紅色方框) */}
-                                <div className="absolute z-30 inset-0 flex items-center justify-center pointer-events-none">
-                                    <div className="w-full h-full rounded-lg aspect-video border-4 border-red-500 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]" />
-                                </div>
-                                <div className="absolute top-10 text-white bg-black/50 px-4 py-2 rounded-full">
-                                    請調整視角，點擊 Next 將擷取紅框範圍作為封面
-                                </div>
-                            </div>
-                        )}
-                        {step === 3 && (
-                            <div className='w-full h-full p-8 bg-[#27272A] overflow-y-auto'>
-                                <div className='max-w-[90%] mx-auto w-full font-inter'>
-                                    <h2 className="text-xl text-white">Metadata</h2>
-                                    <p className='text-xs text-[#A1A1AA] mb-2'>Fill in the model metadata make people more understand your model</p>
-                                    <MetadataForm
-                                        coverImage={coverImage}
-                                        onCoverChange={setCoverImage}
-                                        additionalImages={additionalImages}
-                                        onAdditionalImagesChange={setAdditionalImages}
-                                        metadata={metadata}
-                                        onMetadataChange={setMetadata}
-                                    />
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
-        </div>
-    </div> 
+        </div> 
     );
 }
 

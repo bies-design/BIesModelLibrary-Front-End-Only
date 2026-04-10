@@ -3,26 +3,32 @@
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-import { Folder, FolderOpen, File, Box, Plus, Edit2, Trash2, Link as LinkIcon, PlusCircle } from "lucide-react";
-
-// ⚠️ 請替換成你實際放 Server Actions 的路徑
+import { ArrowUp, ArrowDown, ArrowLeft, Folder, FolderOpen, File, Box, Plus, Edit2, Trash2, Link as LinkIcon, PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { 
     getProjectDetails, 
     createPhase, 
     deletePhase,
-    updatePhase, // 這是我幫你擴充的，請見下方說明
+    updatePhase,
     addPostToPhase,
     moveAssetToPhase,
     removeAssetFromProject,
-    getAvailablePosts
+    getAvailablePosts,
+    deleteProject,
+    updateProject,
+    reorderPhases,
+    reorderAssets
 } from "@/lib/actions/project.action"; 
+import { useDisclosure, addToast } from "@heroui/react";
 import { Project, ProjectStatus } from "@/prisma/generated/prisma";
+import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
 
 // --- 型別定義 (已根據你 Server Action 回傳的 include 結構更新) ---
 type FileRecord = { id: string; name: string; category: string; /* ...其他欄位 */ };
 
 type Post = {
     id: string;
+    shortId: string;
     title: string;
     category: string;
     type: string;
@@ -32,6 +38,7 @@ type Post = {
 type ProjectAsset = {
     id: string;
     phaseId: string | null;
+    sortOrder: number;
     post: Post;
 };
 
@@ -40,24 +47,27 @@ type Phase = {
     name: string;
     sortOrder: number;
 };
-type a = Project
+
 type ProjectData = {
     id: string;
-    name: string;
-    description?: string;
-    client?: string;
-    location?: string;
-    coverImage?: string;
-    status: ProjectStatus;
     teamId: string;
+    name: string;
+    description: string | null;
+    client: string | null;
+    location: string | null;
+    coverImage: string | null;
+    status: ProjectStatus;
     phases: Phase[];
     assets: ProjectAsset[];
+    createdAt: Date | string; 
+    updatedAt: Date | string; 
 };
 
 export default function ProjectDetailPage() {
+    const router = useRouter();
     const params = useParams();
     const projectId = params.id as string;
-
+    const teamIdRef = useRef<string>(null);
     // --- UI 渲染狀態 (useState) ---
     const [project, setProject] = useState<ProjectData | null>(null);
     const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
@@ -67,16 +77,17 @@ export default function ProjectDetailPage() {
     const [editingPhaseId, setEditingPhaseId] = useState<string | null>(null);
     const [phaseFormName, setPhaseFormName] = useState("");
 
-    // 資源選取 Modal 狀態 ---
+    // 資源選取 Modal 狀態
     const [isAddAssetModalOpen, setIsAddAssetModalOpen] = useState<boolean>(false);
     const [targetPhaseIdForAsset, setTargetPhaseIdForAsset] = useState<string | null>(null);
     const [availablePosts, setAvailablePosts] = useState<Post[]>([]);
 
+    const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange } = useDisclosure();
     // 使用 useRef 鎖定抓取 Post 資源庫的動作
-    const isFetchingPostsRef = useRef(false);
+    const isFetchingPostsRef = useRef<boolean>(false);
     // --- 邏輯控制鎖定標記 (useRef，嚴格遵守不觸發渲染、不入依賴陣列的規範) ---
-    const isFetchingRef = useRef(false);
-    const isSubmittingRef = useRef(false);
+    const isFetchingRef = useRef<boolean>(false);
+    const isSubmittingRef = useRef<boolean>(false);
 
     // 1. 載入專案資料 (改用 Server Action)
     useEffect(() => {
@@ -93,10 +104,11 @@ export default function ProjectDetailPage() {
             // 預設展開所有資料夾
             const initialExpanded: Record<string, boolean> = { unclassified: true };
             response.data.phases.forEach((p: Phase) => (initialExpanded[p.id] = true));
-            setExpandedNodes(initialExpanded);
+                setExpandedNodes(initialExpanded);
             } else {
-            console.error("專案載入失敗:", response.error);
+                console.error("專案載入失敗:", response.error);
             }
+            if(response.data?.teamId) teamIdRef.current = response.data?.teamId;
         } catch (error) {
             console.error("Server Action 執行錯誤:", error);
         } finally {
@@ -177,6 +189,30 @@ export default function ProjectDetailPage() {
         }
     };
 
+    const openEditProjectModal = () => {
+        if(project) {
+            onEditOpen();
+        }
+    };
+
+    const handleUpdateProject = async (formData: any) => {
+        try {
+            // 直接把 Modal 收集好的 formData 傳給後端
+            const res = await updateProject(projectId, formData);
+            
+            if (res.success && res.data) {
+                addToast({ title: "成功", description: "專案更新成功！", color: "success" });
+                // 更新成功，直接用新資料覆蓋前端狀態，畫面會即時更新
+                setProject(prev => prev ? { ...prev, ...res.data } : null);
+            } else {
+                addToast({ title: "錯誤", description: res.error || "更新專案失敗", color: "danger" });
+                throw new Error(res.error); // 拋出錯誤讓 Modal 攔截，不要關閉視窗
+            }
+        } catch (error) {
+            console.error("更新專案出錯", error);
+            throw error; // 繼續往上拋，觸發 Modal 內部的 catch
+        }
+    };
     // 5. 打開「加入資源」Modal 並獲取可用清單
     const openAddAssetModal = async (phaseId: string | null) => {
         setTargetPhaseIdForAsset(phaseId);
@@ -229,8 +265,66 @@ export default function ProjectDetailPage() {
         isSubmittingRef.current = false;
         }
     };
+    // 處理 Phase 上下移動
+    const handleReorderPhase = async (index: number, direction: 'up' | 'down') => {
+        if (isSubmittingRef.current || !project) return;
+        
+        const newPhases = [...project.phases].sort((a, b) => a.sortOrder - b.sortOrder);
+        if (direction === 'up' && index === 0) return;
+        if (direction === 'down' && index === newPhases.length - 1) return;
 
-    // 🌟 處理移除資源關聯
+        // 陣列元素交換
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        const temp = newPhases[index];
+        newPhases[index] = newPhases[swapIndex];
+        newPhases[swapIndex] = temp;
+
+        // 重新賦予 sortOrder
+        const updatedPhases = newPhases.map((p, i) => ({ ...p, sortOrder: i }));
+
+        // 樂觀更新 UI
+        setProject(prev => prev ? { ...prev, phases: updatedPhases } : null);
+
+        // 背景打 API
+        isSubmittingRef.current = true;
+        await reorderPhases(updatedPhases.map(p => ({ id: p.id, sortOrder: p.sortOrder })));
+        isSubmittingRef.current = false;
+    };
+
+    // 處理 Asset 上下移動
+    const handleReorderAsset = async (phaseId: string | null, index: number, direction: 'up' | 'down') => {
+        if (isSubmittingRef.current || !project) return;
+        
+        // 抓出該資料夾內的所有資源並排序
+        const phaseAssets = project.assets
+            .filter(a => a.phaseId === phaseId)
+            .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+        
+        if (direction === 'up' && index === 0) return;
+        if (direction === 'down' && index === phaseAssets.length - 1) return;
+
+        // 陣列元素交換
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+        const temp = phaseAssets[index];
+        phaseAssets[index] = phaseAssets[swapIndex];
+        phaseAssets[swapIndex] = temp;
+
+        // 整理出新的排序 Map
+        const updatedOrders = phaseAssets.map((a, i) => ({ id: a.id, sortOrder: i }));
+        const orderMap = new Map(updatedOrders.map(o => [o.id, o.sortOrder]));
+
+        // 樂觀更新 UI：更新整個 project.assets
+        const newAssets = project.assets.map(a => 
+            orderMap.has(a.id) ? { ...a, sortOrder: orderMap.get(a.id)! } : a
+        );
+        setProject(prev => prev ? { ...prev, assets: newAssets } : null);
+
+        // 背景打 API
+        isSubmittingRef.current = true;
+        await reorderAssets(updatedOrders);
+        isSubmittingRef.current = false;
+    };
+    // 處理移除資源關聯
     const handleRemoveAsset = async (projectAssetId: string) => {
         if (isSubmittingRef.current || !confirm("確定要將此資源從專案中移除嗎？這不會刪除原始檔案。")) return;
 
@@ -299,12 +393,42 @@ export default function ProjectDetailPage() {
         setPhaseFormName("");
     };
 
+    const handleDeleteProject = async() => {
+        if(isSubmittingRef.current || !confirm("⚠️ 警告：確定要刪除整個專案嗎？此動作無法復原！\n\n(專案內的資源與模型檔案仍會保留在您的資源庫中)")) return;
+        
+        isSubmittingRef.current = true;
+        try{
+            const response = await deleteProject(projectId);
+            if(response.success){
+                if(teamIdRef.current !== "" && teamIdRef.current !== null) {
+                    router.push(`/projects/${teamIdRef.current}`);
+                }else{
+                    router.back();
+                }
+            }else{
+                alert(response.error || "刪除專案失敗");
+            }
+        }catch(error){
+            console.error("刪除專案出錯", error);
+        }finally{
+            isSubmittingRef.current = false;
+        }
+    }
     if (!project) return <div className="flex justify-center items-center h-screen text-slate-500">載入專案中...</div>;
 
-    const unclassifiedAssets = project.assets.filter((a) => a.phaseId === null);
+    //解析 MinIO 圖片網址
+    const getImageUrl = (imageVal: string | null | undefined) => {
+        if(!imageVal) return "";
+        if(imageVal.startsWith("http")) return imageVal;
+        return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
+    };
+
+    const bgImageUrl = getImageUrl(project.coverImage);
+
+    const unclassifiedAssets = project.assets.filter((a) => a.phaseId === null).sort((a,b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     const getAssetsByPhase = (phaseId: string) => project.assets.filter((a) => a.phaseId === phaseId);
 
-    const renderAssetItem = (asset: ProjectAsset) => {
+    const renderAssetItem = (asset: ProjectAsset, index: number, total: number) => {
         const isModel = asset.post.category === "MODEL_3D";
         // 判斷目前所在的階段，如果為 null 則是 'unclassified'
         const currentPhaseValue = asset.phaseId || "unclassified";
@@ -312,17 +436,30 @@ export default function ProjectDetailPage() {
             <div key={asset.id} className="flex items-center justify-between py-2 pl-8 pr-4 hover:bg-slate-100 dark:hover:bg-slate-500 group border-l-2 border-transparent hover:border-blue-500 transition-colors">
                 {/* 左側：連結至 Post 詳情頁面 */}
                 <Link 
-                    href={`/post/${asset.post.}`}
-                    className="flex items-center gap-2 text-sm text-slate-700 hover:text-blue-600 transition-colors flex-1"
+                    href={`/post/${asset.post.shortId}`}
+                    className="flex items-center gap-2 text-sm text-slate-700 hover:text-blue-600 dark:text-white dark:hover:text-blue-300  transition-colors flex-1"
                 >
                     {isModel ? <Box size={16} className="text-blue-500" /> : <File size={16} className="text-slate-400" />}
                     <span className="font-medium">{asset.post.title}</span>
                 </Link>
-                <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-white">
-                    {isModel ? <Box size={16} className="text-blue-500" /> : <File size={16} className="text-slate-400" />}
-                    <span>{asset.post.title}</span>
-                </div>
+
                 <div className="flex items-center gap-3">
+                    <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button 
+                            onClick={() => handleReorderAsset(asset.phaseId, index, 'up')}
+                            disabled={index === 0}
+                            className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                        >
+                            <ArrowUp size={12} />
+                        </button>
+                        <button 
+                            onClick={() => handleReorderAsset(asset.phaseId, index, 'down')}
+                            disabled={index === total - 1}
+                            className="text-slate-400 hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400"
+                        >
+                            <ArrowDown size={12} />
+                        </button>
+                    </div>
                     {isModel && (
                         <button className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
                         [3D 瀏覽]
@@ -353,24 +490,75 @@ export default function ProjectDetailPage() {
     };
 
     return (
-        <div className="md:max-w-[90dvw] mx-auto p-6 border">
+        <div className="md:max-w-[90dvw] mx-auto p-6">
+            
             {/* 頭部資訊區 */}
-            <div className="bg-white dark:bg-black/50 rounded-xl shadow-sm  p-6 mb-6 flex justify-between items-start">
-                <div>
-                <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-2">
-                    📁 {project.name}
-                </h1>
-                <p className="text-sm text-slate-500 dark:text-white">業主：{project.client ? project.client : "未知"}</p>
-                <p className="text-sm text-slate-500 dark:text-white">地點：{project.location ? project.location : "未知"}</p>
-                <p className="text-sm text-slate-500 dark:text-white">描述：{project.description ? project.description : "無描述"}</p>
+            <div 
+                className={`relative rounded-xl shadow-sm p-6 mb-6 flex justify-between items-start overflow-hidden ${
+                    !bgImageUrl ? 'bg-white dark:bg-black/50' : 'text-white'
+                }`}
+                style={{
+                    backgroundImage: bgImageUrl 
+                        // 改用由左至右的漸層：左側 90% 黑確保文字清晰，右側 40% 黑透出圖片
+                        ? `linear-gradient(to right, rgba(24, 24, 27, 0.95) 20%, rgba(24, 24, 27, 0.4) 100%), url(${bgImageUrl})` 
+                        : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                }}
+            >         
+                {/* 左側：上一頁按鈕 + 專案資訊 */}
+                <div className="z-10 relative flex items-start gap-4">
+                    
+                    {/* 上一頁按鈕 */}
+                    <button 
+                        onClick={() => router.back()}
+                        className="absolute -top-4 -left-4 text-slate-400 hover:text-slate-700 dark:text-slate-100 dark:hover:text-slate-500 shrink-0"
+                        title="回上一頁"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
 
+                    {/* 專案文字資訊 */}
+                    <div>
+                        <h1 className={`text-2xl font-bold ${!bgImageUrl ? "text-slate-500 dark:text-white " : "text-white "} flex items-center gap-2 mb-2`}>
+                            📁 {project.name}
+                        </h1>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未知"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未知"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>描述：{project.description ? project.description : "無描述"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>上傳時間：{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString() : ""}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>最後編輯時間：{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</p>                        
+                    </div>
                 </div>
-                <button 
-                    onClick={() => openPhaseModal()}  
-                    className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-700 transition-colors"
-                >
-                <Plus size={16} /> 新增階段
-                </button>
+
+                {/* 右側：操作按鈕區 */}
+                <div className="flex flex-col items-center gap-3">
+                    {/* 新增階段按鈕 */}
+                    <button 
+                        onClick={() => openPhaseModal()}  
+                        className="flex items-center gap-2 hover-lift bg-slate-800 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-slate-700 transition-colors flex-shrink-0"
+                    >
+                        <Plus size={16} /> 新增階段
+                    </button>
+                    {/* 編輯專案按鈕 */}
+                    <button 
+                        onClick={openEditProjectModal}
+                        className="hover-lift flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-blue-100 dark:bg-blue-950/80 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors flex-shrink-0"
+                        title="編輯專案資訊"
+                    >
+                        <Edit2 size={16} /> 編輯資訊
+                    </button>
+                    {/* 刪除專案按鈕 */}
+                    <button 
+                        onClick={handleDeleteProject}
+                        className="flex items-center gap-2 hover-lift bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-red-100 dark:bg-red-950/80 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors flex-shrink-0"
+                        title="刪除此專案"
+                    >
+                        <Trash2 size={16} /> 刪除專案
+                    </button>
+
+                    
+                </div>
             </div>
 
             {/* 樹狀列表區 */}
@@ -378,9 +566,9 @@ export default function ProjectDetailPage() {
                 <div className="flex flex-col gap-1 select-none">
                 
                 {/* 1. 已建立的階段 */}
-                {project.phases.sort((a, b) => a.sortOrder - b.sortOrder).map((phase) => {
+                {project.phases.sort((a, b) => a.sortOrder - b.sortOrder).map((phase, index) => {
                     const isExpanded = expandedNodes[phase.id];
-                    const phaseAssets = getAssetsByPhase(phase.id);
+                    const phaseAssets = getAssetsByPhase(phase.id).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
                     return (
                     <div key={phase.id} className="mb-1">
@@ -395,6 +583,20 @@ export default function ProjectDetailPage() {
                         </div>
                         
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'up'); }}
+                                disabled={index === 0}
+                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                            >
+                                <ArrowUp size={14} />
+                            </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleReorderPhase(index, 'down'); }}
+                                disabled={index === project.phases.length - 1}
+                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                            >
+                                <ArrowDown size={14} />
+                            </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); openAddAssetModal(phase.id); }}
                                 className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded"
@@ -418,14 +620,14 @@ export default function ProjectDetailPage() {
                         </div>
                         
                         {isExpanded && (
-                        <div className="ml-5 mt-1 border-l-2 border-slate-100 pl-1 relative">
-                            {phaseAssets.length > 0 ? (
-                                    phaseAssets.map(renderAssetItem)
-                                ) : (
-                                    <div className="py-3 pl-8 text-sm text-slate-400 italic">此階段尚無資源</div>
-                                )
-                            }
-                        </div>
+                            <div className="ml-5 mt-1 border-l-2 border-slate-100 pl-1 relative">
+                                {phaseAssets.length > 0 ? (
+                                        phaseAssets.map((asset, assetIdx) => renderAssetItem(asset, assetIdx, phaseAssets.length))
+                                    ) : (
+                                        <div className="py-3 pl-8 text-sm text-slate-400 italic">此階段尚無資源</div>
+                                    )
+                                }
+                            </div>
                         )}
                     </div>
                     );
@@ -434,7 +636,7 @@ export default function ProjectDetailPage() {
                 {/* 2. 未分類節點 (PhaseId === null) */}
                 <div className="mt-4 pt-4 border-t border-slate-100">
                     <div 
-                    className="flex items-center justify-between p-2.5 hover:bg-slate-100 cursor-pointer rounded-lg transition-colors"
+                    className="flex items-center justify-between p-2.5 hover:bg-slate-100 dark:hover:bg-slate-500 cursor-pointer rounded-lg transition-colors"
                     onClick={() => toggleNode("unclassified")}
                     >
                         <div className="flex items-center gap-2 font-medium text-slate-600 dark:text-white">
@@ -454,9 +656,9 @@ export default function ProjectDetailPage() {
                     {expandedNodes["unclassified"] && (
                     <div className="ml-5 mt-1 border-l-2 border-slate-100 pl-1">
                         {unclassifiedAssets.length > 0 ? (
-                        unclassifiedAssets.map(renderAssetItem)
+                            unclassifiedAssets.map((asset, idx) => renderAssetItem(asset, idx, unclassifiedAssets.length))
                         ) : (
-                        <div className="py-3 pl-8 text-sm text-slate-400 italic">無未分類資源</div>
+                            <div className="py-3 pl-8 text-sm text-slate-400 italic">無未分類資源</div>
                         )}
                     </div>
                     )}
@@ -543,6 +745,14 @@ export default function ProjectDetailPage() {
                 </div>
                 </div>
             )}
+            {project && <ProjectSettingsModal 
+                isOpen={isEditOpen} 
+                onOpenChange={onEditOpenChange} 
+                mode='edit'
+                teamId={project.teamId}
+                projectData={project}
+                onSubmit={handleUpdateProject} 
+            />}
         </div>
     );
 }

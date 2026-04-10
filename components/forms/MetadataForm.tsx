@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef,useEffect } from 'react';
 import { useDisclosure, Chip, Input, Select, SelectItem, Textarea, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Slider } from "@heroui/react";
-import { Info, HelpCircle, FileUp, Inbox, X } from 'lucide-react';
+import { Info, HelpCircle, FileUp, Inbox, X, Trash2, Plus } from 'lucide-react';
 import Cropper from 'react-easy-crop'
 import getCroppedImg from '@/utils/cropImage';
 import Image from 'next/image';
@@ -10,11 +10,16 @@ import { useSession } from 'next-auth/react';
 import RelatedPostsModal from '../modals/RelatedPostModal';
 import { SelectedPost } from '../modals/RelatedPostModal';
 import { getUserTeams } from '@/lib/actions/team.action';
-
+import { getTeamProjects, getProjectDetails } from '@/lib/actions/project.action';
 export interface ImageFile {
   file?: File;      // 原始檔案 (上傳用)
   key?: string;     // 舊圖片才會有 S3 Key
   preview: string; // Blob URL (預覽顯示用) 
+}
+
+export interface ProjectAssociation {
+  projectId: string;
+  phaseId: string | null;
 }
 
 export interface Metadata {
@@ -24,6 +29,7 @@ export interface Metadata {
   description: string;
   permission: string;
   team: string;
+  associations: ProjectAssociation[];
   relatedPosts: SelectedPost[];
 }
 
@@ -60,7 +66,13 @@ const MetadataForm = ({
   const [isDragging, setIsDragging] = useState(false);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [projectOptions, setProjectOptions] = useState<any[]>([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(false);
+  // 建立一個快取字典，格式為 { "project-id": [ phase1, phase2 ] }
+  const [phasesCache, setPhasesCache] = useState<Record<string, any[]>>({});
+  const [loadingPhases, setLoadingPhases] = useState<Record<string, boolean>>({});
+  // 用 useRef 記錄已經發出 API 請求的專案，避免無限迴圈或重複拉取
+  const requestedPhasesRef = useRef<Set<string>>(new Set());
   // 使用者在 Modal 點擊確認時，更新表單狀態
   const handleRelatedPostsConfirm = (selectedPosts: {id:string, title:string}[]) => {
     onMetadataChange({
@@ -91,6 +103,83 @@ const MetadataForm = ({
     fetchUploadableTeams();
   }, [session?.user?.id]);
 
+  // 1. 當 Team 改變時：撈取該團隊的專案
+  useEffect(() => {
+    if (!metadata.team || metadata.team === "none") {
+      setProjectOptions([]);
+      return;
+    }
+    const fetchProjects = async () => {
+      setIsLoadingProjects(true);
+      const res = await getTeamProjects(metadata.team);
+      if (res.success && res.data) setProjectOptions(res.data);
+      setIsLoadingProjects(false);
+    };
+    fetchProjects();
+  }, [metadata.team]);
+
+  // 2. 切換團隊時，清空所有的專案關聯 (因為專案是綁定團隊的)
+  const handleTeamChange = (keys: any) => {
+    const value = Array.from(keys)[0] as string;
+    onMetadataChange({ ...metadata, team: value || "none", associations: [] });
+  };
+
+  // 🚀 3. 關鍵修復：自動偵測 associations，補齊缺少的 Phases 資料 (解決編輯時顯示空白的問題)
+  useEffect(() => {
+    metadata.associations.forEach(assoc => {
+      if (assoc.projectId && !requestedPhasesRef.current.has(assoc.projectId)) {
+        // 立刻標記為已請求，防止 React 渲染週期間的 Race Condition
+        requestedPhasesRef.current.add(assoc.projectId);
+        setLoadingPhases(prev => ({ ...prev, [assoc.projectId]: true }));
+        
+        getProjectDetails(assoc.projectId).then(res => {
+          if (res.success && res.data) {
+            setPhasesCache(prev => ({ ...prev, [assoc.projectId]: res.data.phases }));
+          }
+        }).catch(err => {
+          console.error("Failed to fetch phases:", err);
+        }).finally(() => {
+          setLoadingPhases(prev => ({ ...prev, [assoc.projectId]: false }));
+        });
+      }
+    });
+  }, [metadata.associations]);
+
+  // // 3. 根據 projectId 獲取對應的階段 (如果快取有就不用再打 API)
+  // const loadPhasesForProject = async (projectId: string) => {
+  //   if (!projectId || phasesCache[projectId]) return;
+
+  //   setLoadingPhases(prev => ({ ...prev, [projectId]: true }));
+  //   const res = await getProjectDetails(projectId);
+  //   if (res.success && res.data) {
+  //     setPhasesCache(prev => ({ ...prev, [projectId]: res.data.phases }));
+  //   }
+  //   setLoadingPhases(prev => ({ ...prev, [projectId]: false }));
+  // };
+  // 4. 動態關聯清單的操作函式
+  const handleAssociationChange = (index: number, field: 'projectId' | 'phaseId', value: string | null) => {
+    const newAssoc = [...metadata.associations];
+    newAssoc[index] = { ...newAssoc[index], [field]: value };
+
+    // 如果是切換了專案，預設把階段改回未分類，並載入新專案的階段
+    if (field === 'projectId' && value) {
+      newAssoc[index].phaseId = null;
+      // loadPhasesForProject(value);
+    }
+
+    onMetadataChange({ ...metadata, associations: newAssoc });
+  };
+  const addAssociation = () => {
+    onMetadataChange({
+      ...metadata,
+      associations: [...metadata.associations, { projectId: "", phaseId: null }]
+    });
+  };
+
+  const removeAssociation = (index: number) => {
+    const newAssoc = metadata.associations.filter((_, i) => i !== index);
+    onMetadataChange({ ...metadata, associations: newAssoc });
+  };
   // 當元件卸載或圖片被移除時，釋放記憶體
   useEffect(() => {
     // 這裡我們只在元件完全卸載時做一次性清理 (Cleanup all)
@@ -150,7 +239,7 @@ const MetadataForm = ({
 
   const handleSelectionChange = (key: keyof Metadata, keys: any) => {
     const value = Array.from(keys)[0] as string;
-    onMetadataChange({ ...metadata, [key]: value || "" });
+    onMetadataChange({ ...metadata, [key]: value || null });
   };
 
   // --- 右側圖片上傳邏輯 ---
@@ -277,7 +366,7 @@ const MetadataForm = ({
           </Select>
         </div>
       </div>
-
+      
       {/* Keywords */}
       <div className="space-y-2">
         <label className="text-white text-sm block">Keywords</label>
@@ -474,7 +563,126 @@ const MetadataForm = ({
           </div>
         </div>
       </div>
+      {/* Belonging Team & 動態專案關聯 */}
+      <div className='flex flex-col gap-6'>
+        {/* 1. 選擇隸屬團隊 (全局) */}
+        <div className="space-y-2">
+          <label className="text-white text-sm block">Belonging Team</label>
+          <Select
+            selectedKeys={metadata.team ? [metadata.team] : []}
+            onSelectionChange={handleTeamChange}
+            aria-label='Belonging Team Select'
+            placeholder="None"
+            classNames={{
+              trigger: "bg-[#18181B] data-[hover=true]:bg-[#27272a] data-[focus=true]:bg-[#27272a] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
+              popoverContent: "bg-[#18181B]",
+              value: "text-white",
+            }}
+          >
+            {[
+              { id: "none", name: "None" },
+              ...uploadableTeams
+            ].map((team) => (
+              <SelectItem key={team.id} className="text-white">
+                {team.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
 
+        {/* 2. 動態專案與階段關聯清單 */}
+        {metadata.team && metadata.team !== "none" && (
+          <div className="space-y-3 bg-[#18181B]/50 p-4 rounded-xl border border-white/5">
+            <label className="text-white text-sm block mb-2">Publish to Projects</label>
+
+            {metadata.associations.map((assoc, index) => {
+              // 🌟 核心防呆：過濾掉「已被其他列選中」的專案，確保不重複
+              const availableProjects = projectOptions.filter(p => 
+                p.id === assoc.projectId || !metadata.associations.some(a => a.projectId === p.id)
+              );
+
+              const currentPhaseOptions = phasesCache[assoc.projectId] || [];
+
+              return (
+                <div key={index} className="flex items-center gap-3 bg-[#18181B] p-2 rounded-lg shadow-sm border border-white/10">
+                  {/* 專案選擇 */}
+                  <Select
+                    selectedKeys={assoc.projectId ? [assoc.projectId] : []}
+                    onSelectionChange={(keys) => handleAssociationChange(index, 'projectId', Array.from(keys)[0] as string)}
+                    isLoading={isLoadingProjects}
+                    aria-label='Project Select'
+                    placeholder="Select a project"
+                    className="flex-1"
+                    classNames={{
+                      trigger: "bg-[#27272A] hover:bg-[#3F3F46]",
+                      popoverContent: "bg-[#18181B]",
+                      value: "text-white",
+                    }}
+                  >
+                    {availableProjects.map((proj) => (
+                      <SelectItem key={proj.id} className='font-inter text-white'>
+                        {proj.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
+                  {/* 階段選擇 */}
+                  <Select
+                    selectedKeys={assoc.phaseId === null ? ["unclassified"] : (assoc.phaseId ? [assoc.phaseId] : [])}
+                    onSelectionChange={(keys) => {
+                      const val = Array.from(keys)[0] as string;
+                      handleAssociationChange(index, 'phaseId', val === "unclassified" ? null : val);
+                    }}
+                    isDisabled={!assoc.projectId}
+                    isLoading={loadingPhases[assoc.projectId] || false}
+                    aria-label='Phase Select'
+                    placeholder="Select a phase"
+                    className="flex-1"
+                    classNames={{
+                      trigger: "bg-[#27272A] hover:bg-[#3F3F46]",
+                      popoverContent: "bg-[#18181B]",
+                      value: "text-white",
+                    }}
+                  >
+                    {[
+                      { id: "unclassified", name: "[ 未分類 Unclassified ]" },
+                      ...currentPhaseOptions
+                    ].map((phase) => (
+                      <SelectItem 
+                        key={phase.id} 
+                        className={`font-inter ${phase.id === "unclassified" ? 'text-gray-400' : 'text-white'}`}
+                      >
+                        {phase.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
+                  {/* 刪除此列按鈕 */}
+                  <Button 
+                    isIconOnly 
+                    variant="light" 
+                    color="danger" 
+                    onPress={() => removeAssociation(index)}
+                    className="min-w-unit-10"
+                  >
+                    <Trash2 size={18} />
+                  </Button>
+                </div>
+              );
+            })}
+
+            {/* 🌟 新增按鈕：如果關聯數量已達到可選專案數量，則停用按鈕 */}
+            <Button 
+              onPress={addAssociation}
+              isDisabled={projectOptions.length === 0 || metadata.associations.length >= projectOptions.length}
+              className="w-full mt-2 bg-transparent border-1 border-dashed border-white/20 text-gray-400 hover:border-white/50 hover:text-white"
+            >
+              <Plus size={18} /> Add to another project
+            </Button>
+          </div>
+        )}
+      </div>
+        
       {/* Associated Model Set */}
       <div className="space-y-2">
         <label className="text-white text-sm flex items-center gap-2">
@@ -515,7 +723,7 @@ const MetadataForm = ({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Permission Setting */}
         <div className="space-y-2">
           <label className="text-white text-sm block">Permission Setting</label>
@@ -540,40 +748,6 @@ const MetadataForm = ({
           >
             <SelectItem key="standard">Standard License</SelectItem>
             <SelectItem key="private">Private</SelectItem>
-          </Select>
-        </div>
-
-        {/* Belonging Team */}
-        <div className="space-y-2">
-          <label className="text-white text-sm block">Belonging Team</label>
-          <Select
-            selectedKeys={metadata.team ? [metadata.team] : []}
-            onSelectionChange={(k) => handleSelectionChange('team', k)}
-            aria-label='Belonging Team Select'
-            placeholder="None"
-            classNames={{
-              trigger: [
-                "bg-[#18181B]",
-                "data-[hover=true]:bg-[#27272a]", 
-                "data-[focus=true]:bg-[#27272a]",
-                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
-              ].join(" "),
-              popoverContent:[
-                "bg-[#18181B]",
-                "data-[hover=true]:bg-[#27272a]", 
-                "data-[focus=true]:bg-[#27272a]",
-              ].join(" "),
-              value: "text-white",
-            }}
-          >
-            {[
-              { id: "none", name: "None" },
-              ...uploadableTeams
-            ].map((team) => (
-              <SelectItem key={team.id} className="text-white">
-                {team.name}
-              </SelectItem>
-            ))}
           </Select>
         </div>
       </div>

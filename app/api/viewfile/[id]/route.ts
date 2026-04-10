@@ -1,4 +1,4 @@
-// src/app/api/models/[id]/frag/route.ts
+// src/app/api/viewfile/[id]/route.ts
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import prisma from "@/lib/prisma";

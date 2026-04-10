@@ -42,3 +42,7 @@ export async function downloadModelFrag(fileId: string) {
         return null;
     }
 }
+
+export async function downloadUploadAssets(fileId: string) {
+
+}

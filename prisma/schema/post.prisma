@@ -13,9 +13,6 @@ model Post {
   coverImage String
   images     String[]
 
-  // 關聯到 Model (3D 檔案)
-  models Model[]
-  pdfIds Pdf[]
   // 任何檔案類型都可以兼容
   files     FileRecord[]
   // pdf Pdf @relation(fields: [pdfId], references: [id])
