@@ -2,7 +2,7 @@
 import React,{useState} from 'react'
 import {Card, CardBody, toggle, Tooltip, user} from "@heroui/react";
 import Image from 'next/image';
-import { Rotate3D,File, Star } from 'lucide-react';
+import { Box, FileText, Image as ImageIcon, Layers, PenTool, Star, FileBox } from 'lucide-react';
 import { card } from '@/app/globalUse';
 import { useRouter } from 'next/navigation';
 import { toggleCollection } from '@/lib/actions/post.action';
@@ -12,7 +12,7 @@ interface PostCardProps {
   dbId:string;
   shortId:string;
   coverImage:string;
-  type:'2D' | '3D';
+  type:string;
   title:string;
   clickable?:boolean;
   isCollectedInitial?:boolean;
@@ -64,6 +64,44 @@ const PostCard = ({
     setIsToggling(false);
   };
 
+  const renderTypeIcon = () => {
+    let IconComponent = FileBox; // 預設 Icon
+    let iconColor = "text-gray-400 dark:text-gray-300"; 
+
+    switch (type) {
+      case 'MODEL_3D':
+      case '3D': // 兼容舊資料
+        IconComponent = Box;
+        iconColor = "text-blue-500 dark:text-blue-400";
+        break;
+      case 'DOCUMENT':
+      case '2D': // 兼容舊資料
+        IconComponent = FileText;
+        iconColor = "text-orange-500 dark:text-orange-400";
+        break;
+      case 'DRAWING':
+        IconComponent = PenTool;
+        iconColor = "text-purple-500 dark:text-purple-400";
+        break;
+      case 'IMAGE':
+        IconComponent = ImageIcon;
+        iconColor = "text-pink-500 dark:text-pink-400";
+        break;
+      case 'MIX':
+        IconComponent = Layers; // 🚀 Mix 用圖層的 Icon 感覺很搭
+        iconColor = "text-[#10B981]"; // Emerald green
+        break;
+      default:
+        IconComponent = FileBox;
+    }
+
+    return <IconComponent className={iconColor} width={16} height={16} strokeWidth={2.5} />;
+  };
+  
+  const displayImage = coverImage && coverImage !== "" && !coverImage.endsWith('null') 
+      ? coverImage 
+      : null; // 讓它掉進下方的判斷
+
   return (
     <Tooltip content={title} placement='bottom' className='bg-black text-white'>
       <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px] `}>
@@ -74,14 +112,21 @@ const PostCard = ({
             {/* Image縮放的裁剪框 */}
             <div className='relative w-full h-[230px] overflow-hidden rounded-[20px] group bg-[#FFFFF4] dark:bg-[#18181B] '>  
               
-              <Image
-                className="object-cover w-full h-full transition-transform duration-300 scale-110 hover:scale-140"
-                src={coverImage}
-                alt="Project Image"
-                width={230}
-                height={230}
-                unoptimized={true} //專案上線後要拿掉
-              />
+              {displayImage ? (
+                  <Image
+                    className="object-cover w-full h-full transition-transform duration-300 scale-110 hover:scale-140"
+                    src={displayImage}
+                    alt="Project Image"
+                    width={230}
+                    height={230}
+                    unoptimized={true} 
+                  />
+              ) : (
+                  <div className="flex flex-col items-center text-[#A1A1AA] opacity-50">
+                      <ImageIcon size={48} className="mb-2" />
+                      <span className="text-xs font-medium">No Cover Image</span>
+                  </div>
+              )}
               {/* 內凹陰影覆蓋層 */}
               <div className="absolute rounded-[20px] pointer-events-none z-10 inset-0">
               </div>
@@ -100,19 +145,13 @@ const PostCard = ({
                 </div>
               }
               {/* 右上角的懸浮小圖示 到時候需要一個boolean來判斷是否顯示*/}
-              {(type === '3D' )?(
-                <div className="text-black dark:text-white bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
-                  <Rotate3D
-                    width={16}
-                    height={16}
-                  />
-                </div>):(
-                <div className="text-black dark:text-white bg-[#FFFFF4] dark:bg-[#3F3F46] absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 border border-white/10">
-                  <File
-                    width={16}
-                    height={16}
-                  />
-                </div>)}
+              <Tooltip content={type.replace('_', ' ')} placement="left" className='bg-black text-white text-xs'>
+                  <div className="absolute top-3 right-5 p-2 rounded-full backdrop-blur-md z-20 shadow-sm
+                                bg-white/80 dark:bg-[#27272A]/80 border border-gray-200 dark:border-white/10
+                                flex items-center justify-center">
+                    {renderTypeIcon()}
+                  </div>
+              </Tooltip>
             </div>
           </CardBody>
           <div className=" mt-2 px-5 flex items-center justify-between text-sm min-w-0">
