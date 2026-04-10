@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { deletePost } from '@/lib/actions/post.action';
 import { getFileDownloadUrl } from '@/lib/actions/file.action';
+import { generateSecureToken } from '@/app/api/generate-token/generateSecureToken';
 
 export default function ActionButtons({ post }: { post: any }) {
     const {data: session} = useSession();
@@ -84,9 +85,44 @@ export default function ActionButtons({ post }: { post: any }) {
             setIsGenerating(null);
         }
     };
-    const handleShare = () => {
+    const handleShare = async () => {
         // 直接在函式內部抓取當前的網址，避開 React Event 參數衝突
-        const textToCopy = window.location.href; 
+
+        // 增加參數用於管理和處理token mark.hsieh ++
+        // 定義結構
+        interface ErrorResponse {
+            number: number;  // 在 TS 中，整數與浮點數統一為 number
+            message: string | null;
+        }
+        let errorCode: ErrorResponse = {
+            number: 0,
+            message: ""
+        }; // 用於追蹤錯誤類型的變數，0 代表無錯誤
+        const path = window.location.pathname.replace(/^\/|\/$/g, ''); // 去除前後斜線
+        const urlPathArray = path.split('/');
+        const currentPostID = urlPathArray[urlPathArray.length - 1]; // 取得網址中的 post ID 部分
+        const cleanHref = window.location.origin + window.location.pathname; // 不帶 query 的純淨網址，避免重複附加 token
+
+        // 增加鏈結壽命Token，讓分享的鏈結在一段時間後失效（例如24小時）mark.hsieh ++
+        const generateTokenAndCopy = async () => {
+            let urlWithToken = cleanHref; // 預設為當前網址（如果生成失敗就用原網址）
+            try {
+                const result = await generateSecureToken(currentPostID);
+                if(result.success && result.token){
+                    urlWithToken = `${urlWithToken}?token=${result.token}`;
+                    
+                }else{
+                    errorCode = { number: 1, message: result.error }; // 代表生成 Token 失敗
+                    console.error("[ActionButtons] Token Generation Error:", result.error);
+                }       
+            } catch (error) {
+                errorCode = { number: 2, message: "Exception during token generation" }; // 代表生成過程中發生異常
+                console.error("[ActionButtons] Token Generation Error:", error);
+            } finally {
+                return urlWithToken; // 回傳帶有 token 的 URL 給後續使用
+            }
+        };
+        const textToCopy = await generateTokenAndCopy(); // 先生成 Token，然後再複製帶有 Token 的鏈結
 
         // 成功時的提示框抽出，讓程式碼更乾淨
         const showSuccessToast = () => {
@@ -98,8 +134,15 @@ export default function ActionButtons({ post }: { post: any }) {
             });
         };
 
+        if (errorCode.number !== 0) {
+            addToast({
+                description: errorCode.message,
+                color: "danger",
+                timeout: 3000
+            });
+        }
         // 檢查是否支援安全剪貼簿 API (需為 HTTPS 或 localhost)
-        if (navigator.clipboard && window.isSecureContext) {
+        else if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(textToCopy)
                 .then(() => showSuccessToast())
                 .catch(err => console.error('複製失敗:', err));
