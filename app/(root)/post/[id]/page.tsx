@@ -1,7 +1,7 @@
 // app/post/[shortId]/page.tsx
 import { getPostDetail, getRelatedPostsByIds } from '@/lib/actions/post.action';
 import { notFound, forbidden } from 'next/navigation';
-import { ArrowDownToLine, ChevronRight, Dot, File, Rotate3D, Star } from 'lucide-react';
+import { FileBox, Box, PenTool, ImageIcon, Layers, FileText, ArrowDownToLine, ChevronRight, Dot, File, Rotate3D, Star } from 'lucide-react';
 import Link from 'next/link';
 import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
