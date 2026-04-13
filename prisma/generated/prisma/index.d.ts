@@ -9192,6 +9192,7 @@ export namespace Prisma {
   export type ProjectAssetMinAggregateOutputType = {
     id: string | null
     name: string | null
+    description: string | null
     type: $Enums.AssetType | null
     sortOrder: number | null
     parentId: string | null
@@ -9206,6 +9207,7 @@ export namespace Prisma {
   export type ProjectAssetMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    description: string | null
     type: $Enums.AssetType | null
     sortOrder: number | null
     parentId: string | null
@@ -9220,6 +9222,7 @@ export namespace Prisma {
   export type ProjectAssetCountAggregateOutputType = {
     id: number
     name: number
+    description: number
     type: number
     sortOrder: number
     parentId: number
@@ -9244,6 +9247,7 @@ export namespace Prisma {
   export type ProjectAssetMinAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     type?: true
     sortOrder?: true
     parentId?: true
@@ -9258,6 +9262,7 @@ export namespace Prisma {
   export type ProjectAssetMaxAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     type?: true
     sortOrder?: true
     parentId?: true
@@ -9272,6 +9277,7 @@ export namespace Prisma {
   export type ProjectAssetCountAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     type?: true
     sortOrder?: true
     parentId?: true
@@ -9373,6 +9379,7 @@ export namespace Prisma {
   export type ProjectAssetGroupByOutputType = {
     id: string
     name: string | null
+    description: string | null
     type: $Enums.AssetType
     sortOrder: number
     parentId: string | null
@@ -9406,6 +9413,7 @@ export namespace Prisma {
   export type ProjectAssetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    description?: boolean
     type?: boolean
     sortOrder?: boolean
     parentId?: boolean
@@ -9426,6 +9434,7 @@ export namespace Prisma {
   export type ProjectAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    description?: boolean
     type?: boolean
     sortOrder?: boolean
     parentId?: boolean
@@ -9444,6 +9453,7 @@ export namespace Prisma {
   export type ProjectAssetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    description?: boolean
     type?: boolean
     sortOrder?: boolean
     parentId?: boolean
@@ -9462,6 +9472,7 @@ export namespace Prisma {
   export type ProjectAssetSelectScalar = {
     id?: boolean
     name?: boolean
+    description?: boolean
     type?: boolean
     sortOrder?: boolean
     parentId?: boolean
@@ -9473,7 +9484,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "sortOrder" | "parentId" | "projectId" | "phaseId" | "postId" | "url" | "createdAt" | "updatedAt", ExtArgs["result"]["projectAsset"]>
+  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "type" | "sortOrder" | "parentId" | "projectId" | "phaseId" | "postId" | "url" | "createdAt" | "updatedAt", ExtArgs["result"]["projectAsset"]>
   export type ProjectAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
     children?: boolean | ProjectAsset$childrenArgs<ExtArgs>
@@ -9507,6 +9518,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string | null
+      description: string | null
       type: $Enums.AssetType
       sortOrder: number
       parentId: string | null
@@ -9946,6 +9958,7 @@ export namespace Prisma {
   interface ProjectAssetFieldRefs {
     readonly id: FieldRef<"ProjectAsset", 'String'>
     readonly name: FieldRef<"ProjectAsset", 'String'>
+    readonly description: FieldRef<"ProjectAsset", 'String'>
     readonly type: FieldRef<"ProjectAsset", 'AssetType'>
     readonly sortOrder: FieldRef<"ProjectAsset", 'Int'>
     readonly parentId: FieldRef<"ProjectAsset", 'String'>
@@ -14046,6 +14059,7 @@ export namespace Prisma {
   export const ProjectAssetScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    description: 'description',
     type: 'type',
     sortOrder: 'sortOrder',
     parentId: 'parentId',
@@ -14795,6 +14809,7 @@ export namespace Prisma {
     NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
     id?: StringFilter<"ProjectAsset"> | string
     name?: StringNullableFilter<"ProjectAsset"> | string | null
+    description?: StringNullableFilter<"ProjectAsset"> | string | null
     type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
     parentId?: StringNullableFilter<"ProjectAsset"> | string | null
@@ -14814,6 +14829,7 @@ export namespace Prisma {
   export type ProjectAssetOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     type?: SortOrder
     sortOrder?: SortOrder
     parentId?: SortOrderInput | SortOrder
@@ -14836,6 +14852,7 @@ export namespace Prisma {
     OR?: ProjectAssetWhereInput[]
     NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
     name?: StringNullableFilter<"ProjectAsset"> | string | null
+    description?: StringNullableFilter<"ProjectAsset"> | string | null
     type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
     parentId?: StringNullableFilter<"ProjectAsset"> | string | null
@@ -14855,6 +14872,7 @@ export namespace Prisma {
   export type ProjectAssetOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     type?: SortOrder
     sortOrder?: SortOrder
     parentId?: SortOrderInput | SortOrder
@@ -14877,6 +14895,7 @@ export namespace Prisma {
     NOT?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ProjectAsset"> | string
     name?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
+    description?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
     type?: EnumAssetTypeWithAggregatesFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntWithAggregatesFilter<"ProjectAsset"> | number
     parentId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
@@ -15669,6 +15688,7 @@ export namespace Prisma {
   export type ProjectAssetCreateInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -15684,6 +15704,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -15699,6 +15720,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15714,6 +15736,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15729,6 +15752,7 @@ export namespace Prisma {
   export type ProjectAssetCreateManyInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -15743,6 +15767,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15753,6 +15778,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16519,6 +16545,7 @@ export namespace Prisma {
   export type ProjectAssetCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     type?: SortOrder
     sortOrder?: SortOrder
     parentId?: SortOrder
@@ -16537,6 +16564,7 @@ export namespace Prisma {
   export type ProjectAssetMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     type?: SortOrder
     sortOrder?: SortOrder
     parentId?: SortOrder
@@ -16551,6 +16579,7 @@ export namespace Prisma {
   export type ProjectAssetMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     type?: SortOrder
     sortOrder?: SortOrder
     parentId?: SortOrder
@@ -18607,6 +18636,7 @@ export namespace Prisma {
   export type ProjectAssetCreateWithoutPhaseInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -18621,6 +18651,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateWithoutPhaseInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -18705,6 +18736,7 @@ export namespace Prisma {
     NOT?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
     id?: StringFilter<"ProjectAsset"> | string
     name?: StringNullableFilter<"ProjectAsset"> | string | null
+    description?: StringNullableFilter<"ProjectAsset"> | string | null
     type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
     sortOrder?: IntFilter<"ProjectAsset"> | number
     parentId?: StringNullableFilter<"ProjectAsset"> | string | null
@@ -18857,6 +18889,7 @@ export namespace Prisma {
   export type ProjectAssetCreateWithoutPostInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -18871,6 +18904,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateWithoutPostInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -19135,6 +19169,7 @@ export namespace Prisma {
   export type ProjectAssetCreateWithoutProjectInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -19149,6 +19184,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateWithoutProjectInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -19295,6 +19331,7 @@ export namespace Prisma {
   export type ProjectAssetCreateWithoutChildrenInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -19309,6 +19346,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateWithoutChildrenInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -19328,6 +19366,7 @@ export namespace Prisma {
   export type ProjectAssetCreateWithoutParentInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     url?: string | null
@@ -19342,6 +19381,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedCreateWithoutParentInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     projectId: string
@@ -19480,6 +19520,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateWithoutChildrenInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19494,6 +19535,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateWithoutChildrenInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20361,6 +20403,7 @@ export namespace Prisma {
   export type ProjectAssetCreateManyPhaseInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -20374,6 +20417,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20388,6 +20432,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20402,6 +20447,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateManyWithoutPhaseInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20440,6 +20486,7 @@ export namespace Prisma {
   export type ProjectAssetCreateManyPostInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -20530,6 +20577,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20544,6 +20592,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20558,6 +20607,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateManyWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20579,6 +20629,7 @@ export namespace Prisma {
   export type ProjectAssetCreateManyProjectInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     parentId?: string | null
@@ -20618,6 +20669,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20632,6 +20684,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20646,6 +20699,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20659,6 +20713,7 @@ export namespace Prisma {
   export type ProjectAssetCreateManyParentInput = {
     id?: string
     name?: string | null
+    description?: string | null
     type?: $Enums.AssetType
     sortOrder?: number
     projectId: string
@@ -20672,6 +20727,7 @@ export namespace Prisma {
   export type ProjectAssetUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20686,6 +20742,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     projectId?: StringFieldUpdateOperationsInput | string
@@ -20700,6 +20757,7 @@ export namespace Prisma {
   export type ProjectAssetUncheckedUpdateManyWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
     sortOrder?: IntFieldUpdateOperationsInput | number
     projectId?: StringFieldUpdateOperationsInput | string

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Input,Dropdown,DropdownTrigger,DropdownMenu,DropdownItem,Button,Popover, PopoverTrigger, PopoverContent, user } from '@heroui/react';
 import { useTheme } from 'next-themes';
 import { Search,ChevronDown ,ChevronUp} from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 //定義 Props，讓父組件傳入控制函式
 interface SearchBarProps {
@@ -16,7 +16,8 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
     
     const router = useRouter();
     const searchParams = useSearchParams();    
-    
+    const pathname = usePathname();
+
     const [query, setQuery] = useState(searchParams.get('search') || "");
 
     const handleValueChange = (newValue: string) => {
@@ -26,9 +27,12 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
         if (newValue === "") {
             const params = new URLSearchParams(searchParams.toString());
             params.delete('search');
-            router.push(`/?${params.toString()}`, { scroll: false });
+            const queryString = params.toString();
+
+            router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
         }
     };
+
     const handleSearch = () => {
         const params = new URLSearchParams(searchParams.toString());
         if (query.trim()) {
@@ -37,15 +41,25 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
             params.delete('search'); // 如果清空輸入框，就移除 search 參數
         }
         // 推送新網址 (例如: /?search=apple)
-        router.push(`/?${params.toString()}`, {scroll:false});
+        const queryString = params.toString();
+        console.log(pathname);
+        router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
     }
+
+    const getPlaceholder = ():string => {
+        if(pathname === '/') return "Search Posts Name...";
+        if(pathname.startsWith('/post/')) return "Search within this post...";
+        if(pathname.startsWith('/project/')) return "Search within this project...";
+        if(pathname.startsWith('/projects/')) return "Search project name...";
+        return "Search something...";
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleSearch();
         }
     };
-
+    
     return (
         <>
             <Input
@@ -60,21 +74,21 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
                     inputWrapper:
                     "font-abeezee h-full font-normal pr-1 pl-0 text-default-500 bg-default-400/20 dark:bg-[var(--colors-layout-foreground-900,#27272A)] rounded-full shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_0px_#00000099,0px_3px_1.8px_0px_#FFFFFF29,0px_-2px_1.9px_0px_#00000040,0px_0px_4px_0px_#FBFBFB3D]",
                 }}
-                placeholder="Search Posts..."
+                placeholder={getPlaceholder()}
                 size="sm"
                 // <button className='hover-lift flex ml-[3px] pl-[17px] py-[7px] items-center rounded-l-full bg-[#D4D4D8] dark:bg-[#3F3F46] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] w-[90px]'><p className='font-inter text-[12px]'>ALL</p><ChevronDown size={20}/></button>
-                // startContent={
-                //     // 用純 Button 觸發 onToggle
-                //     <button
-                //         type='button'
-                //         onClick={onToggle}
-                //         aria-label="Toggle category menu"
-                //         className={`active-press flex ml-[3px] pl-[17px] py-[7px] items-center rounded-l-full bg-[#D4D4D8] dark:bg-[#3F3F46] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] w-[90px]
-                //         ${isMenuOpen ? "bg-red-600 text-white" : "bg-[#D4D4D8] dark:bg-[#3F3F46]"}`}>
-                //         <p className='font-inter text-[12px]'>ALL</p>
-                //         {isMenuOpen ? <ChevronUp size={20}/>:<ChevronDown size={20}/>}
-                //     </button>
-                // } 
+                startContent={
+                    // 用純 Button 觸發 onToggle
+                    <button
+                        type='button'
+                        onClick={onToggle}
+                        aria-label="Toggle category menu"
+                        className={`active-press flex ml-[3px] w-50/100 h-85/100 items-center justify-center rounded-l-full bg-[#D4D4D8] dark:bg-[#3F3F46] shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] w-[90px]
+                        ${isMenuOpen ? "bg-red-600 text-white" : "bg-[#D4D4D8] dark:bg-[#3F3F46]"}`}>
+                        <p className='font-inter text-[12px] hidden sm:block'>ALL</p>
+                        {isMenuOpen ? <ChevronUp size={20}/>:<ChevronDown size={20}/>}
+                    </button>
+                } 
                 endContent={
                     <button
                         type="button"

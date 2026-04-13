@@ -7,6 +7,7 @@ import { connect } from "http2";
 import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { AssetType } from "../../prisma/generated/prisma/client";
+import { revalidatePath } from "next/cache";
 // ==========================================
 // 1. 專案 (Project) 相關
 // ==========================================
@@ -252,11 +253,12 @@ export async function createProjectAsset(data: {
     parentId: string | null;
     type: 'FOLDER' | 'POST' | 'LINK';
     name?: string;
+    description?: string;
     postId?: string;
     url?: string;
 }) {
     try {
-        const { projectId, phaseId, parentId, type, name, postId, url } = data;
+        const { projectId, phaseId, parentId, type, name, description, postId, url } = data;
 
         // 1. 如果是加入 Post，執行團隊歸屬同步邏輯
         if (type === 'POST' && postId) {
@@ -271,6 +273,21 @@ export async function createProjectAsset(data: {
                 });
             }
         }
+        //  2. 尋找當前層級 (同 Phase、同 Parent) 中最大的 sortOrder
+        const aggregations = await prisma.projectAsset.aggregate({
+            _max: {
+                sortOrder: true,
+            },
+            where: {
+                projectId: projectId,
+                phaseId: phaseId,
+                parentId: parentId,
+            },
+        });
+
+        const nextSortOrder = aggregations._max.sortOrder !== null 
+            ? aggregations._max.sortOrder + 1 
+            : 0;
 
         // 2. 建立資產節點
         const newAsset = await prisma.projectAsset.create({
@@ -280,9 +297,10 @@ export async function createProjectAsset(data: {
                 parentId,
                 type,
                 name: type === 'POST' ? null : name, // Post 預設不給名，前端抓 Post Title
+                description: type === 'POST' ? null : description,
                 postId: type === 'POST' ? postId : null,
                 url: type === 'LINK' ? url : null,
-                sortOrder: 0, // 預設排在最前面
+                sortOrder: nextSortOrder, // 預設排在最前面
             },
             include: {
                 post: true // 方便前端立即渲染
@@ -295,13 +313,14 @@ export async function createProjectAsset(data: {
         return { success: false, error: error.message };
     }
 }
-export async function updateProjectAsset(id: string, data: { name?: string | null; url?: string | null }) {
+export async function updateProjectAsset(id: string, data: { name?: string | null; url?: string | null; description?: string | null}) {
     try {
         const updated = await prisma.projectAsset.update({
             where: { id },
             data: {
                 name: data.name,
-                url: data.url
+                url: data.url,
+                description: data.description
             }
         });
         return { success: true, data: updated };

@@ -8,6 +8,7 @@ enum AssetType {
 model ProjectAsset {
     id          String   @id @default(uuid())
     name      String?   // 如果是資料夾或連結，手動命名；如果是 Post，可以選填（預設抓 Post Title）
+    description String?
     type      AssetType  @default(POST)
     sortOrder   Int      @default(0)
 

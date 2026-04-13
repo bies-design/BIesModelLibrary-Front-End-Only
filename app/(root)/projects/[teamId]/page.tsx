@@ -2,15 +2,19 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Spinner, useDisclosure, addToast } from "@heroui/react";
-import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen } from 'lucide-react';
+import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen, LoaderCircle } from 'lucide-react';
 import { createProject, getTeamProjects, updateProject } from '@/lib/actions/project.action';
 import CreateProjectModal from '@/components/modals/ProjectSettingsModal';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Footer from '@/components/Footer';
 import ProjectSettingsModal from '@/components/modals/ProjectSettingsModal';
 import { checkUserTeamStatus, TeamAccessLevel } from '@/lib/actions/team.action';
 
 export default function ProjectsPage() {
+    
+    const SearchParams = useSearchParams();
+    const searchKeyword = SearchParams.get('search') || '';
+
     const [projects, setProjects] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const isFetchingRef = useRef(false); // 新增純邏輯鎖定，防止非同步競爭條件
@@ -211,16 +215,20 @@ export default function ProjectsPage() {
                                         {/* 根據你引入的 icon 預留的資訊區塊 */}
                                         <div className="flex flex-col gap-2 mt-4">
                                             <div className="flex items-center gap-2 text-xs text-white">
+                                                <LoaderCircle size={14} />
+                                                <span>{project.status ? project.status : "未設定" }</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-xs text-white">
                                                 <MapPin size={14} />
-                                                <span>{project.location ? project.location : "" }</span>
+                                                <span>{project.location ? project.location : "未設定" }</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-white">
                                                 <Building2 size={14} />
-                                                <span>{project.client ? project.client : ""}</span>
+                                                <span>{project.client ? project.client : "未設定"}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-white">
                                                 <MessageSquareText size={14} />
-                                                <span>{project.description ? project.description : ""}</span>
+                                                <span>{project.description ? project.description : "未設定"}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-white">
                                                 <FolderUp size={14} />

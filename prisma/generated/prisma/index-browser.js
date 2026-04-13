@@ -201,6 +201,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
 exports.Prisma.ProjectAssetScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   type: 'type',
   sortOrder: 'sortOrder',
   parentId: 'parentId',

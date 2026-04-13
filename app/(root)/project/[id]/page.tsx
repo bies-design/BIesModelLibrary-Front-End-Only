@@ -15,7 +15,7 @@ import {
     getAvailablePosts, deleteProject, updateProject,
     reorderPhases, reorderAssets, updateProjectAsset
 } from "@/lib/actions/project.action"; 
-import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input } from "@heroui/react";
+import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea, Tooltip } from "@heroui/react";
 import { ProjectStatus } from "@/prisma/generated/prisma";
 import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
 import { checkUserTeamStatus, TeamAccessLevel } from "@/lib/actions/team.action";
@@ -34,6 +34,7 @@ interface Post {
 interface ProjectAsset {
     id: string;
     name: string | null;
+    description: string | null;
     type: AssetType;
     sortOrder: number;
     parentId: string | null;
@@ -106,24 +107,30 @@ const AssetNode = ({
             >
                 <div className="flex items-center gap-2 text-sm overflow-hidden">
                     {node.type === 'FOLDER' ? (
-                        <>
-                            {isExpanded ? <FolderOpen size={16} className="text-amber-400 shrink-0" /> : <Folder size={16} className="text-amber-400 shrink-0" />}
-                            <span className="font-medium text-gray-200 truncate">{node.name}</span>
-                        </>
+                        <Tooltip placement="top" content={`資料夾描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
+                            <div className="flex items-center gap-2 cursor-help">
+                                {isExpanded ? <FolderOpen size={16} className="text-amber-400 shrink-0" /> : <Folder size={16} className="text-amber-400 shrink-0" />}
+                                <span className="font-medium text-gray-200 truncate">{node.name}</span>
+                            </div>
+                        </Tooltip>
                     ) : node.type === 'POST' ? (
-                        <>
-                            <Box size={16} className="text-[#8DB2E8] shrink-0" />
-                            <Link href={`/post/${node.post?.shortId}`} className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
-                                {node.name || node.post?.title}
-                            </Link>
-                        </>
+                        <Tooltip placement="top" content={`貼文描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
+                            <div className="flex items-center gap-2 cursor-help">
+                                <Box size={16} className="text-[#8DB2E8] shrink-0" />
+                                <Link href={`/post/${node.post?.shortId}`} className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
+                                    {node.name || node.post?.title}
+                                </Link>
+                            </div>
+                        </Tooltip>
                     ) : (
-                        <>
-                            <Globe size={16} className="text-emerald-400 shrink-0" />
-                            <a href={node.url} target="_blank" className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
-                                {node.name || '外部連結'}
-                            </a>
-                        </>
+                        <Tooltip placement="top" content={`連結描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
+                            <div className="flex items-center gap-2 cursor-help">
+                                <Globe size={16} className="text-emerald-400 shrink-0" />
+                                <a href={node.url} target="_blank" className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
+                                    {node.name || '外部連結'}
+                                </a>
+                            </div>
+                        </Tooltip>
                     )}
                 </div>
 
@@ -140,8 +147,12 @@ const AssetNode = ({
                                     <PlusCircle size={14} className="text-emerald-500 hover:text-emerald-400" />
                                 </button>
                             )}
-                            <button onClick={(e) => { e.stopPropagation(); onEdit(node); }}><Edit2 size={14} className="text-blue-400" /></button>
-                            <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}><Trash2 size={14} className="text-red-400" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); onEdit(node); }}>
+                                <Edit2 size={14} className="text-blue-400" />
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}>
+                                <Trash2 size={14} className="text-red-400" />
+                            </button>
                         </>
                     )}
                 </div>
@@ -187,7 +198,9 @@ export default function ProjectDetailPage() {
     const [availablePosts, setAvailablePosts] = useState<Post[]>([]);
 
     const [newFolderName, setNewFolderName] = useState<string>("");
-    const [newLinkData, setNewLinkData] = useState({ name: "", url: "" });
+    const [newFolderDescription, setNewFolderDescription] = useState<string>("");
+
+    const [newLinkData, setNewLinkData] = useState({ name: "", url: "", description: ""});
 
     const isFetchingRef = useRef<boolean>(false);
     const isSubmittingRef = useRef<boolean>(false);
@@ -292,15 +305,21 @@ export default function ProjectDetailPage() {
         isSubmittingRef.current = true;
         const res = await updateProjectAsset(editingAsset.id, { 
             name: editingAsset.name, 
-            url: editingAsset.url 
+            url: editingAsset.url,
+            description: editingAsset.description,
         });
         if (res.success) {
             setProject(prev => prev ? {
                 ...prev,
-                assets: prev.assets.map(a => a.id === editingAsset.id ? { ...a, name: editingAsset.name, url: editingAsset.url } : a)
+                assets: prev.assets.map(a => a.id === editingAsset.id ? { 
+                    ...a, 
+                    name: editingAsset.name, 
+                    url: editingAsset.url,
+                    description: editingAsset.description
+                } : a)
             } : null);
             setIsEditAssetModalOpen(false);
-            addToast({ title: "資產已更新", color: "success" });
+            addToast({ title: "改動已更新", color: "success" });
         }
         isSubmittingRef.current = false;
     };
@@ -349,14 +368,19 @@ export default function ProjectDetailPage() {
         isSubmittingRef.current = true;
         const payload = {
             projectId, phaseId: targetContext.phaseId, parentId: targetContext.parentId,
-            type, name: type === 'FOLDER' ? newFolderName : newLinkData.name,
+            type, 
+            name: type === 'FOLDER' ? newFolderName : newLinkData.name,
+            description: type === 'FOLDER' ? newFolderDescription: newLinkData.description,
             postId: specificPostId, url: newLinkData.url
         };
         const res = await createProjectAsset(payload);
         if (res.success) {
             const updated = await getProjectDetails(projectId);
             if (updated.data) setProject(updated.data as unknown as ProjectData);
-            setNewFolderName(""); setNewLinkData({ name: "", url: "" });
+            
+            setNewFolderName(""); 
+            setNewFolderDescription("");
+            setNewLinkData({ name: "", url: "", description: "" });
             setIsAddAssetModalOpen(false);
         }
         isSubmittingRef.current = false;
@@ -417,9 +441,10 @@ export default function ProjectDetailPage() {
                         <h1 className={`text-2xl font-bold ${!bgImageUrl ? "text-slate-500 dark:text-white " : "text-white "} flex items-center gap-2 mb-2`}>
                             📁 {project.name}
                         </h1>
-                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未知"}</p>
-                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未知"}</p>
-                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>描述：{project.description ? project.description : "無描述"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>狀態：{project.status ? project.status : "未設定"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未設定"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未設定"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>描述：{project.description ? project.description : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>上傳時間：{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString() : ""}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>最後編輯時間：{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</p>                        
                     </div>
@@ -432,7 +457,7 @@ export default function ProjectDetailPage() {
                             className="flex items-center gap-2 hover-lift bg-green-400/50 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]  transition-colors flex-shrink-0"
                         >
                             <Share2 size={16} /> 分享專案
-                        </button>
+                        </button>ㄇ
                         {/* 新增階段按鈕 */}
                         <button 
                             onClick={() => { setEditingPhase({name: ""}); setIsPhaseModalOpen(true); }}  
@@ -540,7 +565,7 @@ export default function ProjectDetailPage() {
                             {expandedNodes["unclassified"] ? <FolderOpen size={26} className="text-yellow-400" /> : <Folder size={26} className="text-yellow-400" />}
                                 未分類
                             </div>
-                             {isEditor && (
+                            {isEditor && (
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); openAddAssetModal(null, null); }}
                                     className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
@@ -574,13 +599,22 @@ export default function ProjectDetailPage() {
                     <ModalHeader>Edit {editingAsset?.type}</ModalHeader>
                     <ModalBody>
                         <Input label="Name" value={editingAsset?.name || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, name: v} : null)} />
+                        <Textarea 
+                            label="Description" 
+                            value={editingAsset?.description || ""} 
+                            onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, description: v} : null)} 
+                        />
                         {editingAsset?.type === 'LINK' && (
                             <Input label="URL" value={editingAsset?.url || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, url: v} : null)} />
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onClick={() => setIsEditAssetModalOpen(false)}>Cancel</Button>
-                        <Button color="danger" onClick={handleUpdateAssetInfo}>Save Changes</Button>
+                        <Button variant="light" onClick={() => setIsEditAssetModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button color="danger" onClick={handleUpdateAssetInfo}>
+                            Save Changes
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -599,7 +633,7 @@ export default function ProjectDetailPage() {
                         </Button>
                         <Button 
                             color="danger" 
-                            // 🚀 當名稱為空或是只有空白鍵時，禁用按鈕
+                            //當名稱為空或是只有空白鍵時，禁用按鈕
                             isDisabled={!editingPhase?.name?.trim()} 
                             onClick={handleSavePhase}
                         >
@@ -613,7 +647,7 @@ export default function ProjectDetailPage() {
                 <ModalHeader>Add Asset</ModalHeader>
                 <ModalBody className="pb-8">
                     <Tabs color="danger" variant="underlined">
-                        <Tab key="library" title="Library">
+                        <Tab key="post" title="Post">
                             <div className="flex flex-col gap-2 mt-4 max-h-[40vh] overflow-y-auto">
                                 {availablePosts.map(p => (
                                     <div key={p.id} className="flex items-center justify-between p-3 border border-white/5 rounded-xl hover:bg-white/5 transition-all">
@@ -623,8 +657,31 @@ export default function ProjectDetailPage() {
                                 ))}
                             </div>
                         </Tab>
-                        <Tab key="folder" title="Folder"><div className="flex flex-col gap-4 mt-4"><Input label="Name" variant="bordered" value={newFolderName} onValueChange={setNewFolderName}/><Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('FOLDER')} isDisabled={!newFolderName.trim()}>Create Folder</Button></div></Tab>
-                        <Tab key="link" title="Link"><div className="flex flex-col gap-4 mt-4"><Input label="Name" variant="bordered" value={newLinkData.name} onValueChange={(v) => setNewLinkData(prev => ({...prev, name: v}))}/><Input label="URL" variant="bordered" value={newLinkData.url} onValueChange={(v) => setNewLinkData(prev => ({...prev, url: v}))}/><Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('LINK')} isDisabled={!newLinkData.name || !newLinkData.url}>Add Link</Button></div></Tab>
+                        <Tab key="folder" title="Folder">
+                            <div className="flex flex-col gap-4 mt-4">
+                                <Input label="Name" variant="bordered" value={newFolderName} onValueChange={setNewFolderName}/>
+                                <Textarea label="Description" placeholder="請描述此檔案" variant="bordered" value={newFolderDescription} onValueChange={setNewFolderDescription}/>
+                                <Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('FOLDER')} isDisabled={!newFolderName.trim()}>
+                                    Create Folder
+                                </Button>
+                            </div>
+                        </Tab>
+                        <Tab key="link" title="Link">
+                            <div className="flex flex-col gap-4 mt-4">
+                                <Input label="Name" variant="bordered" value={newLinkData.name} onValueChange={(v) => setNewLinkData(prev => ({...prev, name: v}))}/>
+                                <Input label="URL" variant="bordered" value={newLinkData.url} onValueChange={(v) => setNewLinkData(prev => ({...prev, url: v}))}/>
+                                <Textarea 
+                                    label="Description" 
+                                    placeholder="請描述此連結" 
+                                    variant="bordered" 
+                                    value={newLinkData.description} 
+                                    onValueChange={(v) => setNewLinkData(prev => ({...prev, description: v}))}
+                                />
+                                <Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('LINK')} isDisabled={!newLinkData.name || !newLinkData.url}>
+                                    Add Link
+                                </Button>
+                            </div>
+                        </Tab>
                     </Tabs>
                 </ModalBody>
             </ModalContent></Modal>
