@@ -277,6 +277,53 @@ const ModelUploadSidebar = ({
     }
   };
 
+  // 下載並預覽圖片
+  const downloadAndLoadImage = async (dbId: string, fileId: string, fileName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if(loadingModelId) return;
+
+    try {
+      setLoadingModelId(fileName); // 讓這筆檔案顯示 Spinner
+      
+      const urlResult = await getFileDownloadUrl(fileId, fileName); 
+      if (!urlResult.success || !urlResult.url) {
+          throw new Error(urlResult.error || "無法取得檔案下載權限");
+      }
+
+      const response = await fetch(urlResult.url);
+      if (!response.ok) throw new Error("圖片下載失敗");
+
+      // 1. 將回傳資料轉成 Blob
+      const blob = await response.blob();
+      
+      // 判斷精確的 MimeType (選填，但為了嚴謹建議加上)
+      const ext = fileName.split('.').pop()?.toLowerCase();
+      let mimeType = 'image/jpeg';
+      if (ext === 'png') mimeType = 'image/png';
+      if (ext === 'webp') mimeType = 'image/webp';
+      
+      // 2. 將 Blob 包裝成真正的 File 物件
+      const realImageFile = new File([blob], fileName, { type: mimeType });
+
+      const newLoadedItem: FileItem = {
+        dbId: dbId,
+        file: realImageFile, 
+        type: 'other', // 根據你定義的型別，圖片先暫定為 'other'，父層會用副檔名判斷
+        name: fileName,
+        fileId: fileId,
+      };
+      
+      setLoadedFiles(prev => [...prev, newLoadedItem]);
+      onSelectFile(newLoadedItem);
+
+    } catch (error) {
+      console.error("載入圖片失敗:", error);
+      alert("載入圖片失敗，請稍後再試");
+    } finally {
+      setLoadingModelId(null);
+    }
+  };
+
   const focusModel = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if(getComponents){
@@ -364,7 +411,8 @@ const ModelUploadSidebar = ({
                 const lowerName = item.name.toLowerCase();
                 const isIfc = lowerName.endsWith('.ifc');
                 const isPdf = lowerName.endsWith('.pdf');
-                const isViewable = isIfc || isPdf;
+                const isImage = lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.png') || lowerName.endsWith('.webp');
+                const isViewable = isIfc || isPdf || isImage;
                 return(
                   <div 
                     key={item.id}
@@ -394,6 +442,9 @@ const ModelUploadSidebar = ({
                                 } else if (isPdf) {
                                   // 載入 PDF 
                                   downloadAndLoadPdf(item.id, item.fileId, item.name, e);
+                                } else if (isImage) {
+                                  // 載入 圖片
+                                  downloadAndLoadImage(item.id, item.fileId, item.name, e);
                                 }
                               }}
                               className="text-gray-400 hover:text-[#10B981] transition-colors"

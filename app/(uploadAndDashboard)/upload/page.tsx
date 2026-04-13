@@ -14,6 +14,7 @@ import { Model,UIModel } from '@/types/upload';
 import { createPost } from '@/lib/actions/post.action';
 import { SelectedPost } from '@/components/modals/RelatedPostModal';
 import { addToast } from '@heroui/react';
+import ImageViewer from '@/components/viewer/ImageViewer';
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
@@ -195,7 +196,7 @@ const Upload = () => {
 
         setStep((prev) => Math.max(prev - 1, 1));
     };
-    // 🚀 動態決定要渲染哪一個 Viewer
+    // 動態決定要渲染哪一個 Viewer
     const renderViewer = () => {
         // 如果還沒選擇檔案，給一個預設的空狀態畫面
         if (!selectedFile) {
@@ -210,9 +211,11 @@ const Upload = () => {
         const lowerName = selectedFile.name.toLowerCase();
 
         // 1. 判斷 3D 模型 (.ifc, .obj, .gltf 等等)
-        if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || selectedFile.type === '3d') {
+        if (lowerName.endsWith('.ifc')) {
             return (
-                <Viewer3D 
+                // 加入key讓一個viewer3D只適用於一個model
+                <Viewer3D
+                    key={selectedFile.dbId} 
                     ref={viewerRef} 
                     allFiles={uploadedFiles} 
                     file={selectedFile.file} 
@@ -225,6 +228,7 @@ const Upload = () => {
         if (lowerName.endsWith('.pdf') || selectedFile.type === 'pdf') {
             return (
                 <PDFViewer 
+                    key={selectedFile.dbId}
                     ref={pdfRef} 
                     file={selectedFile.file} 
                 />
@@ -232,13 +236,10 @@ const Upload = () => {
         }
 
         // 3. 💡 未來擴充範例：圖片預覽
-        if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg')) {
+        if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
             // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
             return (
-                <div className="flex items-center justify-center w-full h-full bg-[#18181B] p-4">
-                    {/* 注意：如果是真的要做，記得處理 Blob URL 的釋放 */}
-                    <img src={URL.createObjectURL(selectedFile.file)} alt="preview" className="max-w-full max-h-full object-contain rounded-lg" />
-                </div>
+                <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
             );
         }
 
