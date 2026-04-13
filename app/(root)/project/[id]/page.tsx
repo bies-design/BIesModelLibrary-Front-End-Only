@@ -457,7 +457,7 @@ export default function ProjectDetailPage() {
                             className="flex items-center gap-2 hover-lift bg-green-400/50 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]  transition-colors flex-shrink-0"
                         >
                             <Share2 size={16} /> 分享專案
-                        </button>ㄇ
+                        </button>
                         {/* 新增階段按鈕 */}
                         <button 
                             onClick={() => { setEditingPhase({name: ""}); setIsPhaseModalOpen(true); }}  
