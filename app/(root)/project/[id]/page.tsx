@@ -503,13 +503,15 @@ export default function ProjectDetailPage() {
                             {expandedNodes["unclassified"] ? <FolderOpen size={26} className="text-yellow-400" /> : <Folder size={26} className="text-yellow-400" />}
                                 未分類
                             </div>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); openAddAssetModal(null, null); }}
-                                className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="加入資源至未分類"
-                            >
-                                <PlusCircle size={14} />
-                            </button>
+                             {isEditor && (
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); openAddAssetModal(null, null); }}
+                                    className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="加入資源至未分類"
+                                >
+                                    <PlusCircle size={14} />
+                                </button>
+                            )}
                         </div>
                         {expandedNodes["unclassified"] && (
                             <div className="ml-6 border-l border-white/10">
