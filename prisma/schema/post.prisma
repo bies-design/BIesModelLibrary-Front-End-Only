@@ -10,7 +10,7 @@ model Post {
 
   // PostgreSQL 的原生陣列功能
   keywords   String[]
-  coverImage String
+  coverImage String?
   images     String[]
 
   // 任何檔案類型都可以兼容

@@ -64,7 +64,7 @@ const PostCard = ({
     setIsToggling(false);
   };
 
-  const renderTypeIcon = () => {
+  const renderTypeIcon = (isBig?:boolean) => {
     let IconComponent = FileBox; // 預設 Icon
     let iconColor = "text-gray-400 dark:text-gray-300"; 
 
@@ -94,7 +94,7 @@ const PostCard = ({
       default:
         IconComponent = FileBox;
     }
-
+    if(isBig) return <IconComponent className={iconColor} width={100} height={100} strokeWidth={2.5} />;
     return <IconComponent className={iconColor} width={16} height={16} strokeWidth={2.5} />;
   };
   
@@ -122,9 +122,9 @@ const PostCard = ({
                     unoptimized={true} 
                   />
               ) : (
-                  <div className="flex flex-col items-center text-[#A1A1AA] opacity-50">
-                      <ImageIcon size={48} className="mb-2" />
-                      <span className="text-xs font-medium">No Cover Image</span>
+                  <div className="transition-transform duration-300 hover:scale-140 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] opacity-50">
+                      {renderTypeIcon(true)}
+                      <span className="text-xl font-medium">No Cover Image</span>
                   </div>
               )}
               {/* 內凹陰影覆蓋層 */}

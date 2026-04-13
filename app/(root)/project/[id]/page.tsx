@@ -6,7 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import { 
     ArrowUp, ArrowDown, ArrowLeft, Folder, FolderOpen, Box, 
     Plus, Edit2, Trash2, Link as LinkIcon, PlusCircle, 
-    Milestone, ChevronRight, Globe
+    Milestone, ChevronRight, Globe,
+    Share2
 } from "lucide-react";
 import { 
     getProjectDetails, createPhase, deletePhase, updatePhase,
@@ -214,6 +215,36 @@ export default function ProjectDetailPage() {
     const isEditor = accessLevel === 'EDITOR_ACCESS';
     const toggleNode = (nodeId: string) => setExpandedNodes(prev => ({ ...prev, [nodeId]: !prev[nodeId] }));
 
+    const handleShare = async () => {
+        try {
+            // 1. 決定要分享的網址
+            // 如果有傳 shortId 就拼湊，沒有就拿當前瀏覽器網址
+            const shareUrl = projectId 
+                ? `${window.location.origin}/project/${projectId}` 
+                : window.location.href;
+
+            // 2. 執行複製動作
+            await navigator.clipboard.writeText(shareUrl);
+
+            // 3. 彈出成功通知
+            addToast({ 
+                title: "已複製分享網址", 
+                description: "連結已成功複製到剪貼簿",
+                color: "success" ,
+                timeout: 3000,
+                shouldShowTimeoutProgress: true,
+            });
+        } catch (err) {
+            console.error("無法複製網址: ", err);
+            addToast({ 
+                title: "複製失敗", 
+                description: "請手動複製網址列連結",
+                color: "danger" ,
+                timeout: 3000,
+                shouldShowTimeoutProgress: true,
+            });
+        }
+    };
     // 1. Phase 排序
     const handleReorderPhase = async (currentIndex: number, direction: 'up' | 'down') => {
         if (!project || isSubmittingRef.current) return;
@@ -396,6 +427,12 @@ export default function ProjectDetailPage() {
                 
                 {isEditor && (
                     <div className="z-10 flex flex-col items-center gap-3">
+                        <button 
+                            onClick={handleShare}  
+                            className="flex items-center gap-2 hover-lift bg-green-400/50 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]  transition-colors flex-shrink-0"
+                        >
+                            <Share2 size={16} /> 分享專案
+                        </button>
                         {/* 新增階段按鈕 */}
                         <button 
                             onClick={() => { setEditingPhase({name: ""}); setIsPhaseModalOpen(true); }}  

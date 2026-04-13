@@ -27,8 +27,8 @@ export default function ProjectAssociationPills({ team, associations }: Associat
                     className="bg-black text-white text-md"
                 >
                     <div 
-                    onClick={() => router.push(`/project/${asset.project.id}`)} // 這裡依照你的路由調整
-                    className="group glass-panel hover-lift flex items-center gap-2 p-3 rounded-xl bg-[#27272A]/50 border border-white/5 hover:border-[#8DB2E8]/30 hover:bg-[#27272A] cursor-pointer transition-all overflow-hidden"
+                        onClick={() => router.push(`/project/${asset.project.id}`)} // 這裡依照你的路由調整
+                        className="group glass-panel hover-lift flex items-center gap-2 p-3 rounded-xl bg-[#27272A]/50 border border-white/5 hover:border-[#8DB2E8]/30 hover:bg-[#27272A] cursor-pointer transition-all overflow-hidden"
                         >
                         {/* 團隊名字 (帶顏色圓點) */}
                         <div className="flex items-center gap-1.5 shrink-0">

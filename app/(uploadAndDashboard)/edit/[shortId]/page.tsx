@@ -113,10 +113,10 @@ export default function Edit() {
             addToast({ title: "錯誤", description: "請至少保留一個發布的檔案", color: "danger" });
             return;
         }
-        if(!coverImage){
-            addToast({ title: "錯誤", description: "請上傳一張封面圖!", color: "danger" });
-            return;
-        }
+        // if(!coverImage){
+        //     addToast({ title: "錯誤", description: "請上傳一張封面圖!", color: "danger" });
+        //     return;
+        // }
         if(metadata.title === "" || metadata.title === null){
             addToast({ title: "錯誤", description: "標題不可為空!", color: "danger" });
             return;

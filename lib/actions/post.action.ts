@@ -77,7 +77,7 @@ export async function createPost(params: CreatePostParams) {
                 postType = "MIX";
             }
         }
-        // 🚀 1. 準備基礎資料 (不包含關聯物件)
+        //  1. 準備基礎資料 (不包含關聯物件)
         const data: any = {
             shortId: shortId,
             title: params.metadata.title,
@@ -85,7 +85,7 @@ export async function createPost(params: CreatePostParams) {
             description: params.metadata.description,
             type: postType,
             keywords: params.metadata.keywords,
-            coverImage: params.coverImageKey!,
+            coverImage: params.coverImageKey,
             images: params.imageKeys,
             uploader: {
                 connect: {id: session.user.id}
@@ -215,7 +215,7 @@ export async function updatePost(params: UpdatePostParams) {
             description: metadata.description,
             type: postType, // 👈 塞入重新判斷的 Type
             keywords: metadata.keywords,
-            coverImage: coverImageKey!,
+            coverImage: coverImageKey,
             images: imageKeys,
             relatedPosts: metadata.relatedPosts.map(post => post.id), 
             permission: metadata.permission,
@@ -408,11 +408,11 @@ export const getPostsByScroll = async (
 
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
+
         const postWithPublicUrls = posts.map((post) => {
             return {
                 ...post,
-                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
-                :null,
+                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` : null,
                 isCollected: userCollection.includes(post.id)
             };
         });
@@ -474,8 +474,7 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
         const postWithPublicUrls = posts.map((post) => {
             return {
                 ...post,
-                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
-                :null,
+                coverImage: post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` : null,
                 isCollected: userCollection.includes(post.id)
             };
         });
@@ -515,7 +514,7 @@ export const getPostDetail = async (shortId: string) => {
 
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
-        const publicCoverImageUrls = `${minioEndpoint}/${minioImageBucket}/${post.coverImage}`
+        const publicCoverImageUrls = post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` : null;
 
         let publicImagesArray: string[] = [];
         if (post.images && Array.isArray(post.images) && post.images.length > 0) {
@@ -572,7 +571,7 @@ export const getEditPostDetail = async (shortId: string) => {
 
         const publicCoverImageUrls = post.coverImage 
             ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` 
-            : "";
+            : null;
 
         let publicImagesArray: string[] = [];
         if (post.images && Array.isArray(post.images) && post.images.length > 0) {
@@ -636,7 +635,7 @@ export async function deletePost(postId: string){
         // 1. 清理圖片 (Images Bucket: 封面 & 附加圖片)
         // ==========================================
         const imageKeysToDelete: string[] = [];
-        if (post.coverImage) {
+        if (post.coverImage && post.coverImage.trim() !== "") {
             imageKeysToDelete.push(post.coverImage);
         }
         if (post.images && post.images.length > 0) {

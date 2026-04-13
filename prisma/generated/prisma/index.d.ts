@@ -6857,7 +6857,7 @@ export namespace Prisma {
     description: string | null
     type: string
     keywords: string[]
-    coverImage: string
+    coverImage: string | null
     images: string[]
     uploaderId: string
     relatedPosts: string[]
@@ -7001,7 +7001,7 @@ export namespace Prisma {
       description: string | null
       type: string
       keywords: string[]
-      coverImage: string
+      coverImage: string | null
       images: string[]
       uploaderId: string
       relatedPosts: string[]
@@ -14589,7 +14589,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Post"> | string | null
     type?: StringFilter<"Post"> | string
     keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringFilter<"Post"> | string
+    coverImage?: StringNullableFilter<"Post"> | string | null
     images?: StringNullableListFilter<"Post">
     uploaderId?: StringFilter<"Post"> | string
     relatedPosts?: StringNullableListFilter<"Post">
@@ -14612,7 +14612,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     type?: SortOrder
     keywords?: SortOrder
-    coverImage?: SortOrder
+    coverImage?: SortOrderInput | SortOrder
     images?: SortOrder
     uploaderId?: SortOrder
     relatedPosts?: SortOrder
@@ -14638,7 +14638,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Post"> | string | null
     type?: StringFilter<"Post"> | string
     keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringFilter<"Post"> | string
+    coverImage?: StringNullableFilter<"Post"> | string | null
     images?: StringNullableListFilter<"Post">
     uploaderId?: StringFilter<"Post"> | string
     relatedPosts?: StringNullableListFilter<"Post">
@@ -14661,7 +14661,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     type?: SortOrder
     keywords?: SortOrder
-    coverImage?: SortOrder
+    coverImage?: SortOrderInput | SortOrder
     images?: SortOrder
     uploaderId?: SortOrder
     relatedPosts?: SortOrder
@@ -14685,7 +14685,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Post"> | string | null
     type?: StringWithAggregatesFilter<"Post"> | string
     keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringWithAggregatesFilter<"Post"> | string
+    coverImage?: StringNullableWithAggregatesFilter<"Post"> | string | null
     images?: StringNullableListFilter<"Post">
     uploaderId?: StringWithAggregatesFilter<"Post"> | string
     relatedPosts?: StringNullableListFilter<"Post">
@@ -15434,7 +15434,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -15455,7 +15455,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -15476,7 +15476,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -15497,7 +15497,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -15518,7 +15518,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -15536,7 +15536,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -15552,7 +15552,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -18110,7 +18110,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -18130,7 +18130,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -18258,7 +18258,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -18278,7 +18278,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -18438,7 +18438,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -18458,7 +18458,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -18537,7 +18537,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -18557,7 +18557,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -19429,7 +19429,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -19449,7 +19449,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -19610,7 +19610,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -19630,7 +19630,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -19674,7 +19674,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -19694,7 +19694,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -19810,7 +19810,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Post"> | string | null
     type?: StringFilter<"Post"> | string
     keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringFilter<"Post"> | string
+    coverImage?: StringNullableFilter<"Post"> | string | null
     images?: StringNullableListFilter<"Post">
     uploaderId?: StringFilter<"Post"> | string
     relatedPosts?: StringNullableListFilter<"Post">
@@ -20099,7 +20099,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -20119,7 +20119,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -20725,7 +20725,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     uploaderId: string
     relatedPosts?: PostCreaterelatedPostsInput | string[]
@@ -20776,7 +20776,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -20796,7 +20796,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -20816,7 +20816,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     uploaderId?: StringFieldUpdateOperationsInput | string
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
@@ -20908,7 +20908,7 @@ export namespace Prisma {
     description?: string | null
     type: string
     keywords?: PostCreatekeywordsInput | string[]
-    coverImage: string
+    coverImage?: string | null
     images?: PostCreateimagesInput | string[]
     relatedPosts?: PostCreaterelatedPostsInput | string[]
     permission: string
@@ -21043,7 +21043,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -21063,7 +21063,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string
@@ -21083,7 +21083,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: StringFieldUpdateOperationsInput | string
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     images?: PostUpdateimagesInput | string[]
     relatedPosts?: PostUpdaterelatedPostsInput | string[]
     permission?: StringFieldUpdateOperationsInput | string

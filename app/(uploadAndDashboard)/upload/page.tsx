@@ -90,6 +90,14 @@ const Upload = () => {
             return null;
         }
     };
+    useEffect(() => {
+        // 當 Upload 元件被銷毀時，清空最後殘留的封面圖 Blob URL
+        return () => {
+            if (coverImage && coverImage.startsWith('blob:')) {
+                URL.revokeObjectURL(coverImage);
+            }
+        };
+    }, [coverImage]);
     // 處理下一步按鈕
     const handleNextButton = async () => {
         if (step === 3) {
@@ -107,10 +115,10 @@ const Upload = () => {
             addToast({ title: "錯誤", description: "請至少勾選一個要發布的檔案!", color: "danger" });
             return;
         }
-        if(!coverImage){
-            addToast({ title: "錯誤", description: "請上傳一張封面圖!", color: "danger" });
-            return;
-        }
+        // if(!coverImage){
+        //     addToast({ title: "錯誤", description: "請上傳一張封面圖!", color: "danger" });
+        //     return;
+        // }
         if(metadata.title === "" || metadata.title === null){
             addToast({ title: "錯誤", description: "標題不可為空!", color: "danger" });
             return;
@@ -142,7 +150,7 @@ const Upload = () => {
                 metadata: metadata,
                 coverImageKey: coverKey,
                 imageKeys: imageKeys,
-                // 🚀 霸氣！直接把打勾的陣列丟給後端，其他分類邏輯全部刪掉！
+                // 霸氣！直接把打勾的陣列丟給後端，其他分類邏輯全部刪掉！
                 fileIds: selectedPublishIds, 
             });
 
@@ -235,7 +243,7 @@ const Upload = () => {
             );
         }
 
-        // 3. 💡 未來擴充範例：圖片預覽
+        // 3. 未來擴充範例：圖片預覽
         if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
             // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
             return (
@@ -329,7 +337,7 @@ const Upload = () => {
                                         <h2 className="text-2xl font-bold text-white mb-2">Cover Image</h2>
                                         <p className="text-[#A1A1AA] text-sm mb-8 text-center">
                                             上傳你的封面圖 <br/>
-                                            若無上傳封面圖，將會顯示站位圖
+                                            若無上傳封面圖，將會顯示預設佔位圖
                                         </p>
                                         
                                         <div 

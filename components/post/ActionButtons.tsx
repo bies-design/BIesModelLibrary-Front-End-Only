@@ -207,32 +207,31 @@ export default function ActionButtons({ post }: { post: any }) {
     return (
         <div className="flex flex-col gap-3">
             {canEditPost && (
-                <button 
-                    onClick={onDownloadOpen} 
-                    className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
-                >
-                    <Download size={18} /> Download
-                </button>
-            )}
-                
-            <button onClick={handleShare} className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
-                <Share2 size={18} /> Share Link
-            </button>
-            {canEditPost && (
-                <button 
-                    onClick={() => router.push(`/edit/${post.shortId}`)} 
-                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-blue-500/10 text-blue-500 py-3.5 rounded-xl font-medium transition"
-                >
-                    <Edit2 size={18} />Edit Post
-                </button>
-            )}
-            {canEditPost && (
-                <button 
-                    onClick={onDeleteOpen} 
-                    className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition"
-                >
-                    <Trash2 size={18} /> Delete Post
-                </button>
+                <>
+                    <button 
+                        onClick={onDownloadOpen} 
+                        className="hover-lift w-full flex items-center justify-center gap-2 bg-[#D70036] hover:bg-[#b0002c] text-white py-3.5 rounded-xl font-medium shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
+                    >
+                        <Download size={18} /> Download
+                    </button>
+                    
+                    <button onClick={handleShare} className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-[#3F3F4616] text-black/80 dark:text-white py-3.5 rounded-xl font-medium transition">
+                        <Share2 size={18} /> Share Link
+                    </button>
+                    <button 
+                        onClick={() => router.push(`/edit/${post.shortId}`)} 
+                        className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-blue-500/10 text-blue-500 py-3.5 rounded-xl font-medium transition"
+                    >
+                        <Edit2 size={18} />Edit Post
+                    </button>
+                    
+                    <button 
+                        onClick={onDeleteOpen} 
+                        className="glass-panel hover-lift w-full flex items-center justify-center gap-2 backdrop-blur-lg hover:bg-red-500/10 text-red-500 py-3.5 rounded-xl font-medium transition"
+                    >
+                        <Trash2 size={18} /> Delete Post
+                    </button>
+                </>
             )}
 
             {/* 🚀 下載清單 Modal (全新分類渲染) */}
