@@ -148,7 +148,13 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
     const buttonText = mode === 'create' ? "Create" : "Save Changes";
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center" className="dark text-white bg-[#18181B] border border-[#27272A]">
+        <Modal 
+            isOpen={isOpen} 
+            onOpenChange={onOpenChange} 
+            placement="center" 
+            classNames={{closeButton:"p-3 text-2xl"}} 
+            className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
+        >
             <ModalContent>
                 {(onClose) => (
                 <>
@@ -167,9 +173,9 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
                         
                         {/* 🌟 封面圖片 UI 區塊 */}
                         <div className="flex flex-col gap-2 mb-2">
-                            <label className="text-sm text-gray-400">Cover Image</label>
+                            <label className="text-sm text-white/80">Cover Image</label>
                             <div 
-                                className="relative group cursor-pointer w-full h-40 bg-[#27272A] border border-[#3F3F46] rounded-xl overflow-hidden flex items-center justify-center transition-colors hover:border-gray-500"
+                                className=" relative group cursor-pointer w-full h-40 ] rounded-xl overflow-hidden flex items-center justify-center transition-colors hover:border-gray-500 bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                                 onClick={() => !isUploadingImage && fileInputRef.current?.click()}
                             >
                                 {displayAvatarUrl ? (
@@ -202,45 +208,76 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
                             autoFocus
                             label="Project Name"
                             placeholder="輸入專案名稱 (必填)"
-                            variant="bordered"
+                            variant="flat"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            classNames={{ inputWrapper: "bg-[#27272A] border-[#3F3F46]" }}
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-[#18181B]",
+                                    "data-[hover=true]:bg-[#27272a]", 
+                                    "data-[focus=true]:bg-[#27272a]",
+                                    "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                ].join(" "),
+                                input: "text-white placeholder:text-gray-500"
+                            }}
                         />
                         <Input
                             label="Client (業主)"
                             placeholder="例如: 建設公司名稱"
-                            variant="bordered"
+                            variant="flat"
                             name="client"
                             value={formData.client}
                             onChange={handleChange}
-                            classNames={{ inputWrapper: "bg-[#27272A] border-[#3F3F46]" }}
-                        />
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-[#18181B]",
+                                    "data-[hover=true]:bg-[#27272a]", 
+                                    "data-[focus=true]:bg-[#27272a]",
+                                    "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                ].join(" "),
+                                input: "text-white placeholder:text-gray-500"
+                            }}                        />
                         <Input
                             label="Location (地點)"
                             placeholder="例如: 台北市信義區"
-                            variant="bordered"
+                            variant="flat"
                             name="location"
                             value={formData.location}
                             onChange={handleChange}
-                            classNames={{ inputWrapper: "bg-[#27272A] border-[#3F3F46]" }}
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-[#18181B]",
+                                    "data-[hover=true]:bg-[#27272a]", 
+                                    "data-[focus=true]:bg-[#27272a]",
+                                    "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                ].join(" "),
+                                input: "text-white placeholder:text-gray-500"
+                            }}
                         />
                         <Textarea
                             label="Description"
                             placeholder="專案簡介..."
-                            variant="bordered"
+                            variant="flat"
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            classNames={{ inputWrapper: "bg-[#27272A] border-[#3F3F46]" }}
+                            classNames={{
+                                inputWrapper: [
+                                    "bg-[#18181B]",
+                                    "data-[hover=true]:bg-[#27272a]", 
+                                    "data-[focus=true]:bg-[#27272a]",
+                                    "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                ].join(" "),
+                                input: "text-white placeholder:text-gray-500"
+                            }}
                         />
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="default" className="shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]" variant="flat" onPress={onClose} isDisabled={isLoading}>
+                        <Button color="default" className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]" variant="flat" onPress={onClose} isDisabled={isLoading}>
                             Cancel
                         </Button>
-                        <Button color="primary" className="shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"   onPress={() => handleSubmit(onClose)} isLoading={isLoading}>
+                        <Button color="primary" className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"   onPress={() => handleSubmit(onClose)} isLoading={isLoading}>
                             {buttonText}
                         </Button>
                     </ModalFooter>

@@ -240,7 +240,10 @@ export default function ActionButtons({ post }: { post: any }) {
                 onOpenChange={onDownloadChange} 
                 backdrop="blur"
                 placement="center"
-                className="dark text-white"
+                classNames={{
+                    closeButton:"p-3 text-2xl"
+                }}
+                className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
             >
                 <ModalContent className="bg-[#1C1C1F] border border-[#3F3F46] max-w-[400px]">
                     <ModalHeader className="border-b border-[#3F3F46] py-4">
@@ -258,7 +261,7 @@ export default function ActionButtons({ post }: { post: any }) {
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">3D Models</p>
                                 {models3D.map((model: any) => (
-                                    <div key={model.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                    <div key={model.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)] ">
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <FileCode size={20} className="text-[#D70036] shrink-0" />
                                             <div className="overflow-hidden">
@@ -282,7 +285,7 @@ export default function ActionButtons({ post }: { post: any }) {
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Documents (PDF/Word)</p>
                                 {docs.map((doc: any) => (
-                                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)] ">
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <FileText size={20} className="text-orange-400 shrink-0" />
                                             <p className="text-sm truncate" title={doc.name}>{doc.name}</p>
@@ -304,7 +307,7 @@ export default function ActionButtons({ post }: { post: any }) {
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Images & Drawings</p>
                                 {images.map((img: any) => (
-                                    <div key={img.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                    <div key={img.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)] ">
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <ImageIcon size={20} className="text-pink-400 shrink-0" />
                                             <p className="text-sm truncate" title={img.name}>{img.name}</p>
@@ -326,7 +329,7 @@ export default function ActionButtons({ post }: { post: any }) {
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs text-[#A1A1AA] uppercase tracking-wider font-bold">Other Files</p>
                                 {others.map((file: any) => (
-                                    <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] border border-[#3F3F46]">
+                                    <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[#27272A] shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <FileBox size={20} className="text-gray-400 shrink-0" />
                                             <p className="text-sm truncate" title={file.name}>{file.name}</p>
@@ -350,7 +353,11 @@ export default function ActionButtons({ post }: { post: any }) {
                 isOpen={isDeleteOpen} 
                 onOpenChange={onDeleteChange}
                 backdrop="blur"
-                className="dark text-white bg-[#18181B] border border-[#27272A]"
+                placement='center'
+                classNames={{
+                    closeButton:"p-3 text-2xl"
+                }}
+                className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
             >
                 <ModalContent>
                     {(onClose) => (
@@ -363,10 +370,10 @@ export default function ActionButtons({ post }: { post: any }) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="default" variant="light" onPress={onClose} isDisabled={isDeleting}>
+                                <Button color="default" variant="flat" onPress={onClose} isDisabled={isDeleting} className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]">
                                     Cancel
                                 </Button>
-                                <Button color="danger" onPress={handleDeletePost} isLoading={isDeleting}>
+                                <Button color="primary" onPress={handleDeletePost} isLoading={isDeleting} className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]">
                                     {isDeleting ? "Deleting..." : "Delete Post"}
                                 </Button>
                             </ModalFooter>

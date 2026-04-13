@@ -105,7 +105,7 @@ const AssetNode = ({
                 style={{ paddingLeft: `${depth * 1.5 + 1}rem` }}
                 onClick={() => node.type === 'FOLDER' && onToggle(node.id)}
             >
-                <div className="flex items-center gap-2 text-sm overflow-hidden">
+                <div className="flex text-md items-center gap-2 overflow-hidden">
                     {node.type === 'FOLDER' ? (
                         <Tooltip placement="top" content={`資料夾描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
                             <div className="flex items-center gap-2 cursor-help">
@@ -134,24 +134,24 @@ const AssetNode = ({
                     )}
                 </div>
 
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-2 ">
                     {isEditor && (
                         <>
                             {/* 資產排序 */}
                             <div className="flex gap-0.5 border-r border-white/10 pr-2 mr-1">
-                                <button disabled={currentIndex === 0} onClick={(e) => { e.stopPropagation(); onReorder(node, 'up'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowUp size={12}/></button>
-                                <button disabled={currentIndex === totalInLevel - 1} onClick={(e) => { e.stopPropagation(); onReorder(node, 'down'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowDown size={12}/></button>
+                                <button disabled={currentIndex === 0} onClick={(e) => { e.stopPropagation(); onReorder(node, 'up'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowUp size={16}/></button>
+                                <button disabled={currentIndex === totalInLevel - 1} onClick={(e) => { e.stopPropagation(); onReorder(node, 'down'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowDown size={16}/></button>
                             </div>
                             {node.type === 'FOLDER' && (
                                 <button onClick={(e) => { e.stopPropagation(); onAdd(node.phaseId, node.id); }} title="新增至此資料夾">
-                                    <PlusCircle size={14} className="text-emerald-500 hover:text-emerald-400" />
+                                    <PlusCircle size={16} className="text-emerald-500 hover:text-emerald-400" />
                                 </button>
                             )}
                             <button onClick={(e) => { e.stopPropagation(); onEdit(node); }}>
-                                <Edit2 size={14} className="text-blue-400" />
+                                <Edit2 size={16} className="text-blue-400" />
                             </button>
                             <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}>
-                                <Trash2 size={14} className="text-red-400" />
+                                <Trash2 size={16} className="text-red-400" />
                             </button>
                         </>
                     )}
@@ -169,7 +169,7 @@ const AssetNode = ({
                         />
                     ))}
                     {!hasChildren && (
-                        <div className="py-2 text-xs text-gray-600 italic" style={{ paddingLeft: `${(depth + 1) * 1.5 + 1}rem` }}>Empty folder</div>
+                        <div className="py-2 text-sm text-gray-600 italic" style={{ paddingLeft: `${(depth + 1) * 1.5 + 1}rem` }}>空的資料夾</div>
                     )}
                 </div>
             )}
@@ -437,14 +437,16 @@ export default function ProjectDetailPage() {
                         <ArrowLeft size={20} />
                     </button>
                     {/* 專案文字資訊 */}
-                    <div>
+                    <div className="flex-1 min-w-0">
                         <h1 className={`text-2xl font-bold ${!bgImageUrl ? "text-slate-500 dark:text-white " : "text-white "} flex items-center gap-2 mb-2`}>
                             📁 {project.name}
                         </h1>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>狀態：{project.status ? project.status : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未設定"}</p>
-                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>描述：{project.description ? project.description : "未設定"}</p>
+                        <div className={`ml-9 my-1 text-sm max-w-2xl max-h-24 overflow-y-auto break-all whitespace-pre-wrap pr-2 ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>
+                            描述：{project.description ? project.description : "未設定"}
+                        </div>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>上傳時間：{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString() : ""}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>最後編輯時間：{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</p>                        
                     </div>
@@ -456,14 +458,16 @@ export default function ProjectDetailPage() {
                             onClick={handleShare}  
                             className="flex items-center gap-2 hover-lift bg-green-400/50 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]  transition-colors flex-shrink-0"
                         >
-                            <Share2 size={16} /> 分享專案
+                            <Share2 size={16} className="max-sm:h-5"/> 
+                            <p className="hidden sm:block">分享專案</p>
                         </button>
                         {/* 新增階段按鈕 */}
                         <button 
                             onClick={() => { setEditingPhase({name: ""}); setIsPhaseModalOpen(true); }}  
                             className="flex items-center gap-2 hover-lift bg-slate-800 text-white px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-slate-700 transition-colors flex-shrink-0"
                         >
-                            <Plus size={16} /> 新增階段
+                            <Plus size={16} className="max-sm:h-5"/>
+                            <p className="hidden sm:block">新增階段</p>
                         </button>
                         {/* 編輯專案按鈕 */}
                         <button 
@@ -471,7 +475,8 @@ export default function ProjectDetailPage() {
                             className="hover-lift flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-blue-100 dark:bg-blue-950/80 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors flex-shrink-0"
                             title="編輯專案資訊"
                         >
-                            <Edit2 size={16} /> 編輯資訊
+                            <Edit2 size={16} className="max-sm:h-5"/> 
+                            <p className="hidden sm:block">編輯資訊</p>
                         </button>
                         {/* 刪除專案按鈕 */}
                         <button 
@@ -479,7 +484,8 @@ export default function ProjectDetailPage() {
                             className="flex items-center gap-2 hover-lift bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] hover:bg-red-100 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors flex-shrink-0"
                             title="刪除此專案"
                         >
-                            <Trash2 size={16} /> 刪除專案
+                            <Trash2 size={16} className="max-sm:h-5"/> 
+                            <p className="hidden sm:block">刪除專案</p>
                         </button>
 
                     </div>
@@ -495,45 +501,45 @@ export default function ProjectDetailPage() {
                         return (
                             <div key={phase.id} className="mb-1">
                                 <div className="flex items-center justify-between p-2.5 hover:bg-slate-100 dark:hover:bg-slate-500 cursor-pointer rounded-lg transition-colors group" onClick={() => toggleNode(phase.id)}>
-                                    <div className="flex text-lg items-center gap-2 font-medium text-slate-800 dark:text-white">
+                                    <div className="flex text-xl items-center gap-2 font-semibold text-slate-800 dark:text-white">
                                         <Milestone size={26} className="text-yellow-300" />
                                         {phase.name}
                                     </div>
                                     {isEditor && (
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex gap-1 ">
                                             {/* Phase 排序按鈕 */}
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleReorderPhase(phaseIdx, 'up'); }}
                                                 disabled={phaseIdx === 0}
-                                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400 rounded"
                                             >
-                                                <ArrowUp size={14} />
+                                                <ArrowUp size={18} />
                                             </button>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleReorderPhase(phaseIdx, 'down'); }}
                                                 disabled={phaseIdx === project.phases.length - 1}
-                                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 rounded"
+                                                className="p-1.5 text-slate-400 hover:bg-white hover:text-slate-800 disabled:opacity-20 disabled:hover:text-slate-400 rounded"
                                             >
-                                                <ArrowDown size={14} />
+                                                <ArrowDown size={18} />
                                             </button>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); openAddAssetModal(phase.id, null); }}
-                                                className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded"
+                                                className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded"
                                                 title="加入資源"
                                             >
-                                                <PlusCircle size={14} />
+                                                <PlusCircle size={18} />
                                             </button>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); setEditingPhase(phase); setIsPhaseModalOpen(true);}}
-                                                className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded"
+                                                className="p-1.5 text-blue-500 hover:bg-blue-50 rounded"
                                             >
-                                                <Edit2 size={14} />
+                                                <Edit2 size={18} />
                                             </button>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleDeletePhase(phase.id); }}
-                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded"
+                                                className="p-1.5 text-red-500 hover:bg-red-50 rounded"
                                             >
-                                                <Trash2 size={14} />
+                                                <Trash2 size={18} />
                                             </button>
                                         </div>
                                     )}
@@ -561,17 +567,17 @@ export default function ProjectDetailPage() {
                             className="group flex items-center justify-between p-2.5 hover:bg-slate-100 dark:hover:bg-slate-500 cursor-pointer rounded-lg transition-colors"
                             onClick={() => toggleNode("unclassified")}
                         >
-                            <div className="flex items-center gap-2 font-medium text-slate-600 dark:text-white">
+                            <div className="text-xl font-semibold flex items-center gap-2 font-medium text-slate-600 dark:text-white">
                             {expandedNodes["unclassified"] ? <FolderOpen size={26} className="text-yellow-400" /> : <Folder size={26} className="text-yellow-400" />}
                                 未分類
                             </div>
                             {isEditor && (
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); openAddAssetModal(null, null); }}
-                                    className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded"
                                     title="加入資源至未分類"
                                 >
-                                    <PlusCircle size={14} />
+                                    <PlusCircle size={18} />
                                 </button>
                             )}
                         </div>
@@ -594,25 +600,28 @@ export default function ProjectDetailPage() {
 
             {/* --- Modals --- */}
             {/* 編輯資產 Modal */}
-            <Modal isOpen={isEditAssetModalOpen} onOpenChange={() => setIsEditAssetModalOpen(false)} className="dark text-white bg-[#1C1C1F]">
+            <Modal placement="center" isOpen={isEditAssetModalOpen} onOpenChange={() => setIsEditAssetModalOpen(false)} classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
                 <ModalContent>
                     <ModalHeader>Edit {editingAsset?.type}</ModalHeader>
                     <ModalBody>
-                        <Input label="Name" value={editingAsset?.name || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, name: v} : null)} />
+                        <Input label="Name" variant="flat" value={editingAsset?.name || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, name: v} : null)} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                        {editingAsset?.type === 'LINK' && (
+                            <Input label="URL" variant="flat" value={editingAsset?.url || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, url: v} : null)} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                        )}
                         <Textarea 
                             label="Description" 
+                            variant="flat"
                             value={editingAsset?.description || ""} 
                             onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, description: v} : null)} 
+                            classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}
                         />
-                        {editingAsset?.type === 'LINK' && (
-                            <Input label="URL" value={editingAsset?.url || ""} onValueChange={(v) => setEditingAsset(prev => prev ? {...prev, url: v} : null)} />
-                        )}
+                        
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onClick={() => setIsEditAssetModalOpen(false)}>
+                        <Button color="default" variant="flat" onClick={() => setIsEditAssetModalOpen(false)} className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]">
                             Cancel
                         </Button>
-                        <Button color="danger" onClick={handleUpdateAssetInfo}>
+                        <Button onClick={handleUpdateAssetInfo} className=" bg-[#D70036] text-white hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]">
                             Save Changes
                         </Button>
                     </ModalFooter>
@@ -621,21 +630,22 @@ export default function ProjectDetailPage() {
 
             {/* 其餘 Modal... */}
             <ProjectSettingsModal isOpen={isEditOpen} onOpenChange={onEditOpenChange} mode='edit' teamId={project.teamId} projectData={project} onSubmit={handleUpdateProject} />
-            <Modal isOpen={isPhaseModalOpen} onOpenChange={() => setIsPhaseModalOpen(false)} className="dark text-white bg-[#1C1C1F]">
+            <Modal placement="center" isOpen={isPhaseModalOpen} onOpenChange={() => setIsPhaseModalOpen(false)} classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
                 <ModalContent>
                     <ModalHeader>{editingPhase?.id ? "Edit Phase" : "New Phase"}</ModalHeader>
                     <ModalBody>
-                        <Input label="Phase Name" value={editingPhase?.name} onValueChange={(v) => setEditingPhase(prev => ({...prev!, name: v}))} />
+                        <Input label="Phase Name" value={editingPhase?.name} onValueChange={(v) => setEditingPhase(prev => ({...prev!, name: v}))} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}} />
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onClick={() => setIsPhaseModalOpen(false)}>
+                        <Button color="default" variant="flat" className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]" onClick={() => setIsPhaseModalOpen(false)}>
                             Cancel
                         </Button>
                         <Button 
-                            color="danger" 
+                            color="primary" 
                             //當名稱為空或是只有空白鍵時，禁用按鈕
                             isDisabled={!editingPhase?.name?.trim()} 
                             onClick={handleSavePhase}
+                            className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
                         >
                             Save
                         </Button>
@@ -643,48 +653,51 @@ export default function ProjectDetailPage() {
                 </ModalContent>
             </Modal>
 
-            <Modal isOpen={isAddAssetModalOpen} onOpenChange={() => setIsAddAssetModalOpen(false)} className="dark text-white bg-[#1C1C1F] max-w-lg scrollbar-hide"><ModalContent>
-                <ModalHeader>Add Asset</ModalHeader>
-                <ModalBody className="pb-8">
-                    <Tabs color="danger" variant="underlined">
-                        <Tab key="post" title="Post">
-                            <div className="flex flex-col gap-2 mt-4 max-h-[40vh] overflow-y-auto">
-                                {availablePosts.map(p => (
-                                    <div key={p.id} className="flex items-center justify-between p-3 border border-white/5 rounded-xl hover:bg-white/5 transition-all">
-                                        <div className="flex items-center gap-3"><Box size={20} className="text-[#8DB2E8]" /><div className="overflow-hidden"><p className="text-sm font-medium truncate w-48">{p.title}</p><p className="text-[10px] text-gray-500 uppercase">{p.category}</p></div></div>
-                                        <Button size="sm" color="danger" variant="flat" onClick={() => handleCreateAsset('POST', p.id)}>Add</Button>
-                                    </div>
-                                ))}
-                            </div>
-                        </Tab>
-                        <Tab key="folder" title="Folder">
-                            <div className="flex flex-col gap-4 mt-4">
-                                <Input label="Name" variant="bordered" value={newFolderName} onValueChange={setNewFolderName}/>
-                                <Textarea label="Description" placeholder="請描述此檔案" variant="bordered" value={newFolderDescription} onValueChange={setNewFolderDescription}/>
-                                <Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('FOLDER')} isDisabled={!newFolderName.trim()}>
-                                    Create Folder
-                                </Button>
-                            </div>
-                        </Tab>
-                        <Tab key="link" title="Link">
-                            <div className="flex flex-col gap-4 mt-4">
-                                <Input label="Name" variant="bordered" value={newLinkData.name} onValueChange={(v) => setNewLinkData(prev => ({...prev, name: v}))}/>
-                                <Input label="URL" variant="bordered" value={newLinkData.url} onValueChange={(v) => setNewLinkData(prev => ({...prev, url: v}))}/>
-                                <Textarea 
-                                    label="Description" 
-                                    placeholder="請描述此連結" 
-                                    variant="bordered" 
-                                    value={newLinkData.description} 
-                                    onValueChange={(v) => setNewLinkData(prev => ({...prev, description: v}))}
-                                />
-                                <Button className="bg-[#D70036] text-white font-bold" onClick={() => handleCreateAsset('LINK')} isDisabled={!newLinkData.name || !newLinkData.url}>
-                                    Add Link
-                                </Button>
-                            </div>
-                        </Tab>
-                    </Tabs>
-                </ModalBody>
-            </ModalContent></Modal>
+            <Modal placement="center" isOpen={isAddAssetModalOpen} onOpenChange={() => setIsAddAssetModalOpen(false)} classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
+                <ModalContent>
+                    <ModalHeader>Add Asset</ModalHeader>
+                    <ModalBody className="pb-8">
+                        <Tabs color="danger" variant="underlined">
+                            <Tab key="post" title="Post">
+                                <div className="flex flex-col gap-2 mt-4 max-h-[40vh] overflow-y-auto">
+                                    {availablePosts.map(p => (
+                                        <div key={p.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 bg-[#27272A] shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)] transition-all">
+                                            <div className="flex items-center gap-3"><Box size={20} className="text-[#8DB2E8]" /><div className="overflow-hidden"><p className="text-sm font-medium truncate w-48">{p.title}</p><p className="text-[10px] text-gray-500 uppercase">{p.category}</p></div></div>
+                                            <Button size="sm" className="bg-[#D70036] hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] text-white font-bold" variant="flat" onClick={() => handleCreateAsset('POST', p.id)}>Add</Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Tab>
+                            <Tab key="folder" title="Folder">
+                                <div className="flex flex-col gap-4 mt-4">
+                                    <Input label="Name" variant="flat" value={newFolderName} onValueChange={setNewFolderName} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                                    <Textarea label="Description" placeholder="請描述此檔案" variant="flat" value={newFolderDescription} onValueChange={setNewFolderDescription} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                                    <Button className="bg-[#D70036] hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] text-white font-bold" onClick={() => handleCreateAsset('FOLDER')} isDisabled={!newFolderName.trim()}>
+                                        Create Folder
+                                    </Button>
+                                </div>
+                            </Tab>
+                            <Tab key="link" title="Link">
+                                <div className="flex flex-col gap-4 mt-4">
+                                    <Input label="Name" variant="flat" value={newLinkData.name} onValueChange={(v) => setNewLinkData(prev => ({...prev, name: v}))}  classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                                    <Input label="URL" variant="flat" value={newLinkData.url} onValueChange={(v) => setNewLinkData(prev => ({...prev, url: v}))} classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}/>
+                                    <Textarea 
+                                        label="Description" 
+                                        placeholder="請描述此連結" 
+                                        variant="flat" 
+                                        value={newLinkData.description} 
+                                        onValueChange={(v) => setNewLinkData(prev => ({...prev, description: v}))}
+                                        classNames={{inputWrapper:"bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] text-black dark:text-white "}}
+                                    />
+                                    <Button className="bg-[#D70036] hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] text-white font-bold" onClick={() => handleCreateAsset('LINK')} isDisabled={!newLinkData.name || !newLinkData.url}>
+                                        Add Link
+                                    </Button>
+                                </div>
+                            </Tab>
+                        </Tabs>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </div>
     );
 }

@@ -132,7 +132,7 @@ export default function ProjectsPage() {
 
     return (
         <div className="md:max-w-[90dvw] max-md:px-6 mx-auto min-h-screen flex flex-col py-6 text-white">
-            <div className='relative flex-1 bg-white/50 dark:bg-black/50 px-12 py-6 rounded-xl shadow-sm h-full'>
+            <div className='relative flex-1 bg-white/50 dark:bg-black/50 px-6 md:px-12 py-6 rounded-xl shadow-sm h-full'>
                 {/* 上一頁按鈕 */}
                 <button 
                     onClick={() => router.back()}
@@ -196,14 +196,14 @@ export default function ProjectsPage() {
                                     {accessLevel === 'EDITOR_ACCESS' && (
                                         <button
                                             onClick={(e) => handleOpenEdit(e, project)}
-                                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors z-10 opacity-0 group-hover:opacity-100"
+                                            className="absolute top-4 right-4 p-2 text-white md:text-gray-400 md:hover:text-white md:hover:bg-white/10 rounded-full transition-colors z-10 md:opacity-0 md:group-hover:opacity-100"
                                             title="編輯專案"
                                         >
-                                            <Edit2 size={16} />
+                                            <Edit2 size={16} className='h-6 w-6' />
                                         </button>
                                     )}
                                     <div className="flex-1">
-                                        <h3 className="text-xl font-semibold mb-2 group-hover:text-[#D70036] transition-colors">
+                                        <h3 className="text-2xl font-semibold mb-2 group-hover:text-[#D70036] transition-colors">
                                             {project.name}
                                         </h3>
                                         {project.description && (
@@ -214,27 +214,23 @@ export default function ProjectsPage() {
                                         
                                         {/* 根據你引入的 icon 預留的資訊區塊 */}
                                         <div className="flex flex-col gap-2 mt-4">
-                                            <div className="flex items-center gap-2 text-xs text-white">
+                                            <div className="flex items-center gap-2 text-sm text-white">
                                                 <LoaderCircle size={14} />
                                                 <span>{project.status ? project.status : "未設定" }</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-white">
+                                            <div className="flex items-center gap-2 text-sm text-white">
                                                 <MapPin size={14} />
                                                 <span>{project.location ? project.location : "未設定" }</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-white">
+                                            <div className="flex items-center gap-2 text-sm text-white">
                                                 <Building2 size={14} />
                                                 <span>{project.client ? project.client : "未設定"}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-white">
-                                                <MessageSquareText size={14} />
-                                                <span>{project.description ? project.description : "未設定"}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-white">
+                                            <div className="flex items-center gap-2 text-sm text-white">
                                                 <FolderUp size={14} />
                                                 <span>{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString()  : ""}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-xs text-white">
+                                            <div className="flex items-center gap-2 text-sm text-white">
                                                 <ClipboardPen size={14} />
                                                 <span>{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</span>
                                             </div>

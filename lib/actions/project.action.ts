@@ -205,6 +205,7 @@ export async function deletePhase(phaseId: string) {
         await prisma.phase.delete({
         where: { id: phaseId }
         });
+        
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

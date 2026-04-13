@@ -448,9 +448,11 @@ const Settings = (props: Props) => {
                     if(!open) handleModalClose();
                 }} 
                 classNames={{
+                    closeButton:"p-3 text-2xl",
                     wrapper:"z-999",
                     backdrop:"z-998"
-                }}
+                }} 
+                className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
                 placement="center"
             >
                 <ModalContent>
@@ -505,10 +507,10 @@ const Settings = (props: Props) => {
                             </ModalBody>
                             <ModalFooter>
                                 <Button 
-                                    color="danger" 
+                                    color="default" 
                                     variant="flat" 
                                     onPress={handleModalClose}
-                                    className='text-white hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                                    className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
                                 >
                                     Cancel
                                 </Button>
@@ -517,7 +519,7 @@ const Settings = (props: Props) => {
                                     isDisabled={isButtonDisabled} 
                                     onPress={handlePasswordSubmit} 
                                     isLoading={isUpdatingPwdUI}
-                                    className='hover-lift shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_3px_2px_#FFFFFF33]'
+                                    className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
                                 >
                                     Update Password
                                 </Button>

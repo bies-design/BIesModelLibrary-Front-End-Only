@@ -48,7 +48,6 @@ const SearchBar = ({isMenuOpen,onToggle}:SearchBarProps) => {
 
     const getPlaceholder = ():string => {
         if(pathname === '/') return "Search Posts Name...";
-        if(pathname.startsWith('/post/')) return "Search within this post...";
         if(pathname.startsWith('/project/')) return "Search within this project...";
         if(pathname.startsWith('/projects/')) return "Search project name...";
         return "Search something...";

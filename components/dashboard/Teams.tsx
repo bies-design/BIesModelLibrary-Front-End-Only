@@ -326,8 +326,8 @@ const Teams = () => {
                 <div className="flex justify-center md:items-center gap-2 text-gray-400 text-sm">
                     {!isEditMode && (<p className="hidden md:block text-gray-300">{data.id}</p>)}
                     {isEditMode ? (
-                        <button title='Remove TeamMember' onClick={() => handleRemoveMember(data.id)}>
-                            <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500 transition-colors" />
+                        <button title='Remove TeamMember' onClick={() => handleRemoveMember(data.id)} className="">
+                            <Trash2 className="w-6 h-6 text-gray-400 hover:text-red-500 transition-colors" />
                         </button>
                     ) : (
                         <button title='Copy ID' onClick={handleCopy} className="text-gray-400 hover:text-gray-300 transition-colors">
@@ -583,6 +583,7 @@ const Teams = () => {
                             footer: "border-t border-white/10",
                             closeButton: "hover:bg-white/10 active:bg-white/20 text-2xl",
                         }}
+                        className='dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]'
                     >
                         <ModalContent>
                             {(onClose) => (
@@ -651,17 +652,21 @@ const Teams = () => {
                                         </div>
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button variant="light" onPress={() => {
-                                            setSearchInput("");
-                                            setSelectedUserId("");
-                                            onClose();
-                                        }}
-                                        className='hover-lift flex items-center gap-2 px-3 py-2 text-white bg-[#3F3F46] rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]'
+                                        <Button 
+                                            color="default" 
+                                            variant="flat" 
+                                            onPress={() => {
+                                                setSearchInput("");
+                                                setSelectedUserId("");
+                                                onClose();
+                                            }}
+                                            className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
                                         >
                                             Cancel
                                         </Button>
                                         <Button 
-                                            className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm font-medium transition-colors"
+                                            color="primary"
+                                            className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
                                             isLoading={isAddingMember}
                                             isDisabled={!selectedUserId} 
                                             onPress={() => handleAddMember(onClose)}
