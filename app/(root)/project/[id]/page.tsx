@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { 
     ArrowUp, ArrowDown, ArrowLeft, Folder, FolderOpen, Box, 
     Plus, Edit2, Trash2, Link as LinkIcon, PlusCircle, 
     Milestone, ChevronRight, Globe,
-    Share2
+    Share2,
+    Search,
+    File
 } from "lucide-react";
 import { 
     getProjectDetails, createPhase, deletePhase, updatePhase,
@@ -68,6 +70,7 @@ interface ProjectData {
 
 // --- 樹狀結構工具 ---
 const buildAssetTree = (assets: ProjectAsset[], phaseId: string | null): ProjectAsset[] => {
+
     const assetMap: Record<string, ProjectAsset & { children: ProjectAsset[] }> = {};
     const roots: ProjectAsset[] = [];
     assets.forEach(asset => {
@@ -101,6 +104,7 @@ const AssetNode = ({
     return (
         <div className="flex flex-col">
             <div 
+                id={`asset-${node.id}`}
                 className="group flex items-center justify-between py-2 pr-4 hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
                 style={{ paddingLeft: `${depth * 1.5 + 1}rem` }}
                 onClick={() => node.type === 'FOLDER' && onToggle(node.id)}
@@ -183,6 +187,9 @@ export default function ProjectDetailPage() {
     const projectId = params.id as string;
     const teamIdRef = useRef<string | null>(null);
 
+    const searchParams = useSearchParams();
+    const searchKey = searchParams.get('search') || '';
+
     const [project, setProject] = useState<ProjectData | null>(null);
     const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
     const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
@@ -205,6 +212,10 @@ export default function ProjectDetailPage() {
     const isFetchingRef = useRef<boolean>(false);
     const isSubmittingRef = useRef<boolean>(false);
 
+    // 🚀 關鍵 3：從 URL 解析搜尋與過濾參數
+    const searchKeyword = searchParams.get('search') || "";
+    const typeFilter = searchParams.get('type') || "ALL";
+
     useEffect(() => {
         if (!projectId || isFetchingRef.current) return;
         const init = async () => {
@@ -216,9 +227,12 @@ export default function ProjectDetailPage() {
                     teamIdRef.current = res.data.teamId;
                     const status = await checkUserTeamStatus(res.data.teamId);
                     setAccessLevel(status);
-                    const initialExpanded: Record<string, boolean> = { unclassified: true };
-                    res.data.phases.forEach((p: any) => initialExpanded[p.id] = true);
-                    setExpandedNodes(initialExpanded);
+                    // 初始化：如果沒有搜尋，預設展開頂層 Phase
+                    if (!searchKeyword) {
+                        const initialExpanded: Record<string, boolean> = { unclassified: true };
+                        res.data.phases.forEach((p: any) => initialExpanded[p.id] = true);
+                        setExpandedNodes(initialExpanded);
+                    }
                 }
             } finally { isFetchingRef.current = false; }
         };
@@ -227,6 +241,95 @@ export default function ProjectDetailPage() {
 
     const isEditor = accessLevel === 'EDITOR_ACCESS';
     const toggleNode = (nodeId: string) => setExpandedNodes(prev => ({ ...prev, [nodeId]: !prev[nodeId] }));
+
+    // ==========================================
+    // 關鍵 ：(全域快捷搜尋) 的核心邏輯
+    // ==========================================
+
+    // 1. 取得某個檔案的「完整麵包屑路徑」 (例如：執行階段 > 圖說資料夾)
+    const getAssetPath = (asset: ProjectAsset): string => {
+        if (!project) return "未分類";
+        const pathArray = [];
+        let current: ProjectAsset | undefined = asset;
+
+        // 向上尋找所有父層資料夾
+        while (current?.parentId) {
+            const parent = project.assets.find(a => a.id === current!.parentId);
+            if (parent) {
+                pathArray.unshift(parent.name || "未命名資料夾");
+                current = parent;
+            } else {
+                break;
+            }
+        }
+
+        // 加上最頂層的階段 (Phase) 名稱
+        if (asset.phaseId) {
+            const phase = project.phases.find(p => p.id === asset.phaseId);
+            pathArray.unshift(phase?.name || "未知階段");
+        } else {
+            pathArray.unshift("未分類");
+        }
+
+        return pathArray.join(" > ");
+    };
+    // 2. 即時計算搜尋結果
+    const searchResults = useMemo(() => {
+        if (!project || !searchKeyword) return null;
+
+        return project.assets.filter(asset => {
+            const keyword = searchKeyword.toLowerCase();
+            const nameMatch = (asset.name || "").toLowerCase().includes(keyword);
+            const titleMatch = (asset.post?.title || "").toLowerCase().includes(keyword);
+            const descMatch = (asset.description || "").toLowerCase().includes(keyword);
+            
+            // 如果搜尋關鍵字有中，再看 Type Filter 有沒有擋
+            const isMatch = nameMatch || titleMatch || descMatch;
+            
+            if (isMatch && typeFilter !== 'ALL') {
+                return asset.type === typeFilter;
+            }
+            return isMatch;
+        });
+    }, [project, searchKeyword, typeFilter]);
+
+    // 3. 一鍵定位魔法 (Locate Asset)
+    const handleLocateAsset = (asset: ProjectAsset) => {
+        if (!project) return;
+
+        // A. 透過改變 URL，關閉搜尋面板
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('search');
+        router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+
+        // B. 自動展開所有父層結構
+        const newExpanded = { ...expandedNodes };
+        if (asset.phaseId) newExpanded[asset.phaseId] = true;
+        else newExpanded["unclassified"] = true;
+
+        let current: ProjectAsset | undefined = asset;
+        while (current?.parentId) {
+            newExpanded[current.parentId] = true;
+            current = project.assets.find(a => a.id === current!.parentId);
+        }
+        setExpandedNodes(newExpanded);
+
+        // C. 等待 React 渲染展開後的 DOM，然後滾動並高亮
+        setTimeout(() => {
+            const element = document.getElementById(`asset-${asset.id}`);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "center" });
+                
+                // 加入高亮閃爍特效 (黃色半透明)
+                element.classList.add("bg-amber-500/30", "scale-[1.02]", "transition-all", "duration-500");
+                
+                // 2 秒後移除特效
+                setTimeout(() => {
+                    element.classList.remove("bg-amber-500/30", "scale-[1.02]");
+                }, 2000);
+            }
+        }, 150); // 給予一點延遲，確保樹狀圖已展開
+    };
 
     const handleShare = async () => {
         try {
@@ -493,8 +596,60 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* Tree Area */}
-            <div className="bg-white dark:bg-black/50 rounded-xl shadow-sm  p-4 min-h-[400px]">
-                <div className="flex flex-col gap-1 select-none">
+            <div className="bg-white dark:bg-black/50 rounded-xl shadow-sm p-4 min-h-[400px] relative">
+                {/* 🚀 關鍵 5：方案 A 的浮動搜尋結果面板 (Command Palette) */}
+                {searchKeyword && searchResults && (
+                    <div className="absolute inset-0 z-40 bg-[#1C1C1F] rounded-xl shadow-2xl border border-white/10 overflow-hidden flex flex-col backdrop-blur-md bg-opacity-95">
+                        <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/20">
+                            <h2 className="text-lg font-bold flex items-center gap-2">
+                                <Search className="text-[#D70036]" size={20} />
+                                搜尋結果 "{searchKeyword}"
+                            </h2>
+                            <span className="text-sm text-gray-400">共找到 {searchResults.length} 筆項目</span>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto p-2">
+                            {searchResults.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-48 text-gray-500">
+                                    <p>沒有找到符合條件的資源</p>
+                                </div>
+                            ) : (
+                                searchResults.map(asset => (
+                                    <div 
+                                        key={asset.id} 
+                                        onClick={() => handleLocateAsset(asset)}
+                                        className="group flex items-center gap-4 p-3 mb-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors border border-transparent hover:border-white/5"
+                                    >
+                                        <div className="bg-black/30 p-3 rounded-lg shrink-0">
+                                            {asset.type === 'FOLDER' ? <Folder size={24} className="text-amber-400" /> : 
+                                            asset.type === 'POST' ? <Box size={24} className="text-[#8DB2E8]" /> : 
+                                            <Globe size={24} className="text-emerald-400" />}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-white truncate text-lg">
+                                                {asset.name || asset.post?.title || "無標題"}
+                                            </h4>
+                                            <p className="flex gap-1 items-center text-xs text-gray-200 mt-1">
+                                                <FolderOpen size={14}/> 路徑：{getAssetPath(asset)}
+                                            </p>
+                                            {asset.description && (
+                                                <p className="flex gap-1 items-center text-xs text-gray-200 mt-1 truncate">
+                                                    <File size={12}/>{asset.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="flex gap-1 shrink-0 text-sm text-[#D70036] sm:opacity-0 group-hover:opacity-100 px-2 font-bold">
+                                            <p className="hidden sm:block">點擊定位</p>
+                                            <p className="text-2xl md:text-sm">↵</p>
+                                            
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                )}
+                <div className={`flex flex-col gap-1 select-none transition-opacity duration-300 ${searchKeyword ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
                     {project.phases.sort((a,b) => a.sortOrder - b.sortOrder).map((phase, phaseIdx) => {
                         const phaseTree = buildAssetTree(project.assets, phase.id);
                         const isExpanded = expandedNodes[phase.id];

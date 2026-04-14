@@ -131,7 +131,19 @@ export default function MegaMenu() {
     // 3. 單一專案詳情頁 (/project/[id]) 的篩選器
     if (pathname.startsWith('/project/')) {
         return (
-            <div className="w-full p-6 flex flex-col gap-6">
+            <div className="w-full p-6 flex flex-col gap-6 relative">
+                <div className="absolute top-4.5 right-6">
+                    <Button 
+                        size="sm" 
+                        variant="light" 
+                        color="danger"
+                        onClick={handleResetFilters}
+                        // 判斷如果網址上有參數，才顯示這個清除按鈕 (防呆)
+                        className={searchParams.toString() ? "flex" : "hidden"}
+                    >
+                        <p className="text-sm">清除所有篩選</p>
+                    </Button>
+                </div>
                 <div className="flex flex-col gap-2">
                     <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Asset Type</p>
                     <div className="flex flex-wrap gap-2">
