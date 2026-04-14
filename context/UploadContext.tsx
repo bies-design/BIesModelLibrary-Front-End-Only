@@ -86,8 +86,8 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
             if(!fileMapping) return;
 
             const uppyId = fileMapping.id;
-            console.log(`📊 收到我的進度: ${data.fileId} -> ${data.progress}%`);
-
+            // console.log(`📊 收到我的進度: ${data.fileId} -> ${data.progress}%`);
+            console.log(`📊 收到我的進度: ${data.progress}%`);
             setTrackedFiles((prev) => {
                 // 二次防呆：確保 State 裡真的有這個檔案
                 if (!prev[uppyId]) return prev;
@@ -105,7 +105,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         });
         // 監聽 Worker 完成訊號
         socket.on("conversion-complete", (data: { fileId: string, status: string,fileName:string, message?: string }) => {
-            console.log("✅ Socket 收到通知:", data);
+            // console.log("✅ Socket 收到通知:", data);
 
             const fileMapping = tusIdMap.current[data.fileId];
             if(!fileMapping){
@@ -192,7 +192,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
                 userid: session.user.id,
                 email: session.user.email 
             });
-            console.log("✅ [UploadContext] Uppy 已綁定 User:", session.user.id);
+            console.log("✅ [UploadContext] 已綁定 User");
         }
     }, [uppy, session]); // 👈 關鍵：這裡要監聽 session
 
@@ -236,13 +236,13 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         // C. 上傳完成 (Tus 結束 -> 進入 Worker 等待期)
         uppy.on('upload-success', (file) => {
             if (!file) return;
-            console.log("🔍 [Debug] File Object:", file);
+            // console.log("[Debug] File Object:", file);
 
             const uploadUrlFromTus = file.tus?.uploadUrl;
             const fileid = uploadUrlFromTus?.split('/').pop();
             // 判斷是否為需要轉檔的 IFC 檔案
             const isIfc = file.name.toLowerCase().endsWith('.ifc');
-            console.log(`🚀 [Uppy] ${file.name} 上傳完畢。 是否需要轉檔: ${isIfc ? "Yes":"NO"}`);
+            console.log(`[Uppy] ${file.name} 上傳完畢。 是否需要轉檔: ${isIfc ? "Yes":"NO"}`);
             // 紀錄 TusId 對應到的 UppyId
             if(fileid) tusIdMap.current[fileid] = { id:file.id, name: file.name };
 
