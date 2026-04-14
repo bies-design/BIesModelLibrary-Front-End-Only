@@ -120,9 +120,14 @@ const Upload = () => {
         //     return;
         // }
         if(metadata.title === "" || metadata.title === null){
-            addToast({ title: "錯誤", description: "標題不可為空!", color: "danger" });
+            addToast({ title: "錯誤", description: "標題(Title)不可為空!", color: "danger" });
             return;
         }
+        if(metadata.category === "" || metadata.category === null){
+            addToast({ title: "錯誤", description: "種類(Category)不可為空!", color: "danger" });
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -223,7 +228,6 @@ const Upload = () => {
             return (
                 // 加入key讓一個viewer3D只適用於一個model
                 <Viewer3D
-                    key={selectedFile.dbId} 
                     ref={viewerRef} 
                     allFiles={uploadedFiles} 
                     file={selectedFile.file} 
@@ -311,7 +315,55 @@ const Upload = () => {
                         {/* 根據步驟與檔案類型渲染內容 */}
                         <div className='rounded-lg w-full h-full overflow-hidden relative'>
                             <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                                {renderViewer()}
+                                {/* 1. 如果完全沒有選擇檔案，顯示空狀態 (蓋在最上面) */}
+                                {!selectedFile && (
+                                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                                        <Box size={48} className="opacity-20 mb-4" />
+                                        <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
+                                    </div>
+                                )}
+                                {/* 2. 🚀 永遠保留的 Viewer3D！只在選擇的是 3D 模型時顯示 */}
+                                <div className={`absolute inset-0 ${selectedFile?.name.toLowerCase().endsWith('.ifc') ? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
+                                    <Viewer3D
+                                        ref={viewerRef} 
+                                        allFiles={uploadedFiles} 
+                                        // 這裡很關鍵：就算被隱藏，我們還是傳入 file，讓 useEffect 去處理載入
+                                        file={selectedFile?.type === '3d' ? selectedFile.file : null} 
+                                        onIFCProcessingChange={handleIFCProcessingChange} 
+                                    />
+                                </div>
+                                {/* 3. PDF Viewer：只有選擇 PDF 時才渲染 (PDF Viewer 比較輕量，可以重新渲染沒關係) */}
+                                {(selectedFile?.name.toLowerCase().endsWith('.pdf') || selectedFile?.type === 'pdf') && (
+                                    <div className="absolute inset-0 z-10 bg-[#18181B]">
+                                        <PDFViewer 
+                                            key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
+                                            ref={pdfRef} 
+                                            file={selectedFile.file} 
+                                        />
+                                    </div>
+                                )}
+                                {/* 4. 圖片預覽：只有選擇圖片時才渲染 */}
+                                {(selectedFile?.name.toLowerCase().endsWith('.png') || 
+                                    selectedFile?.name.toLowerCase().endsWith('.jpeg') ||
+                                    selectedFile?.name.toLowerCase().endsWith('.jpg') || 
+                                    selectedFile?.name.toLowerCase().endsWith('.webp')) && (
+                                    <div className="absolute inset-0 z-10 bg-[#18181B]">
+                                        <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
+                                    </div>
+                                )}
+                                {/* 5. 🚀 Fallback 畫面：有選擇檔案，但不是 3D、PDF 或圖片時顯示 */}
+                                {selectedFile && 
+                                !selectedFile?.name.toLowerCase().endsWith('.ifc') &&  
+                                !selectedFile?.name.toLocaleLowerCase().endsWith('.pdf') &&
+                                !selectedFile.name.toLowerCase().endsWith('.png') && 
+                                !selectedFile.name.toLowerCase().endsWith('.jpg') && 
+                                !selectedFile.name.toLowerCase().endsWith('.jpeg') && 
+                                !selectedFile.name.toLowerCase().endsWith('.webp') && (
+                                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                                        <FileText size={48} className="opacity-20 mb-4" />
+                                        <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
+                                    </div>
+                                )}
                             </div>
                             <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
                                 <ModelUploadSidebar 

@@ -118,6 +118,39 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     const [loadedModelsCount, setLoadingModelsCount] = useState<number>(0);
     const [isViewerReady, setIsViewerReady] = useState<boolean>(false);
 
+    const focusModelInternal = async (modelId: string) => {
+        if (!componentsRef.current) return;
+        const fragments = componentsRef.current.get(OBC.FragmentsManager);
+        const highlighter = componentsRef.current.get(OBF.Highlighter);
+        const model = fragments.list.get(modelId); 
+        
+        if (model) {
+            console.log(model.box);
+            const worlds = componentsRef.current.get(OBC.Worlds);
+            const world = worlds.list.values().next().value;
+            
+            if (world && world.camera instanceof OBC.SimpleCamera){
+                try{
+                    await world.camera.controls.fitToBox(model.box, true);
+
+                    // const localIds = await model.getLocalIds();
+
+                    // const selectionMap = {
+                    //     [modelId]: new Set(localIds)
+                    // };
+
+                    // highlighter.clear('select');
+                    // highlighter.highlightByID('select', selectionMap, true, false);
+                    console.log(`聚焦模型: ${modelId}`);
+                } catch (err) {
+                    console.warn(`聚焦模型 ${modelId} 時發生錯誤:`, err);
+                }
+            }
+        } else {
+            console.warn(`找不到模型 ${modelId} 無法聚焦`);
+        }
+    };
+
     useImperativeHandle(ref, () => ({
         getComponents: () => componentsRef.current,
         loadModel: async(buffer,modelName) => {
@@ -149,31 +182,12 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             const selection = highlighter.selection.select;
             //if there's anything highlighted focus the thing
             //else focus the whole
+            console.log("選中:",selection);
             await world?.camera.fitToItems(
                     OBC.ModelIdMapUtils.isEmpty(selection)? undefined : selection,
                 );
         },
-        focusModel: (modelId: string) => {
-            if (!componentsRef.current) return;
-
-            const fragments = componentsRef.current.get(OBC.FragmentsManager);
-            const model = fragments.list.get(modelId); 
-
-            if (model) {
-                const worlds = componentsRef.current.get(OBC.Worlds);
-                // 取得當前的 world (通常只有一個)
-                const world = worlds.list.values().next().value;
-                
-                if (world){
-                    
-                    world.camera.controls?.fitToBox(model.object,true);
-                    
-                    console.log(`聚焦至模型: ${modelId}`);
-                }
-            } else {
-                console.warn(`找不到模型 ${modelId} 無法聚焦`);
-            }
-        },
+        focusModel: focusModelInternal,
         //screen shot the model
         takeScreenshot: async() => {
             if (!componentsRef.current) return null;
@@ -330,6 +344,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
                     await fragments.core.load(buffer, { modelId });
                     setLoadingModelsCount(fragments.list.size);
                     console.log(`[Viewer3D] 成功載入: ${modelId}`);
+                    
                 } 
                 else if (extension === 'ifc') {
                     // ⚠️ 注意：如果你未來允許使用者直接把本地的 .ifc 拖曳進來並在本地轉檔，才需要這段

@@ -227,8 +227,6 @@ const ModelUploadSidebar = ({
       setLoadedFiles(prev => [...prev, newLoadedItem]);
       onSelectFile(newLoadedItem);
       
-
-      
     } catch (error) {
       console.error("載入失敗:", error);
     } finally {
@@ -348,12 +346,13 @@ const ModelUploadSidebar = ({
 
   const removeFileFromScene = (item: FileItem) => {
       // 1. 如果是 3D 模型，通知父層從 IFC 引擎移除
-      if (item.type === '3d') {
-          onDeleteModel(item.name);
+      if (item.name.toLowerCase().endsWith('.ifc')) {
+          onDeleteModel(item.name.replace(/\.(ifc|frag)$/i, ""));
       }
       
       // 2. 從 Loaded 清單移除
       setLoadedFiles(prev => prev.filter(f => f.dbId !== item.dbId));
+      console.log(item);
 
       // 3. 核心：如果目前正在預覽的就是這檔案，立刻清空預覽
       if (selectedFileId === item.dbId) {
@@ -624,7 +623,7 @@ const ModelUploadSidebar = ({
                     <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       {/* 🚀 只有 3D 模型才顯示 Focus 按鈕 */}
                       {item.type === '3d' && (
-                        <button onClick={(e) => focusModel(item.name, e)} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
+                        <button onClick={(e) => {console.log(item.name.replace(/\.(ifc|frag)$/i, "")); onFocusModel(item.name.replace(/\.(ifc|frag)$/i, ""));}} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
                       )}
                       <button onClick={(e) => { removeFileFromScene(item); }} className="text-gray-400 hover:text-danger"><BrushCleaning size={16}/></button>
                     </div>

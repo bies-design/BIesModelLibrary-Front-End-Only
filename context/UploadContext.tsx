@@ -7,6 +7,7 @@ import Tus from "@uppy/tus";
 import { io, Socket } from "socket.io-client";
 import { addToast } from "@heroui/toast"; // 使用 HeroUI Toast
 import { useSession } from "next-auth/react";
+import axios from 'axios';
 
 // 定義 TrackedFile 介面 (如上所述)
 export interface TrackedFile {
