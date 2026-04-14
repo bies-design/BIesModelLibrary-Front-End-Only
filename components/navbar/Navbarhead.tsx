@@ -119,44 +119,43 @@ export default function Navbarhead() {
           </NavbarContent>
           <NavbarContent as="div" className="items-center" justify="end">
             {/* <SetLanguageButton/> */}
-            <ThemeSwitcher/>
+            <div className="hidden sm:block">
+              <ThemeSwitcher/>
+            </div>
             {session ? 
-            (<Dropdown placement="bottom-end" className="font-abeezee">
-              <DropdownTrigger>
-                <Avatar
-                  isBordered
-                  as="button"
-                  className="transition-transform cursor-pointer active-press"
-                  color="secondary"
-                  name={session.user?.name || ""}
-                  size="sm"
-                  src={userImage}
-                  showFallback
-                />
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Profile Actions" variant="flat" 
-                      itemClasses={{
-                        base:"text-black dark:text-white",
+              (<Dropdown placement="bottom-end" className="font-abeezee">
+                <DropdownTrigger>
+                  <Avatar
+                    isBordered
+                    as="button"
+                    className="transition-transform cursor-pointer active-press"
+                    color="secondary"
+                    name={session.user?.name || ""}
+                    size="sm"
+                    src={userImage}
+                    showFallback
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat" 
+                        itemClasses={{
+                          base:"text-black dark:text-white",
 
-                      }}>
-                <DropdownItem key="Dashboard" href={`/dashboard/${session.user?.id}`}  endContent={<UserRoundPen size={16}/>} >
-                    Dashboard
+                        }}>
+                  <DropdownItem key="Dashboard" href={`/dashboard/${session.user?.id}`}  endContent={<UserRoundPen size={16}/>} >
+                      Dashboard
+                    </DropdownItem>
+                  <DropdownItem key="upload" href="/upload" endContent={<Upload size={16}/>}>Upload</DropdownItem>
+                  <DropdownItem key="logout" color="danger" endContent={<LogOut size={16}/>} onPress={()=>signOut({redirectTo:"/sign-in"})}>
+                    Log out
                   </DropdownItem>
-                <DropdownItem key="upload" href="/upload" endContent={<Upload size={16}/>}>Upload</DropdownItem>
-                <DropdownItem key="logout" color="danger" endContent={<LogOut size={16}/>} onPress={()=>signOut({redirectTo:"/sign-in"})}>
-                  Log out
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>):
-            (<Button 
-              as={Link}
-              href="/sign-in"
-              variant="solid" 
-              color="primary"
-              size="md"
-              radius="md"
-              className="shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
-            ><LogIn size={20}/>Login</Button>)}
+                </DropdownMenu>
+              </Dropdown>):
+              (<Link href="/sign-in" className="flex gap-1 items-center px-2 py-2 md:px-4 rounded-xl bg-primary shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]">
+                <LogIn className="w-4 h-4"/>
+                <p className="hidden md:block">Login</p>
+              </Link>
+              )
+            }
             {/*  */}
           </NavbarContent>
         </Navbar>
