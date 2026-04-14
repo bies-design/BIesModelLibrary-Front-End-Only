@@ -9,7 +9,9 @@ import {
     ModalFooter, 
     Button,
     Input,
-    Textarea
+    Textarea,
+    Tab,
+    Tabs
 } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 import { Camera, Loader2, Image as ImageIcon } from 'lucide-react';
@@ -19,7 +21,7 @@ interface ProjectSettingsModalProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     // 將 id 設為可選，因為 create 時沒有 id
-    projectData?: { id?: string; name: string; description: string | null; client: string | null; location: string | null; coverImage: string | null; };
+    projectData?: { id?: string; name: string; description: string | null; client: string | null; location: string | null; coverImage: string | null; status: string;};
     teamId: string;
     mode?: 'edit' | 'create';
     // 🌟 將 API 呼叫交給父元件處理，讓這個 Modal 變得純粹且可重用
@@ -28,7 +30,7 @@ interface ProjectSettingsModalProps {
 
 export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData, teamId, mode = 'create', onSubmit }: ProjectSettingsModalProps) {
     // 定義乾淨的初始狀態
-    const defaultData = { id: '', name: '', description: '', client: '', location: '', coverImage: '' };
+    const defaultData = { id: '', name: '', description: '', client: '', location: '', coverImage: '', status: 'ACTIVE' };
     
     const getSafeFormData = () => {
         if (!projectData) return defaultData;
@@ -38,7 +40,8 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
             description: projectData.description || '',
             client: projectData.client || '',
             location: projectData.location || '',
-            coverImage: projectData.coverImage || ''
+            coverImage: projectData.coverImage || '',
+            status: projectData.status || 'ACTIVE'
         };
     };
 
@@ -170,7 +173,28 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
                             accept="image/png, image/jpeg, image/webp" 
                             className="hidden" 
                         />
-                        
+                        {/* 專案狀態設定 (Tabs) */}
+                        <div className="flex flex-col gap-2 mb-2">
+                            <label className="text-sm text-white/80">Project Status</label>
+                            <Tabs 
+                                selectedKey={formData.status} 
+                                onSelectionChange={(key) => setFormData(prev => ({ ...prev, status: key.toString() }))}
+                                aria-label="Project Status"
+                                color="danger" // 使用紅色強調當前選取的狀態
+                                variant="underlined"
+                                classNames={{
+                                    tabList: "gap-4 w-full relative rounded-none p-0 border-b border-divider",
+                                    cursor: "w-full bg-[#D70036]",
+                                    tab: "max-w-fit px-0 h-10",
+                                    tabContent: "group-data-[selected=true]:text-primary group-data-[selected=true]:font-semibold text-white/80"
+                                }}
+                            >
+                                <Tab key="ACTIVE" title="進行中 (Active)" />
+                                <Tab key="ON_HOLD" title="暫停 (On Hold)" />
+                                <Tab key="COMPLETED" title="已完工 (Completed)" />
+                                <Tab key="ARCHIVED" title="封存 (Archived)" />
+                            </Tabs>
+                        </div>
                         {/* 🌟 封面圖片 UI 區塊 */}
                         <div className="flex flex-col gap-2 mb-2">
                             <label className="text-sm text-white/80">Cover Image</label>
