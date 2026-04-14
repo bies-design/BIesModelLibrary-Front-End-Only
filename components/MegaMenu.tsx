@@ -92,7 +92,19 @@ export default function MegaMenu() {
     // 2. 專案列表頁 (/projects) 的篩選器
     if (pathname.startsWith('/projects')) {
         return (
-            <div className="w-full p-6 flex flex-col gap-6">
+            <div className="w-full p-6 flex flex-col gap-6 relative">
+                <div className="absolute top-4.5 right-6">
+                    <Button 
+                        size="sm" 
+                        variant="light" 
+                        color="danger"
+                        onClick={handleResetFilters}
+                        // 判斷如果網址上有參數，才顯示這個清除按鈕 (防呆)
+                        className={searchParams.toString() ? "flex" : "hidden"}
+                    >
+                        <p className="text-sm">清除所有篩選</p>
+                    </Button>
+                </div>
                 <div className="flex flex-col gap-2">
                     <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Project Status</p>
                     <div className="flex flex-wrap gap-2">
@@ -100,6 +112,7 @@ export default function MegaMenu() {
                         <Button size="sm" className={getButtonStyle('status', 'ACTIVE')} onClick={() => handleFilterChange('status', 'ACTIVE')}>Active (進行中)</Button>
                         <Button size="sm" className={getButtonStyle('status', 'ON_HOLD')} onClick={() => handleFilterChange('status', 'ON_HOLD')}>On Hold (暫停中)</Button>
                         <Button size="sm" className={getButtonStyle('status', 'COMPLETED')} onClick={() => handleFilterChange('status', 'COMPLETED')}>Completed (已完工)</Button>
+                        <Button size="sm" className={getButtonStyle('status', 'ARCHIVED')} onClick={() => handleFilterChange('status', 'ARCHIVED')}>Archived (封存備查)</Button>
                     </div>
                 </div>
                 
@@ -108,7 +121,7 @@ export default function MegaMenu() {
                     <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Sort By</p>
                     <div className="flex flex-wrap gap-2">
                         <Button size="sm" className={getButtonStyle('sort', 'updated')} onClick={() => handleFilterChange('sort', 'updated')}>Recently Updated</Button>
-                        <Button size="sm" className={getButtonStyle('sort', 'created')} onClick={() => handleFilterChange('sort', 'created')}>Newest First</Button>
+                        <Button size="sm" className={getButtonStyle('sort', 'created')} onClick={() => handleFilterChange('sort', 'created')}>Recently Created</Button>
                     </div>
                 </div>
             </div>

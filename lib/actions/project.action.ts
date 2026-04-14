@@ -8,6 +8,7 @@ import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { AssetType } from "../../prisma/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { ProjectSortType } from "@/app/(root)/projects/[teamId]/page";
 // ==========================================
 // 1. 專案 (Project) 相關
 // ==========================================
@@ -20,6 +21,7 @@ export async function createProject(data: {
     location?: string;
     coverImage?: string;
     teamId: string; // 記得我們設定過，專案必須綁定團隊
+    status: ProjectStatus | 'ACTIVE';
     }) {
     try {
         const session = await auth();
@@ -34,6 +36,7 @@ export async function createProject(data: {
                 location: data.location,
                 coverImage: data.coverImage,
                 team: { connect: { id: data.teamId } },
+                status: data.status,
                 creator: { connect: { id: session.user.id } }
             }
         });
@@ -141,6 +144,75 @@ export async function getTeamProjects(teamId: string) {
         }));
 
         return { success: true, data: safeProjects };
+    } catch (error: any) {
+        console.error("Get projects error:", error);
+        return { success: false, error: error.message };
+    }
+}
+
+
+// 取得團隊的所有專案列表 (卡片視圖用)
+export async function getTeamProjectsByScroll(
+    teamId: string,
+    page:number = 1,
+    limit: number = 12,
+    search: string = "",
+    status: ProjectStatus | string = "ALL",
+    sortBy: ProjectSortType = "updated"
+) {
+    try {
+        const skip = (page - 1) * limit;
+
+        const whereCondition: any = {
+            teamId: teamId,
+        }
+
+        if (search) {
+            whereCondition.name = {
+                contains: search,
+                mode: "insensitive"
+            };
+        }
+
+        if ( status !== "ALL" ){
+            whereCondition.status = status as ProjectStatus;
+        }
+
+        // 2. 動態建立排序條件 (OrderBy)
+        const orderByCondition = sortBy === "created" 
+            ? { createdAt: "desc" as const } 
+            : { updatedAt: "desc" as const };
+
+        const projects = await prisma.project.findMany({
+            where: whereCondition,
+            skip: skip,
+            take: limit,
+            orderBy: orderByCondition,
+            // 只拿列表需要的輕量資訊
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                client: true,
+                status: true,
+                location: true,
+                coverImage: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        });
+
+        const safeProjects = projects.map(project => ({
+            ...project,
+            createdAt: project.createdAt.toISOString(),
+            updatedAt: project.updatedAt.toISOString(),
+        }));
+
+        // 4. 計算總數與是否還有下一頁
+        const totalProjects = await prisma.project.count({ where: whereCondition });
+        const hasMore = skip + projects.length < totalProjects;
+
+        return { success: true, data: safeProjects, hasMore: hasMore };
     } catch (error: any) {
         console.error("Get projects error:", error);
         return { success: false, error: error.message };

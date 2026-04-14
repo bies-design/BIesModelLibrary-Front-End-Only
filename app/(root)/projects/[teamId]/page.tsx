@@ -2,22 +2,46 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Spinner, useDisclosure, addToast } from "@heroui/react";
-import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen, LoaderCircle } from 'lucide-react';
-import { createProject, getTeamProjects, updateProject } from '@/lib/actions/project.action';
+import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen, LoaderCircle, Loader2 } from 'lucide-react';
+import { createProject, getTeamProjectsByScroll, updateProject } from '@/lib/actions/project.action';
 import CreateProjectModal from '@/components/modals/ProjectSettingsModal';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Footer from '@/components/Footer';
 import ProjectSettingsModal from '@/components/modals/ProjectSettingsModal';
 import { checkUserTeamStatus, TeamAccessLevel } from '@/lib/actions/team.action';
+import { useNativeInView } from '@/hooks/useIntersectionObserver';
+
+export type ProjectStatusType = 'ALL' | 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | 'ARCHIVED';
+export type ProjectSortType = 'updated' | 'created'; 
 
 export default function ProjectsPage() {
     
     const SearchParams = useSearchParams();
     const searchKeyword = SearchParams.get('search') || '';
+    const projectStatusParam = SearchParams.get('status');
+    const validPostStatus: ProjectStatusType[] = ['ALL', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'ARCHIVED'];
+    // 如果網址的值不在合法清單內，就給 'ALL'
+    const projectStatusTypeKeyword = (validPostStatus.includes(projectStatusParam as ProjectStatusType) 
+        ? projectStatusParam 
+        : 'ALL') as ProjectStatusType;
 
+    const sortKeyword = SearchParams.get('sort');
+    const validSortKeyword: ProjectSortType[] = ['updated', 'created'];
+    // 如果網址的值不在合法清單內，就給 'ALL'
+    const projectSortKeyword= (validSortKeyword.includes(sortKeyword as ProjectSortType) 
+        ? sortKeyword 
+        : 'ALL') as ProjectSortType;
+    
     const [projects, setProjects] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const isFetchingRef = useRef(false); // 新增純邏輯鎖定，防止非同步競爭條件
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    // 無限下滑偵測器
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+    const isIntersecting = useNativeInView(loadMoreRef, '400px');
+
+    // const isFetchingRef = useRef(false); // 新增純邏輯鎖定，防止非同步競爭條件
 
     const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
     const isVerifying = useRef(false);
@@ -38,26 +62,29 @@ export default function ProjectsPage() {
         return `${process.env.NEXT_PUBLIC_S3_ENDPOINT_SERVER}/${process.env.NEXT_PUBLIC_S3_IMAGES_BUCKET}/${imageVal}`;
     };
 
-    const fetchProjects = async () => {
+    const fetchProjects = async (currentPage: number, isReset: boolean = false) => {
         // 防呆與非同步鎖定：如果沒有 teamId 或正在抓取中，直接 return
-        if (!teamId || isFetchingRef.current) return; 
+        if (!teamId ) return; 
         
-        isFetchingRef.current = true; // 同步上鎖
         setIsLoading(true);           // 觸發 UI loading 渲染
-        
         try {
-            const result = await getTeamProjects(teamId);
+            const result = await getTeamProjectsByScroll(teamId, currentPage, 12, searchKeyword, projectStatusTypeKeyword, projectSortKeyword);
             if (result.success && result.data) {
-                setProjects(result.data);
+                if(isReset){
+                    setProjects(result.data);
+                } else {
+                    setProjects(prev => [...prev, result.data]);
+                }
+                setHasMore(result.hasMore || false);
             }
         } catch (error) {
             console.error("Failed to fetch projects:", error);
         } finally {
             setIsLoading(false);          // 解除 UI loading
-            isFetchingRef.current = false; // 同步解鎖
         }
     };
     
+    // 驗證權限 (只在元件掛載時執行一次)
     useEffect(() => {
         if (isVerifying.current) return;
 
@@ -65,27 +92,30 @@ export default function ProjectsPage() {
             isVerifying.current = true;
             try {
                 const status = await checkUserTeamStatus(teamId);
-                
-                // if (status === 'GUEST') {
-                //     addToast({ title: "請先登入", color: "warning" });
-                //     router.push("/auth/signin");
-                //     return;
-                // }
-                
-                // if (status === 'FORBIDDEN') {
-                //     addToast({ title: "存取被拒", description: "你不是此團隊成員", color: "danger" });
-                //     router.push("/");
-                //     return;
-                // }
-
                 setAccessLevel(status);
             } finally {
                 isVerifying.current = false;
             }
         };
         verifyAccess();
-        fetchProjects();
     }, [teamId]); // 當網址的 teamId 改變時，自動重新抓取
+    
+    // 當「網址篩選條件」改變時，重置資料並抓取第一頁
+    useEffect(() => {
+        setPage(1);
+        setHasMore(true);
+        fetchProjects(1, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [teamId, searchKeyword, projectStatusTypeKeyword, projectSortKeyword]);
+
+    // 監聽畫面底部，觸發載入下一頁
+    useEffect(() => {
+        if (isIntersecting && hasMore && !isLoading) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            fetchProjects(nextPage, false);
+        }
+    }, [isIntersecting, hasMore, isLoading, page]);
 
     const handleOpenCreate = () => {
         setModalMode('create');
@@ -106,7 +136,8 @@ export default function ProjectsPage() {
                 const res = await createProject(formData);
                 if (res.success) {
                     addToast({ title: "成功", description: "專案建立成功！", color: "success" });
-                    fetchProjects();
+                    setPage(1);
+                    fetchProjects(1, true); // 建立成功後刷新第一頁
                 } else {
                     addToast({ title: "錯誤", description: res.error || "建立失敗", color: "danger" });
                     throw new Error(res.error); // 拋出錯誤讓 Modal 的 catch 接住，不要關閉視窗
@@ -115,7 +146,8 @@ export default function ProjectsPage() {
                 const res = await updateProject(formData.id, formData);
                 if (res.success) {
                     addToast({ title: "成功", description: "專案更新成功！", color: "success" });
-                    fetchProjects();
+                    setPage(1);
+                    fetchProjects(1, true); // 更新成功後刷新第一頁
                 } else {
                     addToast({ title: "錯誤", description: res.error || "更新失敗", color: "danger" });
                     throw new Error(res.error); // 拋出錯誤
@@ -163,14 +195,10 @@ export default function ProjectsPage() {
                 </div>
 
                 {/* 專案卡片列表 */}
-                {isLoading ? (
-                    <div className="flex justify-center items-center h-64">
-                        <Spinner size="lg" color="white" />
-                    </div>
-                ) : projects.length === 0 ? (
-                    <div className="flex flex-col justify-center items-center h-64 border-2 border-dashed border-[#27272A] rounded-2xl">
+                {projects.length === 0 && !isLoading ? (
+                    <div className="flex flex-col justify-center items-center h-64 border-2 border-dashed border-[#27272A] rounded-2xl mt-4">
                         <FolderGit2 size={48} className="text-gray-600 mb-4" />
-                        <p className="text-gray-400">This team doesn't have any projects yet. Create one!</p>
+                        <p className="text-gray-400">尚無符合條件的專案，請嘗試建立或調整篩選條件。</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -239,9 +267,22 @@ export default function ProjectsPage() {
                                 </div>
                             );
                         })}
+                    </div>
+                )}
+                {/*  載入狀態指示器與觀察標籤 */}
+                <div ref={loadMoreRef} className='flex justify-center mt-8 mb-8 h-10'>
+                    {isLoading && (
+                        <div className="flex items-center gap-2 text-[#A1A1AA]">
+                            <Loader2 className="animate-spin w-5 h-5" />
+                            <span>Loading projects...</span>
                         </div>
-                    )
-                }
+                    )}
+                    {!hasMore && projects.length > 0 && (
+                        <p className='text-sm text-[#5B5B5B] dark:text-[#BEBEBE] font-abeezee'>
+                            You have reached the end.
+                        </p>
+                    )}
+                </div>
                 {/* 新增專案的 Modal */}
                 <ProjectSettingsModal 
                     isOpen={isOpen} 
