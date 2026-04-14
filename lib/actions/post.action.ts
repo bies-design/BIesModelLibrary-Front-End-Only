@@ -7,6 +7,7 @@ import { auth } from "@/auth"; // 你的 auth 設定
 import { Metadata } from "@/components/forms/MetadataForm";
 import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
+import { PostType } from "@/app/(root)/page";
 
 interface UpdatePostParams {
     shortId: string;
@@ -279,8 +280,9 @@ export const getPostsByScroll = async (
     category: string = "ALL",
     sortBy: string = "Newest",
     search: string = "",
-    scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" = "ALL",
-    teamId: string = ""
+    scope: "ALL" | "PERSONAL" | "TEAM" | "COLLECTION" | string = "ALL",
+    teamId: string = "",
+    includeFileType: PostType = "ALL"
 ) => {
     try {
         const session = await auth();
@@ -304,6 +306,10 @@ export const getPostsByScroll = async (
                 contains: search,
                 mode: "insensitive"
             };
+        }
+        
+        if (includeFileType !== "ALL") {
+            whereCondition.type = includeFileType;
         }
         
         if(scope !== "ALL"){

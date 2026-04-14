@@ -25,6 +25,12 @@ export default function MegaMenu() {
         router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
     };
 
+    // 🧹 新增：清除所有篩選條件 (Reset State)
+    const handleResetFilters = () => {
+        // 直接推回當前路徑，不帶任何參數，就能瞬間清空所有篩選狀態
+        router.push(pathname, { scroll: false });
+    };
+
     // 🎨 Helper：用來判斷按鈕是否為 Active 狀態，給予不同樣式
     const getButtonStyle = (key: string, value: string) => {
         const currentValue = searchParams.get(key);
@@ -32,8 +38,8 @@ export default function MegaMenu() {
         const isActive = currentValue === value || (!currentValue && value === "ALL");
         
         return isActive 
-            ? "bg-[#D70036] text-white font-bold" // 啟動狀態：你的品牌紅色
-            : "bg-[#27272A] text-gray-400 hover:text-white border border-white/5"; // 未啟動狀態
+            ? "bg-[#D70036] text-white font-bold shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]" // 啟動狀態：你的品牌紅色
+            : "bg-[#27272A] text-gray-400 hover:text-white"; // 未啟動狀態
     };
 
     // ==========================================
@@ -43,16 +49,30 @@ export default function MegaMenu() {
     // 1. 首頁 (Post 列表) 的篩選器
     if (pathname === '/') {
         return (
-            <div className="w-full p-6 flex flex-col gap-6">
+            <div className="w-full p-6 flex flex-col gap-6 relative">
+                {/* reset button */}
+                <div className="absolute top-4.5 right-6">
+                    <Button 
+                        size="sm" 
+                        variant="light" 
+                        color="danger"
+                        onClick={handleResetFilters}
+                        // 判斷如果網址上有參數，才顯示這個清除按鈕 (防呆)
+                        className={searchParams.toString() ? "flex" : "hidden"}
+                    >
+                        <p className="text-sm">清除所有篩選</p>
+                    </Button>
+                </div>
                 {/* 第一排：資源分類 */}
                 <div className="flex flex-col gap-2">
-                    <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Category</p>
+                    <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Include File Type</p>
                     <div className="flex flex-wrap gap-2">
-                        <Button size="sm" className={getButtonStyle('category', 'ALL')} onClick={() => handleFilterChange('category', 'ALL')}>All</Button>
-                        <Button size="sm" className={getButtonStyle('category', 'MODEL_3D')} onClick={() => handleFilterChange('category', 'MODEL_3D')}>3D Models</Button>
-                        <Button size="sm" className={getButtonStyle('category', 'DOCUMENT')} onClick={() => handleFilterChange('category', 'DOCUMENT')}>Documents</Button>
-                        <Button size="sm" className={getButtonStyle('category', 'DRAWING')} onClick={() => handleFilterChange('category', 'DRAWING')}>Drawings</Button>
-                        <Button size="sm" className={getButtonStyle('category', 'IMAGE')} onClick={() => handleFilterChange('category', 'IMAGE')}>Images</Button>
+                        <Button size="sm" className={getButtonStyle('type', 'ALL')} onClick={() => handleFilterChange('type', 'ALL')}>All</Button>
+                        <Button size="sm" className={getButtonStyle('type', 'MODEL_3D')} onClick={() => handleFilterChange('type', 'MODEL_3D')}>3D Models</Button>
+                        <Button size="sm" className={getButtonStyle('type', 'DRAWING')} onClick={() => handleFilterChange('type', 'DRAWING')}>Drawings</Button>
+                        <Button size="sm" className={getButtonStyle('type', 'DOCUMENT')} onClick={() => handleFilterChange('type', 'DOCUMENT')}>Documents</Button>           
+                        <Button size="sm" className={getButtonStyle('type', 'IMAGE')} onClick={() => handleFilterChange('type', 'IMAGE')}>Images</Button>
+                        <Button size="sm" className={getButtonStyle('type', 'OTHER')} onClick={() => handleFilterChange('type', 'OTHER')}>Other</Button>
                     </div>
                 </div>
 

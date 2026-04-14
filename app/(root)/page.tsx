@@ -13,6 +13,8 @@ import { useNativeInView } from '@/hooks/useIntersectionObserver';
 import { Loader2, ChevronDown } from 'lucide-react';
 import DataFlowLayout from '@/components/animation/DataFlowLayout';
 
+export type PostType = 'ALL' | 'MODEL_3D' |'DRAWING' | 'DOCUMENT' | 'IMAGE' | 'OTHER';
+
 const Home = () => {
   const { data:session,status } = useSession();
   //for itemsQuery
@@ -27,7 +29,9 @@ const Home = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null); //ref 用來綁定底部的 DOM 元素
   const isIntersecting = useNativeInView(loadMoreRef, '400px');
   const searchKeyword = SearchParams.get('search') || '';
-
+  const typeParam = SearchParams.get('type');
+  const validTypes: PostType[] = ['ALL', 'MODEL_3D', 'DRAWING', 'DOCUMENT', 'IMAGE', 'OTHER'];
+  const scopeKeyword = SearchParams.get('scope') || '';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const selectedItem = itemsQuery.find(item => item.id === isSelectId) || itemsQuery[0];
 
@@ -40,9 +44,14 @@ const Home = () => {
     }
   },[SearchParams])
 
+  // 如果網址的值不在合法清單內，就給 'ALL'
+  const fileRecordTypeKeyword = (validTypes.includes(typeParam as PostType) 
+    ? typeParam 
+    : 'ALL') as PostType;
+
   const fetchPosts = async (currentPage: number, isReset: boolean = false) => {
     setIsLoading(true);
-    const result = await getPostsByScroll(currentPage, 9, isSelectId, isQueryArrange, searchKeyword);
+    const result = await getPostsByScroll(currentPage, 9, isSelectId, isQueryArrange, searchKeyword, scopeKeyword, '', fileRecordTypeKeyword);
     
     if (result.success && result.data) {
       if (isReset) {
@@ -59,7 +68,7 @@ const Home = () => {
     setPage(1);
     setHasMore(true);
     fetchPosts(1, true);
-  }, [isSelectId, isQueryArrange, searchKeyword]);
+  }, [isSelectId, isQueryArrange, searchKeyword, fileRecordTypeKeyword, scopeKeyword]);
   
   // 監聽 isIntersecting 的變化來抓資料 達成無限下滑抓資料功能
   useEffect(() => {

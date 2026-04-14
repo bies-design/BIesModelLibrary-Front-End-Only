@@ -118,9 +118,9 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
             classNames={{ 
                 wrapper: "z-999",
                 backdrop:"z-998",
-                base: "bg-[#18181B] text-white", 
-                closeButton:"text-2xl"
+                closeButton:"p-3 text-2xl"
             }}
+            className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
         >
             <ModalContent>
                 <ModalHeader>{titleText}</ModalHeader>
@@ -161,7 +161,15 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
                         value={formData.name} 
                         onValueChange={(v) => setFormData({...formData, name: v})}
                         variant="flat"
-                        classNames={{ inputWrapper: "text-white rounded-xl bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm outline-none transition-colors" }}
+                        classNames={{
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
+                        }}
                     />
 
                     <Textarea 
@@ -169,7 +177,15 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
                         value={formData.description} 
                         onValueChange={(v) => setFormData({...formData, description: v})}
                         variant="flat"
-                        classNames={{ inputWrapper: "text-white rounded-xl bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm outline-none transition-colors" }}
+                        classNames={{
+                            inputWrapper: [
+                                "bg-[#18181B]",
+                                "data-[hover=true]:bg-[#27272a]", 
+                                "data-[focus=true]:bg-[#27272a]",
+                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                            ].join(" "),
+                            input: "text-white placeholder:text-gray-500"
+                        }}
                     />
 
                     <div className="space-y-2">
@@ -183,6 +199,31 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
                                     style={{ backgroundColor: c }}
                                 />
                             ))}
+
+                            {/* 2. 🚀 新增：自訂調色盤按鈕 */}
+                            <div 
+                                className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 transition-transform hover:scale-110 cursor-pointer"
+                                style={{
+                                    // 用彩虹漸層背景暗示這裡可以選更多顏色
+                                    background: 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)',
+                                    // 如果當前顏色不在預設陣列裡，代表是用戶自訂的，給它一個白框標示
+                                    borderColor: !['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'].includes(formData.color) ? 'white' : 'transparent'
+                                }}
+                            >
+                                {/* 隱藏原生 input 的醜外觀，但保留點擊功能 */}
+                                <input 
+                                    type="color" 
+                                    value={formData.color}
+                                    onChange={(e) => setFormData({...formData, color: e.target.value})}
+                                    className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                                    title="選擇自訂顏色"
+                                />
+                            </div>
+
+                            {/* (可選) 顯示當前選中的色碼，讓使用者知道自己選了什麼 */}
+                            <span className="text-xs text-slate-400 font-mono ml-2 uppercase">
+                                {formData.color}
+                            </span>
                         </div>
                     </div>
                 </ModalBody>
@@ -196,6 +237,7 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
                     <Button 
                         className="hover-lift px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors" 
                         isLoading={isSubmitting} 
+                        isDisabled={formData.name.trim() === ""}
                         onPress={handleSave}
                     >
                         {buttonText}
