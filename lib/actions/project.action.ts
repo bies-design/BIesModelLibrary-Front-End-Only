@@ -446,11 +446,20 @@ export async function removeAssetFromProject(projectAssetId: string) {
 }
 
 // 取得使用者/團隊可用的所有 Post 資源 (供選取加入專案用)
-export async function getAvailablePosts() {
+export async function getAvailablePosts(teamId:string | null) {
     try {
+        const session = await auth();
+        if (!session?.user?.id) return { success: false, error: "Unauthorized" };
         // 這裡可以根據你的權限邏輯 (例如 teamId 或 uploaderId) 來過濾
         // 目前先示範抓取所有資源清單
+
         const posts = await prisma.post.findMany({
+            where: { 
+                OR:[
+                    {uploaderId: session.user.id},
+                    ...(teamId ? [{teamId: teamId}] : [])
+                ]    
+            },
             orderBy: { createdAt: 'desc' },
             select: {
                 id: true,

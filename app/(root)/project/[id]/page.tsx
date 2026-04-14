@@ -462,7 +462,7 @@ export default function ProjectDetailPage() {
     const openAddAssetModal = async (phaseId: string | null, parentId: string | null) => {
         setTargetContext({ phaseId, parentId });
         setIsAddAssetModalOpen(true);
-        const res = await getAvailablePosts();
+        const res = await getAvailablePosts(teamIdRef.current);
         if (res.success && res.data) setAvailablePosts(res.data);
     };
 
