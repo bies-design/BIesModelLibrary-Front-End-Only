@@ -647,17 +647,18 @@ const ModelUploadSidebar = ({
       </div>
 
       {/* 刪除確認 Modal 保持不變 */}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='center' className="dark text-white bg-[#18181B] border border-[#27272A]">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='center' classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader>Confirm Deletion</ModalHeader>
               <ModalBody>
-                <p className="text-gray-400">Are you sure you want to delete this file? This action cannot be undone.</p>
+                <p className="text-gray-400 whitespace-pre-line">Are you sure you want to delete this file?</p>
+                <p className="text-red-500 font-bold">This action cannot be undone.</p>              
               </ModalBody>
               <ModalFooter>
-                <Button variant="flat" onPress={onClose} className='text-white'>Cancel</Button>
-                <Button color="danger" onPress={handleConfirmDelete}>Delete</Button>
+                <Button color='default' variant="flat" onPress={onClose} className='text-white hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]'>Cancel</Button>
+                <Button color="primary" onPress={handleConfirmDelete} className='hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)] text-white'>Delete</Button>
               </ModalFooter>
             </>
           )}

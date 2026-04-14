@@ -57,12 +57,17 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 2. WebSocket 監聽 (處理轉檔通知)
     useEffect(() => {
+
+        if(!session?.user.id) return;
         if(socketRef.current?.connected) return;
 
         const socket: Socket = io(process.env.NEXT_PUBLIC_WEBSOCKET_URL,{
             transports:['websocket'],
             withCredentials: true,
             reconnectionAttempts: 5,
+            query:{
+                userId: session.user.id //把 userId 當作參數傳給後端
+            }
         });
 
         socketRef.current = socket;
@@ -70,15 +75,22 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         socket.on("connect", () => {
             console.log("🔌 Socket connected");
         });
+
+        
         // 監聽進度更新
         socket.on("conversion-progress", (data: { fileId: string, progress: number }) => {
-            console.log(`📊 收到進度: ${data.fileId} -> ${data.progress}%`);
+            
+            // 如果 Ref 裡面找不到這個 fileId，代表是別人的檔案，直接 Return！
+            // 這樣連 setTrackedFiles 都不會觸發，真正達到 0 效能浪費。
+            const fileMapping = tusIdMap.current[data.fileId];
+            if(!fileMapping) return;
+
+            const uppyId = fileMapping.id;
+            console.log(`📊 收到我的進度: ${data.fileId} -> ${data.progress}%`);
 
             setTrackedFiles((prev) => {
-                // 1. 根據 TusId (fileId) 反查 UppyId
-                const uppyId = Object.keys(prev).find(key => prev[key].tusId === data.fileId);
-                
-                if (!uppyId) return prev;
+                // 二次防呆：確保 State 裡真的有這個檔案
+                if (!prev[uppyId]) return prev;
 
                 // 2. 更新狀態
                 return {
@@ -95,6 +107,11 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         socket.on("conversion-complete", (data: { fileId: string, status: string,fileName:string, message?: string }) => {
             console.log("✅ Socket 收到通知:", data);
 
+            const fileMapping = tusIdMap.current[data.fileId];
+            if(!fileMapping){
+                // 忽略非本人的任務通知
+                return;
+            }
             // 先透過 Ref 找到 UppyId (不需要進入 setState 就能找)
             const uppyId = tusIdMap.current[data.fileId].id;
             if (!uppyId) {
@@ -154,7 +171,7 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
             socket.disconnect();
             socketRef.current = null;
         };
-    }, []);
+    }, [session?.user.id]);
 
     // 輔助函式：從 React State 中移除檔案
     const removeFileFromTracking = (uppyId: string) => {
@@ -218,26 +235,26 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
         // C. 上傳完成 (Tus 結束 -> 進入 Worker 等待期)
         uppy.on('upload-success', (file) => {
-        if (!file) return;
-        console.log("🔍 [Debug] File Object:", file);
+            if (!file) return;
+            console.log("🔍 [Debug] File Object:", file);
 
-        const uploadUrlFromTus = file.tus?.uploadUrl;
-        const fileid = uploadUrlFromTus?.split('/').pop();
-        // 判斷是否為需要轉檔的 IFC 檔案
-        const isIfc = file.name.toLowerCase().endsWith('.ifc');
-        console.log(`🚀 [Uppy] ${file.name} 上傳完畢。 是否需要轉檔: ${isIfc ? "Yes":"NO"}`);
-        // 紀錄 TusId 對應到的 UppyId
-        if(fileid) tusIdMap.current[fileid] = { id:file.id, name: file.name };
+            const uploadUrlFromTus = file.tus?.uploadUrl;
+            const fileid = uploadUrlFromTus?.split('/').pop();
+            // 判斷是否為需要轉檔的 IFC 檔案
+            const isIfc = file.name.toLowerCase().endsWith('.ifc');
+            console.log(`🚀 [Uppy] ${file.name} 上傳完畢。 是否需要轉檔: ${isIfc ? "Yes":"NO"}`);
+            // 紀錄 TusId 對應到的 UppyId
+            if(fileid) tusIdMap.current[fileid] = { id:file.id, name: file.name };
 
-        setTrackedFiles(prev => ({
-            ...prev,
-            [file.id]: { 
-            ...prev[file.id], 
-            tusId: fileid,
-            progress: 0, 
-            status: 'processing' // 切換狀態為轉檔中 (藍色流動條)
-            } as TrackedFile
-        }));
+            setTrackedFiles(prev => ({
+                ...prev,
+                [file.id]: { 
+                ...prev[file.id], 
+                tusId: fileid,
+                progress: 0, 
+                status: 'processing' // 切換狀態為轉檔中 (藍色流動條)
+                } as TrackedFile
+            }));
         });
 
         // D. 上傳錯誤
