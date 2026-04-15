@@ -649,7 +649,7 @@ const ModelUploadSidebar = ({
                 {loadedFiles.map((item)=>(
                   <div 
                     key={item.dbId} 
-                    // 🚀 點擊整列時，將其設為當前預覽檔案
+                    // 點擊整列時，將其設為當前預覽檔案
                     onClick={() => onSelectFile(item)} 
                     className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${
                       // 🚀 如果是當前選中的檔案，給予高亮樣式
