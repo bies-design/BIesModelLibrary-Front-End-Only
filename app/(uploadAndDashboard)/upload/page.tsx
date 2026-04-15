@@ -33,6 +33,7 @@ const Upload = () => {
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
     const [loadedFiles, setLoadedFiles] = useState<FileItem[]>([]);
     const [coverImage, setCoverImage] = useState<string | null>(null);
+    const [forceManualCover, setForceManualCover] = useState<boolean>(false);
     // 在 Upload 組件內新增這個狀態
     const [currentWorkspaceId, setCurrentWorkspaceId] = useState<string>("personal");
     const [IFCProcessingStatus, setIFCProcessingStatus] = useState<{
@@ -102,6 +103,9 @@ const Upload = () => {
     }, [coverImage]);
     // 處理下一步按鈕
     const handleNextButton = async () => {
+        if( step === 2 && (isSupported3D || isSupportedPdf) && !forceManualCover){
+            await handleCaptureScreenshot();
+        }
         if (step === 3) {
             // 最後一步點擊 Create
             handleCreate();
@@ -212,65 +216,46 @@ const Upload = () => {
 
         setStep((prev) => Math.max(prev - 1, 1));
     };
-    // 動態決定要渲染哪一個 Viewer
-    // const renderViewer = () => {
-    //     // 如果還沒選擇檔案，給一個預設的空狀態畫面
-    //     if (!selectedFile) {
-    //         return (
-    //             <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-    //                 <Box size={48} className="opacity-20 mb-4" />
-    //                 <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
-    //             </div>
-    //         );
-    //     }
+    const handleCaptureScreenshot = async () => {
+        try {
+            let imgData: string | null = null;
+            if (selectedFile?.type === '3d' && viewerRef.current) {
+                imgData = await viewerRef.current.takeScreenshot();
+            } else if (selectedFile?.type === 'pdf' && pdfRef.current) {
+                // 假設 PDFViewer 有實作 takeScreenshot，若無可包一層 try-catch 防呆
+                if ('takeScreenshot' in pdfRef.current) {
+                    imgData = await (pdfRef.current as any).takeScreenshot();
+                } else {
+                    addToast({ title: "PDF 截圖暫未支援", description: "請手動上傳", color: "warning" });
+                    setForceManualCover(true);
+                    return;
+                }
+            }
 
-    //     const lowerName = selectedFile.name.toLowerCase();
-
-    //     // 1. 判斷 3D 模型 (.ifc, .obj, .gltf 等等)
-    //     if (lowerName.endsWith('.ifc')) {
-    //         return (
-    //             // 加入key讓一個viewer3D只適用於一個model
-    //             <Viewer3D
-    //                 ref={viewerRef} 
-    //                 allFiles={uploadedFiles} 
-    //                 file={selectedFile.file} 
-    //                 onIFCProcessingChange={handleIFCProcessingChange} 
-    //             />
-    //         );
-    //     }
-
-    //     // 2. 判斷 PDF
-    //     if (lowerName.endsWith('.pdf') || selectedFile.type === 'pdf') {
-    //         return (
-    //             <PDFViewer 
-    //                 key={selectedFile.dbId}
-    //                 ref={pdfRef} 
-    //                 file={selectedFile.file} 
-    //             />
-    //         );
-    //     }
-
-    //     // 3. 未來擴充範例：圖片預覽
-    //     if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
-    //         // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
-    //         return (
-    //             <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
-    //         );
-    //     }
-
-    //     // 4. 都不支援的 Fallback 畫面
-    //     return (
-    //         <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-    //             <FileText size={48} className="opacity-20 mb-4" />
-    //             <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
-    //         </div>
-    //     );
-    // };
+            if (imgData) {
+                setCoverImage(imgData);
+                addToast({ title: "封面擷取成功！", color: "success" });
+            } else {
+                throw new Error("無法產生圖片資料");
+            }
+        } catch (error) {
+            console.error("截圖失敗:", error);
+            addToast({ title: "截圖失敗", description: "請嘗試手動上傳封面", color: "danger" });
+            setForceManualCover(true);
+        }
+    };
 
     useEffect(() => {
         console.log(`選擇file:${selectedFile?.name}`);
         // console.log(uploadedFiles.map((a)=>(a.name)));   
     },[selectedFile,uploadedFiles])
+
+    // 條件判斷 (絕對安全版)
+    const ext = selectedFile?.name.split('.').pop()?.toLowerCase() || '';
+    const isSupported3D = ['ifc', 'frag'].includes(ext);
+    const isSupportedPdf = (ext === 'pdf' && selectedFile?.type === 'pdf');
+    const isSupportedImage = ['jpg', 'jpeg', 'png', 'webp'].includes(ext);
+    const isUnsupported = selectedFile && !isSupported3D && !isSupportedPdf && !isSupportedImage;
     
     return (
         <div className='min-h-screen bg-[#27272A] relative'>
@@ -309,14 +294,13 @@ const Upload = () => {
                     />
                 </div>
                 
-                    {/* 右側 Viewer 區域 */}
-                
+                {/* 右側 Viewer 區域 */}
                 <div className='flex grow rounded-lg overflow-hidden p-1'>{/*p-1 for showing the outer shadow*/}
                     <div className='relative rounded-lg bg-[#18181B] grow shadow-[0px_3px_1.8px_0px_#FFFFFF29,0px_-2px_1.9px_0px_#00000040,0px_0px_4px_0px_#FBFBFB3D]'>
                         {/* 內凹陰影裝飾層 */}
                         <div className='absolute inset-0 z-50 rounded-lg pointer-events-none shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_0px_#00000099]'/>
                         {/* 根據步驟與檔案類型渲染內容 */}
-                        <div className='rounded-lg w-full h-full overflow-hidden relative'>
+                        <div className={`${step === 2 ? "border-4 border-red-500" : ""} rounded-lg w-full h-full overflow-hidden relative`}>
                             <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
                                 {/* 1. 如果完全沒有選擇檔案，顯示空狀態 (蓋在最上面) */}
                                 {!selectedFile && (
@@ -326,7 +310,7 @@ const Upload = () => {
                                     </div>
                                 )}
                                 {/* 2. 🚀 永遠保留的 Viewer3D！只在選擇的是 3D 模型時顯示 */}
-                                <div className={`absolute inset-0 ${(selectedFile?.name.toLowerCase().endsWith('.ifc') || selectedFile?.name.toLowerCase().endsWith('.frag'))? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
+                                <div className={`absolute inset-0 ${isSupported3D ? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
                                     <Viewer3D
                                         ref={viewerRef} 
                                         allFiles={uploadedFiles} 
@@ -336,7 +320,7 @@ const Upload = () => {
                                     />
                                 </div>
                                 {/* 3. PDF Viewer：只有選擇 PDF 時才渲染 (PDF Viewer 比較輕量，可以重新渲染沒關係) */}
-                                {(selectedFile?.name.toLowerCase().endsWith('.pdf') || selectedFile?.type === 'pdf') && (
+                                {isSupportedPdf && (
                                     <div className="absolute inset-0 z-10 bg-[#18181B]">
                                         <PDFViewer 
                                             key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
@@ -346,23 +330,13 @@ const Upload = () => {
                                     </div>
                                 )}
                                 {/* 4. 圖片預覽：只有選擇圖片時才渲染 */}
-                                {(selectedFile?.name.toLowerCase().endsWith('.png') || 
-                                    selectedFile?.name.toLowerCase().endsWith('.jpeg') ||
-                                    selectedFile?.name.toLowerCase().endsWith('.jpg') || 
-                                    selectedFile?.name.toLowerCase().endsWith('.webp')) && (
+                                {(isSupportedImage && selectedFile) && (
                                     <div className="absolute inset-0 z-10 bg-[#18181B]">
                                         <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
                                     </div>
                                 )}
                                 {/* 5. 🚀 Fallback 畫面：有選擇檔案，但不是 3D、PDF 或圖片時顯示 */}
-                                {selectedFile && 
-                                !selectedFile?.name.toLowerCase().endsWith('.ifc') && 
-                                !selectedFile?.name.toLowerCase().endsWith('.frag') &&
-                                !selectedFile?.name.toLocaleLowerCase().endsWith('.pdf') &&
-                                !selectedFile.name.toLowerCase().endsWith('.png') && 
-                                !selectedFile.name.toLowerCase().endsWith('.jpg') && 
-                                !selectedFile.name.toLowerCase().endsWith('.jpeg') && 
-                                !selectedFile.name.toLowerCase().endsWith('.webp') && (
+                                {isUnsupported && (
                                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
                                         <FileText size={48} className="opacity-20 mb-4" />
                                         <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
@@ -388,7 +362,15 @@ const Upload = () => {
                                     onWorkspaceChange={setCurrentWorkspaceId}
                                 />
                             </div>
-                            {step === 2 && (
+                            {step === 2 && (isSupported3D || isSupportedPdf) &&
+                                <button 
+                                    onClick={() => setForceManualCover(prev => !prev)}
+                                    className="absolute bg-primary px-2 py-1 top-2 right-2 rounded-lg z-50 shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] text-white hover:text-white transition-colors"
+                                >
+                                    {forceManualCover ? "自行上傳" : "場景截圖"}
+                                </button>
+                            }         
+                            {step === 2 && (!(isSupported3D || isSupportedPdf) || ((isSupported3D || isSupportedPdf) && forceManualCover) ) &&
                                 <div className='absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#18181B] p-6'>
                                     <div className="max-w-lg w-full flex flex-col items-center">
                                         <h2 className="text-2xl font-bold text-white mb-2">Cover Image</h2>
@@ -436,7 +418,7 @@ const Upload = () => {
                                         )}
                                     </div>
                                 </div>
-                            )}
+                            }
                             {step === 3 && (
                                 <div className='w-full h-full p-8 bg-[#27272A] overflow-y-auto'>
                                     <div className='max-w-[90%] mx-auto w-full font-inter'>
