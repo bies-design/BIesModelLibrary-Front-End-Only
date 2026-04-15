@@ -7,6 +7,7 @@ model Team {
     // 關聯
     members     TeamMember[] // 團隊成員與他們的權限
     posts       Post[]       // 該團隊擁有的所有模型貼文
+    files       FileRecord[] // 該團隊擁有的所有fileRecord
     projects    Project[]
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt

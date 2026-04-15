@@ -21,6 +21,9 @@ model FileRecord {
     status       ProcessStatus @default(completed)
     errorMessage String?
 
+    // 新增這兩行：讓檔案一上傳就能指定歸屬團隊 (可以為 null 代表純私人)
+    teamId       String?       
+    team         Team?         @relation(fields: [teamId], references: [id], onDelete: Restrict)
     // 關聯到上傳者
     uploaderId   String
     uploader     User          @relation(fields: [uploaderId], references: [id], onDelete: Cascade)

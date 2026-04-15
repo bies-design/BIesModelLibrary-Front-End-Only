@@ -9,6 +9,7 @@ import {
   DropdownTrigger, 
   DropdownMenu, 
   DropdownItem,
+  DropdownSection,
   Modal, 
   ModalContent, 
   ModalHeader, 
@@ -39,6 +40,7 @@ import * as OBC from "@thatopen/components";
 import { useUpload } from "@/context/UploadContext";
 // 🚀 替換為我們新寫的 File API
 import { getUserFiles, deleteFileRecord, getFileDownloadUrl } from '@/lib/actions/file.action'; 
+import { getUserTeams } from '@/lib/actions/team.action';
 import * as THREE from 'three';
 import { FileItem } from '@/app/(uploadAndDashboard)/upload/page';
 import { FileCategory } from '@/prisma/generated/prisma';
@@ -68,6 +70,7 @@ interface ModelUploadSidebarProps {
   preLoadedModels?: FileItem[];
   selectedPublishIds: string[];
   onTogglePublish: (id: string) => void;
+  onWorkspaceChange?: (workspaceId: string) => void;
 }
 
 const ModelUploadSidebar = ({ 
@@ -83,7 +86,8 @@ const ModelUploadSidebar = ({
   onDeleteModel,
   preLoadedModels,
   selectedPublishIds,
-  onTogglePublish
+  onTogglePublish,
+  onWorkspaceChange
 }: ModelUploadSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -99,8 +103,11 @@ const ModelUploadSidebar = ({
   const [modelToDelete, setModelToDelete] = useState<string | null>(null);
   const [modelIdToDelete, setModelIdToDelete] = useState<string | null>(null);
 
-  // 🚀 新增：使用者選擇的上傳目標分類
+  // 使用者選擇的上傳目標分類
   const [uploadTargetCategory, setUploadTargetCategory] = useState<FileCategory>(FileCategory.MODEL_3D);
+
+  const [teams, setTeams] = useState<{id: string, name: string, role:string}[]>([]);
+  const [currentWorkspace, setCurrentWorkspace] = useState<string>("personal");
 
   // 展開狀態管理 (為每種分類準備一個)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -115,25 +122,40 @@ const ModelUploadSidebar = ({
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
-
+  // 初始 取得該使用者團隊清單
+  useEffect(() => {
+    const fetchTeams = async () => {
+      const res = await getUserTeams();
+      if (res.success && res.data) setTeams(res.data);
+    };
+    fetchTeams();
+  }, []);
   // 🚀 撈取所有 FileRecord 資料
   const fetchUserFilesData = async () => {
     setIsLoading(true);
     try {
-      const result = await getUserFiles(); 
+      // 🚀 將當前工作區傳給 API
+      const result = await getUserFiles(currentWorkspace); 
       if (result.success && result.data) {
         setCompletedFiles(result.data);
       }
-    } catch (error) {
-      console.error("Error loading files:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error) { console.error(error); } 
+    finally { setIsLoading(false); }
   };
-
   useEffect(() => {
     fetchUserFilesData();
-  }, []);
+    console.log(currentWorkspace);
+  }, [currentWorkspace]);
+  // useEffect(() => {
+  //   fetchUserFilesData();
+  // }, []);
+  // 當工作區改變時，不僅自己要重新拉取檔案，也要通知父層
+  useEffect(() => {
+      fetchUserFilesData();
+      if (onWorkspaceChange) {
+          onWorkspaceChange(currentWorkspace);
+      }
+  }, [currentWorkspace]);
 
   const getTechnicalType = (fileName: string): '3d' | 'pdf' | 'other' => {
       const ext = fileName.split('.').pop()?.toLowerCase();
@@ -156,7 +178,8 @@ const ModelUploadSidebar = ({
           data: file,
           source: 'Local',
           meta: {
-            category: uploadTargetCategory // 傳遞給 Tus Server
+            category: uploadTargetCategory, // 傳遞給 Tus Server
+            teamId: currentWorkspace === 'personal' ? null : currentWorkspace 
           }
         });
         console.log(`[Uppy] 檔案已加入佇列，分類為: ${uploadTargetCategory}`);
@@ -502,11 +525,45 @@ const ModelUploadSidebar = ({
       
       {/* 標題欄 */}
       <div className="p-4 flex justify-between items-center border-b border-[#FFFFFF1A]">
-          <div className="font-inter text-[#A1A1AA] flex items-center gap-2">
-              <FileBox size={18} />
-              <span className="font-bold text-white">Project Assets</span>
-          </div>
-          <div className="flex items-center gap-2">
+          <Dropdown placement="bottom-start" classNames={{ content: "bg-[#27272A] min-w-[200px]" }}>
+              <DropdownTrigger>
+                  {/* 這裡改成 button 讓它具備點擊互動效果 */}
+                  <button className="font-inter text-[#A1A1AA] flex items-center gap-2 hover:opacity-80 transition-opacity outline-none">
+                      <FileBox size={18} className="shrink-0" />
+                      <span className="font-bold text-white flex items-center gap-1 text-left line-clamp-1">
+                          {currentWorkspace === "personal" 
+                              ? "Personal Assets" 
+                              : `${teams.find(t => t.id === currentWorkspace)?.name} Assets`}
+                          <ChevronDown size={14} className="text-[#A1A1AA] shrink-0"/>
+                      </span>
+                  </button>
+              </DropdownTrigger>
+              
+              <DropdownMenu 
+                  aria-label="Select Workspace"
+                  onAction={(key) => setCurrentWorkspace(key.toString())}
+                  itemClasses={{ base: "text-white" }}
+              >
+                {/* 第一區：靜態的個人空間 (showDivider 會在底部加一條分隔線) */}
+                <DropdownSection showDivider>
+                    <DropdownItem key="personal" description="私人資產空間">
+                        👤 Personal
+                    </DropdownItem>
+                </DropdownSection>
+                  {/* 第二區：動態的團隊列表 
+                把陣列傳給 DropdownSection 的 items 屬性，
+                然後在裡面寫一個 function 來 return DropdownItem 
+                */}
+                <DropdownSection items={teams} title="所屬團隊">
+                    {(team) => (
+                        <DropdownItem key={team.id} description="團隊共用資源">
+                            👥 {team.name}
+                        </DropdownItem>
+                    )}
+                </DropdownSection>
+              </DropdownMenu>
+          </Dropdown>
+          <div className="flex items-center gap-2 shrink-0">
               <Tooltip content="Refresh Files" placement='bottom' className='bg-black text-white'>
                 <button onClick={() => fetchUserFilesData()} className="text-[#A1A1AA] hover:text-white">
                   <RefreshCw size={16} />

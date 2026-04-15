@@ -402,6 +402,11 @@ export namespace Prisma {
   export import Sql = runtime.Sql
 
 
+  /**
+   * Prisma.skip
+   */
+  export import skip = runtime.skip
+
 
   /**
    * Decimal.js
@@ -421,8 +426,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.5.0
-   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+   * Prisma Client JS version: 7.7.0
+   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
     client: string
@@ -1794,7 +1799,7 @@ export namespace Prisma {
    * CommentCountOutputType without action
    */
   export type CommentCountOutputTypeCountRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
   }
 
 
@@ -1825,7 +1830,7 @@ export namespace Prisma {
    * PhaseCountOutputType without action
    */
   export type PhaseCountOutputTypeCountRootAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
 
@@ -1860,21 +1865,21 @@ export namespace Prisma {
    * PostCountOutputType without action
    */
   export type PostCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
   }
 
   /**
    * PostCountOutputType without action
    */
   export type PostCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
   }
 
   /**
    * PostCountOutputType without action
    */
   export type PostCountOutputTypeCountProjectAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
 
@@ -1907,14 +1912,14 @@ export namespace Prisma {
    * ProjectCountOutputType without action
    */
   export type ProjectCountOutputTypeCountPhasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
   }
 
   /**
    * ProjectCountOutputType without action
    */
   export type ProjectCountOutputTypeCountAssetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
 
@@ -1945,7 +1950,7 @@ export namespace Prisma {
    * ProjectAssetCountOutputType without action
    */
   export type ProjectAssetCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
 
@@ -1956,12 +1961,14 @@ export namespace Prisma {
   export type TeamCountOutputType = {
     members: number
     posts: number
+    files: number
     projects: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | TeamCountOutputTypeCountMembersArgs
     posts?: boolean | TeamCountOutputTypeCountPostsArgs
+    files?: boolean | TeamCountOutputTypeCountFilesArgs
     projects?: boolean | TeamCountOutputTypeCountProjectsArgs
   }
 
@@ -1980,21 +1987,28 @@ export namespace Prisma {
    * TeamCountOutputType without action
    */
   export type TeamCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
   }
 
   /**
    * TeamCountOutputType without action
    */
   export type TeamCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileRecordWhereInput | $Types.Skip
   }
 
   /**
    * TeamCountOutputType without action
    */
   export type TeamCountOutputTypeCountProjectsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
   }
 
 
@@ -2035,42 +2049,42 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountTeamMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
   }
 
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
   }
 
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountFileRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
   }
 
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
   }
 
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountProjectsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
   }
 
 
@@ -2121,65 +2135,65 @@ export namespace Prisma {
 
 
   export type AccountMinAggregateInputType = {
-    id?: true
-    userId?: true
-    password?: true
-    provider?: true
-    providerAccountId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    password?: true | $Types.Skip
+    provider?: true | $Types.Skip
+    providerAccountId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type AccountMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    password?: true
-    provider?: true
-    providerAccountId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    password?: true | $Types.Skip
+    provider?: true | $Types.Skip
+    providerAccountId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type AccountCountAggregateInputType = {
-    id?: true
-    userId?: true
-    password?: true
-    provider?: true
-    providerAccountId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    password?: true | $Types.Skip
+    provider?: true | $Types.Skip
+    providerAccountId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type AccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Account to aggregate.
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: AccountWhereUniqueInput
+    cursor?: AccountWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Accounts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Accounts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -2212,12 +2226,12 @@ export namespace Prisma {
 
 
   export type AccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AccountWhereInput
-    orderBy?: AccountOrderByWithAggregationInput | AccountOrderByWithAggregationInput[]
+    where?: AccountWhereInput | $Types.Skip
+    orderBy?: AccountOrderByWithAggregationInput | AccountOrderByWithAggregationInput[] | $Types.Skip
     by: AccountScalarFieldEnum[] | AccountScalarFieldEnum
-    having?: AccountScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: AccountScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: AccountCountAggregateInputType | true
     _min?: AccountMinAggregateInputType
     _max?: AccountMaxAggregateInputType
@@ -2251,57 +2265,57 @@ export namespace Prisma {
 
 
   export type AccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    password?: boolean
-    provider?: boolean
-    providerAccountId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    password?: boolean | $Types.Skip
+    provider?: boolean | $Types.Skip
+    providerAccountId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    password?: boolean
-    provider?: boolean
-    providerAccountId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    password?: boolean | $Types.Skip
+    provider?: boolean | $Types.Skip
+    providerAccountId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    password?: boolean
-    provider?: boolean
-    providerAccountId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    password?: boolean | $Types.Skip
+    provider?: boolean | $Types.Skip
+    providerAccountId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    password?: boolean
-    provider?: boolean
-    providerAccountId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    password?: boolean | $Types.Skip
+    provider?: boolean | $Types.Skip
+    providerAccountId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "password" | "provider" | "providerAccountId" | "createdAt" | "updatedAt", ExtArgs["result"]["account"]>
+  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "password" | "provider" | "providerAccountId" | "createdAt" | "updatedAt", ExtArgs["result"]["account"], $Types.Skip>
   export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type AccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type AccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
 
   export type $AccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2815,37 +2829,37 @@ export namespace Prisma {
     /**
      * Filter, which Account to fetch.
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Accounts.
      */
-    cursor?: AccountWhereUniqueInput
+    cursor?: AccountWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Accounts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Accounts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Accounts.
      */
-    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -2867,37 +2881,37 @@ export namespace Prisma {
     /**
      * Filter, which Account to fetch.
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Accounts.
      */
-    cursor?: AccountWhereUniqueInput
+    cursor?: AccountWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Accounts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Accounts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Accounts.
      */
-    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -2919,37 +2933,37 @@ export namespace Prisma {
     /**
      * Filter, which Accounts to fetch.
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Accounts.
      */
-    cursor?: AccountWhereUniqueInput
+    cursor?: AccountWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Accounts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Accounts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Accounts.
      */
-    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -2982,7 +2996,7 @@ export namespace Prisma {
      * The data used to create many Accounts.
      */
     data: AccountCreateManyInput | AccountCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -3001,7 +3015,7 @@ export namespace Prisma {
      * The data used to create many Accounts.
      */
     data: AccountCreateManyInput | AccountCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -3045,11 +3059,11 @@ export namespace Prisma {
     /**
      * Filter which Accounts to update
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * Limit how many Accounts to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -3071,11 +3085,11 @@ export namespace Prisma {
     /**
      * Filter which Accounts to update
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * Limit how many Accounts to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -3141,11 +3155,11 @@ export namespace Prisma {
     /**
      * Filter which Accounts to delete
      */
-    where?: AccountWhereInput
+    where?: AccountWhereInput | $Types.Skip
     /**
      * Limit how many Accounts to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -3210,65 +3224,65 @@ export namespace Prisma {
 
 
   export type CommentMinAggregateInputType = {
-    id?: true
-    content?: true
-    postId?: true
-    userId?: true
-    parentId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    content?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type CommentMaxAggregateInputType = {
-    id?: true
-    content?: true
-    postId?: true
-    userId?: true
-    parentId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    content?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type CommentCountAggregateInputType = {
-    id?: true
-    content?: true
-    postId?: true
-    userId?: true
-    parentId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    content?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type CommentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Comment to aggregate.
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Comments to fetch.
      */
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CommentWhereUniqueInput
+    cursor?: CommentWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Comments from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Comments.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -3301,12 +3315,12 @@ export namespace Prisma {
 
 
   export type CommentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CommentWhereInput
-    orderBy?: CommentOrderByWithAggregationInput | CommentOrderByWithAggregationInput[]
+    where?: CommentWhereInput | $Types.Skip
+    orderBy?: CommentOrderByWithAggregationInput | CommentOrderByWithAggregationInput[] | $Types.Skip
     by: CommentScalarFieldEnum[] | CommentScalarFieldEnum
-    having?: CommentScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: CommentScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: CommentCountAggregateInputType | true
     _min?: CommentMinAggregateInputType
     _max?: CommentMaxAggregateInputType
@@ -3340,73 +3354,73 @@ export namespace Prisma {
 
 
   export type CommentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    content?: boolean
-    postId?: boolean
-    userId?: boolean
-    parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
-    replies?: boolean | Comment$repliesArgs<ExtArgs>
-    _count?: boolean | CommentCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    content?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
+    replies?: boolean | Comment$repliesArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | CommentCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    content?: boolean
-    postId?: boolean
-    userId?: boolean
-    parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    content?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    content?: boolean
-    postId?: boolean
-    userId?: boolean
-    parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    content?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectScalar = {
-    id?: boolean
-    content?: boolean
-    postId?: boolean
-    userId?: boolean
-    parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    content?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "postId" | "userId" | "parentId" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "postId" | "userId" | "parentId" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"], $Types.Skip>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
-    replies?: boolean | Comment$repliesArgs<ExtArgs>
-    _count?: boolean | CommentCountOutputTypeDefaultArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
+    replies?: boolean | Comment$repliesArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | CommentCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type CommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
   }
   export type CommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    post?: boolean | PostDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    parent?: boolean | Comment$parentArgs<ExtArgs>
+    post?: boolean | PostDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    parent?: boolean | Comment$parentArgs<ExtArgs> | $Types.Skip
   }
 
   export type $CommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3926,37 +3940,37 @@ export namespace Prisma {
     /**
      * Filter, which Comment to fetch.
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Comments to fetch.
      */
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Comments.
      */
-    cursor?: CommentWhereUniqueInput
+    cursor?: CommentWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Comments from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Comments.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Comments.
      */
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -3978,37 +3992,37 @@ export namespace Prisma {
     /**
      * Filter, which Comment to fetch.
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Comments to fetch.
      */
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Comments.
      */
-    cursor?: CommentWhereUniqueInput
+    cursor?: CommentWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Comments from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Comments.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Comments.
      */
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -4030,37 +4044,37 @@ export namespace Prisma {
     /**
      * Filter, which Comments to fetch.
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Comments to fetch.
      */
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Comments.
      */
-    cursor?: CommentWhereUniqueInput
+    cursor?: CommentWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Comments from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Comments.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Comments.
      */
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -4093,7 +4107,7 @@ export namespace Prisma {
      * The data used to create many Comments.
      */
     data: CommentCreateManyInput | CommentCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -4112,7 +4126,7 @@ export namespace Prisma {
      * The data used to create many Comments.
      */
     data: CommentCreateManyInput | CommentCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4156,11 +4170,11 @@ export namespace Prisma {
     /**
      * Filter which Comments to update
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * Limit how many Comments to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -4182,11 +4196,11 @@ export namespace Prisma {
     /**
      * Filter which Comments to update
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * Limit how many Comments to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4252,11 +4266,11 @@ export namespace Prisma {
     /**
      * Filter which Comments to delete
      */
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     /**
      * Limit how many Comments to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -4275,7 +4289,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CommentInclude<ExtArgs> | null
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
   }
 
   /**
@@ -4294,12 +4308,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CommentInclude<ExtArgs> | null
-    where?: CommentWhereInput
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
-    cursor?: CommentWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    where?: CommentWhereInput | $Types.Skip
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: CommentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -4342,6 +4356,7 @@ export namespace Prisma {
     size: string | null
     status: $Enums.ProcessStatus | null
     errorMessage: string | null
+    teamId: string | null
     uploaderId: string | null
     postId: string | null
     createdAt: Date | null
@@ -4359,6 +4374,7 @@ export namespace Prisma {
     size: string | null
     status: $Enums.ProcessStatus | null
     errorMessage: string | null
+    teamId: string | null
     uploaderId: string | null
     postId: string | null
     createdAt: Date | null
@@ -4376,6 +4392,7 @@ export namespace Prisma {
     size: number
     status: number
     errorMessage: number
+    teamId: number
     uploaderId: number
     postId: number
     createdAt: number
@@ -4385,86 +4402,89 @@ export namespace Prisma {
 
 
   export type FileRecordMinAggregateInputType = {
-    id?: true
-    shortId?: true
-    name?: true
-    fileId?: true
-    viewerFileId?: true
-    category?: true
-    extension?: true
-    size?: true
-    status?: true
-    errorMessage?: true
-    uploaderId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    name?: true | $Types.Skip
+    fileId?: true | $Types.Skip
+    viewerFileId?: true | $Types.Skip
+    category?: true | $Types.Skip
+    extension?: true | $Types.Skip
+    size?: true | $Types.Skip
+    status?: true | $Types.Skip
+    errorMessage?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type FileRecordMaxAggregateInputType = {
-    id?: true
-    shortId?: true
-    name?: true
-    fileId?: true
-    viewerFileId?: true
-    category?: true
-    extension?: true
-    size?: true
-    status?: true
-    errorMessage?: true
-    uploaderId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    name?: true | $Types.Skip
+    fileId?: true | $Types.Skip
+    viewerFileId?: true | $Types.Skip
+    category?: true | $Types.Skip
+    extension?: true | $Types.Skip
+    size?: true | $Types.Skip
+    status?: true | $Types.Skip
+    errorMessage?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type FileRecordCountAggregateInputType = {
-    id?: true
-    shortId?: true
-    name?: true
-    fileId?: true
-    viewerFileId?: true
-    category?: true
-    extension?: true
-    size?: true
-    status?: true
-    errorMessage?: true
-    uploaderId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    name?: true | $Types.Skip
+    fileId?: true | $Types.Skip
+    viewerFileId?: true | $Types.Skip
+    category?: true | $Types.Skip
+    extension?: true | $Types.Skip
+    size?: true | $Types.Skip
+    status?: true | $Types.Skip
+    errorMessage?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type FileRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which FileRecord to aggregate.
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of FileRecords to fetch.
      */
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: FileRecordWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` FileRecords from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` FileRecords.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -4497,12 +4517,12 @@ export namespace Prisma {
 
 
   export type FileRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FileRecordWhereInput
-    orderBy?: FileRecordOrderByWithAggregationInput | FileRecordOrderByWithAggregationInput[]
+    where?: FileRecordWhereInput | $Types.Skip
+    orderBy?: FileRecordOrderByWithAggregationInput | FileRecordOrderByWithAggregationInput[] | $Types.Skip
     by: FileRecordScalarFieldEnum[] | FileRecordScalarFieldEnum
-    having?: FileRecordScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: FileRecordScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: FileRecordCountAggregateInputType | true
     _min?: FileRecordMinAggregateInputType
     _max?: FileRecordMaxAggregateInputType
@@ -4519,6 +4539,7 @@ export namespace Prisma {
     size: string
     status: $Enums.ProcessStatus
     errorMessage: string | null
+    teamId: string | null
     uploaderId: string
     postId: string | null
     createdAt: Date
@@ -4543,96 +4564,107 @@ export namespace Prisma {
 
 
   export type FileRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    name?: boolean
-    fileId?: boolean
-    viewerFileId?: boolean
-    category?: boolean
-    extension?: boolean
-    size?: boolean
-    status?: boolean
-    errorMessage?: boolean
-    uploaderId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    fileId?: boolean | $Types.Skip
+    viewerFileId?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    extension?: boolean | $Types.Skip
+    size?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    errorMessage?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["fileRecord"]>
 
   export type FileRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    name?: boolean
-    fileId?: boolean
-    viewerFileId?: boolean
-    category?: boolean
-    extension?: boolean
-    size?: boolean
-    status?: boolean
-    errorMessage?: boolean
-    uploaderId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    fileId?: boolean | $Types.Skip
+    viewerFileId?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    extension?: boolean | $Types.Skip
+    size?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    errorMessage?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["fileRecord"]>
 
   export type FileRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    name?: boolean
-    fileId?: boolean
-    viewerFileId?: boolean
-    category?: boolean
-    extension?: boolean
-    size?: boolean
-    status?: boolean
-    errorMessage?: boolean
-    uploaderId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    fileId?: boolean | $Types.Skip
+    viewerFileId?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    extension?: boolean | $Types.Skip
+    size?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    errorMessage?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["fileRecord"]>
 
   export type FileRecordSelectScalar = {
-    id?: boolean
-    shortId?: boolean
-    name?: boolean
-    fileId?: boolean
-    viewerFileId?: boolean
-    category?: boolean
-    extension?: boolean
-    size?: boolean
-    status?: boolean
-    errorMessage?: boolean
-    uploaderId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    fileId?: boolean | $Types.Skip
+    viewerFileId?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    extension?: boolean | $Types.Skip
+    size?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    errorMessage?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type FileRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "viewerFileId" | "category" | "extension" | "size" | "status" | "errorMessage" | "uploaderId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileRecord"]>
+  export type FileRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "name" | "fileId" | "viewerFileId" | "category" | "extension" | "size" | "status" | "errorMessage" | "teamId" | "uploaderId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileRecord"], $Types.Skip>
   export type FileRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }
   export type FileRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }
   export type FileRecordIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | FileRecord$postArgs<ExtArgs>
+    team?: boolean | FileRecord$teamArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    post?: boolean | FileRecord$postArgs<ExtArgs> | $Types.Skip
   }
 
   export type $FileRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "FileRecord"
     objects: {
+      team: Prisma.$TeamPayload<ExtArgs> | null
       uploader: Prisma.$UserPayload<ExtArgs>
       post: Prisma.$PostPayload<ExtArgs> | null
     }
@@ -4647,6 +4679,7 @@ export namespace Prisma {
       size: string
       status: $Enums.ProcessStatus
       errorMessage: string | null
+      teamId: string | null
       uploaderId: string
       postId: string | null
       createdAt: Date
@@ -5045,6 +5078,7 @@ export namespace Prisma {
    */
   export interface Prisma__FileRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends FileRecord$teamArgs<ExtArgs> = {}>(args?: Subset<T, FileRecord$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     uploader<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     post<T extends FileRecord$postArgs<ExtArgs> = {}>(args?: Subset<T, FileRecord$postArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -5086,6 +5120,7 @@ export namespace Prisma {
     readonly size: FieldRef<"FileRecord", 'String'>
     readonly status: FieldRef<"FileRecord", 'ProcessStatus'>
     readonly errorMessage: FieldRef<"FileRecord", 'String'>
+    readonly teamId: FieldRef<"FileRecord", 'String'>
     readonly uploaderId: FieldRef<"FileRecord", 'String'>
     readonly postId: FieldRef<"FileRecord", 'String'>
     readonly createdAt: FieldRef<"FileRecord", 'DateTime'>
@@ -5157,37 +5192,37 @@ export namespace Prisma {
     /**
      * Filter, which FileRecord to fetch.
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of FileRecords to fetch.
      */
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for FileRecords.
      */
-    cursor?: FileRecordWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` FileRecords from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` FileRecords.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of FileRecords.
      */
-    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -5209,37 +5244,37 @@ export namespace Prisma {
     /**
      * Filter, which FileRecord to fetch.
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of FileRecords to fetch.
      */
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for FileRecords.
      */
-    cursor?: FileRecordWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` FileRecords from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` FileRecords.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of FileRecords.
      */
-    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -5261,37 +5296,37 @@ export namespace Prisma {
     /**
      * Filter, which FileRecords to fetch.
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of FileRecords to fetch.
      */
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing FileRecords.
      */
-    cursor?: FileRecordWhereUniqueInput
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` FileRecords from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` FileRecords.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of FileRecords.
      */
-    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -5324,7 +5359,7 @@ export namespace Prisma {
      * The data used to create many FileRecords.
      */
     data: FileRecordCreateManyInput | FileRecordCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -5343,7 +5378,7 @@ export namespace Prisma {
      * The data used to create many FileRecords.
      */
     data: FileRecordCreateManyInput | FileRecordCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -5387,11 +5422,11 @@ export namespace Prisma {
     /**
      * Filter which FileRecords to update
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * Limit how many FileRecords to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -5413,11 +5448,11 @@ export namespace Prisma {
     /**
      * Filter which FileRecords to update
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * Limit how many FileRecords to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -5483,11 +5518,30 @@ export namespace Prisma {
     /**
      * Filter which FileRecords to delete
      */
-    where?: FileRecordWhereInput
+    where?: FileRecordWhereInput | $Types.Skip
     /**
      * Limit how many FileRecords to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
+  }
+
+  /**
+   * FileRecord.team
+   */
+  export type FileRecord$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    where?: TeamWhereInput | $Types.Skip
   }
 
   /**
@@ -5506,7 +5560,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   /**
@@ -5578,70 +5632,70 @@ export namespace Prisma {
 
 
   export type PhaseAvgAggregateInputType = {
-    sortOrder?: true
+    sortOrder?: true | $Types.Skip
   }
 
   export type PhaseSumAggregateInputType = {
-    sortOrder?: true
+    sortOrder?: true | $Types.Skip
   }
 
   export type PhaseMinAggregateInputType = {
-    id?: true
-    name?: true
-    sortOrder?: true
-    projectId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type PhaseMaxAggregateInputType = {
-    id?: true
-    name?: true
-    sortOrder?: true
-    projectId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type PhaseCountAggregateInputType = {
-    id?: true
-    name?: true
-    sortOrder?: true
-    projectId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type PhaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Phase to aggregate.
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Phases to fetch.
      */
-    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: PhaseWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Phases from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Phases.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -5686,12 +5740,12 @@ export namespace Prisma {
 
 
   export type PhaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PhaseWhereInput
-    orderBy?: PhaseOrderByWithAggregationInput | PhaseOrderByWithAggregationInput[]
+    where?: PhaseWhereInput | $Types.Skip
+    orderBy?: PhaseOrderByWithAggregationInput | PhaseOrderByWithAggregationInput[] | $Types.Skip
     by: PhaseScalarFieldEnum[] | PhaseScalarFieldEnum
-    having?: PhaseScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: PhaseScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: PhaseCountAggregateInputType | true
     _avg?: PhaseAvgAggregateInputType
     _sum?: PhaseSumAggregateInputType
@@ -5728,57 +5782,57 @@ export namespace Prisma {
 
 
   export type PhaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    sortOrder?: boolean
-    projectId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs>
-    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["phase"]>
 
   export type PhaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    sortOrder?: boolean
-    projectId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["phase"]>
 
   export type PhaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    sortOrder?: boolean
-    projectId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["phase"]>
 
   export type PhaseSelectScalar = {
-    id?: boolean
-    name?: boolean
-    sortOrder?: boolean
-    projectId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type PhaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "sortOrder" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["phase"]>
+  export type PhaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "sortOrder" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["phase"], $Types.Skip>
   export type PhaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs>
-    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    rootAssets?: boolean | Phase$rootAssetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PhaseCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type PhaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type PhaseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
   }
 
   export type $PhasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6292,37 +6346,37 @@ export namespace Prisma {
     /**
      * Filter, which Phase to fetch.
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Phases to fetch.
      */
-    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Phases.
      */
-    cursor?: PhaseWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Phases from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Phases.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Phases.
      */
-    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -6344,37 +6398,37 @@ export namespace Prisma {
     /**
      * Filter, which Phase to fetch.
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Phases to fetch.
      */
-    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Phases.
      */
-    cursor?: PhaseWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Phases from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Phases.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Phases.
      */
-    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -6396,37 +6450,37 @@ export namespace Prisma {
     /**
      * Filter, which Phases to fetch.
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Phases to fetch.
      */
-    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Phases.
      */
-    cursor?: PhaseWhereUniqueInput
+    cursor?: PhaseWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Phases from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Phases.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Phases.
      */
-    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -6459,7 +6513,7 @@ export namespace Prisma {
      * The data used to create many Phases.
      */
     data: PhaseCreateManyInput | PhaseCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -6478,7 +6532,7 @@ export namespace Prisma {
      * The data used to create many Phases.
      */
     data: PhaseCreateManyInput | PhaseCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -6522,11 +6576,11 @@ export namespace Prisma {
     /**
      * Filter which Phases to update
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * Limit how many Phases to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -6548,11 +6602,11 @@ export namespace Prisma {
     /**
      * Filter which Phases to update
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * Limit how many Phases to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -6618,11 +6672,11 @@ export namespace Prisma {
     /**
      * Filter which Phases to delete
      */
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     /**
      * Limit how many Phases to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -6641,12 +6695,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectAssetInclude<ExtArgs> | null
-    where?: ProjectAssetWhereInput
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
-    cursor?: ProjectAssetWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    where?: ProjectAssetWhereInput | $Types.Skip
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -6729,83 +6783,83 @@ export namespace Prisma {
 
 
   export type PostMinAggregateInputType = {
-    id?: true
-    shortId?: true
-    title?: true
-    category?: true
-    description?: true
-    type?: true
-    coverImage?: true
-    uploaderId?: true
-    permission?: true
-    teamId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    title?: true | $Types.Skip
+    category?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    permission?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type PostMaxAggregateInputType = {
-    id?: true
-    shortId?: true
-    title?: true
-    category?: true
-    description?: true
-    type?: true
-    coverImage?: true
-    uploaderId?: true
-    permission?: true
-    teamId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    title?: true | $Types.Skip
+    category?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    permission?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type PostCountAggregateInputType = {
-    id?: true
-    shortId?: true
-    title?: true
-    category?: true
-    description?: true
-    type?: true
-    keywords?: true
-    coverImage?: true
-    images?: true
-    uploaderId?: true
-    relatedPosts?: true
-    permission?: true
-    teamId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    shortId?: true | $Types.Skip
+    title?: true | $Types.Skip
+    category?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    keywords?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    images?: true | $Types.Skip
+    uploaderId?: true | $Types.Skip
+    relatedPosts?: true | $Types.Skip
+    permission?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type PostAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Post to aggregate.
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Posts to fetch.
      */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: PostWhereUniqueInput
+    cursor?: PostWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Posts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Posts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -6838,12 +6892,12 @@ export namespace Prisma {
 
 
   export type PostGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithAggregationInput | PostOrderByWithAggregationInput[]
+    where?: PostWhereInput | $Types.Skip
+    orderBy?: PostOrderByWithAggregationInput | PostOrderByWithAggregationInput[] | $Types.Skip
     by: PostScalarFieldEnum[] | PostScalarFieldEnum
-    having?: PostScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: PostScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: PostCountAggregateInputType | true
     _min?: PostMinAggregateInputType
     _max?: PostMaxAggregateInputType
@@ -6885,103 +6939,103 @@ export namespace Prisma {
 
 
   export type PostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    title?: boolean
-    category?: boolean
-    description?: boolean
-    type?: boolean
-    keywords?: boolean
-    coverImage?: boolean
-    images?: boolean
-    uploaderId?: boolean
-    relatedPosts?: boolean
-    permission?: boolean
-    teamId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    files?: boolean | Post$filesArgs<ExtArgs>
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
-    comments?: boolean | Post$commentsArgs<ExtArgs>
-    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs>
-    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    title?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    keywords?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    images?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    relatedPosts?: boolean | $Types.Skip
+    permission?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    files?: boolean | Post$filesArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
+    comments?: boolean | Post$commentsArgs<ExtArgs> | $Types.Skip
+    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["post"]>
 
   export type PostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    title?: boolean
-    category?: boolean
-    description?: boolean
-    type?: boolean
-    keywords?: boolean
-    coverImage?: boolean
-    images?: boolean
-    uploaderId?: boolean
-    relatedPosts?: boolean
-    permission?: boolean
-    teamId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    title?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    keywords?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    images?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    relatedPosts?: boolean | $Types.Skip
+    permission?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["post"]>
 
   export type PostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    shortId?: boolean
-    title?: boolean
-    category?: boolean
-    description?: boolean
-    type?: boolean
-    keywords?: boolean
-    coverImage?: boolean
-    images?: boolean
-    uploaderId?: boolean
-    relatedPosts?: boolean
-    permission?: boolean
-    teamId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    title?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    keywords?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    images?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    relatedPosts?: boolean | $Types.Skip
+    permission?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["post"]>
 
   export type PostSelectScalar = {
-    id?: boolean
-    shortId?: boolean
-    title?: boolean
-    category?: boolean
-    description?: boolean
-    type?: boolean
-    keywords?: boolean
-    coverImage?: boolean
-    images?: boolean
-    uploaderId?: boolean
-    relatedPosts?: boolean
-    permission?: boolean
-    teamId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    shortId?: boolean | $Types.Skip
+    title?: boolean | $Types.Skip
+    category?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    keywords?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    images?: boolean | $Types.Skip
+    uploaderId?: boolean | $Types.Skip
+    relatedPosts?: boolean | $Types.Skip
+    permission?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "title" | "category" | "description" | "type" | "keywords" | "coverImage" | "images" | "uploaderId" | "relatedPosts" | "permission" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "shortId" | "title" | "category" | "description" | "type" | "keywords" | "coverImage" | "images" | "uploaderId" | "relatedPosts" | "permission" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"], $Types.Skip>
   export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    files?: boolean | Post$filesArgs<ExtArgs>
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
-    comments?: boolean | Post$commentsArgs<ExtArgs>
-    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs>
-    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
+    files?: boolean | Post$filesArgs<ExtArgs> | $Types.Skip
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
+    comments?: boolean | Post$commentsArgs<ExtArgs> | $Types.Skip
+    projectAssets?: boolean | Post$projectAssetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type PostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
   }
   export type PostIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    uploader?: boolean | UserDefaultArgs<ExtArgs>
-    team?: boolean | Post$teamArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    team?: boolean | Post$teamArgs<ExtArgs> | $Types.Skip
   }
 
   export type $PostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7519,37 +7573,37 @@ export namespace Prisma {
     /**
      * Filter, which Post to fetch.
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Posts to fetch.
      */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Posts.
      */
-    cursor?: PostWhereUniqueInput
+    cursor?: PostWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Posts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Posts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Posts.
      */
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -7571,37 +7625,37 @@ export namespace Prisma {
     /**
      * Filter, which Post to fetch.
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Posts to fetch.
      */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Posts.
      */
-    cursor?: PostWhereUniqueInput
+    cursor?: PostWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Posts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Posts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Posts.
      */
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -7623,37 +7677,37 @@ export namespace Prisma {
     /**
      * Filter, which Posts to fetch.
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Posts to fetch.
      */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Posts.
      */
-    cursor?: PostWhereUniqueInput
+    cursor?: PostWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Posts from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Posts.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Posts.
      */
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -7686,7 +7740,7 @@ export namespace Prisma {
      * The data used to create many Posts.
      */
     data: PostCreateManyInput | PostCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -7705,7 +7759,7 @@ export namespace Prisma {
      * The data used to create many Posts.
      */
     data: PostCreateManyInput | PostCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -7749,11 +7803,11 @@ export namespace Prisma {
     /**
      * Filter which Posts to update
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * Limit how many Posts to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -7775,11 +7829,11 @@ export namespace Prisma {
     /**
      * Filter which Posts to update
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * Limit how many Posts to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -7845,11 +7899,11 @@ export namespace Prisma {
     /**
      * Filter which Posts to delete
      */
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     /**
      * Limit how many Posts to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -7868,12 +7922,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FileRecordInclude<ExtArgs> | null
-    where?: FileRecordWhereInput
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
-    cursor?: FileRecordWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
+    where?: FileRecordWhereInput | $Types.Skip
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -7892,7 +7946,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TeamInclude<ExtArgs> | null
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
   }
 
   /**
@@ -7911,12 +7965,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CommentInclude<ExtArgs> | null
-    where?: CommentWhereInput
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
-    cursor?: CommentWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    where?: CommentWhereInput | $Types.Skip
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: CommentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -7935,12 +7989,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectAssetInclude<ExtArgs> | null
-    where?: ProjectAssetWhereInput
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
-    cursor?: ProjectAssetWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    where?: ProjectAssetWhereInput | $Types.Skip
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -8017,77 +8071,77 @@ export namespace Prisma {
 
 
   export type ProjectMinAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    client?: true
-    location?: true
-    coverImage?: true
-    status?: true
-    teamId?: true
-    creatorId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    client?: true | $Types.Skip
+    location?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    status?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    creatorId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type ProjectMaxAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    client?: true
-    location?: true
-    coverImage?: true
-    status?: true
-    teamId?: true
-    creatorId?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    client?: true | $Types.Skip
+    location?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    status?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    creatorId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type ProjectCountAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    client?: true
-    location?: true
-    coverImage?: true
-    status?: true
-    teamId?: true
-    creatorId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    client?: true | $Types.Skip
+    location?: true | $Types.Skip
+    coverImage?: true | $Types.Skip
+    status?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    creatorId?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type ProjectAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Project to aggregate.
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
      */
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ProjectWhereUniqueInput
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -8120,12 +8174,12 @@ export namespace Prisma {
 
 
   export type ProjectGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectWhereInput
-    orderBy?: ProjectOrderByWithAggregationInput | ProjectOrderByWithAggregationInput[]
+    where?: ProjectWhereInput | $Types.Skip
+    orderBy?: ProjectOrderByWithAggregationInput | ProjectOrderByWithAggregationInput[] | $Types.Skip
     by: ProjectScalarFieldEnum[] | ProjectScalarFieldEnum
-    having?: ProjectScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: ProjectScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: ProjectCountAggregateInputType | true
     _min?: ProjectMinAggregateInputType
     _max?: ProjectMaxAggregateInputType
@@ -8163,85 +8217,85 @@ export namespace Prisma {
 
 
   export type ProjectSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    client?: boolean
-    location?: boolean
-    coverImage?: boolean
-    status?: boolean
-    teamId?: boolean
-    creatorId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
-    phases?: boolean | Project$phasesArgs<ExtArgs>
-    assets?: boolean | Project$assetsArgs<ExtArgs>
-    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    client?: boolean | $Types.Skip
+    location?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    creatorId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    phases?: boolean | Project$phasesArgs<ExtArgs> | $Types.Skip
+    assets?: boolean | Project$assetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    client?: boolean
-    location?: boolean
-    coverImage?: boolean
-    status?: boolean
-    teamId?: boolean
-    creatorId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    client?: boolean | $Types.Skip
+    location?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    creatorId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    client?: boolean
-    location?: boolean
-    coverImage?: boolean
-    status?: boolean
-    teamId?: boolean
-    creatorId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    client?: boolean | $Types.Skip
+    location?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    creatorId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectScalar = {
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    client?: boolean
-    location?: boolean
-    coverImage?: boolean
-    status?: boolean
-    teamId?: boolean
-    creatorId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    client?: boolean | $Types.Skip
+    location?: boolean | $Types.Skip
+    coverImage?: boolean | $Types.Skip
+    status?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    creatorId?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "client" | "location" | "coverImage" | "status" | "teamId" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "client" | "location" | "coverImage" | "status" | "teamId" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"], $Types.Skip>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
-    phases?: boolean | Project$phasesArgs<ExtArgs>
-    assets?: boolean | Project$assetsArgs<ExtArgs>
-    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
+    phases?: boolean | Project$phasesArgs<ExtArgs> | $Types.Skip
+    assets?: boolean | Project$assetsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    creator?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
 
   export type $ProjectPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8769,37 +8823,37 @@ export namespace Prisma {
     /**
      * Filter, which Project to fetch.
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
      */
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Projects.
      */
-    cursor?: ProjectWhereUniqueInput
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Projects.
      */
-    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -8821,37 +8875,37 @@ export namespace Prisma {
     /**
      * Filter, which Project to fetch.
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
      */
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Projects.
      */
-    cursor?: ProjectWhereUniqueInput
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Projects.
      */
-    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -8873,37 +8927,37 @@ export namespace Prisma {
     /**
      * Filter, which Projects to fetch.
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Projects to fetch.
      */
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Projects.
      */
-    cursor?: ProjectWhereUniqueInput
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Projects from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Projects.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Projects.
      */
-    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -8936,7 +8990,7 @@ export namespace Prisma {
      * The data used to create many Projects.
      */
     data: ProjectCreateManyInput | ProjectCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -8955,7 +9009,7 @@ export namespace Prisma {
      * The data used to create many Projects.
      */
     data: ProjectCreateManyInput | ProjectCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -8999,11 +9053,11 @@ export namespace Prisma {
     /**
      * Filter which Projects to update
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * Limit how many Projects to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -9025,11 +9079,11 @@ export namespace Prisma {
     /**
      * Filter which Projects to update
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * Limit how many Projects to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -9095,11 +9149,11 @@ export namespace Prisma {
     /**
      * Filter which Projects to delete
      */
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     /**
      * Limit how many Projects to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -9118,12 +9172,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PhaseInclude<ExtArgs> | null
-    where?: PhaseWhereInput
-    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[]
-    cursor?: PhaseWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[]
+    where?: PhaseWhereInput | $Types.Skip
+    orderBy?: PhaseOrderByWithRelationInput | PhaseOrderByWithRelationInput[] | $Types.Skip
+    cursor?: PhaseWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: PhaseScalarFieldEnum | PhaseScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -9142,12 +9196,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectAssetInclude<ExtArgs> | null
-    where?: ProjectAssetWhereInput
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
-    cursor?: ProjectAssetWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    where?: ProjectAssetWhereInput | $Types.Skip
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -9237,88 +9291,88 @@ export namespace Prisma {
 
 
   export type ProjectAssetAvgAggregateInputType = {
-    sortOrder?: true
+    sortOrder?: true | $Types.Skip
   }
 
   export type ProjectAssetSumAggregateInputType = {
-    sortOrder?: true
+    sortOrder?: true | $Types.Skip
   }
 
   export type ProjectAssetMinAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    type?: true
-    sortOrder?: true
-    parentId?: true
-    projectId?: true
-    phaseId?: true
-    postId?: true
-    url?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    phaseId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    url?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type ProjectAssetMaxAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    type?: true
-    sortOrder?: true
-    parentId?: true
-    projectId?: true
-    phaseId?: true
-    postId?: true
-    url?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    phaseId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    url?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type ProjectAssetCountAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    type?: true
-    sortOrder?: true
-    parentId?: true
-    projectId?: true
-    phaseId?: true
-    postId?: true
-    url?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    type?: true | $Types.Skip
+    sortOrder?: true | $Types.Skip
+    parentId?: true | $Types.Skip
+    projectId?: true | $Types.Skip
+    phaseId?: true | $Types.Skip
+    postId?: true | $Types.Skip
+    url?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type ProjectAssetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which ProjectAsset to aggregate.
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ProjectAssetWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` ProjectAssets from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` ProjectAssets.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -9363,12 +9417,12 @@ export namespace Prisma {
 
 
   export type ProjectAssetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjectAssetWhereInput
-    orderBy?: ProjectAssetOrderByWithAggregationInput | ProjectAssetOrderByWithAggregationInput[]
+    where?: ProjectAssetWhereInput | $Types.Skip
+    orderBy?: ProjectAssetOrderByWithAggregationInput | ProjectAssetOrderByWithAggregationInput[] | $Types.Skip
     by: ProjectAssetScalarFieldEnum[] | ProjectAssetScalarFieldEnum
-    having?: ProjectAssetScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: ProjectAssetScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: ProjectAssetCountAggregateInputType | true
     _avg?: ProjectAssetAvgAggregateInputType
     _sum?: ProjectAssetSumAggregateInputType
@@ -9411,99 +9465,99 @@ export namespace Prisma {
 
 
   export type ProjectAssetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    type?: boolean
-    sortOrder?: boolean
-    parentId?: boolean
-    projectId?: boolean
-    phaseId?: boolean
-    postId?: boolean
-    url?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    children?: boolean | ProjectAsset$childrenArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
-    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    phaseId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    url?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    children?: boolean | ProjectAsset$childrenArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    type?: boolean
-    sortOrder?: boolean
-    parentId?: boolean
-    projectId?: boolean
-    phaseId?: boolean
-    postId?: boolean
-    url?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    phaseId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    url?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    type?: boolean
-    sortOrder?: boolean
-    parentId?: boolean
-    projectId?: boolean
-    phaseId?: boolean
-    postId?: boolean
-    url?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    phaseId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    url?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["projectAsset"]>
 
   export type ProjectAssetSelectScalar = {
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    type?: boolean
-    sortOrder?: boolean
-    parentId?: boolean
-    projectId?: boolean
-    phaseId?: boolean
-    postId?: boolean
-    url?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    type?: boolean | $Types.Skip
+    sortOrder?: boolean | $Types.Skip
+    parentId?: boolean | $Types.Skip
+    projectId?: boolean | $Types.Skip
+    phaseId?: boolean | $Types.Skip
+    postId?: boolean | $Types.Skip
+    url?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "type" | "sortOrder" | "parentId" | "projectId" | "phaseId" | "postId" | "url" | "createdAt" | "updatedAt", ExtArgs["result"]["projectAsset"]>
+  export type ProjectAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "type" | "sortOrder" | "parentId" | "projectId" | "phaseId" | "postId" | "url" | "createdAt" | "updatedAt", ExtArgs["result"]["projectAsset"], $Types.Skip>
   export type ProjectAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    children?: boolean | ProjectAsset$childrenArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
-    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs>
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    children?: boolean | ProjectAsset$childrenArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | ProjectAssetCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type ProjectAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
   }
   export type ProjectAssetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    parent?: boolean | ProjectAsset$parentArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
-    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs>
-    post?: boolean | ProjectAsset$postArgs<ExtArgs>
+    parent?: boolean | ProjectAsset$parentArgs<ExtArgs> | $Types.Skip
+    project?: boolean | ProjectDefaultArgs<ExtArgs> | $Types.Skip
+    phase?: boolean | ProjectAsset$phaseArgs<ExtArgs> | $Types.Skip
+    post?: boolean | ProjectAsset$postArgs<ExtArgs> | $Types.Skip
   }
 
   export type $ProjectAssetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10035,37 +10089,37 @@ export namespace Prisma {
     /**
      * Filter, which ProjectAsset to fetch.
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for ProjectAssets.
      */
-    cursor?: ProjectAssetWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` ProjectAssets from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` ProjectAssets.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -10087,37 +10141,37 @@ export namespace Prisma {
     /**
      * Filter, which ProjectAsset to fetch.
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for ProjectAssets.
      */
-    cursor?: ProjectAssetWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` ProjectAssets from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` ProjectAssets.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -10139,37 +10193,37 @@ export namespace Prisma {
     /**
      * Filter, which ProjectAssets to fetch.
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of ProjectAssets to fetch.
      */
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing ProjectAssets.
      */
-    cursor?: ProjectAssetWhereUniqueInput
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` ProjectAssets from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` ProjectAssets.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of ProjectAssets.
      */
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -10202,7 +10256,7 @@ export namespace Prisma {
      * The data used to create many ProjectAssets.
      */
     data: ProjectAssetCreateManyInput | ProjectAssetCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -10221,7 +10275,7 @@ export namespace Prisma {
      * The data used to create many ProjectAssets.
      */
     data: ProjectAssetCreateManyInput | ProjectAssetCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -10265,11 +10319,11 @@ export namespace Prisma {
     /**
      * Filter which ProjectAssets to update
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * Limit how many ProjectAssets to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -10291,11 +10345,11 @@ export namespace Prisma {
     /**
      * Filter which ProjectAssets to update
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * Limit how many ProjectAssets to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -10361,11 +10415,11 @@ export namespace Prisma {
     /**
      * Filter which ProjectAssets to delete
      */
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     /**
      * Limit how many ProjectAssets to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -10384,7 +10438,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectAssetInclude<ExtArgs> | null
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
   /**
@@ -10403,12 +10457,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectAssetInclude<ExtArgs> | null
-    where?: ProjectAssetWhereInput
-    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[]
-    cursor?: ProjectAssetWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[]
+    where?: ProjectAssetWhereInput | $Types.Skip
+    orderBy?: ProjectAssetOrderByWithRelationInput | ProjectAssetOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectAssetWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectAssetScalarFieldEnum | ProjectAssetScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -10427,7 +10481,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PhaseInclude<ExtArgs> | null
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
   }
 
   /**
@@ -10446,7 +10500,7 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   /**
@@ -10511,65 +10565,65 @@ export namespace Prisma {
 
 
   export type TeamMinAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    avatar?: true
-    color?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    avatar?: true | $Types.Skip
+    color?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type TeamMaxAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    avatar?: true
-    color?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    avatar?: true | $Types.Skip
+    color?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type TeamCountAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    avatar?: true
-    color?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    name?: true | $Types.Skip
+    description?: true | $Types.Skip
+    avatar?: true | $Types.Skip
+    color?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type TeamAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Team to aggregate.
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Teams to fetch.
      */
-    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: TeamWhereUniqueInput
+    cursor?: TeamWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Teams from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Teams.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -10602,12 +10656,12 @@ export namespace Prisma {
 
 
   export type TeamGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamWhereInput
-    orderBy?: TeamOrderByWithAggregationInput | TeamOrderByWithAggregationInput[]
+    where?: TeamWhereInput | $Types.Skip
+    orderBy?: TeamOrderByWithAggregationInput | TeamOrderByWithAggregationInput[] | $Types.Skip
     by: TeamScalarFieldEnum[] | TeamScalarFieldEnum
-    having?: TeamScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: TeamScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: TeamCountAggregateInputType | true
     _min?: TeamMinAggregateInputType
     _max?: TeamMaxAggregateInputType
@@ -10641,55 +10695,57 @@ export namespace Prisma {
 
 
   export type TeamSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    avatar?: boolean
-    color?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    members?: boolean | Team$membersArgs<ExtArgs>
-    posts?: boolean | Team$postsArgs<ExtArgs>
-    projects?: boolean | Team$projectsArgs<ExtArgs>
-    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    avatar?: boolean | $Types.Skip
+    color?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    members?: boolean | Team$membersArgs<ExtArgs> | $Types.Skip
+    posts?: boolean | Team$postsArgs<ExtArgs> | $Types.Skip
+    files?: boolean | Team$filesArgs<ExtArgs> | $Types.Skip
+    projects?: boolean | Team$projectsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    avatar?: boolean
-    color?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    avatar?: boolean | $Types.Skip
+    color?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    avatar?: boolean
-    color?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    avatar?: boolean | $Types.Skip
+    color?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }, ExtArgs["result"]["team"]>
 
   export type TeamSelectScalar = {
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    avatar?: boolean
-    color?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    name?: boolean | $Types.Skip
+    description?: boolean | $Types.Skip
+    avatar?: boolean | $Types.Skip
+    color?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "avatar" | "color" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "avatar" | "color" | "createdAt" | "updatedAt", ExtArgs["result"]["team"], $Types.Skip>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | Team$membersArgs<ExtArgs>
-    posts?: boolean | Team$postsArgs<ExtArgs>
-    projects?: boolean | Team$projectsArgs<ExtArgs>
-    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
+    members?: boolean | Team$membersArgs<ExtArgs> | $Types.Skip
+    posts?: boolean | Team$postsArgs<ExtArgs> | $Types.Skip
+    files?: boolean | Team$filesArgs<ExtArgs> | $Types.Skip
+    projects?: boolean | Team$projectsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
   export type TeamIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10699,6 +10755,7 @@ export namespace Prisma {
     objects: {
       members: Prisma.$TeamMemberPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
+      files: Prisma.$FileRecordPayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -11105,6 +11162,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     members<T extends Team$membersArgs<ExtArgs> = {}>(args?: Subset<T, Team$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends Team$postsArgs<ExtArgs> = {}>(args?: Subset<T, Team$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    files<T extends Team$filesArgs<ExtArgs> = {}>(args?: Subset<T, Team$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projects<T extends Team$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Team$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11209,37 +11267,37 @@ export namespace Prisma {
     /**
      * Filter, which Team to fetch.
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Teams to fetch.
      */
-    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Teams.
      */
-    cursor?: TeamWhereUniqueInput
+    cursor?: TeamWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Teams from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Teams.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Teams.
      */
-    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11261,37 +11319,37 @@ export namespace Prisma {
     /**
      * Filter, which Team to fetch.
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Teams to fetch.
      */
-    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Teams.
      */
-    cursor?: TeamWhereUniqueInput
+    cursor?: TeamWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Teams from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Teams.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Teams.
      */
-    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11313,37 +11371,37 @@ export namespace Prisma {
     /**
      * Filter, which Teams to fetch.
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Teams to fetch.
      */
-    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[]
+    orderBy?: TeamOrderByWithRelationInput | TeamOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Teams.
      */
-    cursor?: TeamWhereUniqueInput
+    cursor?: TeamWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Teams from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Teams.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Teams.
      */
-    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
+    distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11376,7 +11434,7 @@ export namespace Prisma {
      * The data used to create many Teams.
      */
     data: TeamCreateManyInput | TeamCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -11395,7 +11453,7 @@ export namespace Prisma {
      * The data used to create many Teams.
      */
     data: TeamCreateManyInput | TeamCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -11435,11 +11493,11 @@ export namespace Prisma {
     /**
      * Filter which Teams to update
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * Limit how many Teams to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -11461,11 +11519,11 @@ export namespace Prisma {
     /**
      * Filter which Teams to update
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * Limit how many Teams to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -11527,11 +11585,11 @@ export namespace Prisma {
     /**
      * Filter which Teams to delete
      */
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     /**
      * Limit how many Teams to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -11550,12 +11608,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TeamMemberInclude<ExtArgs> | null
-    where?: TeamMemberWhereInput
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
-    cursor?: TeamMemberWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+    where?: TeamMemberWhereInput | $Types.Skip
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11574,12 +11632,36 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    where?: PostWhereInput | $Types.Skip
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
+    cursor?: PostWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[] | $Types.Skip
+  }
+
+  /**
+   * Team.files
+   */
+  export type Team$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileRecord
+     */
+    select?: FileRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileRecord
+     */
+    omit?: FileRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileRecordInclude<ExtArgs> | null
+    where?: FileRecordWhereInput | $Types.Skip
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11598,12 +11680,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectInclude<ExtArgs> | null
-    where?: ProjectWhereInput
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
-    cursor?: ProjectWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+    where?: ProjectWhereInput | $Types.Skip
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -11662,59 +11744,59 @@ export namespace Prisma {
 
 
   export type TeamMemberMinAggregateInputType = {
-    id?: true
-    role?: true
-    teamId?: true
-    userId?: true
-    joinedAt?: true
+    id?: true | $Types.Skip
+    role?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    joinedAt?: true | $Types.Skip
   }
 
   export type TeamMemberMaxAggregateInputType = {
-    id?: true
-    role?: true
-    teamId?: true
-    userId?: true
-    joinedAt?: true
+    id?: true | $Types.Skip
+    role?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    joinedAt?: true | $Types.Skip
   }
 
   export type TeamMemberCountAggregateInputType = {
-    id?: true
-    role?: true
-    teamId?: true
-    userId?: true
-    joinedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    role?: true | $Types.Skip
+    teamId?: true | $Types.Skip
+    userId?: true | $Types.Skip
+    joinedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type TeamMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which TeamMember to aggregate.
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of TeamMembers to fetch.
      */
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: TeamMemberWhereUniqueInput
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` TeamMembers from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` TeamMembers.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -11747,12 +11829,12 @@ export namespace Prisma {
 
 
   export type TeamMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TeamMemberWhereInput
-    orderBy?: TeamMemberOrderByWithAggregationInput | TeamMemberOrderByWithAggregationInput[]
+    where?: TeamMemberWhereInput | $Types.Skip
+    orderBy?: TeamMemberOrderByWithAggregationInput | TeamMemberOrderByWithAggregationInput[] | $Types.Skip
     by: TeamMemberScalarFieldEnum[] | TeamMemberScalarFieldEnum
-    having?: TeamMemberScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: TeamMemberScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: TeamMemberCountAggregateInputType | true
     _min?: TeamMemberMinAggregateInputType
     _max?: TeamMemberMaxAggregateInputType
@@ -11784,55 +11866,55 @@ export namespace Prisma {
 
 
   export type TeamMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    role?: boolean
-    teamId?: boolean
-    userId?: boolean
-    joinedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    joinedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    role?: boolean
-    teamId?: boolean
-    userId?: boolean
-    joinedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    joinedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    role?: boolean
-    teamId?: boolean
-    userId?: boolean
-    joinedAt?: boolean
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    joinedAt?: boolean | $Types.Skip
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["teamMember"]>
 
   export type TeamMemberSelectScalar = {
-    id?: boolean
-    role?: boolean
-    teamId?: boolean
-    userId?: boolean
-    joinedAt?: boolean
+    id?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    teamId?: boolean | $Types.Skip
+    userId?: boolean | $Types.Skip
+    joinedAt?: boolean | $Types.Skip
   }
 
-  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "teamId" | "userId" | "joinedAt", ExtArgs["result"]["teamMember"]>
+  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "teamId" | "userId" | "joinedAt", ExtArgs["result"]["teamMember"], $Types.Skip>
   export type TeamMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type TeamMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type TeamMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    team?: boolean | TeamDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
+    user?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
   }
 
   export type $TeamMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12344,37 +12426,37 @@ export namespace Prisma {
     /**
      * Filter, which TeamMember to fetch.
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of TeamMembers to fetch.
      */
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for TeamMembers.
      */
-    cursor?: TeamMemberWhereUniqueInput
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` TeamMembers from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` TeamMembers.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of TeamMembers.
      */
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -12396,37 +12478,37 @@ export namespace Prisma {
     /**
      * Filter, which TeamMember to fetch.
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of TeamMembers to fetch.
      */
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for TeamMembers.
      */
-    cursor?: TeamMemberWhereUniqueInput
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` TeamMembers from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` TeamMembers.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of TeamMembers.
      */
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -12448,37 +12530,37 @@ export namespace Prisma {
     /**
      * Filter, which TeamMembers to fetch.
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of TeamMembers to fetch.
      */
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing TeamMembers.
      */
-    cursor?: TeamMemberWhereUniqueInput
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` TeamMembers from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` TeamMembers.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of TeamMembers.
      */
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -12511,7 +12593,7 @@ export namespace Prisma {
      * The data used to create many TeamMembers.
      */
     data: TeamMemberCreateManyInput | TeamMemberCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -12530,7 +12612,7 @@ export namespace Prisma {
      * The data used to create many TeamMembers.
      */
     data: TeamMemberCreateManyInput | TeamMemberCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -12574,11 +12656,11 @@ export namespace Prisma {
     /**
      * Filter which TeamMembers to update
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * Limit how many TeamMembers to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -12600,11 +12682,11 @@ export namespace Prisma {
     /**
      * Filter which TeamMembers to update
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * Limit how many TeamMembers to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -12670,11 +12752,11 @@ export namespace Prisma {
     /**
      * Filter which TeamMembers to delete
      */
-    where?: TeamMemberWhereInput
+    where?: TeamMemberWhereInput | $Types.Skip
     /**
      * Limit how many TeamMembers to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -12740,66 +12822,66 @@ export namespace Prisma {
 
 
   export type UserMinAggregateInputType = {
-    id?: true
-    userName?: true
-    email?: true
-    role?: true
-    image?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    userName?: true | $Types.Skip
+    email?: true | $Types.Skip
+    role?: true | $Types.Skip
+    image?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type UserMaxAggregateInputType = {
-    id?: true
-    userName?: true
-    email?: true
-    role?: true
-    image?: true
-    createdAt?: true
-    updatedAt?: true
+    id?: true | $Types.Skip
+    userName?: true | $Types.Skip
+    email?: true | $Types.Skip
+    role?: true | $Types.Skip
+    image?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
   }
 
   export type UserCountAggregateInputType = {
-    id?: true
-    userName?: true
-    email?: true
-    role?: true
-    image?: true
-    userCollection?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
+    id?: true | $Types.Skip
+    userName?: true | $Types.Skip
+    email?: true | $Types.Skip
+    role?: true | $Types.Skip
+    image?: true | $Types.Skip
+    userCollection?: true | $Types.Skip
+    createdAt?: true | $Types.Skip
+    updatedAt?: true | $Types.Skip
+    _all?: true | $Types.Skip
   }
 
   export type UserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which User to aggregate.
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: UserWhereUniqueInput
+    cursor?: UserWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Users from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Users.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
@@ -12832,12 +12914,12 @@ export namespace Prisma {
 
 
   export type UserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[]
+    where?: UserWhereInput | $Types.Skip
+    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[] | $Types.Skip
     by: UserScalarFieldEnum[] | UserScalarFieldEnum
-    having?: UserScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
+    having?: UserScalarWhereWithAggregatesInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
     _count?: UserCountAggregateInputType | true
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
@@ -12872,65 +12954,65 @@ export namespace Prisma {
 
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userName?: boolean
-    email?: boolean
-    role?: boolean
-    image?: boolean
-    userCollection?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
-    accounts?: boolean | User$accountsArgs<ExtArgs>
-    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs>
-    posts?: boolean | User$postsArgs<ExtArgs>
-    comments?: boolean | User$commentsArgs<ExtArgs>
-    projects?: boolean | User$projectsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+    id?: boolean | $Types.Skip
+    userName?: boolean | $Types.Skip
+    email?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    image?: boolean | $Types.Skip
+    userCollection?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
+    teamMembers?: boolean | User$teamMembersArgs<ExtArgs> | $Types.Skip
+    accounts?: boolean | User$accountsArgs<ExtArgs> | $Types.Skip
+    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs> | $Types.Skip
+    posts?: boolean | User$postsArgs<ExtArgs> | $Types.Skip
+    comments?: boolean | User$commentsArgs<ExtArgs> | $Types.Skip
+    projects?: boolean | User$projectsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userName?: boolean
-    email?: boolean
-    role?: boolean
-    image?: boolean
-    userCollection?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    userName?: boolean | $Types.Skip
+    email?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    image?: boolean | $Types.Skip
+    userCollection?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userName?: boolean
-    email?: boolean
-    role?: boolean
-    image?: boolean
-    userCollection?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    userName?: boolean | $Types.Skip
+    email?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    image?: boolean | $Types.Skip
+    userCollection?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
-    id?: boolean
-    userName?: boolean
-    email?: boolean
-    role?: boolean
-    image?: boolean
-    userCollection?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    id?: boolean | $Types.Skip
+    userName?: boolean | $Types.Skip
+    email?: boolean | $Types.Skip
+    role?: boolean | $Types.Skip
+    image?: boolean | $Types.Skip
+    userCollection?: boolean | $Types.Skip
+    createdAt?: boolean | $Types.Skip
+    updatedAt?: boolean | $Types.Skip
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userName" | "email" | "role" | "image" | "userCollection" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userName" | "email" | "role" | "image" | "userCollection" | "createdAt" | "updatedAt", ExtArgs["result"]["user"], $Types.Skip>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    teamMembers?: boolean | User$teamMembersArgs<ExtArgs>
-    accounts?: boolean | User$accountsArgs<ExtArgs>
-    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs>
-    posts?: boolean | User$postsArgs<ExtArgs>
-    comments?: boolean | User$commentsArgs<ExtArgs>
-    projects?: boolean | User$projectsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+    teamMembers?: boolean | User$teamMembersArgs<ExtArgs> | $Types.Skip
+    accounts?: boolean | User$accountsArgs<ExtArgs> | $Types.Skip
+    fileRecords?: boolean | User$fileRecordsArgs<ExtArgs> | $Types.Skip
+    posts?: boolean | User$postsArgs<ExtArgs> | $Types.Skip
+    comments?: boolean | User$commentsArgs<ExtArgs> | $Types.Skip
+    projects?: boolean | User$projectsArgs<ExtArgs> | $Types.Skip
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs> | $Types.Skip
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -13458,37 +13540,37 @@ export namespace Prisma {
     /**
      * Filter, which User to fetch.
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Users.
      */
-    cursor?: UserWhereUniqueInput
+    cursor?: UserWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Users from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Users.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Users.
      */
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13510,37 +13592,37 @@ export namespace Prisma {
     /**
      * Filter, which User to fetch.
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Users.
      */
-    cursor?: UserWhereUniqueInput
+    cursor?: UserWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Users from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Users.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Users.
      */
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13562,37 +13644,37 @@ export namespace Prisma {
     /**
      * Filter, which Users to fetch.
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[] | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for listing Users.
      */
-    cursor?: UserWhereUniqueInput
+    cursor?: UserWhereUniqueInput | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Users from the position of the cursor.
      */
-    take?: number
+    take?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Users.
      */
-    skip?: number
+    skip?: number | $Types.Skip
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Users.
      */
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13625,7 +13707,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -13644,7 +13726,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   /**
@@ -13684,11 +13766,11 @@ export namespace Prisma {
     /**
      * Filter which Users to update
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * Limit how many Users to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -13710,11 +13792,11 @@ export namespace Prisma {
     /**
      * Filter which Users to update
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * Limit how many Users to update.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -13776,11 +13858,11 @@ export namespace Prisma {
     /**
      * Filter which Users to delete
      */
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     /**
      * Limit how many Users to delete.
      */
-    limit?: number
+    limit?: number | $Types.Skip
   }
 
   /**
@@ -13799,12 +13881,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TeamMemberInclude<ExtArgs> | null
-    where?: TeamMemberWhereInput
-    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[]
-    cursor?: TeamMemberWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[]
+    where?: TeamMemberWhereInput | $Types.Skip
+    orderBy?: TeamMemberOrderByWithRelationInput | TeamMemberOrderByWithRelationInput[] | $Types.Skip
+    cursor?: TeamMemberWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: TeamMemberScalarFieldEnum | TeamMemberScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13823,12 +13905,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AccountInclude<ExtArgs> | null
-    where?: AccountWhereInput
-    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
-    cursor?: AccountWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+    where?: AccountWhereInput | $Types.Skip
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[] | $Types.Skip
+    cursor?: AccountWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13847,12 +13929,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FileRecordInclude<ExtArgs> | null
-    where?: FileRecordWhereInput
-    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[]
-    cursor?: FileRecordWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[]
+    where?: FileRecordWhereInput | $Types.Skip
+    orderBy?: FileRecordOrderByWithRelationInput | FileRecordOrderByWithRelationInput[] | $Types.Skip
+    cursor?: FileRecordWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: FileRecordScalarFieldEnum | FileRecordScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13871,12 +13953,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+    where?: PostWhereInput | $Types.Skip
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[] | $Types.Skip
+    cursor?: PostWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13895,12 +13977,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CommentInclude<ExtArgs> | null
-    where?: CommentWhereInput
-    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
-    cursor?: CommentWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+    where?: CommentWhereInput | $Types.Skip
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[] | $Types.Skip
+    cursor?: CommentWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13919,12 +14001,12 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectInclude<ExtArgs> | null
-    where?: ProjectWhereInput
-    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
-    cursor?: ProjectWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+    where?: ProjectWhereInput | $Types.Skip
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[] | $Types.Skip
+    cursor?: ProjectWhereUniqueInput | $Types.Skip
+    take?: number | $Types.Skip
+    skip?: number | $Types.Skip
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[] | $Types.Skip
   }
 
   /**
@@ -13997,6 +14079,7 @@ export namespace Prisma {
     size: 'size',
     status: 'status',
     errorMessage: 'errorMessage',
+    teamId: 'teamId',
     uploaderId: 'uploaderId',
     postId: 'postId',
     createdAt: 'createdAt',
@@ -14285,1797 +14368,1818 @@ export namespace Prisma {
 
 
   export type AccountWhereInput = {
-    AND?: AccountWhereInput | AccountWhereInput[]
-    OR?: AccountWhereInput[]
-    NOT?: AccountWhereInput | AccountWhereInput[]
-    id?: StringFilter<"Account"> | string
-    userId?: StringFilter<"Account"> | string
-    password?: StringNullableFilter<"Account"> | string | null
-    provider?: StringFilter<"Account"> | string
-    providerAccountId?: StringFilter<"Account"> | string
-    createdAt?: DateTimeFilter<"Account"> | Date | string
-    updatedAt?: DateTimeFilter<"Account"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    AND?: AccountWhereInput | AccountWhereInput[] | $Types.Skip
+    OR?: AccountWhereInput[] | $Types.Skip
+    NOT?: AccountWhereInput | AccountWhereInput[] | $Types.Skip
+    id?: StringFilter<"Account"> | string | $Types.Skip
+    userId?: StringFilter<"Account"> | string | $Types.Skip
+    password?: StringNullableFilter<"Account"> | string | null | $Types.Skip
+    provider?: StringFilter<"Account"> | string | $Types.Skip
+    providerAccountId?: StringFilter<"Account"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
   }
 
   export type AccountOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    password?: SortOrderInput | SortOrder
-    provider?: SortOrder
-    providerAccountId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
+    id?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    password?: SortOrderInput | SortOrder | $Types.Skip
+    provider?: SortOrder | $Types.Skip
+    providerAccountId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    user?: UserOrderByWithRelationInput | $Types.Skip
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    provider_providerAccountId?: AccountProviderProviderAccountIdCompoundUniqueInput
-    AND?: AccountWhereInput | AccountWhereInput[]
-    OR?: AccountWhereInput[]
-    NOT?: AccountWhereInput | AccountWhereInput[]
-    userId?: StringFilter<"Account"> | string
-    password?: StringNullableFilter<"Account"> | string | null
-    provider?: StringFilter<"Account"> | string
-    providerAccountId?: StringFilter<"Account"> | string
-    createdAt?: DateTimeFilter<"Account"> | Date | string
-    updatedAt?: DateTimeFilter<"Account"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    id?: string | $Types.Skip
+    provider_providerAccountId?: AccountProviderProviderAccountIdCompoundUniqueInput | $Types.Skip
+    AND?: AccountWhereInput | AccountWhereInput[] | $Types.Skip
+    OR?: AccountWhereInput[] | $Types.Skip
+    NOT?: AccountWhereInput | AccountWhereInput[] | $Types.Skip
+    userId?: StringFilter<"Account"> | string | $Types.Skip
+    password?: StringNullableFilter<"Account"> | string | null | $Types.Skip
+    provider?: StringFilter<"Account"> | string | $Types.Skip
+    providerAccountId?: StringFilter<"Account"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
   }, "id" | "provider_providerAccountId">
 
   export type AccountOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    password?: SortOrderInput | SortOrder
-    provider?: SortOrder
-    providerAccountId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: AccountCountOrderByAggregateInput
-    _max?: AccountMaxOrderByAggregateInput
-    _min?: AccountMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    password?: SortOrderInput | SortOrder | $Types.Skip
+    provider?: SortOrder | $Types.Skip
+    providerAccountId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: AccountCountOrderByAggregateInput | $Types.Skip
+    _max?: AccountMaxOrderByAggregateInput | $Types.Skip
+    _min?: AccountMinOrderByAggregateInput | $Types.Skip
   }
 
   export type AccountScalarWhereWithAggregatesInput = {
-    AND?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[]
-    OR?: AccountScalarWhereWithAggregatesInput[]
-    NOT?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Account"> | string
-    userId?: StringWithAggregatesFilter<"Account"> | string
-    password?: StringNullableWithAggregatesFilter<"Account"> | string | null
-    provider?: StringWithAggregatesFilter<"Account"> | string
-    providerAccountId?: StringWithAggregatesFilter<"Account"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
+    AND?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: AccountScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Account"> | string | $Types.Skip
+    userId?: StringWithAggregatesFilter<"Account"> | string | $Types.Skip
+    password?: StringNullableWithAggregatesFilter<"Account"> | string | null | $Types.Skip
+    provider?: StringWithAggregatesFilter<"Account"> | string | $Types.Skip
+    providerAccountId?: StringWithAggregatesFilter<"Account"> | string | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string | $Types.Skip
   }
 
   export type CommentWhereInput = {
-    AND?: CommentWhereInput | CommentWhereInput[]
-    OR?: CommentWhereInput[]
-    NOT?: CommentWhereInput | CommentWhereInput[]
-    id?: StringFilter<"Comment"> | string
-    content?: StringFilter<"Comment"> | string
-    postId?: StringFilter<"Comment"> | string
-    userId?: StringFilter<"Comment"> | string
-    parentId?: StringNullableFilter<"Comment"> | string | null
-    createdAt?: DateTimeFilter<"Comment"> | Date | string
-    updatedAt?: DateTimeFilter<"Comment"> | Date | string
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null
-    replies?: CommentListRelationFilter
+    AND?: CommentWhereInput | CommentWhereInput[] | $Types.Skip
+    OR?: CommentWhereInput[] | $Types.Skip
+    NOT?: CommentWhereInput | CommentWhereInput[] | $Types.Skip
+    id?: StringFilter<"Comment"> | string | $Types.Skip
+    content?: StringFilter<"Comment"> | string | $Types.Skip
+    postId?: StringFilter<"Comment"> | string | $Types.Skip
+    userId?: StringFilter<"Comment"> | string | $Types.Skip
+    parentId?: StringNullableFilter<"Comment"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+    post?: XOR<PostScalarRelationFilter, PostWhereInput> | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null | $Types.Skip
+    replies?: CommentListRelationFilter | $Types.Skip
   }
 
   export type CommentOrderByWithRelationInput = {
-    id?: SortOrder
-    content?: SortOrder
-    postId?: SortOrder
-    userId?: SortOrder
-    parentId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    post?: PostOrderByWithRelationInput
-    user?: UserOrderByWithRelationInput
-    parent?: CommentOrderByWithRelationInput
-    replies?: CommentOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    content?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    parentId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    post?: PostOrderByWithRelationInput | $Types.Skip
+    user?: UserOrderByWithRelationInput | $Types.Skip
+    parent?: CommentOrderByWithRelationInput | $Types.Skip
+    replies?: CommentOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type CommentWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: CommentWhereInput | CommentWhereInput[]
-    OR?: CommentWhereInput[]
-    NOT?: CommentWhereInput | CommentWhereInput[]
-    content?: StringFilter<"Comment"> | string
-    postId?: StringFilter<"Comment"> | string
-    userId?: StringFilter<"Comment"> | string
-    parentId?: StringNullableFilter<"Comment"> | string | null
-    createdAt?: DateTimeFilter<"Comment"> | Date | string
-    updatedAt?: DateTimeFilter<"Comment"> | Date | string
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null
-    replies?: CommentListRelationFilter
+    id?: string | $Types.Skip
+    AND?: CommentWhereInput | CommentWhereInput[] | $Types.Skip
+    OR?: CommentWhereInput[] | $Types.Skip
+    NOT?: CommentWhereInput | CommentWhereInput[] | $Types.Skip
+    content?: StringFilter<"Comment"> | string | $Types.Skip
+    postId?: StringFilter<"Comment"> | string | $Types.Skip
+    userId?: StringFilter<"Comment"> | string | $Types.Skip
+    parentId?: StringNullableFilter<"Comment"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+    post?: XOR<PostScalarRelationFilter, PostWhereInput> | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null | $Types.Skip
+    replies?: CommentListRelationFilter | $Types.Skip
   }, "id">
 
   export type CommentOrderByWithAggregationInput = {
-    id?: SortOrder
-    content?: SortOrder
-    postId?: SortOrder
-    userId?: SortOrder
-    parentId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: CommentCountOrderByAggregateInput
-    _max?: CommentMaxOrderByAggregateInput
-    _min?: CommentMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    content?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    parentId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: CommentCountOrderByAggregateInput | $Types.Skip
+    _max?: CommentMaxOrderByAggregateInput | $Types.Skip
+    _min?: CommentMinOrderByAggregateInput | $Types.Skip
   }
 
   export type CommentScalarWhereWithAggregatesInput = {
-    AND?: CommentScalarWhereWithAggregatesInput | CommentScalarWhereWithAggregatesInput[]
-    OR?: CommentScalarWhereWithAggregatesInput[]
-    NOT?: CommentScalarWhereWithAggregatesInput | CommentScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Comment"> | string
-    content?: StringWithAggregatesFilter<"Comment"> | string
-    postId?: StringWithAggregatesFilter<"Comment"> | string
-    userId?: StringWithAggregatesFilter<"Comment"> | string
-    parentId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
+    AND?: CommentScalarWhereWithAggregatesInput | CommentScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: CommentScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: CommentScalarWhereWithAggregatesInput | CommentScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Comment"> | string | $Types.Skip
+    content?: StringWithAggregatesFilter<"Comment"> | string | $Types.Skip
+    postId?: StringWithAggregatesFilter<"Comment"> | string | $Types.Skip
+    userId?: StringWithAggregatesFilter<"Comment"> | string | $Types.Skip
+    parentId?: StringNullableWithAggregatesFilter<"Comment"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string | $Types.Skip
   }
 
   export type FileRecordWhereInput = {
-    AND?: FileRecordWhereInput | FileRecordWhereInput[]
-    OR?: FileRecordWhereInput[]
-    NOT?: FileRecordWhereInput | FileRecordWhereInput[]
-    id?: StringFilter<"FileRecord"> | string
-    shortId?: StringNullableFilter<"FileRecord"> | string | null
-    name?: StringFilter<"FileRecord"> | string
-    fileId?: StringFilter<"FileRecord"> | string
-    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
-    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
-    extension?: StringNullableFilter<"FileRecord"> | string | null
-    size?: StringFilter<"FileRecord"> | string
-    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
-    uploaderId?: StringFilter<"FileRecord"> | string
-    postId?: StringNullableFilter<"FileRecord"> | string | null
-    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
-    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
+    AND?: FileRecordWhereInput | FileRecordWhereInput[] | $Types.Skip
+    OR?: FileRecordWhereInput[] | $Types.Skip
+    NOT?: FileRecordWhereInput | FileRecordWhereInput[] | $Types.Skip
+    id?: StringFilter<"FileRecord"> | string | $Types.Skip
+    shortId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    name?: StringFilter<"FileRecord"> | string | $Types.Skip
+    fileId?: StringFilter<"FileRecord"> | string | $Types.Skip
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory | $Types.Skip
+    extension?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    size?: StringFilter<"FileRecord"> | string | $Types.Skip
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    teamId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    uploaderId?: StringFilter<"FileRecord"> | string | $Types.Skip
+    postId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null | $Types.Skip
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null | $Types.Skip
   }
 
   export type FileRecordOrderByWithRelationInput = {
-    id?: SortOrder
-    shortId?: SortOrderInput | SortOrder
-    name?: SortOrder
-    fileId?: SortOrder
-    viewerFileId?: SortOrderInput | SortOrder
-    category?: SortOrder
-    extension?: SortOrderInput | SortOrder
-    size?: SortOrder
-    status?: SortOrder
-    errorMessage?: SortOrderInput | SortOrder
-    uploaderId?: SortOrder
-    postId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    uploader?: UserOrderByWithRelationInput
-    post?: PostOrderByWithRelationInput
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrderInput | SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    fileId?: SortOrder | $Types.Skip
+    viewerFileId?: SortOrderInput | SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    extension?: SortOrderInput | SortOrder | $Types.Skip
+    size?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    errorMessage?: SortOrderInput | SortOrder | $Types.Skip
+    teamId?: SortOrderInput | SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    postId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    team?: TeamOrderByWithRelationInput | $Types.Skip
+    uploader?: UserOrderByWithRelationInput | $Types.Skip
+    post?: PostOrderByWithRelationInput | $Types.Skip
   }
 
   export type FileRecordWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    shortId?: string
-    fileId?: string
-    AND?: FileRecordWhereInput | FileRecordWhereInput[]
-    OR?: FileRecordWhereInput[]
-    NOT?: FileRecordWhereInput | FileRecordWhereInput[]
-    name?: StringFilter<"FileRecord"> | string
-    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
-    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
-    extension?: StringNullableFilter<"FileRecord"> | string | null
-    size?: StringFilter<"FileRecord"> | string
-    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
-    uploaderId?: StringFilter<"FileRecord"> | string
-    postId?: StringNullableFilter<"FileRecord"> | string | null
-    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
-    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
+    id?: string | $Types.Skip
+    shortId?: string | $Types.Skip
+    fileId?: string | $Types.Skip
+    AND?: FileRecordWhereInput | FileRecordWhereInput[] | $Types.Skip
+    OR?: FileRecordWhereInput[] | $Types.Skip
+    NOT?: FileRecordWhereInput | FileRecordWhereInput[] | $Types.Skip
+    name?: StringFilter<"FileRecord"> | string | $Types.Skip
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory | $Types.Skip
+    extension?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    size?: StringFilter<"FileRecord"> | string | $Types.Skip
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    teamId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    uploaderId?: StringFilter<"FileRecord"> | string | $Types.Skip
+    postId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null | $Types.Skip
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null | $Types.Skip
   }, "id" | "shortId" | "fileId">
 
   export type FileRecordOrderByWithAggregationInput = {
-    id?: SortOrder
-    shortId?: SortOrderInput | SortOrder
-    name?: SortOrder
-    fileId?: SortOrder
-    viewerFileId?: SortOrderInput | SortOrder
-    category?: SortOrder
-    extension?: SortOrderInput | SortOrder
-    size?: SortOrder
-    status?: SortOrder
-    errorMessage?: SortOrderInput | SortOrder
-    uploaderId?: SortOrder
-    postId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: FileRecordCountOrderByAggregateInput
-    _max?: FileRecordMaxOrderByAggregateInput
-    _min?: FileRecordMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrderInput | SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    fileId?: SortOrder | $Types.Skip
+    viewerFileId?: SortOrderInput | SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    extension?: SortOrderInput | SortOrder | $Types.Skip
+    size?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    errorMessage?: SortOrderInput | SortOrder | $Types.Skip
+    teamId?: SortOrderInput | SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    postId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: FileRecordCountOrderByAggregateInput | $Types.Skip
+    _max?: FileRecordMaxOrderByAggregateInput | $Types.Skip
+    _min?: FileRecordMinOrderByAggregateInput | $Types.Skip
   }
 
   export type FileRecordScalarWhereWithAggregatesInput = {
-    AND?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[]
-    OR?: FileRecordScalarWhereWithAggregatesInput[]
-    NOT?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"FileRecord"> | string
-    shortId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
-    name?: StringWithAggregatesFilter<"FileRecord"> | string
-    fileId?: StringWithAggregatesFilter<"FileRecord"> | string
-    viewerFileId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
-    category?: EnumFileCategoryWithAggregatesFilter<"FileRecord"> | $Enums.FileCategory
-    extension?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
-    size?: StringWithAggregatesFilter<"FileRecord"> | string
-    status?: EnumProcessStatusWithAggregatesFilter<"FileRecord"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
-    uploaderId?: StringWithAggregatesFilter<"FileRecord"> | string
-    postId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string
+    AND?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: FileRecordScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: FileRecordScalarWhereWithAggregatesInput | FileRecordScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"FileRecord"> | string | $Types.Skip
+    shortId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    name?: StringWithAggregatesFilter<"FileRecord"> | string | $Types.Skip
+    fileId?: StringWithAggregatesFilter<"FileRecord"> | string | $Types.Skip
+    viewerFileId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    category?: EnumFileCategoryWithAggregatesFilter<"FileRecord"> | $Enums.FileCategory | $Types.Skip
+    extension?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    size?: StringWithAggregatesFilter<"FileRecord"> | string | $Types.Skip
+    status?: EnumProcessStatusWithAggregatesFilter<"FileRecord"> | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    teamId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    uploaderId?: StringWithAggregatesFilter<"FileRecord"> | string | $Types.Skip
+    postId?: StringNullableWithAggregatesFilter<"FileRecord"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"FileRecord"> | Date | string | $Types.Skip
   }
 
   export type PhaseWhereInput = {
-    AND?: PhaseWhereInput | PhaseWhereInput[]
-    OR?: PhaseWhereInput[]
-    NOT?: PhaseWhereInput | PhaseWhereInput[]
-    id?: StringFilter<"Phase"> | string
-    name?: StringFilter<"Phase"> | string
-    sortOrder?: IntFilter<"Phase"> | number
-    projectId?: StringFilter<"Phase"> | string
-    createdAt?: DateTimeFilter<"Phase"> | Date | string
-    updatedAt?: DateTimeFilter<"Phase"> | Date | string
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    rootAssets?: ProjectAssetListRelationFilter
+    AND?: PhaseWhereInput | PhaseWhereInput[] | $Types.Skip
+    OR?: PhaseWhereInput[] | $Types.Skip
+    NOT?: PhaseWhereInput | PhaseWhereInput[] | $Types.Skip
+    id?: StringFilter<"Phase"> | string | $Types.Skip
+    name?: StringFilter<"Phase"> | string | $Types.Skip
+    sortOrder?: IntFilter<"Phase"> | number | $Types.Skip
+    projectId?: StringFilter<"Phase"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput> | $Types.Skip
+    rootAssets?: ProjectAssetListRelationFilter | $Types.Skip
   }
 
   export type PhaseOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    sortOrder?: SortOrder
-    projectId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    project?: ProjectOrderByWithRelationInput
-    rootAssets?: ProjectAssetOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    project?: ProjectOrderByWithRelationInput | $Types.Skip
+    rootAssets?: ProjectAssetOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type PhaseWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: PhaseWhereInput | PhaseWhereInput[]
-    OR?: PhaseWhereInput[]
-    NOT?: PhaseWhereInput | PhaseWhereInput[]
-    name?: StringFilter<"Phase"> | string
-    sortOrder?: IntFilter<"Phase"> | number
-    projectId?: StringFilter<"Phase"> | string
-    createdAt?: DateTimeFilter<"Phase"> | Date | string
-    updatedAt?: DateTimeFilter<"Phase"> | Date | string
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    rootAssets?: ProjectAssetListRelationFilter
+    id?: string | $Types.Skip
+    AND?: PhaseWhereInput | PhaseWhereInput[] | $Types.Skip
+    OR?: PhaseWhereInput[] | $Types.Skip
+    NOT?: PhaseWhereInput | PhaseWhereInput[] | $Types.Skip
+    name?: StringFilter<"Phase"> | string | $Types.Skip
+    sortOrder?: IntFilter<"Phase"> | number | $Types.Skip
+    projectId?: StringFilter<"Phase"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput> | $Types.Skip
+    rootAssets?: ProjectAssetListRelationFilter | $Types.Skip
   }, "id">
 
   export type PhaseOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    sortOrder?: SortOrder
-    projectId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: PhaseCountOrderByAggregateInput
-    _avg?: PhaseAvgOrderByAggregateInput
-    _max?: PhaseMaxOrderByAggregateInput
-    _min?: PhaseMinOrderByAggregateInput
-    _sum?: PhaseSumOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: PhaseCountOrderByAggregateInput | $Types.Skip
+    _avg?: PhaseAvgOrderByAggregateInput | $Types.Skip
+    _max?: PhaseMaxOrderByAggregateInput | $Types.Skip
+    _min?: PhaseMinOrderByAggregateInput | $Types.Skip
+    _sum?: PhaseSumOrderByAggregateInput | $Types.Skip
   }
 
   export type PhaseScalarWhereWithAggregatesInput = {
-    AND?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[]
-    OR?: PhaseScalarWhereWithAggregatesInput[]
-    NOT?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Phase"> | string
-    name?: StringWithAggregatesFilter<"Phase"> | string
-    sortOrder?: IntWithAggregatesFilter<"Phase"> | number
-    projectId?: StringWithAggregatesFilter<"Phase"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string
+    AND?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: PhaseScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: PhaseScalarWhereWithAggregatesInput | PhaseScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Phase"> | string | $Types.Skip
+    name?: StringWithAggregatesFilter<"Phase"> | string | $Types.Skip
+    sortOrder?: IntWithAggregatesFilter<"Phase"> | number | $Types.Skip
+    projectId?: StringWithAggregatesFilter<"Phase"> | string | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Phase"> | Date | string | $Types.Skip
   }
 
   export type PostWhereInput = {
-    AND?: PostWhereInput | PostWhereInput[]
-    OR?: PostWhereInput[]
-    NOT?: PostWhereInput | PostWhereInput[]
-    id?: StringFilter<"Post"> | string
-    shortId?: StringFilter<"Post"> | string
-    title?: StringFilter<"Post"> | string
-    category?: StringFilter<"Post"> | string
-    description?: StringNullableFilter<"Post"> | string | null
-    type?: StringFilter<"Post"> | string
-    keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringNullableFilter<"Post"> | string | null
-    images?: StringNullableListFilter<"Post">
-    uploaderId?: StringFilter<"Post"> | string
-    relatedPosts?: StringNullableListFilter<"Post">
-    permission?: StringFilter<"Post"> | string
-    teamId?: StringNullableFilter<"Post"> | string | null
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-    files?: FileRecordListRelationFilter
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    comments?: CommentListRelationFilter
-    projectAssets?: ProjectAssetListRelationFilter
+    AND?: PostWhereInput | PostWhereInput[] | $Types.Skip
+    OR?: PostWhereInput[] | $Types.Skip
+    NOT?: PostWhereInput | PostWhereInput[] | $Types.Skip
+    id?: StringFilter<"Post"> | string | $Types.Skip
+    shortId?: StringFilter<"Post"> | string | $Types.Skip
+    title?: StringFilter<"Post"> | string | $Types.Skip
+    category?: StringFilter<"Post"> | string | $Types.Skip
+    description?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    type?: StringFilter<"Post"> | string | $Types.Skip
+    keywords?: StringNullableListFilter<"Post"> | $Types.Skip
+    coverImage?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    images?: StringNullableListFilter<"Post"> | $Types.Skip
+    uploaderId?: StringFilter<"Post"> | string | $Types.Skip
+    relatedPosts?: StringNullableListFilter<"Post"> | $Types.Skip
+    permission?: StringFilter<"Post"> | string | $Types.Skip
+    teamId?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+    files?: FileRecordListRelationFilter | $Types.Skip
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null | $Types.Skip
+    comments?: CommentListRelationFilter | $Types.Skip
+    projectAssets?: ProjectAssetListRelationFilter | $Types.Skip
   }
 
   export type PostOrderByWithRelationInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    title?: SortOrder
-    category?: SortOrder
-    description?: SortOrderInput | SortOrder
-    type?: SortOrder
-    keywords?: SortOrder
-    coverImage?: SortOrderInput | SortOrder
-    images?: SortOrder
-    uploaderId?: SortOrder
-    relatedPosts?: SortOrder
-    permission?: SortOrder
-    teamId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    files?: FileRecordOrderByRelationAggregateInput
-    uploader?: UserOrderByWithRelationInput
-    team?: TeamOrderByWithRelationInput
-    comments?: CommentOrderByRelationAggregateInput
-    projectAssets?: ProjectAssetOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    title?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    keywords?: SortOrder | $Types.Skip
+    coverImage?: SortOrderInput | SortOrder | $Types.Skip
+    images?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    relatedPosts?: SortOrder | $Types.Skip
+    permission?: SortOrder | $Types.Skip
+    teamId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    files?: FileRecordOrderByRelationAggregateInput | $Types.Skip
+    uploader?: UserOrderByWithRelationInput | $Types.Skip
+    team?: TeamOrderByWithRelationInput | $Types.Skip
+    comments?: CommentOrderByRelationAggregateInput | $Types.Skip
+    projectAssets?: ProjectAssetOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type PostWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    shortId?: string
-    AND?: PostWhereInput | PostWhereInput[]
-    OR?: PostWhereInput[]
-    NOT?: PostWhereInput | PostWhereInput[]
-    title?: StringFilter<"Post"> | string
-    category?: StringFilter<"Post"> | string
-    description?: StringNullableFilter<"Post"> | string | null
-    type?: StringFilter<"Post"> | string
-    keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringNullableFilter<"Post"> | string | null
-    images?: StringNullableListFilter<"Post">
-    uploaderId?: StringFilter<"Post"> | string
-    relatedPosts?: StringNullableListFilter<"Post">
-    permission?: StringFilter<"Post"> | string
-    teamId?: StringNullableFilter<"Post"> | string | null
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-    files?: FileRecordListRelationFilter
-    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
-    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
-    comments?: CommentListRelationFilter
-    projectAssets?: ProjectAssetListRelationFilter
+    id?: string | $Types.Skip
+    shortId?: string | $Types.Skip
+    AND?: PostWhereInput | PostWhereInput[] | $Types.Skip
+    OR?: PostWhereInput[] | $Types.Skip
+    NOT?: PostWhereInput | PostWhereInput[] | $Types.Skip
+    title?: StringFilter<"Post"> | string | $Types.Skip
+    category?: StringFilter<"Post"> | string | $Types.Skip
+    description?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    type?: StringFilter<"Post"> | string | $Types.Skip
+    keywords?: StringNullableListFilter<"Post"> | $Types.Skip
+    coverImage?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    images?: StringNullableListFilter<"Post"> | $Types.Skip
+    uploaderId?: StringFilter<"Post"> | string | $Types.Skip
+    relatedPosts?: StringNullableListFilter<"Post"> | $Types.Skip
+    permission?: StringFilter<"Post"> | string | $Types.Skip
+    teamId?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+    files?: FileRecordListRelationFilter | $Types.Skip
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null | $Types.Skip
+    comments?: CommentListRelationFilter | $Types.Skip
+    projectAssets?: ProjectAssetListRelationFilter | $Types.Skip
   }, "id" | "shortId">
 
   export type PostOrderByWithAggregationInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    title?: SortOrder
-    category?: SortOrder
-    description?: SortOrderInput | SortOrder
-    type?: SortOrder
-    keywords?: SortOrder
-    coverImage?: SortOrderInput | SortOrder
-    images?: SortOrder
-    uploaderId?: SortOrder
-    relatedPosts?: SortOrder
-    permission?: SortOrder
-    teamId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: PostCountOrderByAggregateInput
-    _max?: PostMaxOrderByAggregateInput
-    _min?: PostMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    title?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    keywords?: SortOrder | $Types.Skip
+    coverImage?: SortOrderInput | SortOrder | $Types.Skip
+    images?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    relatedPosts?: SortOrder | $Types.Skip
+    permission?: SortOrder | $Types.Skip
+    teamId?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: PostCountOrderByAggregateInput | $Types.Skip
+    _max?: PostMaxOrderByAggregateInput | $Types.Skip
+    _min?: PostMinOrderByAggregateInput | $Types.Skip
   }
 
   export type PostScalarWhereWithAggregatesInput = {
-    AND?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
-    OR?: PostScalarWhereWithAggregatesInput[]
-    NOT?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Post"> | string
-    shortId?: StringWithAggregatesFilter<"Post"> | string
-    title?: StringWithAggregatesFilter<"Post"> | string
-    category?: StringWithAggregatesFilter<"Post"> | string
-    description?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    type?: StringWithAggregatesFilter<"Post"> | string
-    keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    images?: StringNullableListFilter<"Post">
-    uploaderId?: StringWithAggregatesFilter<"Post"> | string
-    relatedPosts?: StringNullableListFilter<"Post">
-    permission?: StringWithAggregatesFilter<"Post"> | string
-    teamId?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
+    AND?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: PostScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    shortId?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    title?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    category?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    description?: StringNullableWithAggregatesFilter<"Post"> | string | null | $Types.Skip
+    type?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    keywords?: StringNullableListFilter<"Post"> | $Types.Skip
+    coverImage?: StringNullableWithAggregatesFilter<"Post"> | string | null | $Types.Skip
+    images?: StringNullableListFilter<"Post"> | $Types.Skip
+    uploaderId?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    relatedPosts?: StringNullableListFilter<"Post"> | $Types.Skip
+    permission?: StringWithAggregatesFilter<"Post"> | string | $Types.Skip
+    teamId?: StringNullableWithAggregatesFilter<"Post"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string | $Types.Skip
   }
 
   export type ProjectWhereInput = {
-    AND?: ProjectWhereInput | ProjectWhereInput[]
-    OR?: ProjectWhereInput[]
-    NOT?: ProjectWhereInput | ProjectWhereInput[]
-    id?: StringFilter<"Project"> | string
-    name?: StringFilter<"Project"> | string
-    description?: StringNullableFilter<"Project"> | string | null
-    client?: StringNullableFilter<"Project"> | string | null
-    location?: StringNullableFilter<"Project"> | string | null
-    coverImage?: StringNullableFilter<"Project"> | string | null
-    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-    teamId?: StringFilter<"Project"> | string
-    creatorId?: StringFilter<"Project"> | string
-    createdAt?: DateTimeFilter<"Project"> | Date | string
-    updatedAt?: DateTimeFilter<"Project"> | Date | string
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
-    phases?: PhaseListRelationFilter
-    assets?: ProjectAssetListRelationFilter
+    AND?: ProjectWhereInput | ProjectWhereInput[] | $Types.Skip
+    OR?: ProjectWhereInput[] | $Types.Skip
+    NOT?: ProjectWhereInput | ProjectWhereInput[] | $Types.Skip
+    id?: StringFilter<"Project"> | string | $Types.Skip
+    name?: StringFilter<"Project"> | string | $Types.Skip
+    description?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    client?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFilter<"Project"> | string | $Types.Skip
+    creatorId?: StringFilter<"Project"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput> | $Types.Skip
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    phases?: PhaseListRelationFilter | $Types.Skip
+    assets?: ProjectAssetListRelationFilter | $Types.Skip
   }
 
   export type ProjectOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    client?: SortOrderInput | SortOrder
-    location?: SortOrderInput | SortOrder
-    coverImage?: SortOrderInput | SortOrder
-    status?: SortOrder
-    teamId?: SortOrder
-    creatorId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    team?: TeamOrderByWithRelationInput
-    creator?: UserOrderByWithRelationInput
-    phases?: PhaseOrderByRelationAggregateInput
-    assets?: ProjectAssetOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    client?: SortOrderInput | SortOrder | $Types.Skip
+    location?: SortOrderInput | SortOrder | $Types.Skip
+    coverImage?: SortOrderInput | SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    creatorId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    team?: TeamOrderByWithRelationInput | $Types.Skip
+    creator?: UserOrderByWithRelationInput | $Types.Skip
+    phases?: PhaseOrderByRelationAggregateInput | $Types.Skip
+    assets?: ProjectAssetOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: ProjectWhereInput | ProjectWhereInput[]
-    OR?: ProjectWhereInput[]
-    NOT?: ProjectWhereInput | ProjectWhereInput[]
-    name?: StringFilter<"Project"> | string
-    description?: StringNullableFilter<"Project"> | string | null
-    client?: StringNullableFilter<"Project"> | string | null
-    location?: StringNullableFilter<"Project"> | string | null
-    coverImage?: StringNullableFilter<"Project"> | string | null
-    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-    teamId?: StringFilter<"Project"> | string
-    creatorId?: StringFilter<"Project"> | string
-    createdAt?: DateTimeFilter<"Project"> | Date | string
-    updatedAt?: DateTimeFilter<"Project"> | Date | string
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
-    phases?: PhaseListRelationFilter
-    assets?: ProjectAssetListRelationFilter
+    id?: string | $Types.Skip
+    AND?: ProjectWhereInput | ProjectWhereInput[] | $Types.Skip
+    OR?: ProjectWhereInput[] | $Types.Skip
+    NOT?: ProjectWhereInput | ProjectWhereInput[] | $Types.Skip
+    name?: StringFilter<"Project"> | string | $Types.Skip
+    description?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    client?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFilter<"Project"> | string | $Types.Skip
+    creatorId?: StringFilter<"Project"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput> | $Types.Skip
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
+    phases?: PhaseListRelationFilter | $Types.Skip
+    assets?: ProjectAssetListRelationFilter | $Types.Skip
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    client?: SortOrderInput | SortOrder
-    location?: SortOrderInput | SortOrder
-    coverImage?: SortOrderInput | SortOrder
-    status?: SortOrder
-    teamId?: SortOrder
-    creatorId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: ProjectCountOrderByAggregateInput
-    _max?: ProjectMaxOrderByAggregateInput
-    _min?: ProjectMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    client?: SortOrderInput | SortOrder | $Types.Skip
+    location?: SortOrderInput | SortOrder | $Types.Skip
+    coverImage?: SortOrderInput | SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    creatorId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: ProjectCountOrderByAggregateInput | $Types.Skip
+    _max?: ProjectMaxOrderByAggregateInput | $Types.Skip
+    _min?: ProjectMinOrderByAggregateInput | $Types.Skip
   }
 
   export type ProjectScalarWhereWithAggregatesInput = {
-    AND?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
-    OR?: ProjectScalarWhereWithAggregatesInput[]
-    NOT?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Project"> | string
-    name?: StringWithAggregatesFilter<"Project"> | string
-    description?: StringNullableWithAggregatesFilter<"Project"> | string | null
-    client?: StringNullableWithAggregatesFilter<"Project"> | string | null
-    location?: StringNullableWithAggregatesFilter<"Project"> | string | null
-    coverImage?: StringNullableWithAggregatesFilter<"Project"> | string | null
-    status?: EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
-    teamId?: StringWithAggregatesFilter<"Project"> | string
-    creatorId?: StringWithAggregatesFilter<"Project"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+    AND?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: ProjectScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
+    name?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
+    description?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
+    client?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
+    location?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
+    coverImage?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
+    status?: EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
+    creatorId?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string | $Types.Skip
   }
 
   export type ProjectAssetWhereInput = {
-    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
-    OR?: ProjectAssetWhereInput[]
-    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
-    id?: StringFilter<"ProjectAsset"> | string
-    name?: StringNullableFilter<"ProjectAsset"> | string | null
-    description?: StringNullableFilter<"ProjectAsset"> | string | null
-    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
-    sortOrder?: IntFilter<"ProjectAsset"> | number
-    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
-    projectId?: StringFilter<"ProjectAsset"> | string
-    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringNullableFilter<"ProjectAsset"> | string | null
-    url?: StringNullableFilter<"ProjectAsset"> | string | null
-    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
-    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
-    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null
-    children?: ProjectAssetListRelationFilter
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
-    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
+    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[] | $Types.Skip
+    OR?: ProjectAssetWhereInput[] | $Types.Skip
+    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[] | $Types.Skip
+    id?: StringFilter<"ProjectAsset"> | string | $Types.Skip
+    name?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    description?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFilter<"ProjectAsset"> | number | $Types.Skip
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    projectId?: StringFilter<"ProjectAsset"> | string | $Types.Skip
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    url?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null | $Types.Skip
+    children?: ProjectAssetListRelationFilter | $Types.Skip
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput> | $Types.Skip
+    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null | $Types.Skip
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null | $Types.Skip
   }
 
   export type ProjectAssetOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrderInput | SortOrder
-    description?: SortOrderInput | SortOrder
-    type?: SortOrder
-    sortOrder?: SortOrder
-    parentId?: SortOrderInput | SortOrder
-    projectId?: SortOrder
-    phaseId?: SortOrderInput | SortOrder
-    postId?: SortOrderInput | SortOrder
-    url?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    parent?: ProjectAssetOrderByWithRelationInput
-    children?: ProjectAssetOrderByRelationAggregateInput
-    project?: ProjectOrderByWithRelationInput
-    phase?: PhaseOrderByWithRelationInput
-    post?: PostOrderByWithRelationInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrderInput | SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    parentId?: SortOrderInput | SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    phaseId?: SortOrderInput | SortOrder | $Types.Skip
+    postId?: SortOrderInput | SortOrder | $Types.Skip
+    url?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    parent?: ProjectAssetOrderByWithRelationInput | $Types.Skip
+    children?: ProjectAssetOrderByRelationAggregateInput | $Types.Skip
+    project?: ProjectOrderByWithRelationInput | $Types.Skip
+    phase?: PhaseOrderByWithRelationInput | $Types.Skip
+    post?: PostOrderByWithRelationInput | $Types.Skip
   }
 
   export type ProjectAssetWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
-    OR?: ProjectAssetWhereInput[]
-    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[]
-    name?: StringNullableFilter<"ProjectAsset"> | string | null
-    description?: StringNullableFilter<"ProjectAsset"> | string | null
-    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
-    sortOrder?: IntFilter<"ProjectAsset"> | number
-    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
-    projectId?: StringFilter<"ProjectAsset"> | string
-    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringNullableFilter<"ProjectAsset"> | string | null
-    url?: StringNullableFilter<"ProjectAsset"> | string | null
-    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
-    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
-    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null
-    children?: ProjectAssetListRelationFilter
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
-    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null
-    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null
+    id?: string | $Types.Skip
+    AND?: ProjectAssetWhereInput | ProjectAssetWhereInput[] | $Types.Skip
+    OR?: ProjectAssetWhereInput[] | $Types.Skip
+    NOT?: ProjectAssetWhereInput | ProjectAssetWhereInput[] | $Types.Skip
+    name?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    description?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFilter<"ProjectAsset"> | number | $Types.Skip
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    projectId?: StringFilter<"ProjectAsset"> | string | $Types.Skip
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    url?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    parent?: XOR<ProjectAssetNullableScalarRelationFilter, ProjectAssetWhereInput> | null | $Types.Skip
+    children?: ProjectAssetListRelationFilter | $Types.Skip
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput> | $Types.Skip
+    phase?: XOR<PhaseNullableScalarRelationFilter, PhaseWhereInput> | null | $Types.Skip
+    post?: XOR<PostNullableScalarRelationFilter, PostWhereInput> | null | $Types.Skip
   }, "id">
 
   export type ProjectAssetOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrderInput | SortOrder
-    description?: SortOrderInput | SortOrder
-    type?: SortOrder
-    sortOrder?: SortOrder
-    parentId?: SortOrderInput | SortOrder
-    projectId?: SortOrder
-    phaseId?: SortOrderInput | SortOrder
-    postId?: SortOrderInput | SortOrder
-    url?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: ProjectAssetCountOrderByAggregateInput
-    _avg?: ProjectAssetAvgOrderByAggregateInput
-    _max?: ProjectAssetMaxOrderByAggregateInput
-    _min?: ProjectAssetMinOrderByAggregateInput
-    _sum?: ProjectAssetSumOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrderInput | SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    parentId?: SortOrderInput | SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    phaseId?: SortOrderInput | SortOrder | $Types.Skip
+    postId?: SortOrderInput | SortOrder | $Types.Skip
+    url?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: ProjectAssetCountOrderByAggregateInput | $Types.Skip
+    _avg?: ProjectAssetAvgOrderByAggregateInput | $Types.Skip
+    _max?: ProjectAssetMaxOrderByAggregateInput | $Types.Skip
+    _min?: ProjectAssetMinOrderByAggregateInput | $Types.Skip
+    _sum?: ProjectAssetSumOrderByAggregateInput | $Types.Skip
   }
 
   export type ProjectAssetScalarWhereWithAggregatesInput = {
-    AND?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
-    OR?: ProjectAssetScalarWhereWithAggregatesInput[]
-    NOT?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"ProjectAsset"> | string
-    name?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    description?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    type?: EnumAssetTypeWithAggregatesFilter<"ProjectAsset"> | $Enums.AssetType
-    sortOrder?: IntWithAggregatesFilter<"ProjectAsset"> | number
-    parentId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    projectId?: StringWithAggregatesFilter<"ProjectAsset"> | string
-    phaseId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    postId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    url?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string
+    AND?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: ProjectAssetScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: ProjectAssetScalarWhereWithAggregatesInput | ProjectAssetScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"ProjectAsset"> | string | $Types.Skip
+    name?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    description?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    type?: EnumAssetTypeWithAggregatesFilter<"ProjectAsset"> | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntWithAggregatesFilter<"ProjectAsset"> | number | $Types.Skip
+    parentId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    projectId?: StringWithAggregatesFilter<"ProjectAsset"> | string | $Types.Skip
+    phaseId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    postId?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    url?: StringNullableWithAggregatesFilter<"ProjectAsset"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"ProjectAsset"> | Date | string | $Types.Skip
   }
 
   export type TeamWhereInput = {
-    AND?: TeamWhereInput | TeamWhereInput[]
-    OR?: TeamWhereInput[]
-    NOT?: TeamWhereInput | TeamWhereInput[]
-    id?: StringFilter<"Team"> | string
-    name?: StringFilter<"Team"> | string
-    description?: StringNullableFilter<"Team"> | string | null
-    avatar?: StringNullableFilter<"Team"> | string | null
-    color?: StringNullableFilter<"Team"> | string | null
-    createdAt?: DateTimeFilter<"Team"> | Date | string
-    updatedAt?: DateTimeFilter<"Team"> | Date | string
-    members?: TeamMemberListRelationFilter
-    posts?: PostListRelationFilter
-    projects?: ProjectListRelationFilter
+    AND?: TeamWhereInput | TeamWhereInput[] | $Types.Skip
+    OR?: TeamWhereInput[] | $Types.Skip
+    NOT?: TeamWhereInput | TeamWhereInput[] | $Types.Skip
+    id?: StringFilter<"Team"> | string | $Types.Skip
+    name?: StringFilter<"Team"> | string | $Types.Skip
+    description?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    avatar?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    color?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Team"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Team"> | Date | string | $Types.Skip
+    members?: TeamMemberListRelationFilter | $Types.Skip
+    posts?: PostListRelationFilter | $Types.Skip
+    files?: FileRecordListRelationFilter | $Types.Skip
+    projects?: ProjectListRelationFilter | $Types.Skip
   }
 
   export type TeamOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    avatar?: SortOrderInput | SortOrder
-    color?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    members?: TeamMemberOrderByRelationAggregateInput
-    posts?: PostOrderByRelationAggregateInput
-    projects?: ProjectOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    avatar?: SortOrderInput | SortOrder | $Types.Skip
+    color?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    members?: TeamMemberOrderByRelationAggregateInput | $Types.Skip
+    posts?: PostOrderByRelationAggregateInput | $Types.Skip
+    files?: FileRecordOrderByRelationAggregateInput | $Types.Skip
+    projects?: ProjectOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: TeamWhereInput | TeamWhereInput[]
-    OR?: TeamWhereInput[]
-    NOT?: TeamWhereInput | TeamWhereInput[]
-    name?: StringFilter<"Team"> | string
-    description?: StringNullableFilter<"Team"> | string | null
-    avatar?: StringNullableFilter<"Team"> | string | null
-    color?: StringNullableFilter<"Team"> | string | null
-    createdAt?: DateTimeFilter<"Team"> | Date | string
-    updatedAt?: DateTimeFilter<"Team"> | Date | string
-    members?: TeamMemberListRelationFilter
-    posts?: PostListRelationFilter
-    projects?: ProjectListRelationFilter
+    id?: string | $Types.Skip
+    AND?: TeamWhereInput | TeamWhereInput[] | $Types.Skip
+    OR?: TeamWhereInput[] | $Types.Skip
+    NOT?: TeamWhereInput | TeamWhereInput[] | $Types.Skip
+    name?: StringFilter<"Team"> | string | $Types.Skip
+    description?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    avatar?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    color?: StringNullableFilter<"Team"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Team"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Team"> | Date | string | $Types.Skip
+    members?: TeamMemberListRelationFilter | $Types.Skip
+    posts?: PostListRelationFilter | $Types.Skip
+    files?: FileRecordListRelationFilter | $Types.Skip
+    projects?: ProjectListRelationFilter | $Types.Skip
   }, "id">
 
   export type TeamOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    avatar?: SortOrderInput | SortOrder
-    color?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: TeamCountOrderByAggregateInput
-    _max?: TeamMaxOrderByAggregateInput
-    _min?: TeamMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrderInput | SortOrder | $Types.Skip
+    avatar?: SortOrderInput | SortOrder | $Types.Skip
+    color?: SortOrderInput | SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: TeamCountOrderByAggregateInput | $Types.Skip
+    _max?: TeamMaxOrderByAggregateInput | $Types.Skip
+    _min?: TeamMinOrderByAggregateInput | $Types.Skip
   }
 
   export type TeamScalarWhereWithAggregatesInput = {
-    AND?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[]
-    OR?: TeamScalarWhereWithAggregatesInput[]
-    NOT?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Team"> | string
-    name?: StringWithAggregatesFilter<"Team"> | string
-    description?: StringNullableWithAggregatesFilter<"Team"> | string | null
-    avatar?: StringNullableWithAggregatesFilter<"Team"> | string | null
-    color?: StringNullableWithAggregatesFilter<"Team"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
+    AND?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: TeamScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: TeamScalarWhereWithAggregatesInput | TeamScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"Team"> | string | $Types.Skip
+    name?: StringWithAggregatesFilter<"Team"> | string | $Types.Skip
+    description?: StringNullableWithAggregatesFilter<"Team"> | string | null | $Types.Skip
+    avatar?: StringNullableWithAggregatesFilter<"Team"> | string | null | $Types.Skip
+    color?: StringNullableWithAggregatesFilter<"Team"> | string | null | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string | $Types.Skip
   }
 
   export type TeamMemberWhereInput = {
-    AND?: TeamMemberWhereInput | TeamMemberWhereInput[]
-    OR?: TeamMemberWhereInput[]
-    NOT?: TeamMemberWhereInput | TeamMemberWhereInput[]
-    id?: StringFilter<"TeamMember"> | string
-    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
-    teamId?: StringFilter<"TeamMember"> | string
-    userId?: StringFilter<"TeamMember"> | string
-    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    AND?: TeamMemberWhereInput | TeamMemberWhereInput[] | $Types.Skip
+    OR?: TeamMemberWhereInput[] | $Types.Skip
+    NOT?: TeamMemberWhereInput | TeamMemberWhereInput[] | $Types.Skip
+    id?: StringFilter<"TeamMember"> | string | $Types.Skip
+    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    userId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string | $Types.Skip
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput> | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
   }
 
   export type TeamMemberOrderByWithRelationInput = {
-    id?: SortOrder
-    role?: SortOrder
-    teamId?: SortOrder
-    userId?: SortOrder
-    joinedAt?: SortOrder
-    team?: TeamOrderByWithRelationInput
-    user?: UserOrderByWithRelationInput
+    id?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    joinedAt?: SortOrder | $Types.Skip
+    team?: TeamOrderByWithRelationInput | $Types.Skip
+    user?: UserOrderByWithRelationInput | $Types.Skip
   }
 
   export type TeamMemberWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    teamId_userId?: TeamMemberTeamIdUserIdCompoundUniqueInput
-    AND?: TeamMemberWhereInput | TeamMemberWhereInput[]
-    OR?: TeamMemberWhereInput[]
-    NOT?: TeamMemberWhereInput | TeamMemberWhereInput[]
-    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
-    teamId?: StringFilter<"TeamMember"> | string
-    userId?: StringFilter<"TeamMember"> | string
-    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string
-    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    id?: string | $Types.Skip
+    teamId_userId?: TeamMemberTeamIdUserIdCompoundUniqueInput | $Types.Skip
+    AND?: TeamMemberWhereInput | TeamMemberWhereInput[] | $Types.Skip
+    OR?: TeamMemberWhereInput[] | $Types.Skip
+    NOT?: TeamMemberWhereInput | TeamMemberWhereInput[] | $Types.Skip
+    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    userId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string | $Types.Skip
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput> | $Types.Skip
+    user?: XOR<UserScalarRelationFilter, UserWhereInput> | $Types.Skip
   }, "id" | "teamId_userId">
 
   export type TeamMemberOrderByWithAggregationInput = {
-    id?: SortOrder
-    role?: SortOrder
-    teamId?: SortOrder
-    userId?: SortOrder
-    joinedAt?: SortOrder
-    _count?: TeamMemberCountOrderByAggregateInput
-    _max?: TeamMemberMaxOrderByAggregateInput
-    _min?: TeamMemberMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    joinedAt?: SortOrder | $Types.Skip
+    _count?: TeamMemberCountOrderByAggregateInput | $Types.Skip
+    _max?: TeamMemberMaxOrderByAggregateInput | $Types.Skip
+    _min?: TeamMemberMinOrderByAggregateInput | $Types.Skip
   }
 
   export type TeamMemberScalarWhereWithAggregatesInput = {
-    AND?: TeamMemberScalarWhereWithAggregatesInput | TeamMemberScalarWhereWithAggregatesInput[]
-    OR?: TeamMemberScalarWhereWithAggregatesInput[]
-    NOT?: TeamMemberScalarWhereWithAggregatesInput | TeamMemberScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"TeamMember"> | string
-    role?: EnumTeamRoleWithAggregatesFilter<"TeamMember"> | $Enums.TeamRole
-    teamId?: StringWithAggregatesFilter<"TeamMember"> | string
-    userId?: StringWithAggregatesFilter<"TeamMember"> | string
-    joinedAt?: DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
+    AND?: TeamMemberScalarWhereWithAggregatesInput | TeamMemberScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: TeamMemberScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: TeamMemberScalarWhereWithAggregatesInput | TeamMemberScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"TeamMember"> | string | $Types.Skip
+    role?: EnumTeamRoleWithAggregatesFilter<"TeamMember"> | $Enums.TeamRole | $Types.Skip
+    teamId?: StringWithAggregatesFilter<"TeamMember"> | string | $Types.Skip
+    userId?: StringWithAggregatesFilter<"TeamMember"> | string | $Types.Skip
+    joinedAt?: DateTimeWithAggregatesFilter<"TeamMember"> | Date | string | $Types.Skip
   }
 
   export type UserWhereInput = {
-    AND?: UserWhereInput | UserWhereInput[]
-    OR?: UserWhereInput[]
-    NOT?: UserWhereInput | UserWhereInput[]
-    id?: StringFilter<"User"> | string
-    userName?: StringFilter<"User"> | string
-    email?: StringFilter<"User"> | string
-    role?: EnumRoleFilter<"User"> | $Enums.Role
-    image?: StringNullableFilter<"User"> | string | null
-    userCollection?: StringNullableListFilter<"User">
-    createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
-    teamMembers?: TeamMemberListRelationFilter
-    accounts?: AccountListRelationFilter
-    fileRecords?: FileRecordListRelationFilter
-    posts?: PostListRelationFilter
-    comments?: CommentListRelationFilter
-    projects?: ProjectListRelationFilter
+    AND?: UserWhereInput | UserWhereInput[] | $Types.Skip
+    OR?: UserWhereInput[] | $Types.Skip
+    NOT?: UserWhereInput | UserWhereInput[] | $Types.Skip
+    id?: StringFilter<"User"> | string | $Types.Skip
+    userName?: StringFilter<"User"> | string | $Types.Skip
+    email?: StringFilter<"User"> | string | $Types.Skip
+    role?: EnumRoleFilter<"User"> | $Enums.Role | $Types.Skip
+    image?: StringNullableFilter<"User"> | string | null | $Types.Skip
+    userCollection?: StringNullableListFilter<"User"> | $Types.Skip
+    createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
+    teamMembers?: TeamMemberListRelationFilter | $Types.Skip
+    accounts?: AccountListRelationFilter | $Types.Skip
+    fileRecords?: FileRecordListRelationFilter | $Types.Skip
+    posts?: PostListRelationFilter | $Types.Skip
+    comments?: CommentListRelationFilter | $Types.Skip
+    projects?: ProjectListRelationFilter | $Types.Skip
   }
 
   export type UserOrderByWithRelationInput = {
-    id?: SortOrder
-    userName?: SortOrder
-    email?: SortOrder
-    role?: SortOrder
-    image?: SortOrderInput | SortOrder
-    userCollection?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    teamMembers?: TeamMemberOrderByRelationAggregateInput
-    accounts?: AccountOrderByRelationAggregateInput
-    fileRecords?: FileRecordOrderByRelationAggregateInput
-    posts?: PostOrderByRelationAggregateInput
-    comments?: CommentOrderByRelationAggregateInput
-    projects?: ProjectOrderByRelationAggregateInput
+    id?: SortOrder | $Types.Skip
+    userName?: SortOrder | $Types.Skip
+    email?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    image?: SortOrderInput | SortOrder | $Types.Skip
+    userCollection?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    teamMembers?: TeamMemberOrderByRelationAggregateInput | $Types.Skip
+    accounts?: AccountOrderByRelationAggregateInput | $Types.Skip
+    fileRecords?: FileRecordOrderByRelationAggregateInput | $Types.Skip
+    posts?: PostOrderByRelationAggregateInput | $Types.Skip
+    comments?: CommentOrderByRelationAggregateInput | $Types.Skip
+    projects?: ProjectOrderByRelationAggregateInput | $Types.Skip
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    userName?: string
-    email?: string
-    AND?: UserWhereInput | UserWhereInput[]
-    OR?: UserWhereInput[]
-    NOT?: UserWhereInput | UserWhereInput[]
-    role?: EnumRoleFilter<"User"> | $Enums.Role
-    image?: StringNullableFilter<"User"> | string | null
-    userCollection?: StringNullableListFilter<"User">
-    createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
-    teamMembers?: TeamMemberListRelationFilter
-    accounts?: AccountListRelationFilter
-    fileRecords?: FileRecordListRelationFilter
-    posts?: PostListRelationFilter
-    comments?: CommentListRelationFilter
-    projects?: ProjectListRelationFilter
+    id?: string | $Types.Skip
+    userName?: string | $Types.Skip
+    email?: string | $Types.Skip
+    AND?: UserWhereInput | UserWhereInput[] | $Types.Skip
+    OR?: UserWhereInput[] | $Types.Skip
+    NOT?: UserWhereInput | UserWhereInput[] | $Types.Skip
+    role?: EnumRoleFilter<"User"> | $Enums.Role | $Types.Skip
+    image?: StringNullableFilter<"User"> | string | null | $Types.Skip
+    userCollection?: StringNullableListFilter<"User"> | $Types.Skip
+    createdAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"User"> | Date | string | $Types.Skip
+    teamMembers?: TeamMemberListRelationFilter | $Types.Skip
+    accounts?: AccountListRelationFilter | $Types.Skip
+    fileRecords?: FileRecordListRelationFilter | $Types.Skip
+    posts?: PostListRelationFilter | $Types.Skip
+    comments?: CommentListRelationFilter | $Types.Skip
+    projects?: ProjectListRelationFilter | $Types.Skip
   }, "id" | "userName" | "email">
 
   export type UserOrderByWithAggregationInput = {
-    id?: SortOrder
-    userName?: SortOrder
-    email?: SortOrder
-    role?: SortOrder
-    image?: SortOrderInput | SortOrder
-    userCollection?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: UserCountOrderByAggregateInput
-    _max?: UserMaxOrderByAggregateInput
-    _min?: UserMinOrderByAggregateInput
+    id?: SortOrder | $Types.Skip
+    userName?: SortOrder | $Types.Skip
+    email?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    image?: SortOrderInput | SortOrder | $Types.Skip
+    userCollection?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+    _count?: UserCountOrderByAggregateInput | $Types.Skip
+    _max?: UserMaxOrderByAggregateInput | $Types.Skip
+    _min?: UserMinOrderByAggregateInput | $Types.Skip
   }
 
   export type UserScalarWhereWithAggregatesInput = {
-    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    OR?: UserScalarWhereWithAggregatesInput[]
-    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"User"> | string
-    userName?: StringWithAggregatesFilter<"User"> | string
-    email?: StringWithAggregatesFilter<"User"> | string
-    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
-    image?: StringNullableWithAggregatesFilter<"User"> | string | null
-    userCollection?: StringNullableListFilter<"User">
-    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[] | $Types.Skip
+    OR?: UserScalarWhereWithAggregatesInput[] | $Types.Skip
+    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[] | $Types.Skip
+    id?: StringWithAggregatesFilter<"User"> | string | $Types.Skip
+    userName?: StringWithAggregatesFilter<"User"> | string | $Types.Skip
+    email?: StringWithAggregatesFilter<"User"> | string | $Types.Skip
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role | $Types.Skip
+    image?: StringNullableWithAggregatesFilter<"User"> | string | null | $Types.Skip
+    userCollection?: StringNullableListFilter<"User"> | $Types.Skip
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string | $Types.Skip
   }
 
   export type AccountCreateInput = {
-    id?: string
-    password?: string | null
+    id?: string | $Types.Skip
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutAccountsInput
   }
 
   export type AccountUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     userId: string
-    password?: string | null
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type AccountUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutAccountsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutAccountsNestedInput | $Types.Skip
   }
 
   export type AccountUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AccountCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     userId: string
-    password?: string | null
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type AccountUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AccountUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type CommentCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     post: PostCreateNestedOneWithoutCommentsInput
     user: UserCreateNestedOneWithoutCommentsInput
-    parent?: CommentCreateNestedOneWithoutRepliesInput
-    replies?: CommentCreateNestedManyWithoutParentInput
+    parent?: CommentCreateNestedOneWithoutRepliesInput | $Types.Skip
+    replies?: CommentCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
     userId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    replies?: CommentUncheckedCreateNestedManyWithoutParentInput
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    replies?: CommentUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    post?: PostUpdateOneRequiredWithoutCommentsNestedInput
-    user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    parent?: CommentUpdateOneWithoutRepliesNestedInput
-    replies?: CommentUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    post?: PostUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    parent?: CommentUpdateOneWithoutRepliesNestedInput | $Types.Skip
+    replies?: CommentUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
     userId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type CommentUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordCreateInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    team?: TeamCreateNestedOneWithoutFilesInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutFileRecordsInput
-    post?: PostCreateNestedOneWithoutFilesInput
+    post?: PostCreateNestedOneWithoutFilesInput | $Types.Skip
   }
 
   export type FileRecordUncheckedCreateInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
     uploaderId: string
-    postId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput
-    post?: PostUpdateOneWithoutFilesNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneWithoutFilesNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutFilesNestedInput | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordCreateManyInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
     uploaderId: string
-    postId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PhaseCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    sortOrder?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     project: ProjectCreateNestedOneWithoutPhasesInput
-    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
+    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput | $Types.Skip
   }
 
   export type PhaseUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
+    sortOrder?: number | $Types.Skip
     projectId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput | $Types.Skip
   }
 
   export type PhaseUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
-    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput | $Types.Skip
+    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    projectId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput | $Types.Skip
   }
 
   export type PhaseCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
+    sortOrder?: number | $Types.Skip
     projectId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type PhaseUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    projectId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PostCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutPostInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutPostsInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
+    team?: TeamCreateNestedOneWithoutPostsInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUpdateManyWithoutPostNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUpdateManyWithoutPostNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput | $Types.Skip
+    team?: TeamUpdateOneWithoutPostsNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type PostUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PostUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
     creator: UserCreateNestedOneWithoutProjectsInput
-    phases?: PhaseCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
-    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    phases?: PhaseUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    phases?: PhaseUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
-    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput | $Types.Skip
+    children?: ProjectAssetCreateNestedManyWithoutParentInput | $Types.Skip
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
-    post?: PostCreateNestedOneWithoutProjectAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput | $Types.Skip
+    post?: PostCreateNestedOneWithoutProjectAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type ProjectAssetUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
-    children?: ProjectAssetUpdateManyWithoutParentNestedInput
-    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
-    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput | $Types.Skip
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput | $Types.Skip
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type ProjectAssetCreateManyInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    posts?: PostCreateNestedManyWithoutTeamInput
-    projects?: ProjectCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    posts?: PostUncheckedCreateNestedManyWithoutTeamInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    posts?: PostUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type TeamUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type TeamCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type TeamUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateInput = {
-    id?: string
-    role?: $Enums.TeamRole
-    joinedAt?: Date | string
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
+    joinedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutMembersInput
     user: UserCreateNestedOneWithoutTeamMembersInput
   }
 
   export type TeamMemberUncheckedCreateInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     teamId: string
     userId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
-    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    teamId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateManyInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     teamId: string
     userId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    teamId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type UserCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserCreateManyInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type UserUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type UserUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type StringFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringFilter<$PrismaModel> | string
+    equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    mode?: QueryMode | $Types.Skip
+    not?: NestedStringFilter<$PrismaModel> | string | $Types.Skip
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    equals?: string | StringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    mode?: QueryMode | $Types.Skip
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null | $Types.Skip
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string | $Types.Skip
   }
 
   export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
+    is?: UserWhereInput | $Types.Skip
+    isNot?: UserWhereInput | $Types.Skip
   }
 
   export type SortOrderInput = {
     sort: SortOrder
-    nulls?: NullsOrder
+    nulls?: NullsOrder | $Types.Skip
   }
 
   export type AccountProviderProviderAccountIdCompoundUniqueInput = {
@@ -16084,592 +16188,595 @@ export namespace Prisma {
   }
 
   export type AccountCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    password?: SortOrder
-    provider?: SortOrder
-    providerAccountId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    password?: SortOrder | $Types.Skip
+    provider?: SortOrder | $Types.Skip
+    providerAccountId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type AccountMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    password?: SortOrder
-    provider?: SortOrder
-    providerAccountId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    password?: SortOrder | $Types.Skip
+    provider?: SortOrder | $Types.Skip
+    providerAccountId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type AccountMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    password?: SortOrder
-    provider?: SortOrder
-    providerAccountId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    password?: SortOrder | $Types.Skip
+    provider?: SortOrder | $Types.Skip
+    providerAccountId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
+    equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    mode?: QueryMode | $Types.Skip
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedStringFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedStringFilter<$PrismaModel> | $Types.Skip
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
+    equals?: string | StringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    mode?: QueryMode | $Types.Skip
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedStringNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedStringNullableFilter<$PrismaModel> | $Types.Skip
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedDateTimeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedDateTimeFilter<$PrismaModel> | $Types.Skip
   }
 
   export type PostScalarRelationFilter = {
-    is?: PostWhereInput
-    isNot?: PostWhereInput
+    is?: PostWhereInput | $Types.Skip
+    isNot?: PostWhereInput | $Types.Skip
   }
 
   export type CommentNullableScalarRelationFilter = {
-    is?: CommentWhereInput | null
-    isNot?: CommentWhereInput | null
+    is?: CommentWhereInput | null | $Types.Skip
+    isNot?: CommentWhereInput | null | $Types.Skip
   }
 
   export type CommentListRelationFilter = {
-    every?: CommentWhereInput
-    some?: CommentWhereInput
-    none?: CommentWhereInput
+    every?: CommentWhereInput | $Types.Skip
+    some?: CommentWhereInput | $Types.Skip
+    none?: CommentWhereInput | $Types.Skip
   }
 
   export type CommentOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type CommentCountOrderByAggregateInput = {
-    id?: SortOrder
-    content?: SortOrder
-    postId?: SortOrder
-    userId?: SortOrder
-    parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    content?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type CommentMaxOrderByAggregateInput = {
-    id?: SortOrder
-    content?: SortOrder
-    postId?: SortOrder
-    userId?: SortOrder
-    parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    content?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type CommentMinOrderByAggregateInput = {
-    id?: SortOrder
-    content?: SortOrder
-    postId?: SortOrder
-    userId?: SortOrder
-    parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    content?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumFileCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory | $Types.Skip
   }
 
   export type EnumProcessStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus
-  }
-
-  export type PostNullableScalarRelationFilter = {
-    is?: PostWhereInput | null
-    isNot?: PostWhereInput | null
-  }
-
-  export type FileRecordCountOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    name?: SortOrder
-    fileId?: SortOrder
-    viewerFileId?: SortOrder
-    category?: SortOrder
-    extension?: SortOrder
-    size?: SortOrder
-    status?: SortOrder
-    errorMessage?: SortOrder
-    uploaderId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type FileRecordMaxOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    name?: SortOrder
-    fileId?: SortOrder
-    viewerFileId?: SortOrder
-    category?: SortOrder
-    extension?: SortOrder
-    size?: SortOrder
-    status?: SortOrder
-    errorMessage?: SortOrder
-    uploaderId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type FileRecordMinOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    name?: SortOrder
-    fileId?: SortOrder
-    viewerFileId?: SortOrder
-    category?: SortOrder
-    extension?: SortOrder
-    size?: SortOrder
-    status?: SortOrder
-    errorMessage?: SortOrder
-    uploaderId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type EnumFileCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFileCategoryFilter<$PrismaModel>
-    _max?: NestedEnumFileCategoryFilter<$PrismaModel>
-  }
-
-  export type EnumProcessStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProcessStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProcessStatusFilter<$PrismaModel>
-    _max?: NestedEnumProcessStatusFilter<$PrismaModel>
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type ProjectScalarRelationFilter = {
-    is?: ProjectWhereInput
-    isNot?: ProjectWhereInput
-  }
-
-  export type ProjectAssetListRelationFilter = {
-    every?: ProjectAssetWhereInput
-    some?: ProjectAssetWhereInput
-    none?: ProjectAssetWhereInput
-  }
-
-  export type ProjectAssetOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type PhaseCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    sortOrder?: SortOrder
-    projectId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhaseAvgOrderByAggregateInput = {
-    sortOrder?: SortOrder
-  }
-
-  export type PhaseMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    sortOrder?: SortOrder
-    projectId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhaseMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    sortOrder?: SortOrder
-    projectId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhaseSumOrderByAggregateInput = {
-    sortOrder?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
-  export type FileRecordListRelationFilter = {
-    every?: FileRecordWhereInput
-    some?: FileRecordWhereInput
-    none?: FileRecordWhereInput
+    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus | $Types.Skip
   }
 
   export type TeamNullableScalarRelationFilter = {
-    is?: TeamWhereInput | null
-    isNot?: TeamWhereInput | null
+    is?: TeamWhereInput | null | $Types.Skip
+    isNot?: TeamWhereInput | null | $Types.Skip
+  }
+
+  export type PostNullableScalarRelationFilter = {
+    is?: PostWhereInput | null | $Types.Skip
+    isNot?: PostWhereInput | null | $Types.Skip
+  }
+
+  export type FileRecordCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    fileId?: SortOrder | $Types.Skip
+    viewerFileId?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    extension?: SortOrder | $Types.Skip
+    size?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    errorMessage?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type FileRecordMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    fileId?: SortOrder | $Types.Skip
+    viewerFileId?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    extension?: SortOrder | $Types.Skip
+    size?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    errorMessage?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type FileRecordMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    fileId?: SortOrder | $Types.Skip
+    viewerFileId?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    extension?: SortOrder | $Types.Skip
+    size?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    errorMessage?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type EnumFileCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumFileCategoryFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumFileCategoryFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumProcessStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProcessStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProcessStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProcessStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntFilter<$PrismaModel> | number | $Types.Skip
+  }
+
+  export type ProjectScalarRelationFilter = {
+    is?: ProjectWhereInput | $Types.Skip
+    isNot?: ProjectWhereInput | $Types.Skip
+  }
+
+  export type ProjectAssetListRelationFilter = {
+    every?: ProjectAssetWhereInput | $Types.Skip
+    some?: ProjectAssetWhereInput | $Types.Skip
+    none?: ProjectAssetWhereInput | $Types.Skip
+  }
+
+  export type ProjectAssetOrderByRelationAggregateInput = {
+    _count?: SortOrder | $Types.Skip
+  }
+
+  export type PhaseCountOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type PhaseAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder | $Types.Skip
+  }
+
+  export type PhaseMaxOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type PhaseMinOrderByAggregateInput = {
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
+  }
+
+  export type PhaseSumOrderByAggregateInput = {
+    sortOrder?: SortOrder | $Types.Skip
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    has?: string | StringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    isEmpty?: boolean | $Types.Skip
+  }
+
+  export type FileRecordListRelationFilter = {
+    every?: FileRecordWhereInput | $Types.Skip
+    some?: FileRecordWhereInput | $Types.Skip
+    none?: FileRecordWhereInput | $Types.Skip
   }
 
   export type FileRecordOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type PostCountOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    title?: SortOrder
-    category?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    keywords?: SortOrder
-    coverImage?: SortOrder
-    images?: SortOrder
-    uploaderId?: SortOrder
-    relatedPosts?: SortOrder
-    permission?: SortOrder
-    teamId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    title?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    keywords?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    images?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    relatedPosts?: SortOrder | $Types.Skip
+    permission?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type PostMaxOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    title?: SortOrder
-    category?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    coverImage?: SortOrder
-    uploaderId?: SortOrder
-    permission?: SortOrder
-    teamId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    title?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    permission?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type PostMinOrderByAggregateInput = {
-    id?: SortOrder
-    shortId?: SortOrder
-    title?: SortOrder
-    category?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    coverImage?: SortOrder
-    uploaderId?: SortOrder
-    permission?: SortOrder
-    teamId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    shortId?: SortOrder | $Types.Skip
+    title?: SortOrder | $Types.Skip
+    category?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    uploaderId?: SortOrder | $Types.Skip
+    permission?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumProjectStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
   }
 
   export type TeamScalarRelationFilter = {
-    is?: TeamWhereInput
-    isNot?: TeamWhereInput
+    is?: TeamWhereInput | $Types.Skip
+    isNot?: TeamWhereInput | $Types.Skip
   }
 
   export type PhaseListRelationFilter = {
-    every?: PhaseWhereInput
-    some?: PhaseWhereInput
-    none?: PhaseWhereInput
+    every?: PhaseWhereInput | $Types.Skip
+    some?: PhaseWhereInput | $Types.Skip
+    none?: PhaseWhereInput | $Types.Skip
   }
 
   export type PhaseOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type ProjectCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    client?: SortOrder
-    location?: SortOrder
-    coverImage?: SortOrder
-    status?: SortOrder
-    teamId?: SortOrder
-    creatorId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    client?: SortOrder | $Types.Skip
+    location?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    creatorId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type ProjectMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    client?: SortOrder
-    location?: SortOrder
-    coverImage?: SortOrder
-    status?: SortOrder
-    teamId?: SortOrder
-    creatorId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    client?: SortOrder | $Types.Skip
+    location?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    creatorId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type ProjectMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    client?: SortOrder
-    location?: SortOrder
-    coverImage?: SortOrder
-    status?: SortOrder
-    teamId?: SortOrder
-    creatorId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    client?: SortOrder | $Types.Skip
+    location?: SortOrder | $Types.Skip
+    coverImage?: SortOrder | $Types.Skip
+    status?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    creatorId?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
-    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
   }
 
   export type EnumAssetTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType | $Types.Skip
   }
 
   export type ProjectAssetNullableScalarRelationFilter = {
-    is?: ProjectAssetWhereInput | null
-    isNot?: ProjectAssetWhereInput | null
+    is?: ProjectAssetWhereInput | null | $Types.Skip
+    isNot?: ProjectAssetWhereInput | null | $Types.Skip
   }
 
   export type PhaseNullableScalarRelationFilter = {
-    is?: PhaseWhereInput | null
-    isNot?: PhaseWhereInput | null
+    is?: PhaseWhereInput | null | $Types.Skip
+    isNot?: PhaseWhereInput | null | $Types.Skip
   }
 
   export type ProjectAssetCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    sortOrder?: SortOrder
-    parentId?: SortOrder
-    projectId?: SortOrder
-    phaseId?: SortOrder
-    postId?: SortOrder
-    url?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    phaseId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    url?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type ProjectAssetAvgOrderByAggregateInput = {
-    sortOrder?: SortOrder
+    sortOrder?: SortOrder | $Types.Skip
   }
 
   export type ProjectAssetMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    sortOrder?: SortOrder
-    parentId?: SortOrder
-    projectId?: SortOrder
-    phaseId?: SortOrder
-    postId?: SortOrder
-    url?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    phaseId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    url?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type ProjectAssetMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    type?: SortOrder
-    sortOrder?: SortOrder
-    parentId?: SortOrder
-    projectId?: SortOrder
-    phaseId?: SortOrder
-    postId?: SortOrder
-    url?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    type?: SortOrder | $Types.Skip
+    sortOrder?: SortOrder | $Types.Skip
+    parentId?: SortOrder | $Types.Skip
+    projectId?: SortOrder | $Types.Skip
+    phaseId?: SortOrder | $Types.Skip
+    postId?: SortOrder | $Types.Skip
+    url?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type ProjectAssetSumOrderByAggregateInput = {
-    sortOrder?: SortOrder
+    sortOrder?: SortOrder | $Types.Skip
   }
 
   export type EnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAssetTypeFilter<$PrismaModel>
-    _max?: NestedEnumAssetTypeFilter<$PrismaModel>
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumAssetTypeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumAssetTypeFilter<$PrismaModel> | $Types.Skip
   }
 
   export type TeamMemberListRelationFilter = {
-    every?: TeamMemberWhereInput
-    some?: TeamMemberWhereInput
-    none?: TeamMemberWhereInput
+    every?: TeamMemberWhereInput | $Types.Skip
+    some?: TeamMemberWhereInput | $Types.Skip
+    none?: TeamMemberWhereInput | $Types.Skip
   }
 
   export type PostListRelationFilter = {
-    every?: PostWhereInput
-    some?: PostWhereInput
-    none?: PostWhereInput
+    every?: PostWhereInput | $Types.Skip
+    some?: PostWhereInput | $Types.Skip
+    none?: PostWhereInput | $Types.Skip
   }
 
   export type ProjectListRelationFilter = {
-    every?: ProjectWhereInput
-    some?: ProjectWhereInput
-    none?: ProjectWhereInput
+    every?: ProjectWhereInput | $Types.Skip
+    some?: ProjectWhereInput | $Types.Skip
+    none?: ProjectWhereInput | $Types.Skip
   }
 
   export type TeamMemberOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type PostOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type ProjectOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type TeamCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    avatar?: SortOrder
-    color?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    avatar?: SortOrder | $Types.Skip
+    color?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type TeamMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    avatar?: SortOrder
-    color?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    avatar?: SortOrder | $Types.Skip
+    color?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type TeamMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    avatar?: SortOrder
-    color?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    name?: SortOrder | $Types.Skip
+    description?: SortOrder | $Types.Skip
+    avatar?: SortOrder | $Types.Skip
+    color?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumTeamRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole | $Types.Skip
   }
 
   export type TeamMemberTeamIdUserIdCompoundUniqueInput = {
@@ -16678,309 +16785,325 @@ export namespace Prisma {
   }
 
   export type TeamMemberCountOrderByAggregateInput = {
-    id?: SortOrder
-    role?: SortOrder
-    teamId?: SortOrder
-    userId?: SortOrder
-    joinedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    joinedAt?: SortOrder | $Types.Skip
   }
 
   export type TeamMemberMaxOrderByAggregateInput = {
-    id?: SortOrder
-    role?: SortOrder
-    teamId?: SortOrder
-    userId?: SortOrder
-    joinedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    joinedAt?: SortOrder | $Types.Skip
   }
 
   export type TeamMemberMinOrderByAggregateInput = {
-    id?: SortOrder
-    role?: SortOrder
-    teamId?: SortOrder
-    userId?: SortOrder
-    joinedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    teamId?: SortOrder | $Types.Skip
+    userId?: SortOrder | $Types.Skip
+    joinedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumTeamRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTeamRoleFilter<$PrismaModel>
-    _max?: NestedEnumTeamRoleFilter<$PrismaModel>
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTeamRoleFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTeamRoleFilter<$PrismaModel> | $Types.Skip
   }
 
   export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role | $Types.Skip
   }
 
   export type AccountListRelationFilter = {
-    every?: AccountWhereInput
-    some?: AccountWhereInput
-    none?: AccountWhereInput
+    every?: AccountWhereInput | $Types.Skip
+    some?: AccountWhereInput | $Types.Skip
+    none?: AccountWhereInput | $Types.Skip
   }
 
   export type AccountOrderByRelationAggregateInput = {
-    _count?: SortOrder
+    _count?: SortOrder | $Types.Skip
   }
 
   export type UserCountOrderByAggregateInput = {
-    id?: SortOrder
-    userName?: SortOrder
-    email?: SortOrder
-    role?: SortOrder
-    image?: SortOrder
-    userCollection?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userName?: SortOrder | $Types.Skip
+    email?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    image?: SortOrder | $Types.Skip
+    userCollection?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type UserMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userName?: SortOrder
-    email?: SortOrder
-    role?: SortOrder
-    image?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userName?: SortOrder | $Types.Skip
+    email?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    image?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type UserMinOrderByAggregateInput = {
-    id?: SortOrder
-    userName?: SortOrder
-    email?: SortOrder
-    role?: SortOrder
-    image?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    id?: SortOrder | $Types.Skip
+    userName?: SortOrder | $Types.Skip
+    email?: SortOrder | $Types.Skip
+    role?: SortOrder | $Types.Skip
+    image?: SortOrder | $Types.Skip
+    createdAt?: SortOrder | $Types.Skip
+    updatedAt?: SortOrder | $Types.Skip
   }
 
   export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumRoleFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumRoleFilter<$PrismaModel> | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
-    create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutAccountsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type StringFieldUpdateOperationsInput = {
-    set?: string
+    set?: string | $Types.Skip
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
+    set?: string | null | $Types.Skip
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+    set?: Date | string | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
-    create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
-    upsert?: UserUpsertWithoutAccountsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
+    create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutAccountsInput | $Types.Skip
+    upsert?: UserUpsertWithoutAccountsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput> | $Types.Skip
   }
 
   export type PostCreateNestedOneWithoutCommentsInput = {
-    create?: XOR<PostCreateWithoutCommentsInput, PostUncheckedCreateWithoutCommentsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutCommentsInput
-    connect?: PostWhereUniqueInput
+    create?: XOR<PostCreateWithoutCommentsInput, PostUncheckedCreateWithoutCommentsInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutCommentsInput | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutCommentsInput = {
-    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type CommentCreateNestedOneWithoutRepliesInput = {
-    create?: XOR<CommentCreateWithoutRepliesInput, CommentUncheckedCreateWithoutRepliesInput>
-    connectOrCreate?: CommentCreateOrConnectWithoutRepliesInput
-    connect?: CommentWhereUniqueInput
+    create?: XOR<CommentCreateWithoutRepliesInput, CommentUncheckedCreateWithoutRepliesInput> | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutRepliesInput | $Types.Skip
+    connect?: CommentWhereUniqueInput | $Types.Skip
   }
 
   export type CommentCreateNestedManyWithoutParentInput = {
-    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[]
-    createMany?: CommentCreateManyParentInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[] | $Types.Skip
+    createMany?: CommentCreateManyParentInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type CommentUncheckedCreateNestedManyWithoutParentInput = {
-    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[]
-    createMany?: CommentCreateManyParentInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[] | $Types.Skip
+    createMany?: CommentCreateManyParentInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostUpdateOneRequiredWithoutCommentsNestedInput = {
-    create?: XOR<PostCreateWithoutCommentsInput, PostUncheckedCreateWithoutCommentsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutCommentsInput
-    upsert?: PostUpsertWithoutCommentsInput
-    connect?: PostWhereUniqueInput
-    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutCommentsInput, PostUpdateWithoutCommentsInput>, PostUncheckedUpdateWithoutCommentsInput>
+    create?: XOR<PostCreateWithoutCommentsInput, PostUncheckedCreateWithoutCommentsInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutCommentsInput | $Types.Skip
+    upsert?: PostUpsertWithoutCommentsInput | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutCommentsInput, PostUpdateWithoutCommentsInput>, PostUncheckedUpdateWithoutCommentsInput> | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
-    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
-    upsert?: UserUpsertWithoutCommentsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentsInput, UserUpdateWithoutCommentsInput>, UserUncheckedUpdateWithoutCommentsInput>
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput | $Types.Skip
+    upsert?: UserUpsertWithoutCommentsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentsInput, UserUpdateWithoutCommentsInput>, UserUncheckedUpdateWithoutCommentsInput> | $Types.Skip
   }
 
   export type CommentUpdateOneWithoutRepliesNestedInput = {
-    create?: XOR<CommentCreateWithoutRepliesInput, CommentUncheckedCreateWithoutRepliesInput>
-    connectOrCreate?: CommentCreateOrConnectWithoutRepliesInput
-    upsert?: CommentUpsertWithoutRepliesInput
-    disconnect?: CommentWhereInput | boolean
-    delete?: CommentWhereInput | boolean
-    connect?: CommentWhereUniqueInput
-    update?: XOR<XOR<CommentUpdateToOneWithWhereWithoutRepliesInput, CommentUpdateWithoutRepliesInput>, CommentUncheckedUpdateWithoutRepliesInput>
+    create?: XOR<CommentCreateWithoutRepliesInput, CommentUncheckedCreateWithoutRepliesInput> | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutRepliesInput | $Types.Skip
+    upsert?: CommentUpsertWithoutRepliesInput | $Types.Skip
+    disconnect?: CommentWhereInput | boolean | $Types.Skip
+    delete?: CommentWhereInput | boolean | $Types.Skip
+    connect?: CommentWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<CommentUpdateToOneWithWhereWithoutRepliesInput, CommentUpdateWithoutRepliesInput>, CommentUncheckedUpdateWithoutRepliesInput> | $Types.Skip
   }
 
   export type CommentUpdateManyWithoutParentNestedInput = {
-    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutParentInput | CommentUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: CommentCreateManyParentInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutParentInput | CommentUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutParentInput | CommentUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutParentInput | CommentUpsertWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    createMany?: CommentCreateManyParentInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutParentInput | CommentUpdateWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutParentInput | CommentUpdateManyWithWhereWithoutParentInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutParentNestedInput = {
-    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutParentInput | CommentUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: CommentCreateManyParentInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutParentInput | CommentUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutParentInput | CommentUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutParentInput, CommentUncheckedCreateWithoutParentInput> | CommentCreateWithoutParentInput[] | CommentUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutParentInput | CommentCreateOrConnectWithoutParentInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutParentInput | CommentUpsertWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    createMany?: CommentCreateManyParentInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutParentInput | CommentUpdateWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutParentInput | CommentUpdateManyWithWhereWithoutParentInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
+  }
+
+  export type TeamCreateNestedOneWithoutFilesInput = {
+    create?: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutFilesInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutFileRecordsInput = {
-    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type PostCreateNestedOneWithoutFilesInput = {
-    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: PostCreateOrConnectWithoutFilesInput
-    connect?: PostWhereUniqueInput
+    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutFilesInput | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
   }
 
   export type EnumFileCategoryFieldUpdateOperationsInput = {
-    set?: $Enums.FileCategory
+    set?: $Enums.FileCategory | $Types.Skip
   }
 
   export type EnumProcessStatusFieldUpdateOperationsInput = {
-    set?: $Enums.ProcessStatus
+    set?: $Enums.ProcessStatus | $Types.Skip
+  }
+
+  export type TeamUpdateOneWithoutFilesNestedInput = {
+    create?: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutFilesInput | $Types.Skip
+    upsert?: TeamUpsertWithoutFilesInput | $Types.Skip
+    disconnect?: TeamWhereInput | boolean | $Types.Skip
+    delete?: TeamWhereInput | boolean | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutFilesInput, TeamUpdateWithoutFilesInput>, TeamUncheckedUpdateWithoutFilesInput> | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutFileRecordsNestedInput = {
-    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput
-    upsert?: UserUpsertWithoutFileRecordsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFileRecordsInput, UserUpdateWithoutFileRecordsInput>, UserUncheckedUpdateWithoutFileRecordsInput>
+    create?: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutFileRecordsInput | $Types.Skip
+    upsert?: UserUpsertWithoutFileRecordsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFileRecordsInput, UserUpdateWithoutFileRecordsInput>, UserUncheckedUpdateWithoutFileRecordsInput> | $Types.Skip
   }
 
   export type PostUpdateOneWithoutFilesNestedInput = {
-    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: PostCreateOrConnectWithoutFilesInput
-    upsert?: PostUpsertWithoutFilesInput
-    disconnect?: PostWhereInput | boolean
-    delete?: PostWhereInput | boolean
-    connect?: PostWhereUniqueInput
-    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutFilesInput, PostUpdateWithoutFilesInput>, PostUncheckedUpdateWithoutFilesInput>
+    create?: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutFilesInput | $Types.Skip
+    upsert?: PostUpsertWithoutFilesInput | $Types.Skip
+    disconnect?: PostWhereInput | boolean | $Types.Skip
+    delete?: PostWhereInput | boolean | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutFilesInput, PostUpdateWithoutFilesInput>, PostUncheckedUpdateWithoutFilesInput> | $Types.Skip
   }
 
   export type ProjectCreateNestedOneWithoutPhasesInput = {
-    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput
-    connect?: ProjectWhereUniqueInput
+    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput> | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput | $Types.Skip
+    connect?: ProjectWhereUniqueInput | $Types.Skip
   }
 
   export type ProjectAssetCreateNestedManyWithoutPhaseInput = {
-    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
-    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput = {
-    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
-    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+    set?: number | $Types.Skip
+    increment?: number | $Types.Skip
+    decrement?: number | $Types.Skip
+    multiply?: number | $Types.Skip
+    divide?: number | $Types.Skip
   }
 
   export type ProjectUpdateOneRequiredWithoutPhasesNestedInput = {
-    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput
-    upsert?: ProjectUpsertWithoutPhasesInput
-    connect?: ProjectWhereUniqueInput
-    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPhasesInput, ProjectUpdateWithoutPhasesInput>, ProjectUncheckedUpdateWithoutPhasesInput>
+    create?: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput> | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutPhasesInput | $Types.Skip
+    upsert?: ProjectUpsertWithoutPhasesInput | $Types.Skip
+    connect?: ProjectWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPhasesInput, ProjectUpdateWithoutPhasesInput>, ProjectUncheckedUpdateWithoutPhasesInput> | $Types.Skip
   }
 
   export type ProjectAssetUpdateManyWithoutPhaseNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[]
-    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[]
-    createMany?: ProjectAssetCreateManyPhaseInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutPhaseInput, ProjectAssetUncheckedCreateWithoutPhaseInput> | ProjectAssetCreateWithoutPhaseInput[] | ProjectAssetUncheckedCreateWithoutPhaseInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPhaseInput | ProjectAssetCreateOrConnectWithoutPhaseInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput | ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPhaseInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput | ProjectAssetUpdateWithWhereUniqueWithoutPhaseInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPhaseInput | ProjectAssetUpdateManyWithWhereWithoutPhaseInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type PostCreatekeywordsInput = {
@@ -16996,556 +17119,598 @@ export namespace Prisma {
   }
 
   export type FileRecordCreateNestedManyWithoutPostInput = {
-    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
-    createMany?: FileRecordCreateManyPostInputEnvelope
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyPostInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
-    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type TeamCreateNestedOneWithoutPostsInput = {
-    create?: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutPostsInput
-    connect?: TeamWhereUniqueInput
+    create?: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutPostsInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
   }
 
   export type CommentCreateNestedManyWithoutPostInput = {
-    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
-    createMany?: CommentCreateManyPostInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: CommentCreateManyPostInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectAssetCreateNestedManyWithoutPostInput = {
-    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
-    createMany?: ProjectAssetCreateManyPostInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPostInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type FileRecordUncheckedCreateNestedManyWithoutPostInput = {
-    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
-    createMany?: FileRecordCreateManyPostInputEnvelope
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyPostInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type CommentUncheckedCreateNestedManyWithoutPostInput = {
-    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
-    createMany?: CommentCreateManyPostInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: CommentCreateManyPostInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateNestedManyWithoutPostInput = {
-    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
-    createMany?: ProjectAssetCreateManyPostInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPostInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostUpdatekeywordsInput = {
-    set?: string[]
-    push?: string | string[]
+    set?: string[] | $Types.Skip
+    push?: string | string[] | $Types.Skip
   }
 
   export type PostUpdateimagesInput = {
-    set?: string[]
-    push?: string | string[]
+    set?: string[] | $Types.Skip
+    push?: string | string[] | $Types.Skip
   }
 
   export type PostUpdaterelatedPostsInput = {
-    set?: string[]
-    push?: string | string[]
+    set?: string[] | $Types.Skip
+    push?: string | string[] | $Types.Skip
   }
 
   export type FileRecordUpdateManyWithoutPostNestedInput = {
-    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
-    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: FileRecordCreateManyPostInputEnvelope
-    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyPostInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutPostsNestedInput = {
-    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
-    upsert?: UserUpsertWithoutPostsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPostsInput, UserUpdateWithoutPostsInput>, UserUncheckedUpdateWithoutPostsInput>
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput | $Types.Skip
+    upsert?: UserUpsertWithoutPostsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPostsInput, UserUpdateWithoutPostsInput>, UserUncheckedUpdateWithoutPostsInput> | $Types.Skip
   }
 
   export type TeamUpdateOneWithoutPostsNestedInput = {
-    create?: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutPostsInput
-    upsert?: TeamUpsertWithoutPostsInput
-    disconnect?: TeamWhereInput | boolean
-    delete?: TeamWhereInput | boolean
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutPostsInput, TeamUpdateWithoutPostsInput>, TeamUncheckedUpdateWithoutPostsInput>
+    create?: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutPostsInput | $Types.Skip
+    upsert?: TeamUpsertWithoutPostsInput | $Types.Skip
+    disconnect?: TeamWhereInput | boolean | $Types.Skip
+    delete?: TeamWhereInput | boolean | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutPostsInput, TeamUpdateWithoutPostsInput>, TeamUncheckedUpdateWithoutPostsInput> | $Types.Skip
   }
 
   export type CommentUpdateManyWithoutPostNestedInput = {
-    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutPostInput | CommentUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: CommentCreateManyPostInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutPostInput | CommentUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutPostInput | CommentUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutPostInput | CommentUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: CommentCreateManyPostInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutPostInput | CommentUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutPostInput | CommentUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetUpdateManyWithoutPostNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: ProjectAssetCreateManyPostInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPostInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateManyWithoutPostNestedInput = {
-    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[]
-    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: FileRecordCreateManyPostInputEnvelope
-    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    create?: XOR<FileRecordCreateWithoutPostInput, FileRecordUncheckedCreateWithoutPostInput> | FileRecordCreateWithoutPostInput[] | FileRecordUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutPostInput | FileRecordCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutPostInput | FileRecordUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyPostInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutPostInput | FileRecordUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutPostInput | FileRecordUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutPostNestedInput = {
-    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutPostInput | CommentUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: CommentCreateManyPostInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutPostInput | CommentUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutPostInput | CommentUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutPostInput, CommentUncheckedCreateWithoutPostInput> | CommentCreateWithoutPostInput[] | CommentUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutPostInput | CommentCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutPostInput | CommentUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: CommentCreateManyPostInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutPostInput | CommentUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutPostInput | CommentUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPostNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: ProjectAssetCreateManyPostInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutPostInput, ProjectAssetUncheckedCreateWithoutPostInput> | ProjectAssetCreateWithoutPostInput[] | ProjectAssetUncheckedCreateWithoutPostInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutPostInput | ProjectAssetCreateOrConnectWithoutPostInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutPostInput | ProjectAssetUpsertWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyPostInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutPostInput | ProjectAssetUpdateWithWhereUniqueWithoutPostInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutPostInput | ProjectAssetUpdateManyWithWhereWithoutPostInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type TeamCreateNestedOneWithoutProjectsInput = {
-    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput
-    connect?: TeamWhereUniqueInput
+    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutProjectsInput = {
-    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type PhaseCreateNestedManyWithoutProjectInput = {
-    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
-    createMany?: PhaseCreateManyProjectInputEnvelope
-    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    createMany?: PhaseCreateManyProjectInputEnvelope | $Types.Skip
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectAssetCreateNestedManyWithoutProjectInput = {
-    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
-    createMany?: ProjectAssetCreateManyProjectInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type PhaseUncheckedCreateNestedManyWithoutProjectInput = {
-    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
-    createMany?: PhaseCreateManyProjectInputEnvelope
-    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    createMany?: PhaseCreateManyProjectInputEnvelope | $Types.Skip
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateNestedManyWithoutProjectInput = {
-    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
-    createMany?: ProjectAssetCreateManyProjectInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type EnumProjectStatusFieldUpdateOperationsInput = {
-    set?: $Enums.ProjectStatus
+    set?: $Enums.ProjectStatus | $Types.Skip
   }
 
   export type TeamUpdateOneRequiredWithoutProjectsNestedInput = {
-    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput
-    upsert?: TeamUpsertWithoutProjectsInput
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutProjectsInput, TeamUpdateWithoutProjectsInput>, TeamUncheckedUpdateWithoutProjectsInput>
+    create?: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutProjectsInput | $Types.Skip
+    upsert?: TeamUpsertWithoutProjectsInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutProjectsInput, TeamUpdateWithoutProjectsInput>, TeamUncheckedUpdateWithoutProjectsInput> | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutProjectsNestedInput = {
-    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput
-    upsert?: UserUpsertWithoutProjectsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectsInput, UserUpdateWithoutProjectsInput>, UserUncheckedUpdateWithoutProjectsInput>
+    create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutProjectsInput | $Types.Skip
+    upsert?: UserUpsertWithoutProjectsInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectsInput, UserUpdateWithoutProjectsInput>, UserUncheckedUpdateWithoutProjectsInput> | $Types.Skip
   }
 
   export type PhaseUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
-    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: PhaseCreateManyProjectInputEnvelope
-    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    createMany?: PhaseCreateManyProjectInputEnvelope | $Types.Skip
+    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[] | $Types.Skip
+    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: ProjectAssetCreateManyProjectInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[]
-    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: PhaseCreateManyProjectInputEnvelope
-    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[]
-    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
+    create?: XOR<PhaseCreateWithoutProjectInput, PhaseUncheckedCreateWithoutProjectInput> | PhaseCreateWithoutProjectInput[] | PhaseUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutProjectInput | PhaseCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    upsert?: PhaseUpsertWithWhereUniqueWithoutProjectInput | PhaseUpsertWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    createMany?: PhaseCreateManyProjectInputEnvelope | $Types.Skip
+    set?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    disconnect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    delete?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    connect?: PhaseWhereUniqueInput | PhaseWhereUniqueInput[] | $Types.Skip
+    update?: PhaseUpdateWithWhereUniqueWithoutProjectInput | PhaseUpdateWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    updateMany?: PhaseUpdateManyWithWhereWithoutProjectInput | PhaseUpdateManyWithWhereWithoutProjectInput[] | $Types.Skip
+    deleteMany?: PhaseScalarWhereInput | PhaseScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[]
-    createMany?: ProjectAssetCreateManyProjectInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutProjectInput, ProjectAssetUncheckedCreateWithoutProjectInput> | ProjectAssetCreateWithoutProjectInput[] | ProjectAssetUncheckedCreateWithoutProjectInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutProjectInput | ProjectAssetCreateOrConnectWithoutProjectInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutProjectInput | ProjectAssetUpsertWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyProjectInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutProjectInput | ProjectAssetUpdateWithWhereUniqueWithoutProjectInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutProjectInput | ProjectAssetUpdateManyWithWhereWithoutProjectInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectAssetCreateNestedOneWithoutChildrenInput = {
-    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput
-    connect?: ProjectAssetWhereUniqueInput
+    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput> | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | $Types.Skip
   }
 
   export type ProjectAssetCreateNestedManyWithoutParentInput = {
-    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
-    createMany?: ProjectAssetCreateManyParentInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyParentInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectCreateNestedOneWithoutAssetsInput = {
-    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput
-    connect?: ProjectWhereUniqueInput
+    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput> | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput | $Types.Skip
+    connect?: ProjectWhereUniqueInput | $Types.Skip
   }
 
   export type PhaseCreateNestedOneWithoutRootAssetsInput = {
-    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
-    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput
-    connect?: PhaseWhereUniqueInput
+    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput> | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput | $Types.Skip
+    connect?: PhaseWhereUniqueInput | $Types.Skip
   }
 
   export type PostCreateNestedOneWithoutProjectAssetsInput = {
-    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
-    connect?: PostWhereUniqueInput
+    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateNestedManyWithoutParentInput = {
-    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
-    createMany?: ProjectAssetCreateManyParentInputEnvelope
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyParentInputEnvelope | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
   }
 
   export type EnumAssetTypeFieldUpdateOperationsInput = {
-    set?: $Enums.AssetType
+    set?: $Enums.AssetType | $Types.Skip
   }
 
   export type ProjectAssetUpdateOneWithoutChildrenNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput
-    upsert?: ProjectAssetUpsertWithoutChildrenInput
-    disconnect?: ProjectAssetWhereInput | boolean
-    delete?: ProjectAssetWhereInput | boolean
-    connect?: ProjectAssetWhereUniqueInput
-    update?: XOR<XOR<ProjectAssetUpdateToOneWithWhereWithoutChildrenInput, ProjectAssetUpdateWithoutChildrenInput>, ProjectAssetUncheckedUpdateWithoutChildrenInput>
+    create?: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput> | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutChildrenInput | $Types.Skip
+    upsert?: ProjectAssetUpsertWithoutChildrenInput | $Types.Skip
+    disconnect?: ProjectAssetWhereInput | boolean | $Types.Skip
+    delete?: ProjectAssetWhereInput | boolean | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<ProjectAssetUpdateToOneWithWhereWithoutChildrenInput, ProjectAssetUpdateWithoutChildrenInput>, ProjectAssetUncheckedUpdateWithoutChildrenInput> | $Types.Skip
   }
 
   export type ProjectAssetUpdateManyWithoutParentNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: ProjectAssetCreateManyParentInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyParentInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectUpdateOneRequiredWithoutAssetsNestedInput = {
-    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput
-    upsert?: ProjectUpsertWithoutAssetsInput
-    connect?: ProjectWhereUniqueInput
-    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutAssetsInput, ProjectUpdateWithoutAssetsInput>, ProjectUncheckedUpdateWithoutAssetsInput>
+    create?: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput> | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutAssetsInput | $Types.Skip
+    upsert?: ProjectUpsertWithoutAssetsInput | $Types.Skip
+    connect?: ProjectWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutAssetsInput, ProjectUpdateWithoutAssetsInput>, ProjectUncheckedUpdateWithoutAssetsInput> | $Types.Skip
   }
 
   export type PhaseUpdateOneWithoutRootAssetsNestedInput = {
-    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
-    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput
-    upsert?: PhaseUpsertWithoutRootAssetsInput
-    disconnect?: PhaseWhereInput | boolean
-    delete?: PhaseWhereInput | boolean
-    connect?: PhaseWhereUniqueInput
-    update?: XOR<XOR<PhaseUpdateToOneWithWhereWithoutRootAssetsInput, PhaseUpdateWithoutRootAssetsInput>, PhaseUncheckedUpdateWithoutRootAssetsInput>
+    create?: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput> | $Types.Skip
+    connectOrCreate?: PhaseCreateOrConnectWithoutRootAssetsInput | $Types.Skip
+    upsert?: PhaseUpsertWithoutRootAssetsInput | $Types.Skip
+    disconnect?: PhaseWhereInput | boolean | $Types.Skip
+    delete?: PhaseWhereInput | boolean | $Types.Skip
+    connect?: PhaseWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PhaseUpdateToOneWithWhereWithoutRootAssetsInput, PhaseUpdateWithoutRootAssetsInput>, PhaseUncheckedUpdateWithoutRootAssetsInput> | $Types.Skip
   }
 
   export type PostUpdateOneWithoutProjectAssetsNestedInput = {
-    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput
-    upsert?: PostUpsertWithoutProjectAssetsInput
-    disconnect?: PostWhereInput | boolean
-    delete?: PostWhereInput | boolean
-    connect?: PostWhereUniqueInput
-    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutProjectAssetsInput, PostUpdateWithoutProjectAssetsInput>, PostUncheckedUpdateWithoutProjectAssetsInput>
+    create?: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput> | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutProjectAssetsInput | $Types.Skip
+    upsert?: PostUpsertWithoutProjectAssetsInput | $Types.Skip
+    disconnect?: PostWhereInput | boolean | $Types.Skip
+    delete?: PostWhereInput | boolean | $Types.Skip
+    connect?: PostWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutProjectAssetsInput, PostUpdateWithoutProjectAssetsInput>, PostUncheckedUpdateWithoutProjectAssetsInput> | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutParentNestedInput = {
-    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[]
-    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[]
-    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[]
-    createMany?: ProjectAssetCreateManyParentInputEnvelope
-    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[]
-    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[]
-    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[]
-    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
+    create?: XOR<ProjectAssetCreateWithoutParentInput, ProjectAssetUncheckedCreateWithoutParentInput> | ProjectAssetCreateWithoutParentInput[] | ProjectAssetUncheckedCreateWithoutParentInput[] | $Types.Skip
+    connectOrCreate?: ProjectAssetCreateOrConnectWithoutParentInput | ProjectAssetCreateOrConnectWithoutParentInput[] | $Types.Skip
+    upsert?: ProjectAssetUpsertWithWhereUniqueWithoutParentInput | ProjectAssetUpsertWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    createMany?: ProjectAssetCreateManyParentInputEnvelope | $Types.Skip
+    set?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectAssetWhereUniqueInput | ProjectAssetWhereUniqueInput[] | $Types.Skip
+    update?: ProjectAssetUpdateWithWhereUniqueWithoutParentInput | ProjectAssetUpdateWithWhereUniqueWithoutParentInput[] | $Types.Skip
+    updateMany?: ProjectAssetUpdateManyWithWhereWithoutParentInput | ProjectAssetUpdateManyWithWhereWithoutParentInput[] | $Types.Skip
+    deleteMany?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
   }
 
   export type TeamMemberCreateNestedManyWithoutTeamInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostCreateNestedManyWithoutTeamInput = {
-    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[]
-    createMany?: PostCreateManyTeamInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: PostCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type FileRecordCreateNestedManyWithoutTeamInput = {
+    create?: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput> | FileRecordCreateWithoutTeamInput[] | FileRecordUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutTeamInput | FileRecordCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectCreateNestedManyWithoutTeamInput = {
-    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[]
-    createMany?: ProjectCreateManyTeamInputEnvelope
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: ProjectCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
   }
 
   export type TeamMemberUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[]
-    createMany?: PostCreateManyTeamInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: PostCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+  }
+
+  export type FileRecordUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput> | FileRecordCreateWithoutTeamInput[] | FileRecordUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutTeamInput | FileRecordCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectUncheckedCreateNestedManyWithoutTeamInput = {
-    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[]
-    createMany?: ProjectCreateManyTeamInputEnvelope
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    createMany?: ProjectCreateManyTeamInputEnvelope | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
   }
 
   export type TeamMemberUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyTeamInputEnvelope | $Types.Skip
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
   }
 
   export type PostUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutTeamInput | PostUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: PostCreateManyTeamInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutTeamInput | PostUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutTeamInput | PostUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: PostUpsertWithWhereUniqueWithoutTeamInput | PostUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: PostCreateManyTeamInputEnvelope | $Types.Skip
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    update?: PostUpdateWithWhereUniqueWithoutTeamInput | PostUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: PostUpdateManyWithWhereWithoutTeamInput | PostUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
+  }
+
+  export type FileRecordUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput> | FileRecordCreateWithoutTeamInput[] | FileRecordUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutTeamInput | FileRecordCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutTeamInput | FileRecordUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyTeamInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutTeamInput | FileRecordUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutTeamInput | FileRecordUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutTeamInput | ProjectUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: ProjectCreateManyTeamInputEnvelope
-    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutTeamInput | ProjectUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutTeamInput | ProjectUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: ProjectUpsertWithWhereUniqueWithoutTeamInput | ProjectUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: ProjectCreateManyTeamInputEnvelope | $Types.Skip
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    update?: ProjectUpdateWithWhereUniqueWithoutTeamInput | ProjectUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: ProjectUpdateManyWithWhereWithoutTeamInput | ProjectUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: TeamMemberCreateManyTeamInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    create?: XOR<TeamMemberCreateWithoutTeamInput, TeamMemberUncheckedCreateWithoutTeamInput> | TeamMemberCreateWithoutTeamInput[] | TeamMemberUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutTeamInput | TeamMemberCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutTeamInput | TeamMemberUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyTeamInputEnvelope | $Types.Skip
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    update?: TeamMemberUpdateWithWhereUniqueWithoutTeamInput | TeamMemberUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutTeamInput | TeamMemberUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
   }
 
   export type PostUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutTeamInput | PostUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: PostCreateManyTeamInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutTeamInput | PostUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutTeamInput | PostUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+    create?: XOR<PostCreateWithoutTeamInput, PostUncheckedCreateWithoutTeamInput> | PostCreateWithoutTeamInput[] | PostUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutTeamInput | PostCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: PostUpsertWithWhereUniqueWithoutTeamInput | PostUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: PostCreateManyTeamInputEnvelope | $Types.Skip
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    update?: PostUpdateWithWhereUniqueWithoutTeamInput | PostUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: PostUpdateManyWithWhereWithoutTeamInput | PostUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
+  }
+
+  export type FileRecordUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput> | FileRecordCreateWithoutTeamInput[] | FileRecordUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutTeamInput | FileRecordCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutTeamInput | FileRecordUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyTeamInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutTeamInput | FileRecordUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutTeamInput | FileRecordUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateManyWithoutTeamNestedInput = {
-    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutTeamInput | ProjectUpsertWithWhereUniqueWithoutTeamInput[]
-    createMany?: ProjectCreateManyTeamInputEnvelope
-    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutTeamInput | ProjectUpdateWithWhereUniqueWithoutTeamInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutTeamInput | ProjectUpdateManyWithWhereWithoutTeamInput[]
-    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    create?: XOR<ProjectCreateWithoutTeamInput, ProjectUncheckedCreateWithoutTeamInput> | ProjectCreateWithoutTeamInput[] | ProjectUncheckedCreateWithoutTeamInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutTeamInput | ProjectCreateOrConnectWithoutTeamInput[] | $Types.Skip
+    upsert?: ProjectUpsertWithWhereUniqueWithoutTeamInput | ProjectUpsertWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    createMany?: ProjectCreateManyTeamInputEnvelope | $Types.Skip
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    update?: ProjectUpdateWithWhereUniqueWithoutTeamInput | ProjectUpdateWithWhereUniqueWithoutTeamInput[] | $Types.Skip
+    updateMany?: ProjectUpdateManyWithWhereWithoutTeamInput | ProjectUpdateManyWithWhereWithoutTeamInput[] | $Types.Skip
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
   }
 
   export type TeamCreateNestedOneWithoutMembersInput = {
-    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
-    connect?: TeamWhereUniqueInput
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
   }
 
   export type UserCreateNestedOneWithoutTeamMembersInput = {
-    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
-    connect?: UserWhereUniqueInput
+    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
   }
 
   export type EnumTeamRoleFieldUpdateOperationsInput = {
-    set?: $Enums.TeamRole
+    set?: $Enums.TeamRole | $Types.Skip
   }
 
   export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
-    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
-    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput
-    upsert?: TeamUpsertWithoutMembersInput
-    connect?: TeamWhereUniqueInput
-    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput>
+    create?: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput> | $Types.Skip
+    connectOrCreate?: TeamCreateOrConnectWithoutMembersInput | $Types.Skip
+    upsert?: TeamUpsertWithoutMembersInput | $Types.Skip
+    connect?: TeamWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMembersInput, TeamUpdateWithoutMembersInput>, TeamUncheckedUpdateWithoutMembersInput> | $Types.Skip
   }
 
   export type UserUpdateOneRequiredWithoutTeamMembersNestedInput = {
-    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput
-    upsert?: UserUpsertWithoutTeamMembersInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTeamMembersInput, UserUpdateWithoutTeamMembersInput>, UserUncheckedUpdateWithoutTeamMembersInput>
+    create?: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput> | $Types.Skip
+    connectOrCreate?: UserCreateOrConnectWithoutTeamMembersInput | $Types.Skip
+    upsert?: UserUpsertWithoutTeamMembersInput | $Types.Skip
+    connect?: UserWhereUniqueInput | $Types.Skip
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTeamMembersInput, UserUpdateWithoutTeamMembersInput>, UserUncheckedUpdateWithoutTeamMembersInput> | $Types.Skip
   }
 
   export type UserCreateuserCollectionInput = {
@@ -17553,534 +17718,534 @@ export namespace Prisma {
   }
 
   export type TeamMemberCreateNestedManyWithoutUserInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyUserInputEnvelope | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: AccountCreateManyUserInputEnvelope | $Types.Skip
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
   }
 
   export type FileRecordCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
-    createMany?: FileRecordCreateManyUploaderInputEnvelope
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyUploaderInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[]
-    createMany?: PostCreateManyUploaderInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    createMany?: PostCreateManyUploaderInputEnvelope | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
   }
 
   export type CommentCreateNestedManyWithoutUserInput = {
-    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[]
-    createMany?: CommentCreateManyUserInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: CommentCreateManyUserInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectCreateNestedManyWithoutCreatorInput = {
-    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
-    createMany?: ProjectCreateManyCreatorInputEnvelope
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[] | $Types.Skip
+    createMany?: ProjectCreateManyCreatorInputEnvelope | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
   }
 
   export type TeamMemberUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyUserInputEnvelope | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: AccountCreateManyUserInputEnvelope | $Types.Skip
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
   }
 
   export type FileRecordUncheckedCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
-    createMany?: FileRecordCreateManyUploaderInputEnvelope
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyUploaderInputEnvelope | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
   }
 
   export type PostUncheckedCreateNestedManyWithoutUploaderInput = {
-    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[]
-    createMany?: PostCreateManyUploaderInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    createMany?: PostCreateManyUploaderInputEnvelope | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
   }
 
   export type CommentUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[]
-    createMany?: CommentCreateManyUserInputEnvelope
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[] | $Types.Skip
+    createMany?: CommentCreateManyUserInputEnvelope | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
   }
 
   export type ProjectUncheckedCreateNestedManyWithoutCreatorInput = {
-    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
-    createMany?: ProjectCreateManyCreatorInputEnvelope
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[] | $Types.Skip
+    createMany?: ProjectCreateManyCreatorInputEnvelope | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
+    set?: $Enums.Role | $Types.Skip
   }
 
   export type UserUpdateuserCollectionInput = {
-    set?: string[]
-    push?: string | string[]
+    set?: string[] | $Types.Skip
+    push?: string | string[] | $Types.Skip
   }
 
   export type TeamMemberUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyUserInputEnvelope | $Types.Skip
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: AccountCreateManyUserInputEnvelope | $Types.Skip
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[] | $Types.Skip
   }
 
   export type FileRecordUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
-    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: FileRecordCreateManyUploaderInputEnvelope
-    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyUploaderInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type PostUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutUploaderInput | PostUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: PostCreateManyUploaderInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutUploaderInput | PostUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutUploaderInput | PostUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    upsert?: PostUpsertWithWhereUniqueWithoutUploaderInput | PostUpsertWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    createMany?: PostCreateManyUploaderInputEnvelope | $Types.Skip
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    update?: PostUpdateWithWhereUniqueWithoutUploaderInput | PostUpdateWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    updateMany?: PostUpdateManyWithWhereWithoutUploaderInput | PostUpdateManyWithWhereWithoutUploaderInput[] | $Types.Skip
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
   }
 
   export type CommentUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutUserInput | CommentUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CommentCreateManyUserInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutUserInput | CommentUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutUserInput | CommentUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutUserInput | CommentUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: CommentCreateManyUserInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutUserInput | CommentUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutUserInput | CommentUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectUpdateManyWithoutCreatorNestedInput = {
-    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[]
-    createMany?: ProjectCreateManyCreatorInputEnvelope
-    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[]
-    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[] | $Types.Skip
+    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[] | $Types.Skip
+    createMany?: ProjectCreateManyCreatorInputEnvelope | $Types.Skip
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[] | $Types.Skip
+    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[] | $Types.Skip
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[]
-    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TeamMemberCreateManyUserInputEnvelope
-    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[]
-    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
+    create?: XOR<TeamMemberCreateWithoutUserInput, TeamMemberUncheckedCreateWithoutUserInput> | TeamMemberCreateWithoutUserInput[] | TeamMemberUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutUserInput | TeamMemberCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: TeamMemberUpsertWithWhereUniqueWithoutUserInput | TeamMemberUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: TeamMemberCreateManyUserInputEnvelope | $Types.Skip
+    set?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    disconnect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    delete?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    connect?: TeamMemberWhereUniqueInput | TeamMemberWhereUniqueInput[] | $Types.Skip
+    update?: TeamMemberUpdateWithWhereUniqueWithoutUserInput | TeamMemberUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: TeamMemberUpdateManyWithWhereWithoutUserInput | TeamMemberUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: AccountCreateManyUserInputEnvelope | $Types.Skip
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[] | $Types.Skip
+    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[] | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[]
-    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: FileRecordCreateManyUploaderInputEnvelope
-    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[]
-    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
+    create?: XOR<FileRecordCreateWithoutUploaderInput, FileRecordUncheckedCreateWithoutUploaderInput> | FileRecordCreateWithoutUploaderInput[] | FileRecordUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: FileRecordCreateOrConnectWithoutUploaderInput | FileRecordCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    upsert?: FileRecordUpsertWithWhereUniqueWithoutUploaderInput | FileRecordUpsertWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    createMany?: FileRecordCreateManyUploaderInputEnvelope | $Types.Skip
+    set?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    disconnect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    delete?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    connect?: FileRecordWhereUniqueInput | FileRecordWhereUniqueInput[] | $Types.Skip
+    update?: FileRecordUpdateWithWhereUniqueWithoutUploaderInput | FileRecordUpdateWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    updateMany?: FileRecordUpdateManyWithWhereWithoutUploaderInput | FileRecordUpdateManyWithWhereWithoutUploaderInput[] | $Types.Skip
+    deleteMany?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
   }
 
   export type PostUncheckedUpdateManyWithoutUploaderNestedInput = {
-    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutUploaderInput | PostUpsertWithWhereUniqueWithoutUploaderInput[]
-    createMany?: PostCreateManyUploaderInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutUploaderInput | PostUpdateWithWhereUniqueWithoutUploaderInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutUploaderInput | PostUpdateManyWithWhereWithoutUploaderInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+    create?: XOR<PostCreateWithoutUploaderInput, PostUncheckedCreateWithoutUploaderInput> | PostCreateWithoutUploaderInput[] | PostUncheckedCreateWithoutUploaderInput[] | $Types.Skip
+    connectOrCreate?: PostCreateOrConnectWithoutUploaderInput | PostCreateOrConnectWithoutUploaderInput[] | $Types.Skip
+    upsert?: PostUpsertWithWhereUniqueWithoutUploaderInput | PostUpsertWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    createMany?: PostCreateManyUploaderInputEnvelope | $Types.Skip
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[] | $Types.Skip
+    update?: PostUpdateWithWhereUniqueWithoutUploaderInput | PostUpdateWithWhereUniqueWithoutUploaderInput[] | $Types.Skip
+    updateMany?: PostUpdateManyWithWhereWithoutUploaderInput | PostUpdateManyWithWhereWithoutUploaderInput[] | $Types.Skip
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[]
-    upsert?: CommentUpsertWithWhereUniqueWithoutUserInput | CommentUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CommentCreateManyUserInputEnvelope
-    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
-    update?: CommentUpdateWithWhereUniqueWithoutUserInput | CommentUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CommentUpdateManyWithWhereWithoutUserInput | CommentUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    create?: XOR<CommentCreateWithoutUserInput, CommentUncheckedCreateWithoutUserInput> | CommentCreateWithoutUserInput[] | CommentUncheckedCreateWithoutUserInput[] | $Types.Skip
+    connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[] | $Types.Skip
+    upsert?: CommentUpsertWithWhereUniqueWithoutUserInput | CommentUpsertWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    createMany?: CommentCreateManyUserInputEnvelope | $Types.Skip
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[] | $Types.Skip
+    update?: CommentUpdateWithWhereUniqueWithoutUserInput | CommentUpdateWithWhereUniqueWithoutUserInput[] | $Types.Skip
+    updateMany?: CommentUpdateManyWithWhereWithoutUserInput | CommentUpdateManyWithWhereWithoutUserInput[] | $Types.Skip
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateManyWithoutCreatorNestedInput = {
-    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[]
-    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[]
-    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[]
-    createMany?: ProjectCreateManyCreatorInputEnvelope
-    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
-    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[]
-    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[]
-    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    create?: XOR<ProjectCreateWithoutCreatorInput, ProjectUncheckedCreateWithoutCreatorInput> | ProjectCreateWithoutCreatorInput[] | ProjectUncheckedCreateWithoutCreatorInput[] | $Types.Skip
+    connectOrCreate?: ProjectCreateOrConnectWithoutCreatorInput | ProjectCreateOrConnectWithoutCreatorInput[] | $Types.Skip
+    upsert?: ProjectUpsertWithWhereUniqueWithoutCreatorInput | ProjectUpsertWithWhereUniqueWithoutCreatorInput[] | $Types.Skip
+    createMany?: ProjectCreateManyCreatorInputEnvelope | $Types.Skip
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[] | $Types.Skip
+    update?: ProjectUpdateWithWhereUniqueWithoutCreatorInput | ProjectUpdateWithWhereUniqueWithoutCreatorInput[] | $Types.Skip
+    updateMany?: ProjectUpdateManyWithWhereWithoutCreatorInput | ProjectUpdateManyWithWhereWithoutCreatorInput[] | $Types.Skip
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringFilter<$PrismaModel> | string
+    equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedStringFilter<$PrismaModel> | string | $Types.Skip
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    equals?: string | StringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null | $Types.Skip
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string | $Types.Skip
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
+    equals?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedStringFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedStringFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntFilter<$PrismaModel> | number | $Types.Skip
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
+    equals?: string | StringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    contains?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    startsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    endsWith?: string | StringFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null | $Types.Skip
+    _count?: NestedIntNullableFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedStringNullableFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedStringNullableFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    equals?: number | IntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null | $Types.Skip
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedDateTimeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedDateTimeFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumFileCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumFileCategoryFilter<$PrismaModel> | $Enums.FileCategory | $Types.Skip
   }
 
   export type NestedEnumProcessStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus
+    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProcessStatusFilter<$PrismaModel> | $Enums.ProcessStatus | $Types.Skip
   }
 
   export type NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFileCategoryFilter<$PrismaModel>
-    _max?: NestedEnumFileCategoryFilter<$PrismaModel>
+    equals?: $Enums.FileCategory | EnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.FileCategory[] | ListEnumFileCategoryFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumFileCategoryWithAggregatesFilter<$PrismaModel> | $Enums.FileCategory | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumFileCategoryFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumFileCategoryFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProcessStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProcessStatusFilter<$PrismaModel>
-    _max?: NestedEnumProcessStatusFilter<$PrismaModel>
+    equals?: $Enums.ProcessStatus | EnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProcessStatus[] | ListEnumProcessStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProcessStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProcessStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProcessStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProcessStatusFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+    equals?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | IntFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _avg?: NestedFloatFilter<$PrismaModel> | $Types.Skip
+    _sum?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedIntFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+    equals?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | $Types.Skip
+    lt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    lte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gt?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    gte?: number | FloatFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedFloatFilter<$PrismaModel> | number | $Types.Skip
   }
 
   export type NestedEnumProjectStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
   }
 
   export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
-    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumAssetTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAssetTypeFilter<$PrismaModel> | $Enums.AssetType | $Types.Skip
   }
 
   export type NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAssetTypeFilter<$PrismaModel>
-    _max?: NestedEnumAssetTypeFilter<$PrismaModel>
+    equals?: $Enums.AssetType | EnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.AssetType[] | ListEnumAssetTypeFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumAssetTypeWithAggregatesFilter<$PrismaModel> | $Enums.AssetType | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumAssetTypeFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumAssetTypeFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumTeamRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTeamRoleFilter<$PrismaModel> | $Enums.TeamRole | $Types.Skip
   }
 
   export type NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTeamRoleFilter<$PrismaModel>
-    _max?: NestedEnumTeamRoleFilter<$PrismaModel>
+    equals?: $Enums.TeamRole | EnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.TeamRole[] | ListEnumTeamRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumTeamRoleWithAggregatesFilter<$PrismaModel> | $Enums.TeamRole | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumTeamRoleFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumTeamRoleFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role | $Types.Skip
   }
 
   export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumRoleFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumRoleFilter<$PrismaModel> | $Types.Skip
   }
 
   export type UserCreateWithoutAccountsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -18091,84 +18256,84 @@ export namespace Prisma {
   export type UserUpsertWithoutAccountsInput = {
     update: XOR<UserUpdateWithoutAccountsInput, UserUncheckedUpdateWithoutAccountsInput>
     create: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutAccountsInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutAccountsInput, UserUncheckedUpdateWithoutAccountsInput>
   }
 
   export type UserUpdateWithoutAccountsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type PostCreateWithoutCommentsInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutPostInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutPostsInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
+    team?: TeamCreateNestedOneWithoutPostsInput | $Types.Skip
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateWithoutCommentsInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostCreateOrConnectWithoutCommentsInput = {
@@ -18177,35 +18342,35 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutCommentsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutCommentsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutCommentsInput = {
@@ -18214,23 +18379,23 @@ export namespace Prisma {
   }
 
   export type CommentCreateWithoutRepliesInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     post: PostCreateNestedOneWithoutCommentsInput
     user: UserCreateNestedOneWithoutCommentsInput
-    parent?: CommentCreateNestedOneWithoutRepliesInput
+    parent?: CommentCreateNestedOneWithoutRepliesInput | $Types.Skip
   }
 
   export type CommentUncheckedCreateWithoutRepliesInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
     userId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type CommentCreateOrConnectWithoutRepliesInput = {
@@ -18239,23 +18404,23 @@ export namespace Prisma {
   }
 
   export type CommentCreateWithoutParentInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     post: PostCreateNestedOneWithoutCommentsInput
     user: UserCreateNestedOneWithoutCommentsInput
-    replies?: CommentCreateNestedManyWithoutParentInput
+    replies?: CommentCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentUncheckedCreateWithoutParentInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
     userId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    replies?: CommentUncheckedCreateNestedManyWithoutParentInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    replies?: CommentUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentCreateOrConnectWithoutParentInput = {
@@ -18265,132 +18430,132 @@ export namespace Prisma {
 
   export type CommentCreateManyParentInputEnvelope = {
     data: CommentCreateManyParentInput | CommentCreateManyParentInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type PostUpsertWithoutCommentsInput = {
     update: XOR<PostUpdateWithoutCommentsInput, PostUncheckedUpdateWithoutCommentsInput>
     create: XOR<PostCreateWithoutCommentsInput, PostUncheckedCreateWithoutCommentsInput>
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   export type PostUpdateToOneWithWhereWithoutCommentsInput = {
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     data: XOR<PostUpdateWithoutCommentsInput, PostUncheckedUpdateWithoutCommentsInput>
   }
 
   export type PostUpdateWithoutCommentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUpdateManyWithoutPostNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUpdateManyWithoutPostNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput | $Types.Skip
+    team?: TeamUpdateOneWithoutPostsNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateWithoutCommentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type UserUpsertWithoutCommentsInput = {
     update: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
     create: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutCommentsInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
   }
 
   export type UserUpdateWithoutCommentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutCommentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type CommentUpsertWithoutRepliesInput = {
     update: XOR<CommentUpdateWithoutRepliesInput, CommentUncheckedUpdateWithoutRepliesInput>
     create: XOR<CommentCreateWithoutRepliesInput, CommentUncheckedCreateWithoutRepliesInput>
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
   }
 
   export type CommentUpdateToOneWithWhereWithoutRepliesInput = {
-    where?: CommentWhereInput
+    where?: CommentWhereInput | $Types.Skip
     data: XOR<CommentUpdateWithoutRepliesInput, CommentUncheckedUpdateWithoutRepliesInput>
   }
 
   export type CommentUpdateWithoutRepliesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    post?: PostUpdateOneRequiredWithoutCommentsNestedInput
-    user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    parent?: CommentUpdateOneWithoutRepliesNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    post?: PostUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    parent?: CommentUpdateOneWithoutRepliesNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateWithoutRepliesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type CommentUpsertWithWhereUniqueWithoutParentInput = {
@@ -18410,48 +18575,79 @@ export namespace Prisma {
   }
 
   export type CommentScalarWhereInput = {
-    AND?: CommentScalarWhereInput | CommentScalarWhereInput[]
-    OR?: CommentScalarWhereInput[]
-    NOT?: CommentScalarWhereInput | CommentScalarWhereInput[]
-    id?: StringFilter<"Comment"> | string
-    content?: StringFilter<"Comment"> | string
-    postId?: StringFilter<"Comment"> | string
-    userId?: StringFilter<"Comment"> | string
-    parentId?: StringNullableFilter<"Comment"> | string | null
-    createdAt?: DateTimeFilter<"Comment"> | Date | string
-    updatedAt?: DateTimeFilter<"Comment"> | Date | string
+    AND?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
+    OR?: CommentScalarWhereInput[] | $Types.Skip
+    NOT?: CommentScalarWhereInput | CommentScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Comment"> | string | $Types.Skip
+    content?: StringFilter<"Comment"> | string | $Types.Skip
+    postId?: StringFilter<"Comment"> | string | $Types.Skip
+    userId?: StringFilter<"Comment"> | string | $Types.Skip
+    parentId?: StringNullableFilter<"Comment"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string | $Types.Skip
+  }
+
+  export type TeamCreateWithoutFilesInput = {
+    id?: string | $Types.Skip
+    name: string
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutTeamInput | $Types.Skip
+  }
+
+  export type TeamUncheckedCreateWithoutFilesInput = {
+    id?: string | $Types.Skip
+    name: string
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+  }
+
+  export type TeamCreateOrConnectWithoutFilesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
   }
 
   export type UserCreateWithoutFileRecordsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutFileRecordsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutFileRecordsInput = {
@@ -18460,43 +18656,43 @@ export namespace Prisma {
   }
 
   export type PostCreateWithoutFilesInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     uploader: UserCreateNestedOneWithoutPostsInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
+    team?: TeamCreateNestedOneWithoutPostsInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateWithoutFilesInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostCreateOrConnectWithoutFilesInput = {
@@ -18504,128 +18700,165 @@ export namespace Prisma {
     create: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
   }
 
+  export type TeamUpsertWithoutFilesInput = {
+    update: XOR<TeamUpdateWithoutFilesInput, TeamUncheckedUpdateWithoutFilesInput>
+    create: XOR<TeamCreateWithoutFilesInput, TeamUncheckedCreateWithoutFilesInput>
+    where?: TeamWhereInput | $Types.Skip
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutFilesInput = {
+    where?: TeamWhereInput | $Types.Skip
+    data: XOR<TeamUpdateWithoutFilesInput, TeamUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type TeamUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutTeamNestedInput | $Types.Skip
+  }
+
+  export type TeamUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+  }
+
   export type UserUpsertWithoutFileRecordsInput = {
     update: XOR<UserUpdateWithoutFileRecordsInput, UserUncheckedUpdateWithoutFileRecordsInput>
     create: XOR<UserCreateWithoutFileRecordsInput, UserUncheckedCreateWithoutFileRecordsInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutFileRecordsInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutFileRecordsInput, UserUncheckedUpdateWithoutFileRecordsInput>
   }
 
   export type UserUpdateWithoutFileRecordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutFileRecordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type PostUpsertWithoutFilesInput = {
     update: XOR<PostUpdateWithoutFilesInput, PostUncheckedUpdateWithoutFilesInput>
     create: XOR<PostCreateWithoutFilesInput, PostUncheckedCreateWithoutFilesInput>
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   export type PostUpdateToOneWithWhereWithoutFilesInput = {
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     data: XOR<PostUpdateWithoutFilesInput, PostUncheckedUpdateWithoutFilesInput>
   }
 
   export type PostUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput | $Types.Skip
+    team?: TeamUpdateOneWithoutPostsNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type ProjectCreateWithoutPhasesInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
     creator: UserCreateNestedOneWithoutProjectsInput
-    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUncheckedCreateWithoutPhasesInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectCreateOrConnectWithoutPhasesInput = {
@@ -18634,33 +18867,33 @@ export namespace Prisma {
   }
 
   export type ProjectAssetCreateWithoutPhaseInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
-    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput | $Types.Skip
+    children?: ProjectAssetCreateNestedManyWithoutParentInput | $Types.Skip
     project: ProjectCreateNestedOneWithoutAssetsInput
-    post?: PostCreateNestedOneWithoutProjectAssetsInput
+    post?: PostCreateNestedOneWithoutProjectAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateWithoutPhaseInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type ProjectAssetCreateOrConnectWithoutPhaseInput = {
@@ -18670,48 +18903,48 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyPhaseInputEnvelope = {
     data: ProjectAssetCreateManyPhaseInput | ProjectAssetCreateManyPhaseInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectUpsertWithoutPhasesInput = {
     update: XOR<ProjectUpdateWithoutPhasesInput, ProjectUncheckedUpdateWithoutPhasesInput>
     create: XOR<ProjectCreateWithoutPhasesInput, ProjectUncheckedCreateWithoutPhasesInput>
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
   }
 
   export type ProjectUpdateToOneWithWhereWithoutPhasesInput = {
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     data: XOR<ProjectUpdateWithoutPhasesInput, ProjectUncheckedUpdateWithoutPhasesInput>
   }
 
   export type ProjectUpdateWithoutPhasesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
-    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateWithoutPhasesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUpsertWithWhereUniqueWithoutPhaseInput = {
@@ -18731,53 +18964,55 @@ export namespace Prisma {
   }
 
   export type ProjectAssetScalarWhereInput = {
-    AND?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
-    OR?: ProjectAssetScalarWhereInput[]
-    NOT?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[]
-    id?: StringFilter<"ProjectAsset"> | string
-    name?: StringNullableFilter<"ProjectAsset"> | string | null
-    description?: StringNullableFilter<"ProjectAsset"> | string | null
-    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType
-    sortOrder?: IntFilter<"ProjectAsset"> | number
-    parentId?: StringNullableFilter<"ProjectAsset"> | string | null
-    projectId?: StringFilter<"ProjectAsset"> | string
-    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null
-    postId?: StringNullableFilter<"ProjectAsset"> | string | null
-    url?: StringNullableFilter<"ProjectAsset"> | string | null
-    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string
-    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string
+    AND?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
+    OR?: ProjectAssetScalarWhereInput[] | $Types.Skip
+    NOT?: ProjectAssetScalarWhereInput | ProjectAssetScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"ProjectAsset"> | string | $Types.Skip
+    name?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    description?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    type?: EnumAssetTypeFilter<"ProjectAsset"> | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFilter<"ProjectAsset"> | number | $Types.Skip
+    parentId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    projectId?: StringFilter<"ProjectAsset"> | string | $Types.Skip
+    phaseId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    postId?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    url?: StringNullableFilter<"ProjectAsset"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"ProjectAsset"> | Date | string | $Types.Skip
   }
 
   export type FileRecordCreateWithoutPostInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    team?: TeamCreateNestedOneWithoutFilesInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutFileRecordsInput
   }
 
   export type FileRecordUncheckedCreateWithoutPostInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
     uploaderId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordCreateOrConnectWithoutPostInput = {
@@ -18787,39 +19022,39 @@ export namespace Prisma {
 
   export type FileRecordCreateManyPostInputEnvelope = {
     data: FileRecordCreateManyPostInput | FileRecordCreateManyPostInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type UserCreateWithoutPostsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -18828,27 +19063,29 @@ export namespace Prisma {
   }
 
   export type TeamCreateWithoutPostsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    projects?: ProjectCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamUncheckedCreateWithoutPostsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamCreateOrConnectWithoutPostsInput = {
@@ -18857,23 +19094,23 @@ export namespace Prisma {
   }
 
   export type CommentCreateWithoutPostInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutCommentsInput
-    parent?: CommentCreateNestedOneWithoutRepliesInput
-    replies?: CommentCreateNestedManyWithoutParentInput
+    parent?: CommentCreateNestedOneWithoutRepliesInput | $Types.Skip
+    replies?: CommentCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentUncheckedCreateWithoutPostInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     userId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    replies?: CommentUncheckedCreateNestedManyWithoutParentInput
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    replies?: CommentUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentCreateOrConnectWithoutPostInput = {
@@ -18883,37 +19120,37 @@ export namespace Prisma {
 
   export type CommentCreateManyPostInputEnvelope = {
     data: CommentCreateManyPostInput | CommentCreateManyPostInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectAssetCreateWithoutPostInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
-    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput | $Types.Skip
+    children?: ProjectAssetCreateNestedManyWithoutParentInput | $Types.Skip
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateWithoutPostInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+    phaseId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type ProjectAssetCreateOrConnectWithoutPostInput = {
@@ -18923,7 +19160,7 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyPostInputEnvelope = {
     data: ProjectAssetCreateManyPostInput | ProjectAssetCreateManyPostInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type FileRecordUpsertWithWhereUniqueWithoutPostInput = {
@@ -18943,101 +19180,104 @@ export namespace Prisma {
   }
 
   export type FileRecordScalarWhereInput = {
-    AND?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
-    OR?: FileRecordScalarWhereInput[]
-    NOT?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[]
-    id?: StringFilter<"FileRecord"> | string
-    shortId?: StringNullableFilter<"FileRecord"> | string | null
-    name?: StringFilter<"FileRecord"> | string
-    fileId?: StringFilter<"FileRecord"> | string
-    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null
-    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory
-    extension?: StringNullableFilter<"FileRecord"> | string | null
-    size?: StringFilter<"FileRecord"> | string
-    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus
-    errorMessage?: StringNullableFilter<"FileRecord"> | string | null
-    uploaderId?: StringFilter<"FileRecord"> | string
-    postId?: StringNullableFilter<"FileRecord"> | string | null
-    createdAt?: DateTimeFilter<"FileRecord"> | Date | string
-    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string
+    AND?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
+    OR?: FileRecordScalarWhereInput[] | $Types.Skip
+    NOT?: FileRecordScalarWhereInput | FileRecordScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"FileRecord"> | string | $Types.Skip
+    shortId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    name?: StringFilter<"FileRecord"> | string | $Types.Skip
+    fileId?: StringFilter<"FileRecord"> | string | $Types.Skip
+    viewerFileId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    category?: EnumFileCategoryFilter<"FileRecord"> | $Enums.FileCategory | $Types.Skip
+    extension?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    size?: StringFilter<"FileRecord"> | string | $Types.Skip
+    status?: EnumProcessStatusFilter<"FileRecord"> | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    teamId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    uploaderId?: StringFilter<"FileRecord"> | string | $Types.Skip
+    postId?: StringNullableFilter<"FileRecord"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"FileRecord"> | Date | string | $Types.Skip
   }
 
   export type UserUpsertWithoutPostsInput = {
     update: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
     create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutPostsInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
   }
 
   export type UserUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type TeamUpsertWithoutPostsInput = {
     update: XOR<TeamUpdateWithoutPostsInput, TeamUncheckedUpdateWithoutPostsInput>
     create: XOR<TeamCreateWithoutPostsInput, TeamUncheckedCreateWithoutPostsInput>
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
   }
 
   export type TeamUpdateToOneWithWhereWithoutPostsInput = {
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     data: XOR<TeamUpdateWithoutPostsInput, TeamUncheckedUpdateWithoutPostsInput>
   }
 
   export type TeamUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type TeamUncheckedUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type CommentUpsertWithWhereUniqueWithoutPostInput = {
@@ -19073,27 +19313,29 @@ export namespace Prisma {
   }
 
   export type TeamCreateWithoutProjectsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberCreateNestedManyWithoutTeamInput
-    posts?: PostCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamUncheckedCreateWithoutProjectsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput
-    posts?: PostUncheckedCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    members?: TeamMemberUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamCreateOrConnectWithoutProjectsInput = {
@@ -19102,35 +19344,35 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutProjectsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutProjectsInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutProjectsInput = {
@@ -19139,21 +19381,21 @@ export namespace Prisma {
   }
 
   export type PhaseCreateWithoutProjectInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput
+    sortOrder?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    rootAssets?: ProjectAssetCreateNestedManyWithoutPhaseInput | $Types.Skip
   }
 
   export type PhaseUncheckedCreateWithoutProjectInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput
+    sortOrder?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    rootAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPhaseInput | $Types.Skip
   }
 
   export type PhaseCreateOrConnectWithoutProjectInput = {
@@ -19163,37 +19405,37 @@ export namespace Prisma {
 
   export type PhaseCreateManyProjectInputEnvelope = {
     data: PhaseCreateManyProjectInput | PhaseCreateManyProjectInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectAssetCreateWithoutProjectInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
-    children?: ProjectAssetCreateNestedManyWithoutParentInput
-    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
-    post?: PostCreateNestedOneWithoutProjectAssetsInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput | $Types.Skip
+    children?: ProjectAssetCreateNestedManyWithoutParentInput | $Types.Skip
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput | $Types.Skip
+    post?: PostCreateNestedOneWithoutProjectAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateWithoutProjectInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type ProjectAssetCreateOrConnectWithoutProjectInput = {
@@ -19203,85 +19445,87 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyProjectInputEnvelope = {
     data: ProjectAssetCreateManyProjectInput | ProjectAssetCreateManyProjectInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type TeamUpsertWithoutProjectsInput = {
     update: XOR<TeamUpdateWithoutProjectsInput, TeamUncheckedUpdateWithoutProjectsInput>
     create: XOR<TeamCreateWithoutProjectsInput, TeamUncheckedCreateWithoutProjectsInput>
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
   }
 
   export type TeamUpdateToOneWithWhereWithoutProjectsInput = {
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     data: XOR<TeamUpdateWithoutProjectsInput, TeamUncheckedUpdateWithoutProjectsInput>
   }
 
   export type TeamUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUpdateManyWithoutTeamNestedInput
-    posts?: PostUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type TeamUncheckedUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput
-    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    members?: TeamMemberUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type UserUpsertWithoutProjectsInput = {
     update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
     create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutProjectsInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
   }
 
   export type UserUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutProjectsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    teamMembers?: TeamMemberUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
   }
 
   export type PhaseUpsertWithWhereUniqueWithoutProjectInput = {
@@ -19301,15 +19545,15 @@ export namespace Prisma {
   }
 
   export type PhaseScalarWhereInput = {
-    AND?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
-    OR?: PhaseScalarWhereInput[]
-    NOT?: PhaseScalarWhereInput | PhaseScalarWhereInput[]
-    id?: StringFilter<"Phase"> | string
-    name?: StringFilter<"Phase"> | string
-    sortOrder?: IntFilter<"Phase"> | number
-    projectId?: StringFilter<"Phase"> | string
-    createdAt?: DateTimeFilter<"Phase"> | Date | string
-    updatedAt?: DateTimeFilter<"Phase"> | Date | string
+    AND?: PhaseScalarWhereInput | PhaseScalarWhereInput[] | $Types.Skip
+    OR?: PhaseScalarWhereInput[] | $Types.Skip
+    NOT?: PhaseScalarWhereInput | PhaseScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Phase"> | string | $Types.Skip
+    name?: StringFilter<"Phase"> | string | $Types.Skip
+    sortOrder?: IntFilter<"Phase"> | number | $Types.Skip
+    projectId?: StringFilter<"Phase"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Phase"> | Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpsertWithWhereUniqueWithoutProjectInput = {
@@ -19329,33 +19573,33 @@ export namespace Prisma {
   }
 
   export type ProjectAssetCreateWithoutChildrenInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    parent?: ProjectAssetCreateNestedOneWithoutChildrenInput | $Types.Skip
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
-    post?: PostCreateNestedOneWithoutProjectAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput | $Types.Skip
+    post?: PostCreateNestedOneWithoutProjectAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateWithoutChildrenInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateOrConnectWithoutChildrenInput = {
@@ -19364,33 +19608,33 @@ export namespace Prisma {
   }
 
   export type ProjectAssetCreateWithoutParentInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetCreateNestedManyWithoutParentInput
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetCreateNestedManyWithoutParentInput | $Types.Skip
     project: ProjectCreateNestedOneWithoutAssetsInput
-    phase?: PhaseCreateNestedOneWithoutRootAssetsInput
-    post?: PostCreateNestedOneWithoutProjectAssetsInput
+    phase?: PhaseCreateNestedOneWithoutRootAssetsInput | $Types.Skip
+    post?: PostCreateNestedOneWithoutProjectAssetsInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedCreateWithoutParentInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type ProjectAssetCreateOrConnectWithoutParentInput = {
@@ -19400,37 +19644,37 @@ export namespace Prisma {
 
   export type ProjectAssetCreateManyParentInputEnvelope = {
     data: ProjectAssetCreateManyParentInput | ProjectAssetCreateManyParentInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectCreateWithoutAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
     creator: UserCreateNestedOneWithoutProjectsInput
-    phases?: PhaseCreateNestedManyWithoutProjectInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUncheckedCreateWithoutAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectCreateOrConnectWithoutAssetsInput = {
@@ -19439,21 +19683,21 @@ export namespace Prisma {
   }
 
   export type PhaseCreateWithoutRootAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    sortOrder?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     project: ProjectCreateNestedOneWithoutPhasesInput
   }
 
   export type PhaseUncheckedCreateWithoutRootAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
+    sortOrder?: number | $Types.Skip
     projectId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type PhaseCreateOrConnectWithoutRootAssetsInput = {
@@ -19462,43 +19706,43 @@ export namespace Prisma {
   }
 
   export type PostCreateWithoutProjectAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutPostInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutPostsInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
+    team?: TeamCreateNestedOneWithoutPostsInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateWithoutProjectAssetsInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostCreateOrConnectWithoutProjectAssetsInput = {
@@ -19509,42 +19753,42 @@ export namespace Prisma {
   export type ProjectAssetUpsertWithoutChildrenInput = {
     update: XOR<ProjectAssetUpdateWithoutChildrenInput, ProjectAssetUncheckedUpdateWithoutChildrenInput>
     create: XOR<ProjectAssetCreateWithoutChildrenInput, ProjectAssetUncheckedCreateWithoutChildrenInput>
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
   }
 
   export type ProjectAssetUpdateToOneWithWhereWithoutChildrenInput = {
-    where?: ProjectAssetWhereInput
+    where?: ProjectAssetWhereInput | $Types.Skip
     data: XOR<ProjectAssetUpdateWithoutChildrenInput, ProjectAssetUncheckedUpdateWithoutChildrenInput>
   }
 
   export type ProjectAssetUpdateWithoutChildrenInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
-    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
-    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput | $Types.Skip
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateWithoutChildrenInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpsertWithWhereUniqueWithoutParentInput = {
@@ -19566,136 +19810,136 @@ export namespace Prisma {
   export type ProjectUpsertWithoutAssetsInput = {
     update: XOR<ProjectUpdateWithoutAssetsInput, ProjectUncheckedUpdateWithoutAssetsInput>
     create: XOR<ProjectCreateWithoutAssetsInput, ProjectUncheckedCreateWithoutAssetsInput>
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
   }
 
   export type ProjectUpdateToOneWithWhereWithoutAssetsInput = {
-    where?: ProjectWhereInput
+    where?: ProjectWhereInput | $Types.Skip
     data: XOR<ProjectUpdateWithoutAssetsInput, ProjectUncheckedUpdateWithoutAssetsInput>
   }
 
   export type ProjectUpdateWithoutAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
-    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    phases?: PhaseUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    phases?: PhaseUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateWithoutAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type PhaseUpsertWithoutRootAssetsInput = {
     update: XOR<PhaseUpdateWithoutRootAssetsInput, PhaseUncheckedUpdateWithoutRootAssetsInput>
     create: XOR<PhaseCreateWithoutRootAssetsInput, PhaseUncheckedCreateWithoutRootAssetsInput>
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
   }
 
   export type PhaseUpdateToOneWithWhereWithoutRootAssetsInput = {
-    where?: PhaseWhereInput
+    where?: PhaseWhereInput | $Types.Skip
     data: XOR<PhaseUpdateWithoutRootAssetsInput, PhaseUncheckedUpdateWithoutRootAssetsInput>
   }
 
   export type PhaseUpdateWithoutRootAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutPhasesNestedInput | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateWithoutRootAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    projectId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PostUpsertWithoutProjectAssetsInput = {
     update: XOR<PostUpdateWithoutProjectAssetsInput, PostUncheckedUpdateWithoutProjectAssetsInput>
     create: XOR<PostCreateWithoutProjectAssetsInput, PostUncheckedCreateWithoutProjectAssetsInput>
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
   }
 
   export type PostUpdateToOneWithWhereWithoutProjectAssetsInput = {
-    where?: PostWhereInput
+    where?: PostWhereInput | $Types.Skip
     data: XOR<PostUpdateWithoutProjectAssetsInput, PostUncheckedUpdateWithoutProjectAssetsInput>
   }
 
   export type PostUpdateWithoutProjectAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUpdateManyWithoutPostNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUpdateManyWithoutPostNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput | $Types.Skip
+    team?: TeamUpdateOneWithoutPostsNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateWithoutProjectAssetsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type TeamMemberCreateWithoutTeamInput = {
-    id?: string
-    role?: $Enums.TeamRole
-    joinedAt?: Date | string
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
+    joinedAt?: Date | string | $Types.Skip
     user: UserCreateNestedOneWithoutTeamMembersInput
   }
 
   export type TeamMemberUncheckedCreateWithoutTeamInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     userId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateOrConnectWithoutTeamInput = {
@@ -19705,47 +19949,47 @@ export namespace Prisma {
 
   export type TeamMemberCreateManyTeamInputEnvelope = {
     data: TeamMemberCreateManyTeamInput | TeamMemberCreateManyTeamInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type PostCreateWithoutTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutPostInput | $Types.Skip
     uploader: UserCreateNestedOneWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
+    comments?: CommentCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateWithoutTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostCreateOrConnectWithoutTeamInput = {
@@ -19755,37 +19999,81 @@ export namespace Prisma {
 
   export type PostCreateManyTeamInputEnvelope = {
     data: PostCreateManyTeamInput | PostCreateManyTeamInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
+  }
+
+  export type FileRecordCreateWithoutTeamInput = {
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
+    name: string
+    fileId: string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    uploader: UserCreateNestedOneWithoutFileRecordsInput
+    post?: PostCreateNestedOneWithoutFilesInput | $Types.Skip
+  }
+
+  export type FileRecordUncheckedCreateWithoutTeamInput = {
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
+    name: string
+    fileId: string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    uploaderId: string
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type FileRecordCreateOrConnectWithoutTeamInput = {
+    where: FileRecordWhereUniqueInput
+    create: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput>
+  }
+
+  export type FileRecordCreateManyTeamInputEnvelope = {
+    data: FileRecordCreateManyTeamInput | FileRecordCreateManyTeamInput[]
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectCreateWithoutTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     creator: UserCreateNestedOneWithoutProjectsInput
-    phases?: PhaseCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUncheckedCreateWithoutTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectCreateOrConnectWithoutTeamInput = {
@@ -19795,7 +20083,7 @@ export namespace Prisma {
 
   export type ProjectCreateManyTeamInputEnvelope = {
     data: ProjectCreateManyTeamInput | ProjectCreateManyTeamInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type TeamMemberUpsertWithWhereUniqueWithoutTeamInput = {
@@ -19815,14 +20103,14 @@ export namespace Prisma {
   }
 
   export type TeamMemberScalarWhereInput = {
-    AND?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-    OR?: TeamMemberScalarWhereInput[]
-    NOT?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[]
-    id?: StringFilter<"TeamMember"> | string
-    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole
-    teamId?: StringFilter<"TeamMember"> | string
-    userId?: StringFilter<"TeamMember"> | string
-    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string
+    AND?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
+    OR?: TeamMemberScalarWhereInput[] | $Types.Skip
+    NOT?: TeamMemberScalarWhereInput | TeamMemberScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"TeamMember"> | string | $Types.Skip
+    role?: EnumTeamRoleFilter<"TeamMember"> | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    userId?: StringFilter<"TeamMember"> | string | $Types.Skip
+    joinedAt?: DateTimeFilter<"TeamMember"> | Date | string | $Types.Skip
   }
 
   export type PostUpsertWithWhereUniqueWithoutTeamInput = {
@@ -19842,24 +20130,40 @@ export namespace Prisma {
   }
 
   export type PostScalarWhereInput = {
-    AND?: PostScalarWhereInput | PostScalarWhereInput[]
-    OR?: PostScalarWhereInput[]
-    NOT?: PostScalarWhereInput | PostScalarWhereInput[]
-    id?: StringFilter<"Post"> | string
-    shortId?: StringFilter<"Post"> | string
-    title?: StringFilter<"Post"> | string
-    category?: StringFilter<"Post"> | string
-    description?: StringNullableFilter<"Post"> | string | null
-    type?: StringFilter<"Post"> | string
-    keywords?: StringNullableListFilter<"Post">
-    coverImage?: StringNullableFilter<"Post"> | string | null
-    images?: StringNullableListFilter<"Post">
-    uploaderId?: StringFilter<"Post"> | string
-    relatedPosts?: StringNullableListFilter<"Post">
-    permission?: StringFilter<"Post"> | string
-    teamId?: StringNullableFilter<"Post"> | string | null
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
+    AND?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
+    OR?: PostScalarWhereInput[] | $Types.Skip
+    NOT?: PostScalarWhereInput | PostScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Post"> | string | $Types.Skip
+    shortId?: StringFilter<"Post"> | string | $Types.Skip
+    title?: StringFilter<"Post"> | string | $Types.Skip
+    category?: StringFilter<"Post"> | string | $Types.Skip
+    description?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    type?: StringFilter<"Post"> | string | $Types.Skip
+    keywords?: StringNullableListFilter<"Post"> | $Types.Skip
+    coverImage?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    images?: StringNullableListFilter<"Post"> | $Types.Skip
+    uploaderId?: StringFilter<"Post"> | string | $Types.Skip
+    relatedPosts?: StringNullableListFilter<"Post"> | $Types.Skip
+    permission?: StringFilter<"Post"> | string | $Types.Skip
+    teamId?: StringNullableFilter<"Post"> | string | null | $Types.Skip
+    createdAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Post"> | Date | string | $Types.Skip
+  }
+
+  export type FileRecordUpsertWithWhereUniqueWithoutTeamInput = {
+    where: FileRecordWhereUniqueInput
+    update: XOR<FileRecordUpdateWithoutTeamInput, FileRecordUncheckedUpdateWithoutTeamInput>
+    create: XOR<FileRecordCreateWithoutTeamInput, FileRecordUncheckedCreateWithoutTeamInput>
+  }
+
+  export type FileRecordUpdateWithWhereUniqueWithoutTeamInput = {
+    where: FileRecordWhereUniqueInput
+    data: XOR<FileRecordUpdateWithoutTeamInput, FileRecordUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type FileRecordUpdateManyWithWhereWithoutTeamInput = {
+    where: FileRecordScalarWhereInput
+    data: XOR<FileRecordUpdateManyMutationInput, FileRecordUncheckedUpdateManyWithoutTeamInput>
   }
 
   export type ProjectUpsertWithWhereUniqueWithoutTeamInput = {
@@ -19879,44 +20183,46 @@ export namespace Prisma {
   }
 
   export type ProjectScalarWhereInput = {
-    AND?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
-    OR?: ProjectScalarWhereInput[]
-    NOT?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
-    id?: StringFilter<"Project"> | string
-    name?: StringFilter<"Project"> | string
-    description?: StringNullableFilter<"Project"> | string | null
-    client?: StringNullableFilter<"Project"> | string | null
-    location?: StringNullableFilter<"Project"> | string | null
-    coverImage?: StringNullableFilter<"Project"> | string | null
-    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
-    teamId?: StringFilter<"Project"> | string
-    creatorId?: StringFilter<"Project"> | string
-    createdAt?: DateTimeFilter<"Project"> | Date | string
-    updatedAt?: DateTimeFilter<"Project"> | Date | string
+    AND?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
+    OR?: ProjectScalarWhereInput[] | $Types.Skip
+    NOT?: ProjectScalarWhereInput | ProjectScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Project"> | string | $Types.Skip
+    name?: StringFilter<"Project"> | string | $Types.Skip
+    description?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    client?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFilter<"Project"> | string | $Types.Skip
+    creatorId?: StringFilter<"Project"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
   }
 
   export type TeamCreateWithoutMembersInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    posts?: PostCreateNestedManyWithoutTeamInput
-    projects?: ProjectCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    posts?: PostCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamUncheckedCreateWithoutMembersInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    avatar?: string | null
-    color?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    posts?: PostUncheckedCreateNestedManyWithoutTeamInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput
+    description?: string | null | $Types.Skip
+    avatar?: string | null | $Types.Skip
+    color?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutTeamInput | $Types.Skip
   }
 
   export type TeamCreateOrConnectWithoutMembersInput = {
@@ -19925,35 +20231,35 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutTeamMembersInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput
-    posts?: PostCreateNestedManyWithoutUploaderInput
-    comments?: CommentCreateNestedManyWithoutUserInput
-    projects?: ProjectCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    accounts?: AccountCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserUncheckedCreateWithoutTeamMembersInput = {
-    id?: string
+    id?: string | $Types.Skip
     userName: string
     email: string
-    role?: $Enums.Role
-    image?: string | null
-    userCollection?: UserCreateuserCollectionInput | string[]
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput
-    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput
-    comments?: CommentUncheckedCreateNestedManyWithoutUserInput
-    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput
+    role?: $Enums.Role | $Types.Skip
+    image?: string | null | $Types.Skip
+    userCollection?: UserCreateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    posts?: PostUncheckedCreateNestedManyWithoutUploaderInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutUserInput | $Types.Skip
+    projects?: ProjectUncheckedCreateNestedManyWithoutCreatorInput | $Types.Skip
   }
 
   export type UserCreateOrConnectWithoutTeamMembersInput = {
@@ -19964,93 +20270,95 @@ export namespace Prisma {
   export type TeamUpsertWithoutMembersInput = {
     update: XOR<TeamUpdateWithoutMembersInput, TeamUncheckedUpdateWithoutMembersInput>
     create: XOR<TeamCreateWithoutMembersInput, TeamUncheckedCreateWithoutMembersInput>
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
   }
 
   export type TeamUpdateToOneWithWhereWithoutMembersInput = {
-    where?: TeamWhereInput
+    where?: TeamWhereInput | $Types.Skip
     data: XOR<TeamUpdateWithoutMembersInput, TeamUncheckedUpdateWithoutMembersInput>
   }
 
   export type TeamUpdateWithoutMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    posts?: PostUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type TeamUncheckedUpdateWithoutMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    color?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutTeamNestedInput | $Types.Skip
   }
 
   export type UserUpsertWithoutTeamMembersInput = {
     update: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
     create: XOR<UserCreateWithoutTeamMembersInput, UserUncheckedCreateWithoutTeamMembersInput>
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
   }
 
   export type UserUpdateToOneWithWhereWithoutTeamMembersInput = {
-    where?: UserWhereInput
+    where?: UserWhereInput | $Types.Skip
     data: XOR<UserUpdateWithoutTeamMembersInput, UserUncheckedUpdateWithoutTeamMembersInput>
   }
 
   export type UserUpdateWithoutTeamMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput
-    posts?: PostUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUpdateManyWithoutUserNestedInput
-    projects?: ProjectUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    accounts?: AccountUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type UserUncheckedUpdateWithoutTeamMembersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    userCollection?: UserUpdateuserCollectionInput | string[]
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput
-    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
-    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userName?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    email?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role | $Types.Skip
+    image?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    userCollection?: UserUpdateuserCollectionInput | string[] | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    fileRecords?: FileRecordUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    posts?: PostUncheckedUpdateManyWithoutUploaderNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutUserNestedInput | $Types.Skip
+    projects?: ProjectUncheckedUpdateManyWithoutCreatorNestedInput | $Types.Skip
   }
 
   export type TeamMemberCreateWithoutUserInput = {
-    id?: string
-    role?: $Enums.TeamRole
-    joinedAt?: Date | string
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
+    joinedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutMembersInput
   }
 
   export type TeamMemberUncheckedCreateWithoutUserInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     teamId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateOrConnectWithoutUserInput = {
@@ -20060,25 +20368,25 @@ export namespace Prisma {
 
   export type TeamMemberCreateManyUserInputEnvelope = {
     data: TeamMemberCreateManyUserInput | TeamMemberCreateManyUserInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type AccountCreateWithoutUserInput = {
-    id?: string
-    password?: string | null
+    id?: string | $Types.Skip
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type AccountUncheckedCreateWithoutUserInput = {
-    id?: string
-    password?: string | null
+    id?: string | $Types.Skip
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type AccountCreateOrConnectWithoutUserInput = {
@@ -20088,39 +20396,41 @@ export namespace Prisma {
 
   export type AccountCreateManyUserInputEnvelope = {
     data: AccountCreateManyUserInput | AccountCreateManyUserInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type FileRecordCreateWithoutUploaderInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    post?: PostCreateNestedOneWithoutFilesInput
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    team?: TeamCreateNestedOneWithoutFilesInput | $Types.Skip
+    post?: PostCreateNestedOneWithoutFilesInput | $Types.Skip
   }
 
   export type FileRecordUncheckedCreateWithoutUploaderInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
-    postId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordCreateOrConnectWithoutUploaderInput = {
@@ -20130,47 +20440,47 @@ export namespace Prisma {
 
   export type FileRecordCreateManyUploaderInputEnvelope = {
     data: FileRecordCreateManyUploaderInput | FileRecordCreateManyUploaderInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type PostCreateWithoutUploaderInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordCreateNestedManyWithoutPostInput
-    team?: TeamCreateNestedOneWithoutPostsInput
-    comments?: CommentCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordCreateNestedManyWithoutPostInput | $Types.Skip
+    team?: TeamCreateNestedOneWithoutPostsInput | $Types.Skip
+    comments?: CommentCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostUncheckedCreateWithoutUploaderInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput
-    comments?: CommentUncheckedCreateNestedManyWithoutPostInput
-    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    files?: FileRecordUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    comments?: CommentUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedCreateNestedManyWithoutPostInput | $Types.Skip
   }
 
   export type PostCreateOrConnectWithoutUploaderInput = {
@@ -20180,27 +20490,27 @@ export namespace Prisma {
 
   export type PostCreateManyUploaderInputEnvelope = {
     data: PostCreateManyUploaderInput | PostCreateManyUploaderInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type CommentCreateWithoutUserInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     post: PostCreateNestedOneWithoutCommentsInput
-    parent?: CommentCreateNestedOneWithoutRepliesInput
-    replies?: CommentCreateNestedManyWithoutParentInput
+    parent?: CommentCreateNestedOneWithoutRepliesInput | $Types.Skip
+    replies?: CommentCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentUncheckedCreateWithoutUserInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    replies?: CommentUncheckedCreateNestedManyWithoutParentInput
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    replies?: CommentUncheckedCreateNestedManyWithoutParentInput | $Types.Skip
   }
 
   export type CommentCreateOrConnectWithoutUserInput = {
@@ -20210,37 +20520,37 @@ export namespace Prisma {
 
   export type CommentCreateManyUserInputEnvelope = {
     data: CommentCreateManyUserInput | CommentCreateManyUserInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type ProjectCreateWithoutCreatorInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
-    phases?: PhaseCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetCreateNestedManyWithoutProjectInput
+    phases?: PhaseCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectUncheckedCreateWithoutCreatorInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput
-    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+    phases?: PhaseUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
+    assets?: ProjectAssetUncheckedCreateNestedManyWithoutProjectInput | $Types.Skip
   }
 
   export type ProjectCreateOrConnectWithoutCreatorInput = {
@@ -20250,7 +20560,7 @@ export namespace Prisma {
 
   export type ProjectCreateManyCreatorInputEnvelope = {
     data: ProjectCreateManyCreatorInput | ProjectCreateManyCreatorInput[]
-    skipDuplicates?: boolean
+    skipDuplicates?: boolean | $Types.Skip
   }
 
   export type TeamMemberUpsertWithWhereUniqueWithoutUserInput = {
@@ -20286,16 +20596,16 @@ export namespace Prisma {
   }
 
   export type AccountScalarWhereInput = {
-    AND?: AccountScalarWhereInput | AccountScalarWhereInput[]
-    OR?: AccountScalarWhereInput[]
-    NOT?: AccountScalarWhereInput | AccountScalarWhereInput[]
-    id?: StringFilter<"Account"> | string
-    userId?: StringFilter<"Account"> | string
-    password?: StringNullableFilter<"Account"> | string | null
-    provider?: StringFilter<"Account"> | string
-    providerAccountId?: StringFilter<"Account"> | string
-    createdAt?: DateTimeFilter<"Account"> | Date | string
-    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    AND?: AccountScalarWhereInput | AccountScalarWhereInput[] | $Types.Skip
+    OR?: AccountScalarWhereInput[] | $Types.Skip
+    NOT?: AccountScalarWhereInput | AccountScalarWhereInput[] | $Types.Skip
+    id?: StringFilter<"Account"> | string | $Types.Skip
+    userId?: StringFilter<"Account"> | string | $Types.Skip
+    password?: StringNullableFilter<"Account"> | string | null | $Types.Skip
+    provider?: StringFilter<"Account"> | string | $Types.Skip
+    providerAccountId?: StringFilter<"Account"> | string | $Types.Skip
+    createdAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
+    updatedAt?: DateTimeFilter<"Account"> | Date | string | $Types.Skip
   }
 
   export type FileRecordUpsertWithWhereUniqueWithoutUploaderInput = {
@@ -20363,863 +20673,939 @@ export namespace Prisma {
   }
 
   export type CommentCreateManyParentInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
     userId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type CommentUpdateWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    post?: PostUpdateOneRequiredWithoutCommentsNestedInput
-    user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    replies?: CommentUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    post?: PostUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    replies?: CommentUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateManyPhaseInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpdateWithoutPhaseInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
-    children?: ProjectAssetUpdateManyWithoutParentNestedInput
-    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput | $Types.Skip
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateWithoutPhaseInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPhaseInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordCreateManyPostInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
     uploaderId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type CommentCreateManyPostInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     userId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateManyPostInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    phaseId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneWithoutFilesNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateManyWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type CommentUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    parent?: CommentUpdateOneWithoutRepliesNestedInput
-    replies?: CommentUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    parent?: CommentUpdateOneWithoutRepliesNestedInput | $Types.Skip
+    replies?: CommentUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
-    children?: ProjectAssetUpdateManyWithoutParentNestedInput
-    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput | $Types.Skip
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput | $Types.Skip
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PhaseCreateManyProjectInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    sortOrder?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    sortOrder?: number | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateManyProjectInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
-    parentId?: string | null
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
+    parentId?: string | null | $Types.Skip
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type PhaseUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    rootAssets?: ProjectAssetUpdateManyWithoutPhaseNestedInput | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    rootAssets?: ProjectAssetUncheckedUpdateManyWithoutPhaseNestedInput | $Types.Skip
   }
 
   export type PhaseUncheckedUpdateManyWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput
-    children?: ProjectAssetUpdateManyWithoutParentNestedInput
-    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
-    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    parent?: ProjectAssetUpdateOneWithoutChildrenNestedInput | $Types.Skip
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput | $Types.Skip
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutProjectInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectAssetCreateManyParentInput = {
-    id?: string
-    name?: string | null
-    description?: string | null
-    type?: $Enums.AssetType
-    sortOrder?: number
+    id?: string | $Types.Skip
+    name?: string | null | $Types.Skip
+    description?: string | null | $Types.Skip
+    type?: $Enums.AssetType | $Types.Skip
+    sortOrder?: number | $Types.Skip
     projectId: string
-    phaseId?: string | null
-    postId?: string | null
-    url?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    phaseId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    url?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectAssetUpdateWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUpdateManyWithoutParentNestedInput
-    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput
-    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput
-    post?: PostUpdateOneWithoutProjectAssetsNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUpdateManyWithoutParentNestedInput | $Types.Skip
+    project?: ProjectUpdateOneRequiredWithoutAssetsNestedInput | $Types.Skip
+    phase?: PhaseUpdateOneWithoutRootAssetsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutProjectAssetsNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    children?: ProjectAssetUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type ProjectAssetUncheckedUpdateManyWithoutParentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
-    sortOrder?: IntFieldUpdateOperationsInput | number
-    projectId?: StringFieldUpdateOperationsInput | string
-    phaseId?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType | $Types.Skip
+    sortOrder?: IntFieldUpdateOperationsInput | number | $Types.Skip
+    projectId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    phaseId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    url?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateManyTeamInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     userId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type PostCreateManyTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
     uploaderId: string
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
+  }
+
+  export type FileRecordCreateManyTeamInput = {
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
+    name: string
+    fileId: string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    uploaderId: string
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectCreateManyTeamInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    user?: UserUpdateOneRequiredWithoutTeamMembersNestedInput | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    userId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    userId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    userId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PostUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUpdateManyWithoutPostNestedInput
-    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUpdateManyWithoutPostNestedInput | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutPostsNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    uploaderId?: StringFieldUpdateOperationsInput | string
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type FileRecordUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    uploader?: UserUpdateOneRequiredWithoutFileRecordsNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutFilesNestedInput | $Types.Skip
+  }
+
+  export type FileRecordUncheckedUpdateWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+  }
+
+  export type FileRecordUncheckedUpdateManyWithoutTeamInput = {
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    uploaderId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput
-    phases?: PhaseUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    creator?: UserUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    phases?: PhaseUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateManyWithoutTeamInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberCreateManyUserInput = {
-    id?: string
-    role?: $Enums.TeamRole
+    id?: string | $Types.Skip
+    role?: $Enums.TeamRole | $Types.Skip
     teamId: string
-    joinedAt?: Date | string
+    joinedAt?: Date | string | $Types.Skip
   }
 
   export type AccountCreateManyUserInput = {
-    id?: string
-    password?: string | null
+    id?: string | $Types.Skip
+    password?: string | null | $Types.Skip
     provider: string
     providerAccountId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type FileRecordCreateManyUploaderInput = {
-    id?: string
-    shortId?: string | null
+    id?: string | $Types.Skip
+    shortId?: string | null | $Types.Skip
     name: string
     fileId: string
-    viewerFileId?: string | null
-    category?: $Enums.FileCategory
-    extension?: string | null
-    size?: string
-    status?: $Enums.ProcessStatus
-    errorMessage?: string | null
-    postId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    viewerFileId?: string | null | $Types.Skip
+    category?: $Enums.FileCategory | $Types.Skip
+    extension?: string | null | $Types.Skip
+    size?: string | $Types.Skip
+    status?: $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: string | null | $Types.Skip
+    teamId?: string | null | $Types.Skip
+    postId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type PostCreateManyUploaderInput = {
-    id?: string
+    id?: string | $Types.Skip
     shortId: string
     title: string
     category: string
-    description?: string | null
+    description?: string | null | $Types.Skip
     type: string
-    keywords?: PostCreatekeywordsInput | string[]
-    coverImage?: string | null
-    images?: PostCreateimagesInput | string[]
-    relatedPosts?: PostCreaterelatedPostsInput | string[]
+    keywords?: PostCreatekeywordsInput | string[] | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    images?: PostCreateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostCreaterelatedPostsInput | string[] | $Types.Skip
     permission: string
-    teamId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    teamId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type CommentCreateManyUserInput = {
-    id?: string
+    id?: string | $Types.Skip
     content: string
     postId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    parentId?: string | null | $Types.Skip
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type ProjectCreateManyCreatorInput = {
-    id?: string
+    id?: string | $Types.Skip
     name: string
-    description?: string | null
-    client?: string | null
-    location?: string | null
-    coverImage?: string | null
-    status?: $Enums.ProjectStatus
+    description?: string | null | $Types.Skip
+    client?: string | null | $Types.Skip
+    location?: string | null | $Types.Skip
+    coverImage?: string | null | $Types.Skip
+    status?: $Enums.ProjectStatus | $Types.Skip
     teamId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    createdAt?: Date | string | $Types.Skip
+    updatedAt?: Date | string | $Types.Skip
   }
 
   export type TeamMemberUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    teamId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type TeamMemberUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole
-    teamId?: StringFieldUpdateOperationsInput | string
-    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    role?: EnumTeamRoleFieldUpdateOperationsInput | $Enums.TeamRole | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AccountUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AccountUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type AccountUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    provider?: StringFieldUpdateOperationsInput | string
-    providerAccountId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    password?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    provider?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    providerAccountId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    post?: PostUpdateOneWithoutFilesNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneWithoutFilesNestedInput | $Types.Skip
+    post?: PostUpdateOneWithoutFilesNestedInput | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type FileRecordUncheckedUpdateManyWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
-    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
-    extension?: NullableStringFieldUpdateOperationsInput | string | null
-    size?: StringFieldUpdateOperationsInput | string
-    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus
-    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
-    postId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    fileId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    viewerFileId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    category?: EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory | $Types.Skip
+    extension?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    size?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    status?: EnumProcessStatusFieldUpdateOperationsInput | $Enums.ProcessStatus | $Types.Skip
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    postId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type PostUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUpdateManyWithoutPostNestedInput
-    team?: TeamUpdateOneWithoutPostsNestedInput
-    comments?: CommentUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUpdateManyWithoutPostNestedInput | $Types.Skip
+    team?: TeamUpdateOneWithoutPostsNestedInput | $Types.Skip
+    comments?: CommentUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput
-    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput
-    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    files?: FileRecordUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    comments?: CommentUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
+    projectAssets?: ProjectAssetUncheckedUpdateManyWithoutPostNestedInput | $Types.Skip
   }
 
   export type PostUncheckedUpdateManyWithoutUploaderInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    shortId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    type?: StringFieldUpdateOperationsInput | string
-    keywords?: PostUpdatekeywordsInput | string[]
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: PostUpdateimagesInput | string[]
-    relatedPosts?: PostUpdaterelatedPostsInput | string[]
-    permission?: StringFieldUpdateOperationsInput | string
-    teamId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    shortId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    title?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    category?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    type?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    keywords?: PostUpdatekeywordsInput | string[] | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    images?: PostUpdateimagesInput | string[] | $Types.Skip
+    relatedPosts?: PostUpdaterelatedPostsInput | string[] | $Types.Skip
+    permission?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type CommentUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    post?: PostUpdateOneRequiredWithoutCommentsNestedInput
-    parent?: CommentUpdateOneWithoutRepliesNestedInput
-    replies?: CommentUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    post?: PostUpdateOneRequiredWithoutCommentsNestedInput | $Types.Skip
+    parent?: CommentUpdateOneWithoutRepliesNestedInput | $Types.Skip
+    replies?: CommentUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    replies?: CommentUncheckedUpdateManyWithoutParentNestedInput | $Types.Skip
   }
 
   export type CommentUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    content?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    content?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    postId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
   export type ProjectUpdateWithoutCreatorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput
-    phases?: PhaseUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
+    phases?: PhaseUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateWithoutCreatorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput
-    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    phases?: PhaseUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
+    assets?: ProjectAssetUncheckedUpdateManyWithoutProjectNestedInput | $Types.Skip
   }
 
   export type ProjectUncheckedUpdateManyWithoutCreatorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    client?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
-    teamId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    id?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    name?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    description?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    client?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
 
 

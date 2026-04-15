@@ -82,26 +82,26 @@ const MetadataForm = ({
     console.log("準備存入資料庫的關聯 ID:", selectedPosts);
   };
 
-  useEffect(() => {
-    const fetchUploadableTeams = async () => {
-      if (session?.user?.id) {
-        const result = await getUserTeams(session.user.id);
+  // useEffect(() => {
+  //   const fetchUploadableTeams = async () => {
+  //     if (session?.user?.id) {
+  //       const result = await getUserTeams();
         
-        if (result.success && result.data) {
-          // 🚀 過濾權限：只保留 role 是 OWNER, ADMIN, 或 EDITOR 的團隊 (排除 VIEWER)
-          // ⚠️ 注意：這裡假設 getUserTeams 回傳的資料結構中包含該使用者在該團隊的 role 屬性
-          // 如果你的回傳結構不同，請根據實際的欄位名稱調整 (例如: team.role 或 team.TeamMember.role)
-          const validTeams = result.data.filter((team: any) => 
-            team.role !== "VIEWER" 
-          );
+  //       if (result.success && result.data) {
+  //         // 🚀 過濾權限：只保留 role 是 OWNER, ADMIN, 或 EDITOR 的團隊 (排除 VIEWER)
+  //         // ⚠️ 注意：這裡假設 getUserTeams 回傳的資料結構中包含該使用者在該團隊的 role 屬性
+  //         // 如果你的回傳結構不同，請根據實際的欄位名稱調整 (例如: team.role 或 team.TeamMember.role)
+  //         const validTeams = result.data.filter((team: any) => 
+  //           team.role !== "VIEWER" 
+  //         );
           
-          setUploadableTeams(validTeams);
-        }
-      }
-    };
+  //         setUploadableTeams(validTeams);
+  //       }
+  //     }
+  //   };
 
-    fetchUploadableTeams();
-  }, [session?.user?.id]);
+  //   fetchUploadableTeams();
+  // }, [session?.user?.id]);
 
   // 1. 當 Team 改變時：撈取該團隊的專案
   useEffect(() => {
@@ -565,7 +565,7 @@ const MetadataForm = ({
       </div>
       {/* Belonging Team & 動態專案關聯 */}
       <div className='flex flex-col gap-6'>
-        {/* 1. 選擇隸屬團隊 (全局) */}
+        {/* 1. 選擇隸屬團隊 (全局)
         <div className="space-y-2">
           <label className="text-white text-sm block">Belonging Team</label>
           <Select
@@ -588,7 +588,7 @@ const MetadataForm = ({
               </SelectItem>
             ))}
           </Select>
-        </div>
+        </div> */}
 
         {/* 2. 動態專案與階段關聯清單 */}
         {metadata.team && metadata.team !== "none" && (

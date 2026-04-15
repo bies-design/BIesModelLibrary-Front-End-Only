@@ -56,6 +56,53 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         return uppyInstance;
     });
 
+    // 4. 頁面重整時：主動拉取尚未完成的任務，並重建狀態
+    useEffect(() => {
+        if (!session?.user?.id) return;
+
+        const fetchActiveTasks = async () => {
+            try {
+                // 注意：這裡的 URL 請換成你 Tus Server 的實際網址
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/api/tasks/status?userId=${session.user.id}`);
+                const { data } = response.data;
+
+                if (data && data.length > 0) {
+                    const restoredFiles: Record<string, TrackedFile> = {};
+
+                    data.forEach((task: any) => {
+                        // 因為 Uppy 實例已經清空了，沒有原本的 uppyId。
+                        // 我們直接把資料庫的 fileId 當作 uppyId 來用！
+                        const pseudoUppyId = task.fileId; 
+
+                        // 🔌 關鍵 1：重建 Ref Map，這樣 Socket 封包才進得來！
+                        tusIdMap.current[task.fileId] = { 
+                            id: pseudoUppyId, 
+                            name: task.name 
+                        };
+
+                        // 🔌 關鍵 2：重建畫面 State
+                        restoredFiles[pseudoUppyId] = {
+                            uppyId: pseudoUppyId,
+                            tusId: task.fileId,
+                            name: task.name,
+                            progress: task.progress, // 從 Redis 抓回來的精準 % 數
+                            status: task.status,     // 'processing' 或 'error'
+                            errorMessage: task.errorMessage
+                        };
+                    });
+
+                    // 把這些恢復的任務塞回畫面上
+                    setTrackedFiles(prev => ({ ...prev, ...restoredFiles }));
+                    console.log(`♻️ 成功恢復 ${data.length} 個背景轉檔任務`);
+                }
+            } catch (error) {
+                console.error("無法拉取背景任務狀態:", error);
+            }
+        };
+
+        fetchActiveTasks();
+    }, [session?.user?.id]); // 當獲取到 userId 時執行一次
+
     // 2. WebSocket 監聽 (處理轉檔通知)
     useEffect(() => {
 

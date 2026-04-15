@@ -23,6 +23,7 @@ interface CreatePostParams {
     coverImageKey: string | null;
     imageKeys: string[];
     fileIds?: string[];
+    teamId: string | null;
 }
 // This is for both 3d and 2d post
 export async function createPost(params: CreatePostParams) {
@@ -36,8 +37,9 @@ export async function createPost(params: CreatePostParams) {
         coverImageKey, 
         imageKeys, 
         fileIds = [],
+        teamId
     } = params;
-    const isTeamPost = metadata.team && metadata.team !== "none" && metadata.team.trim() !== "";
+    const isTeamPost = teamId && teamId !== "none" && teamId !== "";
     try {
         let postType = "OTHER";
 
@@ -100,7 +102,7 @@ export async function createPost(params: CreatePostParams) {
 
         if(isTeamPost){
             data.team = {
-                connect: { id: metadata.team}
+                connect: { id: teamId}
             };
         }
         // 寫入 PostgreSQL

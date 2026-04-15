@@ -51,6 +51,11 @@ export default function MediaGallery({ post }: { post: any }) {
                 const loadPromises = threeDFiles.map(async (fileRecord: any) => {
                     const fileId = fileRecord.id;
                     const modelId = fileRecord.name.replace(/\.(ifc|frag)$/i, "");
+                    // 如果有，直接跳過這一個檔案的所有處理！(省去 Buffer 解析，也不會觸發紅字)
+                    if (viewerRef.current?.hasModel(modelId)) {
+                        return;
+                    }
+
                     let buffer: ArrayBuffer;
 
                     if (!fileCache[fileId]) {
@@ -67,7 +72,7 @@ export default function MediaGallery({ post }: { post: any }) {
                         buffer = await fileCache[fileId].arrayBuffer();
                     }
 
-                    await viewerRef.current?.loadModel(buffer, modelId);
+                    viewerRef.current?.loadModel(buffer, modelId);
                 });
 
                 await Promise.all(loadPromises);
@@ -185,7 +190,7 @@ export default function MediaGallery({ post }: { post: any }) {
             <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-none" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-[#18181B] overflow-hidden relative `}>
                 
                 {isLoading && (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md">
+                    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md">
                         <Loader2 className="w-12 h-12 text-[#D70036] animate-spin mb-3" />
                         <p className="text-white text-sm font-medium tracking-wider">Downloading files...</p>
                     </div>

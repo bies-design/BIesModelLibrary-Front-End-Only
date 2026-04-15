@@ -17,6 +17,7 @@ export interface Viewer3DRef {
     takeScreenshot: () => Promise<string | null>;
     exportModelFrag: (modelId: string) => Promise<ArrayBuffer | null>;
     deleteModel: (modelId: string) => void;
+    hasModel: (modelId: string) => boolean;
 }
 // 材質萃取器
 export const extractMaterialsFromIFC = (webIfc: WEBIFC.IfcAPI, modelID: number): Record<string, string> => {
@@ -153,6 +154,11 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
 
     useImperativeHandle(ref, () => ({
         getComponents: () => componentsRef.current,
+        hasModel: (modelId: string) => {
+            if (!componentsRef.current) return false;
+            const fragments = componentsRef.current.get(OBC.FragmentsManager);
+            return fragments.list.has(modelId);
+        },
         loadModel: async(buffer,modelName) => {
             if(!componentsRef.current) return;
             const fragments = componentsRef.current.get(OBC.FragmentsManager);
@@ -160,11 +166,11 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             const modelId = modelName;
              // Dispose existing model if it has the same ID
             if (fragments.list.has(modelId)) {
-                console.error(`Viewer3D already have ${modelId} model in Scene`);
+                console.log(`Viewer3D already have ${modelId} model in Scene`);
                 return;
             }
             const fragModel = await fragments.core.load(buffer, { modelId });
-            console.warn(fragments.list);
+            console.log(fragments.list);
             // fragments.list.set(modelId, fragModel);
             setLoadingModelsCount(fragments.list.size);
         },

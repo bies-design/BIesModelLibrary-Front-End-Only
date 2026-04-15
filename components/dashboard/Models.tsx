@@ -82,7 +82,7 @@ const Models = (props: Props) => {
     useEffect(() => {
         const fetchTeams = async () => {
             if (userId) {
-                const result = await getUserTeams(userId);
+                const result = await getUserTeams();
                 if (result.success && result.data) {
                     setUserTeams(result.data);
                 }

@@ -160,11 +160,13 @@ export async function getTeamMembers(teamId: string) {
 /**
  * 取得特定使用者所屬的所有團隊列表
  */
-export async function getUserTeams(userId: string) {
+export async function getUserTeams() {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
     try {
         const userTeams = await prisma.teamMember.findMany({
             where: { 
-                userId: userId 
+                userId: session.user.id
             },
             include: {
                 team: true // 把關聯的 Team 本體資料一起抓出來

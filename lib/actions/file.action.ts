@@ -7,34 +7,33 @@ import { s3Client } from "../s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-// 🚀 新版：獲取使用者上傳的所有檔案
-export async function getUserFiles() {
-    try {
-        const session = await auth();
-        if (!session?.user?.id) {
-        return { success: false, error: "Unauthorized" };
-        }
+// 獲取檔案 (根據 workspace 過濾)
+export async function getUserFiles(workspaceId: string) {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+    try{
+        // 判斷條件：如果是 'personal'，就找 uploaderId 是自己且 teamId 為空的檔案
+        // 如果是具體的 teamId，就找該團隊的檔案
+        const whereCondition = workspaceId === "personal"
+            ? { uploaderId: session.user.id, postId: null, teamId: null }
+            : { teamId: workspaceId, postId: null };
 
         const files = await prisma.fileRecord.findMany({
-        where: {
-            uploaderId: session.user.id,
-            // 如果你想過濾掉已經綁定到貼文的檔案，可以加上 postId: null
-            // postId: null 
-        },
-        orderBy: {
-            createdAt: 'desc'
-        },
-        select: {
-            id: true,
-            shortId: true,
-            name: true,
-            viewerFileId:true,
-            fileId: true,
-            size: true,
-            status: true,
-            category: true, // 💡 把分類拿回來，前端才能 filter
-            createdAt: true,
-        }
+            where: whereCondition,
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                shortId: true,
+                name: true,
+                viewerFileId:true,
+                fileId: true,
+                size: true,
+                status: true,
+                teamId: true,
+                category: true, // 💡 把分類拿回來，前端才能 filter
+                createdAt: true,
+            }
         });
 
         return { success: true, data: files };
@@ -44,7 +43,43 @@ export async function getUserFiles() {
     }
 }
 
-// 🚀 新版：刪除檔案 (同時清理 FileRecord)
+// // 獲取使用者上傳的所有檔案
+// export async function getUserFiles() {
+//     try {
+//         const session = await auth();
+//         if (!session?.user?.id) {
+//         return { success: false, error: "Unauthorized" };
+//         }
+
+//         const files = await prisma.fileRecord.findMany({
+//         where: {
+//             uploaderId: session.user.id,
+//             postId: null
+//         },
+//         orderBy: {
+//             createdAt: 'desc'
+//         },
+//         select: {
+//             id: true,
+//             shortId: true,
+//             name: true,
+//             viewerFileId:true,
+//             fileId: true,
+//             size: true,
+//             status: true,
+//             category: true, // 💡 把分類拿回來，前端才能 filter
+//             createdAt: true,
+//         }
+//         });
+
+//         return { success: true, data: files };
+//     } catch (error: any) {
+//         console.error("Failed to fetch user files:", error);
+//         return { success: false, error: error.message };
+//     }
+// }
+
+// 刪除檔案 (同時清理 FileRecord)
 export async function deleteFileRecord(fileId: string) {
     try {
         const session = await auth();

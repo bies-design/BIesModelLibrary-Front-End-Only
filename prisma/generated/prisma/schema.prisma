@@ -68,9 +68,12 @@ model FileRecord {
   status       ProcessStatus @default(completed)
   errorMessage String?
 
+  // 新增這兩行：讓檔案一上傳就能指定歸屬團隊 (可以為 null 代表純私人)
+  teamId     String?
+  team       Team?   @relation(fields: [teamId], references: [id], onDelete: Restrict)
   // 關聯到上傳者
   uploaderId String
-  uploader   User   @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploader   User    @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   // 關聯到 Post：一個檔案屬於一篇 Post
   postId String?
@@ -83,8 +86,9 @@ model FileRecord {
 // prisma/schema/main.prisma
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["strictUndefinedChecks"]
 }
 
 datasource db {
@@ -233,6 +237,7 @@ model Team {
   // 關聯
   members     TeamMember[] // 團隊成員與他們的權限
   posts       Post[] // 該團隊擁有的所有模型貼文
+  files       FileRecord[] // 該團隊擁有的所有fileRecord
   projects    Project[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt

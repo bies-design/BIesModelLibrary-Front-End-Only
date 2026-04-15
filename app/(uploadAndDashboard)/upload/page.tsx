@@ -33,6 +33,8 @@ const Upload = () => {
     const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
     const [loadedFiles, setLoadedFiles] = useState<FileItem[]>([]);
     const [coverImage, setCoverImage] = useState<string | null>(null);
+    // 在 Upload 組件內新增這個狀態
+    const [currentWorkspaceId, setCurrentWorkspaceId] = useState<string>("personal");
     const [IFCProcessingStatus, setIFCProcessingStatus] = useState<{
         isIFCProcessing: boolean;
         fileName: string | null;
@@ -157,6 +159,7 @@ const Upload = () => {
                 imageKeys: imageKeys,
                 // 霸氣！直接把打勾的陣列丟給後端，其他分類邏輯全部刪掉！
                 fileIds: selectedPublishIds, 
+                teamId: currentWorkspaceId === 'personal' ? null : currentWorkspaceId
             });
 
             if (result.success) {
@@ -210,59 +213,59 @@ const Upload = () => {
         setStep((prev) => Math.max(prev - 1, 1));
     };
     // 動態決定要渲染哪一個 Viewer
-    const renderViewer = () => {
-        // 如果還沒選擇檔案，給一個預設的空狀態畫面
-        if (!selectedFile) {
-            return (
-                <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-                    <Box size={48} className="opacity-20 mb-4" />
-                    <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
-                </div>
-            );
-        }
+    // const renderViewer = () => {
+    //     // 如果還沒選擇檔案，給一個預設的空狀態畫面
+    //     if (!selectedFile) {
+    //         return (
+    //             <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+    //                 <Box size={48} className="opacity-20 mb-4" />
+    //                 <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
+    //             </div>
+    //         );
+    //     }
 
-        const lowerName = selectedFile.name.toLowerCase();
+    //     const lowerName = selectedFile.name.toLowerCase();
 
-        // 1. 判斷 3D 模型 (.ifc, .obj, .gltf 等等)
-        if (lowerName.endsWith('.ifc')) {
-            return (
-                // 加入key讓一個viewer3D只適用於一個model
-                <Viewer3D
-                    ref={viewerRef} 
-                    allFiles={uploadedFiles} 
-                    file={selectedFile.file} 
-                    onIFCProcessingChange={handleIFCProcessingChange} 
-                />
-            );
-        }
+    //     // 1. 判斷 3D 模型 (.ifc, .obj, .gltf 等等)
+    //     if (lowerName.endsWith('.ifc')) {
+    //         return (
+    //             // 加入key讓一個viewer3D只適用於一個model
+    //             <Viewer3D
+    //                 ref={viewerRef} 
+    //                 allFiles={uploadedFiles} 
+    //                 file={selectedFile.file} 
+    //                 onIFCProcessingChange={handleIFCProcessingChange} 
+    //             />
+    //         );
+    //     }
 
-        // 2. 判斷 PDF
-        if (lowerName.endsWith('.pdf') || selectedFile.type === 'pdf') {
-            return (
-                <PDFViewer 
-                    key={selectedFile.dbId}
-                    ref={pdfRef} 
-                    file={selectedFile.file} 
-                />
-            );
-        }
+    //     // 2. 判斷 PDF
+    //     if (lowerName.endsWith('.pdf') || selectedFile.type === 'pdf') {
+    //         return (
+    //             <PDFViewer 
+    //                 key={selectedFile.dbId}
+    //                 ref={pdfRef} 
+    //                 file={selectedFile.file} 
+    //             />
+    //         );
+    //     }
 
-        // 3. 未來擴充範例：圖片預覽
-        if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
-            // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
-            return (
-                <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
-            );
-        }
+    //     // 3. 未來擴充範例：圖片預覽
+    //     if (lowerName.endsWith('.png') || lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
+    //         // 你甚至可以直接用一個簡單的 img 標籤來預覽圖片
+    //         return (
+    //             <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
+    //         );
+    //     }
 
-        // 4. 都不支援的 Fallback 畫面
-        return (
-            <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-                <FileText size={48} className="opacity-20 mb-4" />
-                <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
-            </div>
-        );
-    };
+    //     // 4. 都不支援的 Fallback 畫面
+    //     return (
+    //         <div className="flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+    //             <FileText size={48} className="opacity-20 mb-4" />
+    //             <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
+    //         </div>
+    //     );
+    // };
 
     useEffect(() => {
         console.log(`選擇file:${selectedFile?.name}`);
@@ -323,7 +326,7 @@ const Upload = () => {
                                     </div>
                                 )}
                                 {/* 2. 🚀 永遠保留的 Viewer3D！只在選擇的是 3D 模型時顯示 */}
-                                <div className={`absolute inset-0 ${selectedFile?.name.toLowerCase().endsWith('.ifc') ? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
+                                <div className={`absolute inset-0 ${(selectedFile?.name.toLowerCase().endsWith('.ifc') || selectedFile?.name.toLowerCase().endsWith('.frag'))? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
                                     <Viewer3D
                                         ref={viewerRef} 
                                         allFiles={uploadedFiles} 
@@ -353,7 +356,8 @@ const Upload = () => {
                                 )}
                                 {/* 5. 🚀 Fallback 畫面：有選擇檔案，但不是 3D、PDF 或圖片時顯示 */}
                                 {selectedFile && 
-                                !selectedFile?.name.toLowerCase().endsWith('.ifc') &&  
+                                !selectedFile?.name.toLowerCase().endsWith('.ifc') && 
+                                !selectedFile?.name.toLowerCase().endsWith('.frag') &&
                                 !selectedFile?.name.toLocaleLowerCase().endsWith('.pdf') &&
                                 !selectedFile.name.toLowerCase().endsWith('.png') && 
                                 !selectedFile.name.toLowerCase().endsWith('.jpg') && 
@@ -381,6 +385,7 @@ const Upload = () => {
                                     onTogglePublish={(id) => setSelectedPublishIds(prev => 
                                         prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
                                     )}
+                                    onWorkspaceChange={setCurrentWorkspaceId}
                                 />
                             </div>
                             {step === 2 && (
