@@ -31,7 +31,7 @@ const Home = () => {
   const searchKeyword = SearchParams.get('search') || '';
   const typeParam = SearchParams.get('type');
   const validTypes: PostType[] = ['ALL', 'MODEL_3D', 'DRAWING', 'DOCUMENT', 'IMAGE', 'OTHER'];
-  const scopeKeyword = SearchParams.get('scope') || '';
+  const scopeKeyword = SearchParams.get('scope') || 'ALL';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const selectedItem = itemsQuery.find(item => item.id === isSelectId) || itemsQuery[0];
 
@@ -51,17 +51,44 @@ const Home = () => {
 
   const fetchPosts = async (currentPage: number, isReset: boolean = false) => {
     setIsLoading(true);
-    const result = await getPostsByScroll(currentPage, 9, isSelectId, isQueryArrange, searchKeyword, scopeKeyword, '', fileRecordTypeKeyword);
-    
-    if (result.success && result.data) {
-      if (isReset) {
-        setPosts(result.data);
+    try {
+      const result = await getPostsByScroll(
+        currentPage, 
+        9, 
+        isSelectId, 
+        isQueryArrange, 
+        searchKeyword, 
+        scopeKeyword, 
+        '', 
+        fileRecordTypeKeyword
+      );
+      
+      // 只有在明確成功，且有資料的情況下，才把資料塞進去
+      if (result.success && result.data) {
+        if (isReset) {
+          setPosts(result.data);
+        } else {
+          setPosts((prev) => [...prev, ...result.data!]);
+        }
+        // 更新是否還有下一頁
+        setHasMore(result.hasMore || false);
       } else {
-        setPosts((prev) => [...prev, ...result.data!]);
+        // 🚀 致命 Bug 殺手：如果伺服器回傳失敗 (例如未登入、無權限)，必須強制停止抓取！
+        setHasMore(false);
+        
+        // 如果是重新整理/切換分類時發生錯誤，把畫面清空，以免殘留舊資料
+        if (isReset) {
+          setPosts([]);
+        }
       }
-      setHasMore(result.hasMore || false);
+    } catch (error) {
+      console.error("Fetch posts 發生預期外錯誤:", error);
+      // 🚀 就算網路斷掉或發生 Exception，也要強制關閉無限捲動
+      setHasMore(false);
+    } finally {
+      // 確保不管成功或失敗，都會解除 loading 狀態
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {

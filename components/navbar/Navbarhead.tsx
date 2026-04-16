@@ -150,7 +150,7 @@ export default function Navbarhead() {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>):
-              (<Link href="/sign-in" className="flex gap-1 items-center px-2 py-2 md:px-4 rounded-xl bg-primary shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]">
+              (<Link href="/sign-in" className="flex gap-1 items-center px-2 py-2 md:px-4 rounded-xl bg-primary text-white shadow-[0px_0px_2px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]">
                 <LogIn className="w-4 h-4"/>
                 <p className="hidden md:block">Login</p>
               </Link>

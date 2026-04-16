@@ -37,8 +37,48 @@ export const createWorld = (components: OBC.Components) => {
     const postproductionRenderer = world.renderer as OBCF.PostproductionRenderer;
     postproductionRenderer.postproduction.enabled = true;
     postproductionRenderer.postproduction.style = OBCF.PostproductionAspect.COLOR_SHADOWS;
-    // postproductionRenderer.postproduction.smaaEnabled = true;
+    postproductionRenderer.postproduction.smaaEnabled = true;
+    renderer.manualModeDelay = 0;
+    
+    //當移動時不關閉特效
+    postproductionRenderer.turnOffOnManualMode = false;
+    
+    world.dynamicAnchor = false;
+    
+    const { aoPass, edgesPass } = postproductionRenderer.postproduction;
+    
+    edgesPass.color = new THREE.Color(0x888888);
+    edgesPass.width = 1;
 
+    aoPass.renderToScreen = true;
+    aoPass.needsSwap = true;
+    aoPass.blendIntensity = 1;
+
+    const aoParameters = {
+        radius: 0.25,
+        distanceExponent: 5.7,
+        thickness: 10,
+        scale: 2,
+        samples: 32,
+        distanceFallOff: 1,
+        screenSpaceRadius: true,
+    };
+
+    const pdParameters = {
+        lumaPhi: 10,
+        depthPhi: 2,
+        normalPhi: 3,
+        radius: 4,
+        radiusExponent: 1,
+        rings: 2,
+        samples: 16,
+    };
+
+    aoPass.updateGtaoMaterial(aoParameters);
+    aoPass.updatePdMaterial(pdParameters);
+    aoPass.needsSwap = true;
+    components.init();
+    
     const resizeWorld = () => {
         try{
             world.renderer?.resize();

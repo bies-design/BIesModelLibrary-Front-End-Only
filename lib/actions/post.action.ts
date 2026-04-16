@@ -314,9 +314,9 @@ export const getPostsByScroll = async (
             whereCondition.type = includeFileType;
         }
         
-        if(scope !== "ALL"){
+        if(scope && scope !== "ALL"){
             if(!session?.user.id){
-                return {success:false, error:"Unauthorized"};
+                return {success:false, error:"Unauthorized", data: [], hasMore: false};
             }
 
             switch(scope){
@@ -384,7 +384,8 @@ export const getPostsByScroll = async (
                         };
                     }
 
-                    whereCondition.id = {in: collectionIds}
+                    whereCondition.id = {in: collectionIds};
+                    break;
             }
         }
         // 動態建立排序條件 (OrderBy)
@@ -435,7 +436,7 @@ export const getPostsByScroll = async (
         };
     } catch (error) {
         console.error("Failed to fetch paginated posts:", error);
-        return { success: false, error: "Database error" };
+        return { success: false, error: "Database error", data: [], hasMore: false };
     }
 };
 
