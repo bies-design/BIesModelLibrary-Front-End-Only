@@ -284,6 +284,7 @@ const Settings = (props: Props) => {
                             variant="flat"
                             isReadOnly
                             classNames={{
+                                label: "text-white",
                                 inputWrapper: [
                                     "bg-[#18181B]",
                                     "data-[hover=true]:bg-[#27272a]", 
@@ -329,6 +330,7 @@ const Settings = (props: Props) => {
                         }}
                         variant="flat"
                         classNames={{
+                            label: "text-white",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
@@ -359,6 +361,7 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
+                            label: "text-white",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
@@ -378,6 +381,7 @@ const Settings = (props: Props) => {
                         defaultValue={userData.email}
                         variant="flat"
                         classNames={{
+                            label: "text-white",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
@@ -417,6 +421,7 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
+                            label: "text-white",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 

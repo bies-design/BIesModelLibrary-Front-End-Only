@@ -578,6 +578,8 @@ const Teams = () => {
                         placement='center'
                         onOpenChange={handleModalOpenChange}
                         classNames={{
+                            wrapper: "z-[9999]", 
+                            backdrop: "z-[9998]",
                             base: "bg-[#18181B] border border-white/10 text-white",
                             header: "border-b border-white/10",
                             footer: "border-t border-white/10",

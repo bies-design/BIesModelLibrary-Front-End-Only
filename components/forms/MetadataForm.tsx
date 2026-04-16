@@ -358,6 +358,11 @@ const MetadataForm = ({
               ].join(" "),
               value: "text-white",
             }}
+            listboxProps={{
+              itemClasses: {
+                title: "text-white!",
+              },
+            }}
           >
             <SelectItem key="Buildings" className='font-inter'>Buildings</SelectItem>
             <SelectItem key="Products" className='font-inter'>Products</SelectItem>
@@ -744,6 +749,11 @@ const MetadataForm = ({
                 "data-[focus=true]:bg-[#27272a]",
               ].join(" "),
               value: "text-white",
+            }}
+            listboxProps={{
+              itemClasses: {
+                title: "text-white!",
+              },
             }}
           >
             <SelectItem key="standard">Standard License</SelectItem>

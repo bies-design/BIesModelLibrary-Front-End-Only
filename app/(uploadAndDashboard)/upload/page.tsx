@@ -367,7 +367,7 @@ const Upload = () => {
                                     onClick={() => setForceManualCover(prev => !prev)}
                                     className="absolute bg-primary px-2 py-1 top-2 right-2 rounded-lg z-50 shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] text-white hover:text-white transition-colors"
                                 >
-                                    {forceManualCover ? "自行上傳" : "場景截圖"}
+                                    {forceManualCover ? "場景截圖" : "自行上傳"}
                                 </button>
                             }         
                             {step === 2 && (!(isSupported3D || isSupportedPdf) || ((isSupported3D || isSupportedPdf) && forceManualCover) ) &&
