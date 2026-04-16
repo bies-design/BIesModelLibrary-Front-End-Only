@@ -28,7 +28,7 @@ export const createWorld = (components: OBC.Components) => {
     world.renderer = renderer;
 
     const camera = new OBC.OrthoPerspectiveCamera(components);
-    camera.threePersp.near = 0.01;
+    camera.threePersp.near = 0.1;
     camera.threePersp.updateProjectionMatrix();
     camera.projection.set("Perspective");
 
