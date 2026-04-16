@@ -13,18 +13,32 @@ export const setupFragmentsManager = (components: OBC.Components,world:OBC.Simpl
 
     fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
         const isLod = "isLodMaterial" in material && material.isLodMaterial;
-            if (isLod) {
-                (world.renderer as OBCF.PostproductionRenderer).postproduction.basePass.isolatedMaterials.push(material);
-            }
+
+        if (isLod) {
+            // 處理 LOD 材質的後處理特效
+            (world.renderer as OBCF.PostproductionRenderer).postproduction.basePass.isolatedMaterials.push(material);
+        } 
+        else {
+            // 移除一般材質的 Z-fighting (破圖現象)
+            material.polygonOffset = true;
+            material.polygonOffsetUnits = 1;
+            material.polygonOffsetFactor = Math.random();
+        }
     });
     
     //lighting and reflections
     const hdriLoader = new RGBELoader();
     hdriLoader.load(
-        "https://thatopen.github.io/engine_fragments/resources/textures/envmaps/san_giuseppe_bridge_2k.hdr",
+        "/cyclorama_hard_light_2k.hdr",
         (texture) => {
-            texture.mapping = EquirectangularReflectionMapping;
-            (world.scene.three as THREE.Scene).environment = texture;
+            try {
+                texture.mapping = EquirectangularReflectionMapping;
+                if (world.scene && world.scene.three) {
+                    (world.scene.three as THREE.Scene).environment = texture;
+                }
+            } catch (error) {
+                console.warn("HDR 載入完成，但場景可能已被銷毀 (React Strict Mode):", error);
+            }
         },
     );
     

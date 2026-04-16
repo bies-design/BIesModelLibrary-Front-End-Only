@@ -22,7 +22,7 @@ const Models = (props: Props) => {
     const [activeTab, setActiveTab] = useState<string>('Personal');
     const [isLoading, setIsLoading] = useState(false);
 
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = useState<string>("");
 
     const [category, setCategory] = useState<string>("ALL");
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -30,12 +30,12 @@ const Models = (props: Props) => {
     const [isQueryArrange, setIsQueryArrange] = useState<string>('Newest');
     
     const [posts, setPosts] = useState<any[]>([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
     
     const loadMoreRef = useRef(null); 
     const isIntersecting = useNativeInView(loadMoreRef, '400px');
-    const isFetchingRef = useRef(false);
+    const isFetchingRef = useRef<boolean>(false);
     const activeTabRef = useRef(activeTab);
     
     const fetchModels = async (currentPage:number, isReset:boolean = false, targetTab: string,currentSearch: string = searchQuery,currentCategory: string = category, currentSort:string = isQueryArrange, currentTeamId:string = selectedTeamId) => {

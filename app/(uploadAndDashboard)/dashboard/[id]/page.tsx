@@ -6,6 +6,7 @@ import Settings from '@/components/dashboard/Settings';
 import Teams from '@/components/dashboard/Teams';
 import Models from '@/components/dashboard/Models';
 import { Menu, X ,ChevronLeft, ChevronRight} from 'lucide-react'; // 記得引入圖示！
+import Records from '@/components/dashboard/Records';
 
 const Dashboard = () => {
     const [selected, setSelected] = useState("Settings");
@@ -53,6 +54,7 @@ const Dashboard = () => {
                     {selected === "Settings" && <Settings/>}
                     {selected === "Teams" && <Teams/>}
                     {selected === "Models" && <Models/>}
+                    {selected === "Records" && <Records workspaceId='personal'/>}
                 </div>
             </div>
         </div>  

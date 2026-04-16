@@ -1,4 +1,4 @@
-import {PackageOpen,Building,Boxes,Box,FileBox, Users ,File,Settings} from "lucide-react"
+import {PackageOpen,Building,Boxes,Box,FileBox, Users ,File,Settings, FolderClock} from "lucide-react"
 
 export const itemsQuery =[
     {id:'ALL',label:"ALL",icon:PackageOpen},
@@ -43,4 +43,5 @@ export const DashboardButtons = [
     {id:"Settings",label:"Settings",icon:Settings},
     {id:"Teams",label:"Teams",icon:Users},
     {id:"Models",label:"Models",icon:FileBox},
+    {id:"Records",label:"Records",icon:FolderClock},
 ]

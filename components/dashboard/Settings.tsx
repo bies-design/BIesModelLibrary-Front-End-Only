@@ -533,7 +533,6 @@ const Settings = (props: Props) => {
                     )}
                 </ModalContent>
             </Modal>
-
         </div>
     );
 }

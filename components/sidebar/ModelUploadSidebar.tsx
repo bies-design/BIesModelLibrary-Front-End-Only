@@ -214,15 +214,15 @@ const ModelUploadSidebar = ({
   };
 
   const handleConfirmDelete = async () => {
-        if (!modelToDelete || !modelIdToDelete) return;
-        onOpenChange();
-        // 這裡的邏輯是從雲端刪除，我們找到對應的載入項也一起拔掉
-        const loadedItem = loadedFiles.find(f => f.name === modelToDelete);
-        if (loadedItem) removeFileFromScene(loadedItem);
-        
-        await deleteFileRecord(modelIdToDelete);
-        fetchUserFilesData();
-    };
+      if (!modelToDelete || !modelIdToDelete) return;
+      onOpenChange();
+      // 這裡的邏輯是從雲端刪除，我們找到對應的載入項也一起拔掉
+      const loadedItem = loadedFiles.find(f => f.name === modelToDelete);
+      if (loadedItem) removeFileFromScene(loadedItem);
+      
+      await deleteFileRecord(modelIdToDelete);
+      fetchUserFilesData();
+  };
 
   // 下載並載入 ifc 模型
   const downloadAndLoadFrag = async(dbId: string, fileId: string, viewerFileId: string | null | undefined, modelName: string, e: React.MouseEvent) => {
@@ -702,7 +702,7 @@ const ModelUploadSidebar = ({
         
       </div>
 
-      {/* 刪除確認 Modal 保持不變 */}
+      
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='center' classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
         <ModalContent>
           {(onClose) => (

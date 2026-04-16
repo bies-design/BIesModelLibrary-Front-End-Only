@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { FileCategory } from "@/prisma/generated/prisma";
+import { FileCategory, ProcessStatus } from "@/prisma/generated/prisma";
 import { s3Client } from "../s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
@@ -33,6 +33,96 @@ export async function getUserFiles(workspaceId: string) {
                 teamId: true,
                 category: true, // 💡 把分類拿回來，前端才能 filter
                 createdAt: true,
+            }
+        });
+
+        return { success: true, data: files };
+    } catch (error: any) {
+        console.error("Failed to fetch user files:", error);
+        return { success: false, error: error.message };
+    }
+}
+// 獲取檔案 (根據 workspace 過濾)
+export async function getUserFilesForDashboard(
+    workspaceId: string,
+    category: string = "ALL",
+    queryArrange: string,
+    status: string = "ALL",
+    search: string,
+) {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+    try{
+        const whereCondition: any = {};
+        
+        // 1. 工作區過濾 (個人或團隊)
+        if (workspaceId === "personal") {
+            whereCondition.uploaderId = session.user.id;
+            whereCondition.teamId = null;
+        } else {
+            whereCondition.teamId = workspaceId;
+        }
+
+        // 2. 分類過濾
+        if (category && category !== "ALL") {
+            whereCondition.category = category as FileCategory;
+        }
+
+        // 3. 搜尋名稱過濾
+        if (search && search.trim() !== "") {
+            whereCondition.name = { contains: search.trim(), mode: 'insensitive' };
+        }
+
+        // 4. 狀態過濾
+        if (status && status !== "ALL") {
+            whereCondition.status = status as ProcessStatus;
+        }
+
+        // 5. 排序條件
+        let orderByCondition: any = { createdAt: 'desc' }; // 預設 Newest
+        switch (queryArrange) {
+            case "Newest":
+                orderByCondition = { createdAt: 'desc' };
+                break;
+            case "Oldest":
+                orderByCondition = { createdAt: 'asc' };
+                break;
+            case "Size Big":
+                orderByCondition = { size: 'asc' }; // 檔案通常沒有點閱率，可暫時用大小來代表「熱門/份量重」
+                break;
+            case "Size Small":
+                orderByCondition = { size: 'desc' }; // 檔案通常沒有點閱率，可暫時用大小來代表「熱門/份量重」
+                break;
+            // 未來可在這裡擴充更多排序方式，例如:
+            // case "Oldest":
+            //     orderByCondition = { createdAt: 'asc' };
+            //     break;
+        }
+
+        const files = await prisma.fileRecord.findMany({
+            where: whereCondition,
+            orderBy: orderByCondition,
+            select: {
+                id: true,
+                shortId: true,
+                name: true,
+                viewerFileId:true,
+                fileId: true,
+                size: true,
+                status: true,
+                errorMessage: true,
+                teamId: true,
+                category: true, // 💡 把分類拿回來，前端才能 filter
+                createdAt: true,
+                postId: true,
+                post: {
+                    select: {
+                        id: true,
+                        shortId: true,
+                        title: true,
+                    }
+                }
             }
         });
 
