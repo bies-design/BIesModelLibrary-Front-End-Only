@@ -99,7 +99,9 @@ const Records = ( { workspaceId } : RecordsProps ) => {
     return (
         <div className="@container text-white flex flex-col w-full h-full font-inter gap-4 overflow-hidden">
             {/* 標題 */}
-            <h1 className="text-3xl font-bold text-white">Records</h1>
+            {workspaceId === 'personal' &&
+                <h1 className="text-3xl font-bold text-white">Records</h1>
+            }
         
             {/* 工具列 */}
             <div className="flex flex-wrap items-start justify-start gap-3 mt-2">
@@ -119,7 +121,7 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                     placeholder="Status"
                     labelPlacement='inside'
                     label="Status"
-                    className="max-w-35 h-10 mb-4"
+                    className="max-w-32 h-10 mb-4"
                     listboxProps={{
                         itemClasses:{
                             title: "text-white",
@@ -204,7 +206,7 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                     filteredFiles.map((file) => (
                         <div key={file.id} className="hover-lift flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#18181B] rounded-xl shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)] gap-4">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-[#27272A] rounded-lg">
+                                <div className="p-3 hidden md:block bg-[#27272A] rounded-lg">
                                     {getFileIcon(file.category)}
                                 </div>
                                 <div className="flex flex-col">

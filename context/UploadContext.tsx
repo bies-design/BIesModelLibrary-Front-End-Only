@@ -152,7 +152,12 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
             });
         });
         // 監聽 Worker 完成訊號
-        socket.on("conversion-complete", (data: { fileId: string, status: string,fileName:string, message?: string }) => {
+        socket.on("conversion-complete", (data: { 
+            fileId: string, 
+            status: string,
+            fileName:string, 
+            message?: string 
+        }) => {
             // console.log("✅ Socket 收到通知:", data);
 
             const fileMapping = tusIdMap.current[data.fileId];

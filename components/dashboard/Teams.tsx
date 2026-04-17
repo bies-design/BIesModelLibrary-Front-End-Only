@@ -2,13 +2,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Input, Button, addToast, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
-    Select, SelectItem, Avatar, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu
+    Select, SelectItem, Avatar, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu, Tabs, Tab
 } from "@heroui/react";
 import { Settings, Trash2, Users, Loader2, CirclePlus, Search, Check, Filter, ArrowUpDown, Edit2, Layers, Copy, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createTeam, getTeamDetails, getTeamMembers, searchUsersForTeam, addMemberToTeam, updateTeamMemberRole, removeTeamMember, leaveTeam, deleteTeam, updateTeamSettings } from '@/lib/actions/team.action';
 import TeamSettingsModal from '../modals/TeamSettingsModal';
+import Records from './Records';
 
 // 定義團隊成員的資料型別
 type TeamMember = {
@@ -28,7 +29,8 @@ const Teams = () => {
     const searchParams = useSearchParams();
     const currentTeamId = searchParams.get('teamId');
     const [teamDetails, setTeamDetails] = useState<any>(null);
-    
+    const [activeTab, setActiveTab] = useState<string>("members");
+
     // Settings modal (Edit Mode)
     const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onOpenChange: onSettingsChange } = useDisclosure();    
     // Create Team modal (Create Mode)
@@ -438,7 +440,7 @@ const Teams = () => {
                 )}
                 {/* 🚀 動態標題顏色 */}
                 <h1 className="text-3xl text-white font-bold">
-                    {teamName} Team Members
+                    {teamName} {activeTab === "members" ? "Team Members" : "Team Files"}
                 </h1>
                 <Dropdown classNames={{ content: "bg-[#27272A] border border-[#3F3F46] min-w-[200px]" }}>
                     <DropdownTrigger>
@@ -513,233 +515,260 @@ const Teams = () => {
                 }}
                 onSubmit={handleUpdateTeam}
             />
-            
-            {/* 工具列 */}
-            <div className="flex flex-wrap items-center justify-start gap-3 mt-2">
-                <div className=" flex flex-col md:flex-row gap-2 min-w-[300px]">
-                    <Select 
-                        aria-label="Search Type"
-                        labelPlacement='inside'
-                        label="Search Type"
-                        defaultSelectedKeys={["username"]}
-                        className="md:min-w-[130px]"
-                        onChange={(e) => {
-                            setListSearchType(e.target.value as "username" | "id");
-                            setSearchQuery("");
-                            setCurrentPage(1);
-                        }}
-                        classNames={{
-                            trigger: [
-                                "bg-[#18181B]",
-                                "data-[hover=true]:bg-[#27272a]", 
-                                "data-[focus=true]:bg-[#27272a]",
-                                "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
-                            ].join(" "),
-                            popoverContent:[
-                                "bg-[#18181B]",
-                                "data-[hover=true]:bg-[#27272a]", 
-                                "data-[focus=true]:bg-[#27272a]",
-                            ].join(" "),
-                            value: "text-white",
-                        }}
-                    >
-                        <SelectItem key="username" className="text-white">Username</SelectItem>
-                        <SelectItem key="id" className="text-white">User ID</SelectItem>
-                        <SelectItem key="role" className="text-white">Role</SelectItem>
-                    </Select>
-                    <input 
-                        type="text" 
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1);
-                        }}
-                        placeholder="Search name or handle..." 
-                        className="rounded-xl px-2 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm outline-none transition-colors"
-                    />
-                </div>
-                <div className='flex max-sm:w-full  items-start gap-2'>
-                    <button onClick={() => setIsEditMode(!isEditMode)} className={`${hasEditPermission ? 'block' : 'hidden'} hover-lift flex items-center gap-2 px-4 py-2  ${isEditMode ? 'bg-[#640a0a]' : 'bg-[#e11d48]'} text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm font-medium transition-colors`}>
-                        <Edit2 className="w-4 h-6" /> {isEditMode ? 'Finish Edit' : 'Edit'}
-                    </button>
-                
-                    <div className={`${hasEditPermission ? 'block' : 'hidden'} flex items-end`}>
-                        <Button 
-                            onPress={onOpen}
-                            className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors"
-                            variant="flat"
-                            startContent={<CirclePlus size={16} />}
-                        >
-                            Add Members
-                        </Button>
-                    </div>
-                    <Modal 
-                        isOpen={isOpen} 
-                        placement='center'
-                        onOpenChange={handleModalOpenChange}
-                        classNames={{
-                            wrapper: "z-[9999]", 
-                            backdrop: "z-[9998]",
-                            base: "bg-[#18181B] border border-white/10 text-white",
-                            header: "border-b border-white/10",
-                            footer: "border-t border-white/10",
-                            closeButton: "hover:bg-white/10 active:bg-white/20 text-2xl",
-                        }}
-                        className='dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]'
-                    >
-                        <ModalContent>
-                            {(onClose) => (
-                                <>
-                                    <ModalHeader className="flex flex-col gap-1">Invite Team Member</ModalHeader>
-                                    <ModalBody className="py-6">
-                                        <div className="flex gap-2 mb-4">
-                                            <Select 
-                                                aria-label="Search Type"
-                                                defaultSelectedKeys={["username"]}
-                                                className="w-[130px]"
-                                                onChange={(e) => {
-                                                    setSearchType(e.target.value as "username" | "id");
-                                                    setSearchInput(""); 
-                                                }}
-                                                classNames={{
-                                                    trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
-                                                    popoverContent: "bg-[#27272A] border border-[#3F3F46]"
-                                                }}
-                                            >
-                                                <SelectItem key="username" className="text-white">Username</SelectItem>
-                                                <SelectItem key="id" className="text-white">User ID</SelectItem>
-                                            </Select>
-                                            <Input
-                                                className="w-2/3"
-                                                autoFocus
-                                                placeholder={`Search by ${searchType === 'username' ? 'Username' : 'ID'}...`}
-                                                variant="flat"
-                                                value={searchInput}
-                                                onChange={(e) => setSearchInput(e.target.value)}
-                                                classNames={{ inputWrapper: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D] focus-within:border-[#f43f5e]" }}
-                                            />
-                                        </div>
 
-                                        <div className="max-h-[250px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                                            {isSearching && (
-                                                <div className="flex justify-center py-4"><Loader2 className="animate-spin text-gray-500 w-5 h-5" /></div>
-                                            )}
-                                            
-                                            {!isSearching && searchInput && searchResults.length === 0 && (
-                                                <p className="text-center text-gray-500 text-sm py-4">沒有找到符合條件的使用者</p>
-                                            )}
-
-                                            {!isSearching && searchResults.map(user => (
-                                                <div 
-                                                    key={user.id}
-                                                    onClick={() => setSelectedUserId(prev => prev === user.id ? "" : user.id)}
-                                                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border
-                                                        ${selectedUserId === user.id 
-                                                            ? 'bg-[#f43f5e]/20 border-[#f43f5e]' 
-                                                            : 'bg-[#27272A]/50 border-transparent hover:bg-[#3F3F46]'
-                                                        }`}
-                                                >
-                                                    <Avatar src={getImageUrl(user.image)} size="sm" showFallback />
-                                                    <div className="flex flex-col overflow-hidden">
-                                                        <span className="text-sm text-white font-medium truncate">{user.userName}</span>
-                                                        <span className="text-xs text-gray-500 truncate">
-                                                            {searchType === 'id' ? `ID: ${user.id}` : user.email}
-                                                        </span>
-                                                    </div>
-                                                    {selectedUserId === user.id && (
-                                                        <Check className="ml-auto text-[#f43f5e] w-4 h-4 flex-shrink-0" />
-                                                    )}
+            <div className='w-full mt-2'>
+                <Tabs
+                    aria-label="Team Management Tabs"
+                    selectedKey={activeTab}
+                    onSelectionChange={(key) => setActiveTab(key.toString())}
+                    variant="underlined"
+                    classNames={{
+                        tabList: "gap-6 w-full relative rounded-none p-0 border-b border-white/10",
+                        cursor: "w-full bg-[#E5E7EB]",
+                        tab: "max-w-fit px-0 h-12",
+                        tabContent: "group-data-[selected=true]:text-[#E5E7EB] text-gray-500"
+                    }}
+                >
+                    <Tab key="members" title="Team Members" />
+                    <Tab key="files" title="Team Files" />
+                </Tabs>
+            </div>
+            {activeTab === "members" && (
+                <div className='flex flex-col gap-4 animate-appearance-in duration-300'>
+                    {/* 工具列 */}
+                    <div className="flex flex-wrap items-center justify-start gap-3 mt-2">
+                        <div className=" flex flex-col md:flex-row gap-2 min-w-[300px]">
+                            <Select 
+                                aria-label="Search Type"
+                                labelPlacement='inside'
+                                label="Search Type"
+                                defaultSelectedKeys={["username"]}
+                                className="md:min-w-[130px]"
+                                onChange={(e) => {
+                                    setListSearchType(e.target.value as "username" | "id");
+                                    setSearchQuery("");
+                                    setCurrentPage(1);
+                                }}
+                                classNames={{
+                                    trigger: [
+                                        "bg-[#18181B]",
+                                        "data-[hover=true]:bg-[#27272a]", 
+                                        "data-[focus=true]:bg-[#27272a]",
+                                        "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
+                                    ].join(" "),
+                                    popoverContent:[
+                                        "bg-[#18181B]",
+                                        "data-[hover=true]:bg-[#27272a]", 
+                                        "data-[focus=true]:bg-[#27272a]",
+                                    ].join(" "),
+                                    value: "text-white",
+                                }}
+                            >
+                                <SelectItem key="username" className="text-white">Username</SelectItem>
+                                <SelectItem key="id" className="text-white">User ID</SelectItem>
+                                <SelectItem key="role" className="text-white">Role</SelectItem>
+                            </Select>
+                            <input 
+                                type="text" 
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                placeholder="Search name or handle..." 
+                                className="rounded-xl px-2 py-2 bg-[#18181B] shadow-[inset_0_3px_5px_1px_#000000A3,inset_0_-1px_2px_#00000099,0_3px_1.8px_#FFFFFF29,0_-2px_1.9px_#00000040,0_0_4px_#FBFBFB3D] focus:border-gray-500 text-sm outline-none transition-colors"
+                            />
+                        </div>
+                        <div className='flex max-sm:w-full  items-start gap-2'>
+                            <button onClick={() => setIsEditMode(!isEditMode)} className={`${hasEditPermission ? 'block' : 'hidden'} hover-lift flex items-center gap-2 px-4 py-2  ${isEditMode ? 'bg-[#640a0a]' : 'bg-[#e11d48]'} text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] text-sm font-medium transition-colors`}>
+                                <Edit2 className="w-4 h-6" /> {isEditMode ? 'Finish Edit' : 'Edit'}
+                            </button>
+                        
+                            <div className={`${hasEditPermission ? 'block' : 'hidden'} flex items-end`}>
+                                <Button 
+                                    onPress={onOpen}
+                                    className="hover-lift flex items-center gap-2 px-4 py-2 bg-[#e11d48] text-white rounded-xl shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33] hover:bg-[#be123c] text-sm font-medium transition-colors"
+                                    variant="flat"
+                                    startContent={<CirclePlus size={16} />}
+                                >
+                                    Add Members
+                                </Button>
+                            </div>
+                            <Modal 
+                                isOpen={isOpen} 
+                                placement='center'
+                                onOpenChange={handleModalOpenChange}
+                                classNames={{
+                                    wrapper: "z-[9999]", 
+                                    backdrop: "z-[9998]",
+                                    base: "bg-[#18181B] border border-white/10 text-white",
+                                    header: "border-b border-white/10",
+                                    footer: "border-t border-white/10",
+                                    closeButton: "hover:bg-white/10 active:bg-white/20 text-2xl",
+                                }}
+                                className='dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]'
+                            >
+                                <ModalContent>
+                                    {(onClose) => (
+                                        <>
+                                            <ModalHeader className="flex flex-col gap-1">Invite Team Member</ModalHeader>
+                                            <ModalBody className="py-6">
+                                                <div className="flex gap-2 mb-4">
+                                                    <Select 
+                                                        aria-label="Search Type"
+                                                        defaultSelectedKeys={["username"]}
+                                                        className="w-[130px]"
+                                                        onChange={(e) => {
+                                                            setSearchType(e.target.value as "username" | "id");
+                                                            setSearchInput(""); 
+                                                        }}
+                                                        classNames={{
+                                                            trigger: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]",
+                                                            popoverContent: "bg-[#27272A] border border-[#3F3F46]"
+                                                        }}
+                                                    >
+                                                        <SelectItem key="username" className="text-white">Username</SelectItem>
+                                                        <SelectItem key="id" className="text-white">User ID</SelectItem>
+                                                    </Select>
+                                                    <Input
+                                                        className="w-2/3"
+                                                        autoFocus
+                                                        placeholder={`Search by ${searchType === 'username' ? 'Username' : 'ID'}...`}
+                                                        variant="flat"
+                                                        value={searchInput}
+                                                        onChange={(e) => setSearchInput(e.target.value)}
+                                                        classNames={{ inputWrapper: "bg-[#18181B] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D] focus-within:border-[#f43f5e]" }}
+                                                    />
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button 
-                                            color="default" 
-                                            variant="flat" 
-                                            onPress={() => {
-                                                setSearchInput("");
-                                                setSelectedUserId("");
-                                                onClose();
-                                            }}
-                                            className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button 
-                                            color="primary"
-                                            className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
-                                            isLoading={isAddingMember}
-                                            isDisabled={!selectedUserId} 
-                                            onPress={() => handleAddMember(onClose)}
-                                        >
-                                            Add to Team
-                                        </Button>
-                                    </ModalFooter>
-                                </>
-                            )}
-                        </ModalContent>
-                    </Modal>
-                </div>
-            </div>
 
-            {/* 列表顯示區 */}
-            <div className="w-full flex flex-col lg:flex-row gap-x-12 gap-y-8 mt-4">
-                <div className="flex flex-col flex-1">
-                    <ListHeader />
-                    <div className="flex flex-col gap-1">
-                        {leftColumnData.length > 0 ? (
-                            leftColumnData.map((worker) => (
-                                <ListRow key={`left-${worker.id}`} data={worker} />
-                            ))
-                        ) : (
-                            <div className="py-8 text-center text-gray-500 text-sm">無符合的成員資料</div>
-                        )}
+                                                <div className="max-h-[250px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                                    {isSearching && (
+                                                        <div className="flex justify-center py-4"><Loader2 className="animate-spin text-gray-500 w-5 h-5" /></div>
+                                                    )}
+                                                    
+                                                    {!isSearching && searchInput && searchResults.length === 0 && (
+                                                        <p className="text-center text-gray-500 text-sm py-4">沒有找到符合條件的使用者</p>
+                                                    )}
+
+                                                    {!isSearching && searchResults.map(user => (
+                                                        <div 
+                                                            key={user.id}
+                                                            onClick={() => setSelectedUserId(prev => prev === user.id ? "" : user.id)}
+                                                            className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border
+                                                                ${selectedUserId === user.id 
+                                                                    ? 'bg-[#f43f5e]/20 border-[#f43f5e]' 
+                                                                    : 'bg-[#27272A]/50 border-transparent hover:bg-[#3F3F46]'
+                                                                }`}
+                                                        >
+                                                            <Avatar src={getImageUrl(user.image)} size="sm" showFallback />
+                                                            <div className="flex flex-col overflow-hidden">
+                                                                <span className="text-sm text-white font-medium truncate">{user.userName}</span>
+                                                                <span className="text-xs text-gray-500 truncate">
+                                                                    {searchType === 'id' ? `ID: ${user.id}` : user.email}
+                                                                </span>
+                                                            </div>
+                                                            {selectedUserId === user.id && (
+                                                                <Check className="ml-auto text-[#f43f5e] w-4 h-4 flex-shrink-0" />
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button 
+                                                    color="default" 
+                                                    variant="flat" 
+                                                    onPress={() => {
+                                                        setSearchInput("");
+                                                        setSelectedUserId("");
+                                                        onClose();
+                                                    }}
+                                                    className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button 
+                                                    color="primary"
+                                                    className="hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]"
+                                                    isLoading={isAddingMember}
+                                                    isDisabled={!selectedUserId} 
+                                                    onPress={() => handleAddMember(onClose)}
+                                                >
+                                                    Add to Team
+                                                </Button>
+                                            </ModalFooter>
+                                        </>
+                                    )}
+                                </ModalContent>
+                            </Modal>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex flex-col flex-1">
-                    {rightColumnData.length > 0 && <ListHeader />}
-                    <div className="flex flex-col gap-1">
-                        {rightColumnData.map((worker) => (
-                            <ListRow key={`right-${worker.id}`} data={worker} />
-                        ))}
+                    {/* 列表顯示區 */}
+                    <div className="w-full flex flex-col lg:flex-row gap-x-12 gap-y-8 mt-4">
+                        <div className="flex flex-col flex-1">
+                            <ListHeader />
+                            <div className="flex flex-col gap-1">
+                                {leftColumnData.length > 0 ? (
+                                    leftColumnData.map((worker) => (
+                                        <ListRow key={`left-${worker.id}`} data={worker} />
+                                    ))
+                                ) : (
+                                    <div className="py-8 text-center text-gray-500 text-sm">無符合的成員資料</div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            {rightColumnData.length > 0 && <ListHeader />}
+                            <div className="flex flex-col gap-1">
+                                {rightColumnData.map((worker) => (
+                                    <ListRow key={`right-${worker.id}`} data={worker} />
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            {/* 底部 Pagination */}
-            {totalPages > 1 && (
-                <div className="col-span-full flex items-center gap-2 mt-4 text-sm font-medium">
-                    <button 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={validCurrentPage === 1}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-                        <button
-                            key={num}
-                            onClick={() => setCurrentPage(num)}
-                            className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
-                                validCurrentPage === num 
-                                ? 'bg-[#f43f5e] text-white shadow-lg' 
-                                : 'text-gray-400 hover:bg-white/10 hover:text-gray-200'
-                            }`}
-                        >
-                            {num}
-                        </button>
-                    ))}
-                    
-                    <button 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={validCurrentPage === totalPages}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
+                    {/* 底部 Pagination */}
+                    {totalPages > 1 && (
+                        <div className="col-span-full flex items-center gap-2 mt-4 text-sm font-medium">
+                            <button 
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={validCurrentPage === 1}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </button>
+                            
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                                <button
+                                    key={num}
+                                    onClick={() => setCurrentPage(num)}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                                        validCurrentPage === num 
+                                        ? 'bg-[#f43f5e] text-white shadow-lg' 
+                                        : 'text-gray-400 hover:bg-white/10 hover:text-gray-200'
+                                    }`}
+                                >
+                                    {num}
+                                </button>
+                            ))}
+                            
+                            <button 
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={validCurrentPage === totalPages}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+            {/* 當在 files 頁籤時，顯示預留的檔案區塊 */}
+            {activeTab === "files" && currentTeamId && (
+                <div className="flex-1 animate-appearance-in duration-300">
+                    <Records workspaceId={currentTeamId}/>
                 </div>
             )}
         </div>        
