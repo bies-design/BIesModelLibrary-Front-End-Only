@@ -883,7 +883,13 @@ export default function ProjectDetailPage() {
                 </ModalContent>
             </Modal>
             {/* 移動資產 Modal */}
-            <Modal isOpen={isMoveModalOpen} onOpenChange={() => setIsMoveModalOpen(false)} className="dark text-white bg-[#18181B]">
+            <Modal 
+                isOpen={isMoveModalOpen} 
+                placement='center' 
+                onOpenChange={() => setIsMoveModalOpen(false)} 
+                classNames={{closeButton:"p-3 text-2xl"}} 
+                className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
+            >
                 <ModalContent>
                     <ModalHeader>移動資產：{movingAsset?.name || "未命名"}</ModalHeader>
                     <ModalBody className="max-h-[60vh] overflow-y-auto">
@@ -899,7 +905,7 @@ export default function ProjectDetailPage() {
                                     <div className="flex items-center gap-2 text-sm font-bold text-purple-300">
                                         <Milestone size={14} /> {phase.name} (頂層)
                                     </div>
-                                    <span className="text-[10px] bg-purple-500/30 px-2 py-0.5 rounded">選擇</span>
+                                    <span className="text-sm bg-purple-500/30 px-2 py-0.5 rounded">選擇</span>
                                 </div>
                                 
                                 {/* 該階段底下的所有資料夾 (遞迴或扁平化列出) */}
@@ -933,7 +939,13 @@ export default function ProjectDetailPage() {
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="flat" onClick={() => setIsMoveModalOpen(false)}>取消</Button>
+                        <Button 
+                            variant="flat" 
+                            onClick={() => setIsMoveModalOpen(false)}
+                            className='bg-black/90 text-white hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]'
+                        >
+                            Cancel
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
