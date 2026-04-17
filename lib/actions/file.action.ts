@@ -14,12 +14,16 @@ export async function getUserFiles(workspaceId: string) {
     if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
     try{
+        const baseCondition: any = {
+            postId: null,
+            status: "completed" //只抓取轉檔成功的檔案
+        };
         // 判斷條件：如果是 'personal'，就找 uploaderId 是自己且 teamId 為空的檔案
         // 如果是具體的 teamId，就找該團隊的檔案
         const whereCondition = workspaceId === "personal"
-            ? { uploaderId: session.user.id, postId: null, teamId: null }
-            : { teamId: workspaceId, postId: null };
-
+            ? { ...baseCondition, uploaderId: session.user.id, teamId: null }
+            : { ...baseCondition, teamId: workspaceId,};
+        
         const files = await prisma.fileRecord.findMany({
             where: whereCondition,
             orderBy: { createdAt: 'desc' },
@@ -285,7 +289,7 @@ export async function retryConvertTask(tusFileId: string, priority: number = 10)
 
     try{
 
-        const TUS_SERVER_URL = process.env.NEXT_PUBLIC_TUS_URL;
+        const TUS_SERVER_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
         const response = await axios.post(`${TUS_SERVER_URL}/api/tasks/retry`,{
             fileId: tusFileId,

@@ -38,7 +38,6 @@ import {
 } from 'lucide-react';
 import * as OBC from "@thatopen/components";
 import { useUpload } from "@/context/UploadContext";
-// 🚀 替換為我們新寫的 File API
 import { getUserFiles, deleteFileRecord, getFileDownloadUrl } from '@/lib/actions/file.action'; 
 import { getUserTeams } from '@/lib/actions/team.action';
 import * as THREE from 'three';

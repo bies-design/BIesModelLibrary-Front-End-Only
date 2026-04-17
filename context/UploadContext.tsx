@@ -8,6 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { addToast } from "@heroui/toast"; // 使用 HeroUI Toast
 import { useSession } from "next-auth/react";
 import axios from 'axios';
+import { retryConvertTask } from "@/lib/actions/file.action";
 
 // 定義 TrackedFile 介面 (如上所述)
 export interface TrackedFile {
@@ -17,6 +18,7 @@ export interface TrackedFile {
     progress: number;
     status: 'uploading' | 'processing' | 'completed' | 'error';
     errorMessage?: string;
+    retryCount: number;
 }
 
 interface UploadContextType {
@@ -24,6 +26,8 @@ interface UploadContextType {
     trackedFiles: Record<string, TrackedFile>; // Key 是 uppyId
     cancelFile: (fileId: string) => void;
     cancelAll: () => void;
+    retryConversion: (uppyId: string) => Promise<void>;
+    dismissTask: (uppyId: string )=> void;
 }
 
 const UploadContext = createContext<UploadContextType | null>(null);
@@ -87,7 +91,8 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
                             name: task.name,
                             progress: task.progress, // 從 Redis 抓回來的精準 % 數
                             status: task.status,     // 'processing' 或 'error'
-                            errorMessage: task.errorMessage
+                            errorMessage: task.errorMessage,
+                            retryCount: 0
                         };
                     });
 
@@ -237,6 +242,16 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         try { uppy.removeFile(uppyId); } catch (e) {}
     };
 
+    const dismissTask = (uppyId: string) => {
+        setTrackedFiles((prev) => {
+            const newState = { ...prev };
+            delete newState[uppyId];
+            return newState;
+        });
+        // 同步移除 Uppy 內部狀態 (如果還存在)
+        try { uppy.removeFile(uppyId); } catch (e) {}
+    };
+
     // 獨立的 Effect：當 Session 載入完成，將 UserID 寫入 Uppy Metadata
     useEffect(() => {
         if (uppy && session?.user?.id) {
@@ -260,7 +275,8 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
                     tusId: "",
                     name: file.name,
                     progress: 0,
-                    status: 'uploading'
+                    status: 'uploading',
+                    retryCount: 0
                 }as TrackedFile
             }));
         });
@@ -341,9 +357,61 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         uppy.cancelAll();
     };
 
+    const retryConversion = async (uppyId: string ) => {
+        const file = trackedFiles[uppyId];
+        if(!file || !file.tusId) return;
+
+        // 檢查重試次數防護 (設定最大次數為 3)
+        const MAX_RETRIES = 3;
+        const currentRetry = file.retryCount || 0;
+
+        if (currentRetry >= MAX_RETRIES) {
+            addToast({ 
+                title: "重試次數達上限", 
+                description: "已達最大重試次數 (3次)，伺服器無法處理此檔案，請刪除後重新上傳。", 
+                color: "danger" 
+            });
+            return;
+        }
+
+        // Optimistic Update：立刻讓畫面變成 processing 狀態
+        setTrackedFiles(prev => ({
+            ...prev,
+            [uppyId]: { 
+                ...prev[uppyId], 
+                status: 'processing', 
+                errorMessage: undefined, 
+                progress: 0 ,
+                retryCount: currentRetry + 1 // 增加次數
+            }
+        }));
+
+        try {
+            // 呼叫 API 重新進入佇列 (預設 priority 10)
+            const result = await retryConvertTask(file.tusId, 10); 
+            
+            if (result.success) {
+                addToast({ title: "已重新加入轉檔佇列", color: "default" });
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error: any) {
+            // 如果 API 呼叫失敗，退回 Error 狀態
+            setTrackedFiles(prev => ({
+                ...prev,
+                [uppyId]: { 
+                    ...prev[uppyId], 
+                    status: 'error', 
+                    errorMessage: error.message 
+                }
+            }));
+            addToast({ title: "重試失敗", description: error.message, color: "danger" });
+        }
+    };
+
     return (
-        <UploadContext.Provider value={{ uppy, trackedFiles, cancelFile, cancelAll }}>
-        {children}
+        <UploadContext.Provider value={{ uppy, trackedFiles, cancelFile, cancelAll, retryConversion, dismissTask }}>
+            {children}
         </UploadContext.Provider>
     );
 };

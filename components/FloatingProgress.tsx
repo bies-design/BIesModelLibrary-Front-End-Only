@@ -4,10 +4,12 @@
 import { useState } from "react";
 import { useUpload, TrackedFile } from "@/context/UploadContext";
 import { Card, CardBody, Progress, Button, ScrollShadow } from "@heroui/react";
-import { X, Loader2, CheckCircle2, AlertCircle, FileUp, Minus } from "lucide-react";
+import { X, Loader2, CheckCircle2, AlertCircle, FileUp, Minus, RefreshCcw, FileWarning, Trash2 } from "lucide-react";
+import { classifyError } from "@/lib/utils/errorClassifier";
+import { deleteFileRecord } from "@/lib/actions/file.action";
 
 export const FloatingProgress = () => {
-    const { trackedFiles, cancelFile, cancelAll } = useUpload();
+    const { trackedFiles } = useUpload();
     const [ isMinimized, setIsMinimized ] = useState<boolean>(false);
     // 將物件轉為陣列以便渲染
     const filesList = Object.values(trackedFiles);
@@ -91,7 +93,8 @@ export const FloatingProgress = () => {
 
 // 單個檔案進度條元件
 const FileItem = ({ file }: { file: TrackedFile }) => {
-    
+    const { retryConversion, dismissTask } = useUpload();
+
     // 根據狀態決定顏色與 Icon
     const getStatusConfig = () => {
         switch (file.status) {
@@ -127,6 +130,27 @@ const FileItem = ({ file }: { file: TrackedFile }) => {
     };
 
     const config = getStatusConfig();
+
+    // 動態計算錯誤資訊與重試限制
+    const MAX_RETRIES = 3;
+    const currentRetries = file.retryCount || 0;
+    const isMaxRetriesReached = currentRetries >= MAX_RETRIES;
+
+    let errorInfo = file.status === 'error'
+    ? classifyError(file.errorMessage)
+    : null;
+
+    // 如果重試次數達到上限，強制覆蓋分類結果為 Fatal (不可重試)
+    if (errorInfo && isMaxRetriesReached) {
+        errorInfo = {
+            ...errorInfo,
+            category: 'fatal', // 強制變為紅色的致命錯誤 UI
+            title: '重試次數達上限',
+            description: '已嘗試重新轉檔 3 次均失敗。可能檔案內含不支援的複雜幾何，請優化模型後重新上傳。',
+            canRetry: false,
+            actionText: '請刪除重傳'
+        };
+    }
 
     return (
         <div className="flex flex-col gap-2 p-3 rounded-lg hover:bg-[#27272A] transition-colors group relative border border-transparent hover:border-default-100/10">
@@ -167,12 +191,61 @@ const FileItem = ({ file }: { file: TrackedFile }) => {
             aria-label={`${file.name} progress`}
         />
         
-        {/* 錯誤訊息 (如果有的話) */}
-        {file.errorMessage && (
-            <span className="text-[10px] text-red-400 truncate">
-            {file.errorMessage}
-            </span>
-        )}
+            {/* 智慧錯誤面板：根據錯誤類型顯示不同 UI */}
+            {file.status === 'error' && file.errorMessage && errorInfo && (
+                <div className={`mt-1 p-2 border rounded-md flex flex-col gap-1.5 animate-appearance-in ${
+                    errorInfo.category === 'fatal' 
+                        ? 'bg-danger-50/10 border-danger-500/20' 
+                        : 'bg-warning-50/10 border-warning-500/20'
+                }`}>
+                    <div className={`flex items-start gap-1.5 text-sm ${
+                        errorInfo.category === 'fatal' ? 'text-red-400' : 'text-yellow-400'
+                    }`}>
+                        {errorInfo.category === 'fatal' 
+                            ? <FileWarning size={12} className="shrink-0 mt-0.5" />
+                            : <AlertCircle size={12} className="shrink-0 mt-0.5" />
+                        }
+                        <span className="leading-tight break-words font-semibold">
+                            {errorInfo.title}
+                        </span>
+                    </div>
+
+                    <p className="text-sm text-gray-400 leading-tight pl-4">
+                        {errorInfo.description}
+                    </p>
+
+                    <div className="flex items-center justify-end mt-1 pt-1 border-t border-default-100/10">
+                        {errorInfo.canRetry ? (
+                            <Button
+                                size="sm"
+                                color="primary"
+                                variant="flat"
+                                className="h-6 text-sm px-2 min-w-0"
+                                onPress={() => retryConversion(file.uppyId)}
+                            >
+                                <RefreshCcw size={10} className="mr-1" /> {errorInfo.actionText}
+                            </Button>
+                        ) : (
+                            <Button
+                                size="sm"
+                                color="danger"
+                                variant="flat"
+                                className="h-6 text-sm px-2 min-w-0"
+                                onPress={async () => {
+                                    // 1. 樂觀更新：瞬間從畫面的右下角面板移除，UX 滿分
+                                    dismissTask(file.uppyId);
+                                    
+                                    // 2. 背景呼叫 API：把資料庫的 error 紀錄跟 S3 殘留的檔案徹底砍掉
+                                    // file.tusId 就是資料庫的 fileId
+                                    await deleteFileRecord(file.tusId); 
+                                }}
+                            >
+                                <Trash2 size={14} className="mr-1" /> {errorInfo.actionText}
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
