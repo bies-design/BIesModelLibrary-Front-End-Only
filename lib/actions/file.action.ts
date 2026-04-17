@@ -6,6 +6,7 @@ import { FileCategory, ProcessStatus } from "@/prisma/generated/prisma";
 import { s3Client } from "../s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import axios from "axios";
 
 // 獲取檔案 (根據 workspace 過濾)
 export async function getUserFiles(workspaceId: string) {
@@ -275,5 +276,32 @@ export async function getFileDownloadUrl(fileId: string, fileName: string) {
     } catch (error: any) {
         console.error("Get file URL error:", error);
         return { success: false, error: error.message };
+    }
+}
+
+export async function retryConvertTask(tusFileId: string, priority: number = 10){
+    const session = await auth();
+    if(!session?.user.id) return {success: false, error: "Unauthorized"};
+
+    try{
+
+        const TUS_SERVER_URL = process.env.NEXT_PUBLIC_TUS_URL;
+
+        const response = await axios.post(`${TUS_SERVER_URL}/api/tasks/retry`,{
+            fileId: tusFileId,
+            userId: session.user.id,
+            priority: priority,
+        });
+
+        if(response.data.success){
+            return {success: true};
+        } else{
+            return {success: false, error: response.data.error};
+        }
+    } catch (error: any){
+        // 攔截 Axios 錯誤，並抓取 Tus Server 回傳的 error message
+        const errorMessage = error.response?.data.error || error.message || "伺服器無回應";
+        console.error("重新轉檔失敗: ", errorMessage);
+        return {success: false, error: errorMessage};
     }
 }
