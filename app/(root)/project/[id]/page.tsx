@@ -15,7 +15,8 @@ import {
     getProjectDetails, createPhase, deletePhase, updatePhase,
     createProjectAsset, moveAssetToPhase, removeAssetFromProject,
     getAvailablePosts, deleteProject, updateProject,
-    reorderPhases, reorderAssets, updateProjectAsset
+    reorderPhases, reorderAssets, updateProjectAsset,
+    moveAssetStructure
 } from "@/lib/actions/project.action"; 
 import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea, Tooltip } from "@heroui/react";
 import { ProjectStatus } from "@/prisma/generated/prisma";
@@ -96,7 +97,7 @@ const buildAssetTree = (assets: ProjectAsset[], phaseId: string | null): Project
 // --- 遞迴渲染組件：AssetNode ---
 const AssetNode = ({ 
     node, depth, isEditor, expandedNodes, onToggle, 
-    onAdd, onEdit, onDelete , onReorder, totalInLevel, currentIndex 
+    onAdd, onEdit, onMove, onDelete , onReorder, totalInLevel, currentIndex 
 }: any) => {
     const isExpanded = expandedNodes[node.id];
     const hasChildren = node.children && node.children.length > 0;
@@ -154,6 +155,13 @@ const AssetNode = ({
                             <button onClick={(e) => { e.stopPropagation(); onEdit(node); }}>
                                 <Edit2 size={16} className="text-blue-400" />
                             </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); onMove(node); }} 
+                                title="移動至其他節點/階段"
+                                className="p-1 text-gray-500 hover:text-purple-400 transition-colors"
+                            >
+                                <Share2 size={16} className="rotate-90" /> {/* 使用旋轉後的圖示代表轉向 */}
+                            </button>
                             <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}>
                                 <Trash2 size={16} className="text-red-400" />
                             </button>
@@ -168,7 +176,7 @@ const AssetNode = ({
                         <AssetNode 
                             key={child.id} node={child} depth={depth + 1} isEditor={isEditor}
                             expandedNodes={expandedNodes} onToggle={onToggle} onAdd={onAdd} 
-                            onEdit={onEdit} onDelete={onDelete} onReorder={onReorder} 
+                            onEdit={onEdit} onMove={onMove} onDelete={onDelete} onReorder={onReorder} 
                             totalInLevel={node.children.length} currentIndex={idx} 
                         />
                     ))}
@@ -203,6 +211,9 @@ export default function ProjectDetailPage() {
     const [editingAsset, setEditingAsset] = useState<ProjectAsset | null>(null);
     const [targetContext, setTargetContext] = useState<{phaseId: string | null, parentId: string | null}>({phaseId: null, parentId: null});
     const [availablePosts, setAvailablePosts] = useState<Post[]>([]);
+
+    const [isMoveModalOpen, setIsMoveModalOpen] = useState<boolean>(false);
+    const [movingAsset, setMovingAsset] = useState<ProjectAsset | null>(null);
 
     const [newFolderName, setNewFolderName] = useState<string>("");
     const [newFolderDescription, setNewFolderDescription] = useState<string>("");
@@ -512,7 +523,25 @@ export default function ProjectDetailPage() {
     };
     const bgImageUrl = getImageUrl(project.coverImage);
 
-    
+    // 處理移動提交
+    const handleConfirmMove = async (targetPhaseId: string | null, targetParentId: string | null) => {
+        if (!movingAsset) return;
+        
+        const res = await moveAssetStructure(movingAsset.id, targetPhaseId, targetParentId);
+        if (res.success) {
+            addToast({ title: "移動成功", color: "success" });
+            // 重新獲取專案資料
+            const updated = await getProjectDetails(projectId);
+            if (updated.data) setProject(updated.data as unknown as ProjectData);
+            setIsMoveModalOpen(false);
+        }
+    };
+    // 用來打開移動面板並記錄目標
+    const handleOpenMoveModal = (asset: ProjectAsset) => {
+        setMovingAsset(asset);
+        setIsMoveModalOpen(true);
+    };
+
     return (
         <div className="md:max-w-[90dvw] mx-auto p-6 text-white">
             {/* Header */}
@@ -705,7 +734,7 @@ export default function ProjectDetailPage() {
                                             <AssetNode 
                                                 key={node.id} node={node} depth={0} isEditor={isEditor} 
                                                 expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 
-                                                onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
+                                                onMove={handleOpenMoveModal} onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
                                                 onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
                                                 totalInLevel={phaseTree.length} currentIndex={idx}
                                             />
@@ -742,7 +771,7 @@ export default function ProjectDetailPage() {
                                     <AssetNode 
                                         key={node.id} node={node} depth={0} isEditor={isEditor} 
                                         expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 
-                                        onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
+                                        onMove={handleOpenMoveModal} onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
                                         onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} // 🚀 補上這裡！
                                         totalInLevel={arr.length} currentIndex={idx}
                                     />
@@ -851,6 +880,61 @@ export default function ProjectDetailPage() {
                             </Tab>
                         </Tabs>
                     </ModalBody>
+                </ModalContent>
+            </Modal>
+            {/* 移動資產 Modal */}
+            <Modal isOpen={isMoveModalOpen} onOpenChange={() => setIsMoveModalOpen(false)} className="dark text-white bg-[#18181B]">
+                <ModalContent>
+                    <ModalHeader>移動資產：{movingAsset?.name || "未命名"}</ModalHeader>
+                    <ModalBody className="max-h-[60vh] overflow-y-auto">
+                        <p className="text-sm text-gray-400 mb-4">請選擇目標位置（階段或資料夾）：</p>
+                        
+                        {/* 階段清單 */}
+                        {project.phases.map(phase => (
+                            <div key={phase.id} className="mb-4">
+                                <div 
+                                    className="flex items-center justify-between p-2 bg-white/5 hover:bg-purple-500/20 border border-white/10 rounded-lg cursor-pointer transition-all"
+                                    onClick={() => handleConfirmMove(phase.id, null)}
+                                >
+                                    <div className="flex items-center gap-2 text-sm font-bold text-purple-300">
+                                        <Milestone size={14} /> {phase.name} (頂層)
+                                    </div>
+                                    <span className="text-[10px] bg-purple-500/30 px-2 py-0.5 rounded">選擇</span>
+                                </div>
+                                
+                                {/* 該階段底下的所有資料夾 (遞迴或扁平化列出) */}
+                                <div className="ml-4 mt-2 flex flex-col gap-1">
+                                    {project.assets
+                                        .filter(a => a.phaseId === phase.id && a.type === 'FOLDER' && a.id !== movingAsset?.id)
+                                        .map(folder => (
+                                            <button 
+                                                key={folder.id}
+                                                onClick={() => handleConfirmMove(phase.id, folder.id)}
+                                                className="text-left p-2 text-xs text-gray-300 hover:bg-white/10 rounded border border-transparent hover:border-white/5 flex items-center gap-2"
+                                            >
+                                                <Folder size={12} className="text-amber-400" /> {folder.name}
+                                            </button>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* 未分類區塊 */}
+                        <div className="border-t border-white/10 pt-4">
+                            <div 
+                                className="flex items-center justify-between p-2 bg-white/5 hover:bg-gray-500/20 border border-white/10 rounded-lg cursor-pointer"
+                                onClick={() => handleConfirmMove(null, null)}
+                            >
+                                <div className="flex items-center gap-2 text-sm font-bold text-gray-300">
+                                    <Folder size={14} /> 未分類 (頂層)
+                                </div>
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button variant="flat" onClick={() => setIsMoveModalOpen(false)}>取消</Button>
+                    </ModalFooter>
                 </ModalContent>
             </Modal>
         </div>

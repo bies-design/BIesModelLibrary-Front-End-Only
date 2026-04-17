@@ -475,3 +475,24 @@ export async function getAvailablePosts(teamId:string | null) {
         return { success: false, error: error.message };
     }
 }
+
+export async function moveAssetStructure(
+    assetId: string, 
+    newPhaseId: string | null, 
+    newParentId: string | null
+) {
+    try {
+        // 更新目標節點
+        await prisma.projectAsset.update({
+            where: { id: assetId },
+            data: {
+                phaseId: newPhaseId,
+                parentId: newParentId,
+                sortOrder: 0, // 移動後預設排在最前面
+            }
+        });
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: "移動失敗" };
+    }
+}
