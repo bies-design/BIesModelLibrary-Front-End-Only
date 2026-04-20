@@ -15,6 +15,7 @@ import { createPost } from '@/lib/actions/post.action';
 import { SelectedPost } from '@/components/modals/RelatedPostModal';
 import { addToast } from '@heroui/react';
 import ImageViewer from '@/components/viewer/ImageViewer';
+import { useSession } from 'next-auth/react';
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
@@ -25,6 +26,20 @@ export interface FileItem {
 }
 
 const Upload = () => {
+    const {data: session, status} = useSession();
+    const router = useRouter();
+    useEffect(()=>{
+        // 若未登入，踢回登陸頁
+        if(status === "unauthenticated"){
+            addToast({ title: "請先登入!", color: "warning" });
+            router.push("/sign-in");
+        }
+    },[status, router])
+
+    if(status === "loading" || !session){
+        return <div className="min-h-screen flex items-center justify-center">載入中...</div>;
+    }
+
     const coverInputRef = useRef<HTMLInputElement>(null);
     const [isMobileStepNavOpen, setIsMobileStepNavOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -59,7 +74,7 @@ const Upload = () => {
     const viewerRef = useRef<Viewer3DRef>(null);
     const pdfRef = useRef<PDFViewerRef>(null);
 
-    const router = useRouter();
+   
     //for breaking infinite rendering in viewer3D syncModels
     const handleIFCProcessingChange = useCallback((isIFCProcessing:boolean,fileName: string | null, progress?:number) => {
         setIFCProcessingStatus({isIFCProcessing,fileName,progress});

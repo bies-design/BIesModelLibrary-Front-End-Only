@@ -48,6 +48,17 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
         const uppyInstance = new Uppy({
             id: 'uppy-global',
             autoProceed: true,
+            onBeforeUpload:(files) => {
+                // 每次要上傳前，檢查全域 meta 裡面有沒有 userid
+                const currentMeta = uppyInstance.getState().meta;
+                if (!currentMeta.userid) {
+                    // 如果沒有，跳通知並中止上傳
+                    // (注意這裡我們無法直接用 addToast，因為這是在 useState 裡面，但通常直接 return false 就會擋下)
+                    console.error("⛔ [Uppy] 攔截上傳：尚未取得 User ID");
+                    return false; 
+                }
+                return true;
+            }
         });
 
         uppyInstance.use(Tus, {
