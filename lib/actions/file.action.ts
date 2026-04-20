@@ -54,11 +54,15 @@ export async function getUserFilesForDashboard(
     queryArrange: string,
     status: string = "ALL",
     search: string,
+    page: number = 1,
+    limit: number = 9,
 ) {
     const session = await auth();
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" ,data: [], hasMore: false};
 
     try{
+        const skip = (page - 1) * limit;
+        
         const whereCondition: any = {};
         
         // 1. 工作區過濾 (個人或團隊)
@@ -107,6 +111,8 @@ export async function getUserFilesForDashboard(
 
         const files = await prisma.fileRecord.findMany({
             where: whereCondition,
+            skip: skip,
+            take: limit,
             orderBy: orderByCondition,
             select: {
                 id: true,
@@ -130,11 +136,17 @@ export async function getUserFilesForDashboard(
                 }
             }
         });
-
-        return { success: true, data: files };
+        // 查詢資料總數 (用來判斷是否還有下一頁)
+        const totalFiles = await prisma.fileRecord.count({where: whereCondition});
+        const hasMore = skip + files.length < totalFiles;
+        return { 
+            success: true, 
+            data: files, 
+            hasMore: hasMore 
+        };
     } catch (error: any) {
-        console.error("Failed to fetch user files:", error);
-        return { success: false, error: error.message };
+        console.error("Failed to fetch paginated user files: ", error);
+        return { success: false, error: error.message, data: [], hasMore: false };
     }
 }
 

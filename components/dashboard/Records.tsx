@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState, } from 'react';
 import { useDisclosure, Select, SelectItem, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, addToast } from '@heroui/react';
 import { 
     Search, Check, Filter, ArrowUpDown, Edit2, Download, 
@@ -14,6 +14,7 @@ import {
 import { deleteFileRecord, getFileDownloadUrl, getUserFilesForDashboard } from '@/lib/actions/file.action';
 import Link from 'next/link';
 import { classifyError } from '@/lib/utils/errorClassifier';
+import { useNativeInView } from '@/hooks/useIntersectionObserver';
 
 type RecordsProps = {
     workspaceId: string;
@@ -26,8 +27,16 @@ const Records = ( { workspaceId } : RecordsProps ) => {
     const [isQueryArrange, setIsQueryArrange] = useState<string>("Newest");
     // "all" | "uploading" | "processing" | "completed" | "error"
     const [status, setStatus] = useState<string>("ALL");
+    // FILES state
     const [files, setFiles] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [isFetchingNext, setIsFetchingNext] = useState<boolean>(false);
+
+    // 觀察器 (用於無限滾動)
+    const loadMoreRef = useRef<HTMLDivElement>(null); //ref 用來綁定底部的 DOM 元素
+    const isIntersecting = useNativeInView(loadMoreRef, '400px');
     // 確認刪除modal
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [modelToDelete, setModelToDelete] = useState<string | null>(null);
@@ -43,16 +52,50 @@ const Records = ( { workspaceId } : RecordsProps ) => {
 
     const [isGenerating, setIsGenerating] = useState<string | null>(null);
 
-    const fetchFiles = async () => {
+    // 1. 抓取第一頁 (當過濾條件改變時)
+    const fetchInitialFiles = async () => {
         setLoading(true);
-        const res = await getUserFilesForDashboard(workspaceId, category, isQueryArrange, status, inputValue);
+        // 參數順序：page, limit, category, sortBy, search, workspaceId, status
+        const res = await getUserFilesForDashboard(workspaceId, category, isQueryArrange, status, inputValue, 1, 9);
         if (res?.success && res.data) {
             setFiles(res.data);
+            setHasMore(res.hasMore);
+            setPage(1); // 重置頁碼
         } else {
             setFiles([]);
+            setHasMore(false);
         }
         setLoading(false);
     };
+
+    // 2. 抓取下一頁 (當滾動到底部時)
+    const fetchNextPage = async () => {
+        if (!hasMore || isFetchingNext) return;
+        setIsFetchingNext(true);
+        const nextPage = page + 1;
+        
+        const res = await getUserFilesForDashboard(workspaceId, category, isQueryArrange, status, inputValue, nextPage, 9);
+        if (res?.success && res.data) {
+            setFiles(prev => [...prev, ...res.data]);
+            setHasMore(res.hasMore);
+            setPage(nextPage); // 更新頁碼
+        }
+        setIsFetchingNext(false);
+    };
+    
+    // const fetchFiles = async () => {
+    //     if(!hasMore || isFetchingNext) return;
+    //     setIsFetchingNext(true);
+    //     const nextPage = page + 1;
+    //     setLoading(true);
+    //     const res = await getUserFilesForDashboard(workspaceId, category, isQueryArrange, status, inputValue);
+    //     if (res?.success && res.data) {
+    //         setFiles(res.data);
+    //     } else {
+    //         setFiles([]);
+    //     }
+    //     setLoading(false);
+    // };
 
     useEffect(() => {
         // 使用者每次打字，都會設定一個 300 毫秒後執行的計時器
@@ -65,8 +108,14 @@ const Records = ( { workspaceId } : RecordsProps ) => {
     }, [searchInput]);
 
     useEffect(() => {
-        fetchFiles();
+        fetchInitialFiles();
     }, [inputValue, status, isQueryArrange, category]);
+    // 監聽無限滾動
+    useEffect(() => {
+        if (isIntersecting && hasMore && !loading && !isFetchingNext) {
+            fetchNextPage();
+        }
+    }, [isIntersecting, hasMore, loading, page]);
     // 刪除確認邏輯
     const openDeleteModal = (name: string, id: string) => {
         setModelToDelete(name);
@@ -78,7 +127,7 @@ const Records = ( { workspaceId } : RecordsProps ) => {
         onOpenChange();
         
         await deleteFileRecord(modelIdToDelete);
-        fetchFiles();
+        fetchInitialFiles();
     };
     const handleGetDownloadUrl = async (fileId: string, fileName: string) => {
 
@@ -169,7 +218,7 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                     placeholder="Status"
                     labelPlacement='inside'
                     label="Status"
-                    className="max-w-32 h-10 mb-4"
+                    className="max-w-34 h-10 mb-4"
                     listboxProps={{
                         itemClasses:{
                             title: "text-white",
@@ -251,54 +300,65 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                         <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
                     </div>
                 ) : filteredFiles.length > 0 ? (
-                    filteredFiles.map((file) => (
-                        <div key={file.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#18181B] rounded-xl shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)] gap-4">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 hidden md:block bg-[#27272A] rounded-lg">
-                                    {getFileIcon(file.category)}
-                                </div>
-                                <div className="flex flex-col">
-                                    <h3 className="font-semibold text-white break-all">{file.name}</h3>
-                                    <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
-                                        <span>{file.category || "Uncategorized"}</span>
-                                        <span>•</span>
-                                        <span>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                                        <span>•</span>
-                                        <span>{file.status}</span>
-                                        <span>•</span>
-                                        <span>{new Date(file.createdAt).toLocaleDateString()}</span>
+                    <>
+                        {filteredFiles.map((file) => (
+                            <div key={file.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#18181B] rounded-xl shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)] gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 hidden md:block bg-[#27272A] rounded-lg">
+                                        {getFileIcon(file.category)}
                                     </div>
-                                    {file.postId && file.post && (
-                                        <div className="mt-1 flex items-center text-xs text-blue-400 hover:text-blue-300">
-                                            <LinkIcon className="w-3 h-3 mr-1" />
-                                            <Link href={`/post/${file.post.shortId}`} className="hover:underline line-clamp-1">
-                                                {file.post.title}
-                                            </Link>
+                                    <div className="flex flex-col">
+                                        <h3 className="font-semibold text-white break-all">{file.name}</h3>
+                                        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-400 mt-1">
+                                            <span>{file.category || "Uncategorized"}</span>
+                                            <span>•</span>
+                                            <span>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                                            <span>•</span>
+                                            <span>{file.status}</span>
+                                            <span>•</span>
+                                            <span>{new Date(file.createdAt).toLocaleDateString()}</span>
                                         </div>
-                                    )}
+                                        {file.postId && file.post && (
+                                            <div className="mt-1 flex items-center text-sm text-blue-400 hover:text-blue-300">
+                                                <LinkIcon className="w-3 h-3 mr-1" />
+                                                <Link href={`/post/${file.post.shortId}`} className="hover:underline line-clamp-1">
+                                                    {file.post.title}
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 self-end sm:self-auto">
+                                    {file.errorMessage && 
+                                        <button onClick={() => openErrorModal(file.name, file.errorMessage)} className="p-2 hover:bg-yellow-400/30 rounded-lg transition-colors text-yellow-400 hover:text-white" title="ErrorMessage">
+                                            <TriangleAlert className="w-4 h-4" />
+                                        </button>
+                                    }
+                                    <button onClick={() => handleGetDownloadUrl(file.fileId, file.name)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Download">
+                                        <Download className="w-4 h-4" />
+                                    </button>
+                                    <button onClick={() => openDeleteModal(file.name, file.fileId)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Delete">
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 self-end sm:self-auto">
-                                {file.errorMessage && 
-                                    <button onClick={() => openErrorModal(file.name, file.errorMessage)} className="p-2 hover:bg-yellow-400/30 rounded-lg transition-colors text-yellow-400 hover:text-white" title="ErrorMessage">
-                                        <TriangleAlert className="w-4 h-4" />
-                                    </button>
-                                }
-                                <button onClick={() => handleGetDownloadUrl(file.fileId, file.name)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Download">
-                                    <Download className="w-4 h-4" />
-                                </button>
-                                <button onClick={() => openDeleteModal(file.name, file.fileId)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Delete">
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))
+                        ))}
+                    </>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-12 text-gray-400 border border-dashed border-white/10 rounded-xl">
                         <Box className="w-12 h-12 mb-3 text-gray-500" />
                         <p>No files found.</p>
                     </div>
                 )}
+
+                {/* 底部 Loading 指示器與偵測點 */}
+                <div ref={loadMoreRef} className="flex justify-center py-6 w-full h-10 shrink-0">
+                    {isFetchingNext ? (
+                        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                    ) : (
+                        <div className="h-6 w-full" /> 
+                    )}
+                </div>
             </div>
             {/* 刪除確認 Modal  */}
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='center' classNames={{closeButton:"p-3 text-2xl"}} className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]">
@@ -344,7 +404,7 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                                 File: <span className="text-white font-medium">{currentErrorFileName}</span>
                             </p>
 
-                            {/* 🚀 使用者友善說明（最重要） */}
+                            {/* 使用者友善說明（最重要） */}
                             {currentErrorInfo && (
                                 <div className={`p-3 rounded-xl border mb-3 ${
                                     currentErrorInfo.category === 'fatal' 
