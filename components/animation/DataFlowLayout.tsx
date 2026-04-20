@@ -75,13 +75,13 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
                         </linearGradient>
                         <radialGradient id={`logo_bg_gradient_${theme}`} cx="50%" cy="100%" r="100%">
                             {/* 1. 金屬高光區 (底部光源直射處，極亮) */}
-                            <stop offset="0%" stopColor={theme === 'dark' ? "#4A4A55" : "#94a3b8"} stopOpacity="1" />
+                            <stop offset="0%" stopColor={theme === 'dark' ? "#4A4A55" : "#ffffff"} stopOpacity="1" />
                             
                             {/* 2. 金屬平滑過渡區 (MacBook 銀灰色) */}
-                            <stop offset="92%" stopColor={theme === 'dark' ? "#35353D" : "#e2e8f0"} stopOpacity="1" />
+                            <stop offset={theme === 'dark' ? "70%" : "85%"} stopColor={theme === 'dark' ? "#35353D" : "#e2e8f0"} stopOpacity="1" />
                             
                             {/* 3. 金屬邊緣暗角 (深銀灰色，營造出微凸的立體厚度) */}
-                            <stop offset="100%" stopColor={theme === 'dark' ? "#27272A" : "#ffffff"} stopOpacity="1" />
+                            <stop offset="100%" stopColor={theme === 'dark' ? "#27272A" : "#94a3b8"} stopOpacity="1" />
                         </radialGradient>
                         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -177,7 +177,7 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
                             x="-64" y="-64" width="128" height="128" rx="24" 
                             fill={`url(#logo_bg_gradient_${theme})`} 
                             stroke={theme === 'dark' ? "#303035" : "#ffffff"} 
-                            strokeWidth={theme === 'dark' ? "4" : "1"}
+                            strokeWidth={theme === 'dark' ? "4" : "4"}
                         />
                         <rect x="-64" y="-64" width="128" height="128" rx="24" fill={theme === 'dark' ? "white" : "none"} filter="url(#logo_energy_glow)" opacity="0">
                             <animate attributeName="opacity" values="0; 0; 0.5; 0; 0" keyTimes="0; 0.48; 0.53; 0.65; 1" dur={TOTAL_DUR} repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.1 0.9 0.2 1; 0.42 0 1 1; 0 0 1 1" />
