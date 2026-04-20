@@ -12,10 +12,12 @@ import { getPostsByScroll } from '@/lib/actions/post.action';
 import { useNativeInView } from '@/hooks/useIntersectionObserver';
 import { Loader2, ChevronDown } from 'lucide-react';
 import DataFlowLayout from '@/components/animation/DataFlowLayout';
+import { useTheme } from 'next-themes';
 
 export type PostType = 'ALL' | 'MODEL_3D' |'DRAWING' | 'DOCUMENT' | 'IMAGE' | 'OTHER';
 
 const Home = () => {
+  const {resolvedTheme} = useTheme();
   const { data:session,status } = useSession();
   //for itemsQuery
   const [isSelectId, setIsSelectId] = useState<string>('ALL');
@@ -146,8 +148,8 @@ const Home = () => {
         {/* 2. 替換掉原本的文字 div */}
         {/* 調整 mt 來控制與上方的距離，w-full 確保寬度 */}
         <div className='hidden md:flex md:flex-col items-center mt-10 w-full overflow-hidden '>
-            {/* <DataFlowLayout/> */}
-            <HeroAnimation/>
+            <DataFlowLayout theme={resolvedTheme === 'light' ? 'light' : 'dark'} />
+            {/* <HeroAnimation/> */} 
         </div>
         
         <div className='mx-auto flex flex-col items-center gap-6 mt-10 w-[90%]'>
