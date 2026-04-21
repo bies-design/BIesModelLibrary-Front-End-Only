@@ -106,7 +106,7 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
 
       const canvas = await domToCanvas(targetElement, {
         quality: 1,
-        scale: 2,
+        scale: isMobile ? 1 : 2,
       });
       return canvas.toDataURL('image/png');
     } catch (error) {
@@ -186,7 +186,7 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
                   // 記憶體優化核心：
                   // 如果是手機版，強制預設為 "PageFit" (符合頁面大小)，
                   // 避免載入時以 100% 或過大的比例渲染，導致 iOS Safari Canvas 瞬間撐爆 RAM。
-                  defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1}
+                  defaultScale={isMobile ? 0.6 : 1.2}
                   onZoom={handleRenderCanvasStart}
                   onRotate={handleRenderCanvasStart}
                   // 2. 綁定解除鎖定的事件 (這是一頁 Canvas 畫完的時候)
