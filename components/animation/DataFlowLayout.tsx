@@ -33,16 +33,17 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
     const rightStops = rightNodes.map(node => ((node.x - 800) / 843).toFixed(3));
     const TOTAL_DUR = "7s";
 
-    // 1. Lazy Initialization: 初次渲染時就決定好 4 條啟用的路線，確保毫秒級同步
-    const [activeIndices, setActiveIndices] = useState<number[]>(() => {
-        return [0, 1, 2, 3, 4, 5, 6].sort(() => 0.5 - Math.random()).slice(0, 4);
-    });
+    // 1. 給予「固定的初始值」，確保 SSR 與 Client 第一次渲染的 HTML 完全吻合 (解決 Hydration Mismatch)
+    const [activeIndices, setActiveIndices] = useState<number[]>([0, 1, 2, 3]);
 
     // 2. 建立 Ref 來綁定原生的 SVG 動畫重播事件
     // 使用 any 避免 TypeScript 對 SVGAnimateMotionElement 支援度不佳報錯
     const syncRef = useRef<any>(null);
 
     useEffect(() => {
+        // 2. Client 端掛載完成後，立刻洗牌一次，產生第一次的隨機結果
+        setActiveIndices([0, 1, 2, 3, 4, 5, 6].sort(() => 0.5 - Math.random()).slice(0, 4));
+
         const node = syncRef.current;
         if (!node) return;
 
@@ -52,7 +53,6 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
         };
 
         node.addEventListener('repeatEvent', handleRepeat);
-
         return () => {
             node.removeEventListener('repeatEvent', handleRepeat);
         };
