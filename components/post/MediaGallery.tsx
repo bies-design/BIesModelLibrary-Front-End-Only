@@ -207,8 +207,11 @@ export default function MediaGallery({ post }: { post: any }) {
                 
                 {/* 2. PDF Viewer */}
                 {isShowPdf && currentFileObj && !isLoading && (
-                    <div className="absolute inset-0 z-30 bg-[#18181B] flex items-center justify-center">
-                        <PDFViewer key={activeSource} ref={pdfRef} file={currentFileObj} />
+                    <div className="absolute inset-0 z-30 bg-[#18181B]">
+                        <div className='w-full h-full relative'>
+                            <PDFViewer key={activeSource} ref={pdfRef} file={currentFileObj} />
+                        </div>
+                        
                     </div>
                 )}
                 

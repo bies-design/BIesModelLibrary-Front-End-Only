@@ -337,11 +337,13 @@ const Upload = () => {
                                 {/* 3. PDF Viewer：只有選擇 PDF 時才渲染 (PDF Viewer 比較輕量，可以重新渲染沒關係) */}
                                 {isSupportedPdf && (
                                     <div className="absolute inset-0 z-10 bg-[#18181B]">
-                                        <PDFViewer 
-                                            key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
-                                            ref={pdfRef} 
-                                            file={selectedFile.file} 
-                                        />
+                                        <div className='w-full h-full relative'>
+                                            <PDFViewer 
+                                                key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
+                                                ref={pdfRef} 
+                                                file={selectedFile.file} 
+                                            />
+                                        </div>
                                     </div>
                                 )}
                                 {/* 4. 圖片預覽：只有選擇圖片時才渲染 */}

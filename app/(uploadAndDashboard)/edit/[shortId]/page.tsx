@@ -371,7 +371,9 @@ export default function Edit() {
                         <div className='rounded-lg w-full h-full overflow-hidden relative'>
                             
                             <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                                {renderViewer()}
+                                <div className='w-full h-full relative'>
+                                    {renderViewer()}
+                                </div> 
                             </div>
 
                             <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>
