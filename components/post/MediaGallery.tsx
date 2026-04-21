@@ -27,7 +27,7 @@ export default function MediaGallery({ post }: { post: any }) {
 
     const getExt = (name: string) => name.split('.').pop()?.toLowerCase() || '';
     
-    // 🚀 規則 1 & 3：嚴格分離 3D 檔案，準備批次載入
+    // 規則 1 & 3：嚴格分離 3D 檔案，準備批次載入
     const threeDFiles = post.files?.filter((f: any) => ['ifc', 'frag'].includes(getExt(f.name))) || [];
     const has3D = threeDFiles.length > 0;
     
@@ -44,7 +44,7 @@ export default function MediaGallery({ post }: { post: any }) {
         
         setActiveSource(sourceKey);
 
-        // 🚀 規則 3：點擊唯一 3D 按鈕時，批次下載並渲染所有模型
+        // 規則 3：點擊唯一 3D 按鈕時，批次下載並渲染所有模型
         if (sourceKey === '3d-scene') {
             setIsLoading(true);
             try {
@@ -90,7 +90,7 @@ export default function MediaGallery({ post }: { post: any }) {
             return;
         }
 
-        // 🚀 規則 1：處理其他單一檔案 (PDF 與圖片)
+        // 規則 1：處理其他單一檔案 (PDF 與圖片)
         if (sourceKey.startsWith('file-')) {
             const fileId = sourceKey.replace('file-', '');
             const fileRecord = post.files.find((f: any) => f.id === fileId);

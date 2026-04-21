@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useMemo, useCallback, useEffect, useState, ReactElement, forwardRef, useImperativeHandle, useRef } from 'react';
-import { Worker, Viewer, ProgressBar, RotateDirection, Plugin ,PluginOnCanvasLayerRender} from '@react-pdf-viewer/core';
+import { Worker, Viewer, ProgressBar, RotateDirection, Plugin ,PluginOnCanvasLayerRender, SpecialZoomLevel} from '@react-pdf-viewer/core';
 import { domToCanvas } from 'modern-screenshot';
 import { defaultLayoutPlugin, ToolbarProps, ToolbarSlot } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { Loader2 } from 'lucide-react';
 
 interface PDFViewerInternalProps {
   file: string | File | null;
 }
-
 
 export interface PDFViewerRef {
   takeScreenshot: () => Promise<string | null>;
@@ -58,6 +56,17 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
   const [viewUrl, setViewUrl] = useState<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRendering, setIsRendering] = useState<boolean>(false);
+
+  // 手機版偵測狀態 (判斷螢幕寬度)
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  
+  useEffect(() => {
+    // 檢查是否為手機螢幕 (這裡以 768px 作為分界)
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // 初次渲染時執行一次
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // 將事件函式用 useCallback 緩存，確保記憶體位址不變
   const handleRenderCanvasStart = useCallback(() => {
@@ -153,7 +162,7 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
   }, [file]);
 
   return (
-    <div className={`w-full h-full bg-[#27272A] relative overflow-hidden `} ref={containerRef}>
+    <div className={`w-full h-full bg-[#27272A] relative overflow-hidden`} ref={containerRef}>
       
       {/* UI 遮罩層 (Blocker Overlay)
         當 isRendering 為 true 時顯示，蓋在最上層 (z-50)
@@ -170,10 +179,14 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
       )}
 
       <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-        <div className="h-full w-full">
+        <div className="absolute inset-0">
           {viewUrl ? (
                 <Viewer 
                   fileUrl={viewUrl} 
+                  // 記憶體優化核心：
+                  // 如果是手機版，強制預設為 "PageFit" (符合頁面大小)，
+                  // 避免載入時以 100% 或過大的比例渲染，導致 iOS Safari Canvas 瞬間撐爆 RAM。
+                  defaultScale={isMobile ? SpecialZoomLevel.PageFit : 1}
                   onZoom={handleRenderCanvasStart}
                   onRotate={handleRenderCanvasStart}
                   // 2. 綁定解除鎖定的事件 (這是一頁 Canvas 畫完的時候)

@@ -3,7 +3,6 @@
 import React, { useEffect,useState,useRef } from 'react'
 import Image from 'next/image'
 import Footer from '@/components/Footer';
-import HeroAnimation from '@/components/animation/HeroAnimation';
 import { itemsQuery } from '../globalUse';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';

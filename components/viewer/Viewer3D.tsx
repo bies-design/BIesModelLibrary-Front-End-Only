@@ -6,6 +6,7 @@ import * as OBF from "@thatopen/components-front";
 import * as Frags from "@thatopen/fragments";
 import { setupComponents } from '../bim-components';
 import { FileItem } from '@/app/(uploadAndDashboard)/upload/page';
+import ActionButtons from './viewer3DControl/ActionButtons';
 import * as THREE from 'three';
 import * as WEBIFC from 'web-ifc';
 
@@ -119,6 +120,88 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     const [loadedModelsCount, setLoadingModelsCount] = useState<number>(0);
     const [isViewerReady, setIsViewerReady] = useState<boolean>(false);
 
+    // ==========================================
+    // 核心：將 Toolbar 需要的狀態封裝在 Viewer3D 內部
+    // ==========================================
+    const [activeTool, setActiveTool] = useState<"clipper" | "length" | "area" | "colorize" | "collision" | "search" | "multi-select" | null>(null);
+    const [lengthMode, setLengthMode] = useState<"free" | "edge">("free");
+    const [areaMode, setAreaMode] = useState<"free" | "square">("free");
+    const [isGhost, setIsGhost] = useState<boolean>(false);
+    const [isShadowed, setIsShadowed] = useState<boolean>(true);
+    const [isColorShadowsEnabled, setIsColorShadowsEnabled] = useState<boolean>(false);
+    const [showDescriptionPanel, setShowDescriptionPanel] = useState<boolean>(false);
+
+    // 紀錄原始材質顏色 (供 Ghost 模式使用)
+    const originalColors = useRef(new Map<Frags.BIMMaterial, { color: number; transparent: boolean; opacity: number }>());
+
+    // ==========================================
+    // 實作 Toolbar 的各種操作方法
+    // ==========================================
+
+    const handleFocus = () => {
+        if (!componentsRef.current) return;
+        const worlds = componentsRef.current.get(OBC.Worlds);
+        const world = worlds.list.values().next().value;
+        if (world && world.camera instanceof OBC.SimpleCamera) {
+            world.camera.fitToItems(); // 預設聚焦場景中所有或選取的物件
+        }
+    };
+
+    const handleShowAll = async () => {
+        if (!componentsRef.current) return;
+        const hider = componentsRef.current.get(OBC.Hider);
+        await hider.set(true); // 顯示所有隱藏的物件
+        const highlighter = componentsRef.current.get(OBF.Highlighter);
+        await highlighter.clear();
+    };
+
+    const handleGhost = () => {
+        if (!componentsRef.current) return;
+        const fragments = componentsRef.current.get(OBC.FragmentsManager);
+        
+        if (isGhost) {
+            // 恢復材質
+            for (const [material, data] of originalColors.current) {
+                material.transparent = data.transparent;
+                material.opacity = data.opacity;
+                if ('color' in material) material.color.setHex(data.color);
+                else material.lodColor.setHex(data.color);
+                material.needsUpdate = true;
+            }
+            originalColors.current.clear();
+            setIsGhost(false);
+        } else {
+            // 變成半透明
+            const materials = [...fragments.core.models.materials.list.values()];
+            for (const material of materials) {
+                if (material.userData.customId) continue;
+                if (!originalColors.current.has(material as Frags.BIMMaterial)) {
+                    let color = 'color' in material ? material.color.getHex() : material.lodColor.getHex();
+                    originalColors.current.set(material as Frags.BIMMaterial, { color, transparent: material.transparent, opacity: material.opacity });
+                }
+                material.transparent = true;
+                material.opacity = 0.4; // 半透明度
+                material.needsUpdate = true;
+                if ('color' in material) material.color.setRGB(0.2, 0.2, 0.2);
+                else material.lodColor.setRGB(0.5, 0.5, 0.5);
+            }
+            setIsGhost(true);
+        }
+    };
+
+    const handleToolSelect = (tool: typeof activeTool) => {
+        const newTool = activeTool === tool ? null : tool;
+        setActiveTool(newTool);
+
+        // 控制上方提示字
+        if (newTool !== null) {
+            setShowDescriptionPanel(true);
+            setTimeout(() => setShowDescriptionPanel(false), 3000);
+        } else {
+            setShowDescriptionPanel(false);
+        }
+    };
+
     const focusModelInternal = async (modelId: string) => {
         if (!componentsRef.current) return;
         const fragments = componentsRef.current.get(OBC.FragmentsManager);
@@ -152,6 +235,9 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
         }
     };
 
+    // ==========================================
+    // 對外暴露的方法
+    // ==========================================
     useImperativeHandle(ref, () => ({
         getComponents: () => componentsRef.current,
         hasModel: (modelId: string) => {
@@ -315,7 +401,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
     }, []);
 
     // 處理檔案載入邏輯
-    // 🚀 狀態驅動載入邏輯：當外部傳入的 file 改變時，自動載入場景
+    // 狀態驅動載入邏輯：當外部傳入的 file 改變時，自動載入場景
     useEffect(() => {
         const loadSelectedModel = async () => {
             // 防呆：如果沒有檔案、或是 Viewer 還沒準備好，就跳過
@@ -379,6 +465,42 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
                     <p className="text-gray-500 bg-black/20 px-4 py-2 rounded-lg backdrop-blur-sm">
                         請上傳並載入IFC模型
                     </p>
+                </div>
+            )}
+            {/* 提示字眼 */}
+            {showDescriptionPanel && activeTool && (
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 z-20 bg-black/70 text-white px-4 py-2 rounded-lg backdrop-blur-md animate-fade-in">
+                    已啟動 {activeTool} 工具
+                </div>
+            )}
+
+            {/* 工具列直接內建在 Viewer3D 中 */}
+            {isViewerReady && componentsRef.current && (
+                <div className="absolute z-20 left-1/2 -translate-x-1/2 bottom-5 transition-opacity duration-300">
+                    {/* opacity-0 group-hover:opacity-100 可以讓滑鼠移進畫面才顯示，覺得不需要可以拿掉 */}
+                    <ActionButtons
+                        components={componentsRef.current} 
+                        onToggleVisibility={() => {}} // 依據你 setupComponents 實作補充 Hider 邏輯
+                        onIsolate={() => {}} // 依據你 setupComponents 實作補充 Hider 邏輯
+                        onFocus={handleFocus}
+                        onShow={handleShowAll}
+                        onGhost={handleGhost}
+                        isGhost={isGhost}
+                        onToggleShadowScene={() => setIsShadowed(!isShadowed)}
+                        isShadowed={isShadowed}
+                        onToggleColorShadows={() => setIsColorShadowsEnabled(!isColorShadowsEnabled)}
+                        isColorShadowsEnabled={isColorShadowsEnabled}
+                        activeTool={activeTool}
+                        onSelectTool={handleToolSelect}
+                        lengthMode={lengthMode}
+                        setLengthMode={setLengthMode}
+                        areaMode={areaMode}
+                        setAreaMode={setAreaMode}
+                        onColorize={(color) => console.log(color)}
+                        onClearColor={() => {}}
+                        onToggleMultiSelect={() => handleToolSelect("multi-select")}
+                        isMultiSelectActive={activeTool === "multi-select"}
+                    />
                 </div>
             )}
         </div>
