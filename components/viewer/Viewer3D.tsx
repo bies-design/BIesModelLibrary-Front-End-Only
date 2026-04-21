@@ -476,7 +476,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
 
             {/* 工具列直接內建在 Viewer3D 中 */}
             {isViewerReady && componentsRef.current && (
-                <div className="absolute z-20 left-1/2 -translate-x-1/2 bottom-5 transition-opacity duration-300">
+                <div className="absolute hidden z-20 left-1/2 -translate-x-1/2 bottom-5 transition-opacity duration-300">
                     {/* opacity-0 group-hover:opacity-100 可以讓滑鼠移進畫面才顯示，覺得不需要可以拿掉 */}
                     <ActionButtons
                         components={componentsRef.current} 
