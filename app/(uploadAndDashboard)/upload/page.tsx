@@ -285,12 +285,12 @@ const Upload = () => {
             <div className='flex w-full h-screen gap-4 p-2 relative overflow-hidden'>
                 {/* 左側步驟導覽列 */}
                 <div className={`
-                    z-60 rounded-lg border-[5px] border-[rgba(40,48,62,0.6)] transition-transform duration-300 bg-[#27272A] shadow-2xl
+                    z-60 rounded-lg transition-transform duration-300 bg-[#27272A] shadow-2xl
                     /* 📱 手機版設定：絕對定位、根據狀態滑出或隱藏 */
                     absolute top-0 left-0 h-[100%] w-[250px]
                     ${isMobileStepNavOpen ? "translate-x-0" : "-translate-x-full"}
                     /* 💻 電腦版設定 (md 以上)：恢復相對定位，取消隱藏，乖乖待在左邊 */
-                    md:relative md:top-auto md:left-auto md:h-auto md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0 overflow-visible
+                    md:relative md:top-[3px] md:left-auto md:h-[99.5%] md:max-w-[300px] md:min-w-[250px] md:w-[20vw] md:translate-x-0 overflow-visible
                 `}>
                     <button 
                         onClick={() => setIsMobileStepNavOpen(!isMobileStepNavOpen)}
@@ -301,7 +301,7 @@ const Upload = () => {
                     </button>
                     <SidebarBlobs/>
                     {/* 建立一個絕對定位的層，專門放陰影，並確保它在背景之上 */}
-                    <div className='absolute inset-0 pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
+                    <div className='absolute inset-1.25 rounded pointer-events-none shadow-[inset_0px_0px_27.1px_0px_#000000] z-10'/>
                     <SidebarUpload 
                         currentStep={step}
                         onNext={isSubmitting ? ()=>Promise<void> : handleNextButton}

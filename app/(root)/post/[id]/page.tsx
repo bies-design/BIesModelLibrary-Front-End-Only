@@ -161,13 +161,13 @@ export default async function PostDetailPage({
                         
                         {/* 標題與基本資訊 */}
                         <div className='font-abeezee'>
-                            <div className="font-abeezee glass-panel inline-block text-xs text-black/80 dark:text-white px-3 py-1 rounded-full mb-5">
+                            <div className="font-abeezee glass-panel inline-block text-xs text-black/80 dark:text-white px-3 py-1 rounded-lg mb-5">
                                 <div className='flex gap-2 '>
                                     {renderTypeIcon()} 
                                     {post.type} post
                                 </div>
                             </div>
-                            <h1 className="text-3xl font-abeezee bg-linear-to-b from-white to-[#d1d1da] bg-clip-text text-transparent mb-4 leading-tight">{post.title}</h1>
+                            <h1 className="mt-5 text-3xl font-abeezee bg-linear-to-b from-white to-[#d1d1da] bg-clip-text text-transparent mb-4 leading-tight">{post.title}</h1>
                             {/* 分類
                             <div className="mx-auto mb-6 text-sm text-[#A1A1AA]">
                                 {
@@ -180,7 +180,7 @@ export default async function PostDetailPage({
                                 <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{post.category || 'none'}</span>
                             </div> */}
 
-                            <div className="flex items-center gap-4 text-sm text-[#A1A1AA] mb-4">
+                            {/* <div className="flex items-center gap-4 text-sm text-[#A1A1AA] mb-4">
                                 <svg width="0" height="0" style={{ position: 'absolute' }}>
                                     <defs>
                                         <linearGradient id="star-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -198,9 +198,9 @@ export default async function PostDetailPage({
                                     <Star size={14} fill='url(#star-gradient)' stroke='none' />
                                     <span className="ml-2 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">{`${0} reviews`}</span>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className='flex items-center gap-1 text-[#A1A1AA]'>
+                            {/* <div className='flex items-center gap-1 text-[#A1A1AA]'>
                                 <div className='flex gap-1 items-center text-sm'>
                                     <ArrowDownToLine size={14}/>
                                     <span>{1.2}k</span>
@@ -213,7 +213,7 @@ export default async function PostDetailPage({
                                 <div className='flex gap-1 items-center text-sm'>
                                     <span>{100} comments</span>
                                 </div>    
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* 操作按鈕 */}
@@ -232,7 +232,19 @@ export default async function PostDetailPage({
                         <div className="font-abeezee text-left">
                             <h3 className="bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent mb-5">Details</h3>
                             <div className="grid grid-cols-[120px_1fr] gap-y-3 text-sm">
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Uploader</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.uploader?.userName || 'Unknown'}</span>
+
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Team</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.team?.name || 'none'}</span>
+
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Category</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent hover:underline cursor-pointer">{post.category || "none"}</span>
                                 
+                                
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">License terms</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent hover:underline cursor-pointer">{post.permission || 'Standard License'}</span>
+                                    
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent mr-px]">Last update</span>
                                     <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.updatedAt)}</span>
                                 
@@ -241,19 +253,7 @@ export default async function PostDetailPage({
                                     <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.createdAt)}</span>
                                 
                                 
-                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Category</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent hover:underline cursor-pointer">{post.category || "none"}</span>
-                                
-                                
-                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">License terms</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent hover:underline cursor-pointer">{post.permission || 'Standard License'}</span>
-                                
-                                
-                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Uploader</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.uploader?.userName || 'Unknown'}</span>
-
-                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Team</span>
-                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparenth">{post.team?.name || 'none'}</span>
+                                    
                             </div>
                         </div>
 

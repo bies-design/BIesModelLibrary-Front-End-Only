@@ -23,7 +23,7 @@ export default function ProjectAssociationPills({ team, associations }: Associat
                 <Tooltip 
                     key={index}
                     placement='top' 
-                    content={`${asset?.project.team || "無"} -> ${asset.project?.name || "無"} -> ${asset.phase?.name || "未分類"} `}
+                    content={`${asset?.project.team || "無"} > ${asset.project?.name || "無"} > ${asset.phase?.name || "未分類"} `}
                     className="bg-black text-white text-md"
                 >
                     <div 

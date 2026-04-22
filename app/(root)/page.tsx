@@ -110,7 +110,7 @@ const Home = () => {
   return (
     <div className='flex flex-col min-h-screen pt-20 text-white'>
       <div className='flex-1 w-full flex flex-col items-center'>
-        <div className="flex flex-col items-center  gap-8">
+        <div className="flex flex-col items-center gap-8">
           <Image 
             src="/icons/GOMOREonly.svg" 
             width={300} 
@@ -146,7 +146,7 @@ const Home = () => {
 
         {/* 2. 替換掉原本的文字 div */}
         {/* 調整 mt 來控制與上方的距離，w-full 確保寬度 */}
-        <div className='hidden md:flex md:flex-col items-center mt-10 w-full overflow-hidden '>
+        <div className='hidden md:flex md:flex-col items-center -mt-5 w-full overflow-hidden '>
             <DataFlowLayout theme={resolvedTheme === 'light' ? 'light' : 'dark'} />
             {/* <HeroAnimation/> */} 
         </div>

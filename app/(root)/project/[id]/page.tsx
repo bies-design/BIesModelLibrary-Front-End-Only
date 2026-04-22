@@ -113,7 +113,7 @@ const AssetNode = ({
                 <div className="flex text-md items-center gap-2 overflow-hidden">
                     {node.type === 'FOLDER' ? (
                         <Tooltip placement="top" content={`資料夾描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
-                            <div className="flex items-center gap-2 cursor-help">
+                            <div className="flex items-center gap-2 cursor-pointer">
                                 {isExpanded ? <FolderOpen size={16} className="text-amber-400 shrink-0" /> : <Folder size={16} className="text-amber-400 shrink-0" />}
                                 <span className="font-medium text-gray-200 truncate">{node.name}</span>
                             </div>
@@ -576,10 +576,10 @@ export default function ProjectDetailPage() {
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>狀態：{project.status ? project.status : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未設定"}</p>
-                        <div className={`ml-9 my-1 text-sm max-w-2xl max-h-24 overflow-y-auto break-all whitespace-pre-wrap pr-2 ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>
+                        {/* <div className={`ml-9 my-1 text-sm max-w-2xl max-h-24 overflow-y-auto break-all whitespace-pre-wrap pr-2 ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>
                             描述：{project.description ? project.description : "未設定"}
-                        </div>
-                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>上傳時間：{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString() : ""}</p>
+                        </div> */}
+                        {/* <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>上傳時間：{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString() : ""}</p> */}
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>最後編輯時間：{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</p>                        
                     </div>
                 </div>

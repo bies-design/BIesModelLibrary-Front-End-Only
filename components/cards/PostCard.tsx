@@ -107,10 +107,10 @@ const PostCard = ({
       <div key={dbId} onClick={()=> {if(clickable) router.push(`/post/${shortId}`);}} className={`${clickable ? "hover-lift cursor-pointer" : ""} w-[300px] h-[300px] `}>
         <Card className="w-full h-full flex-col pb-4 pt-4 pl-4 pr-4 bg-[#ecece9] dark:bg-[#3F3F46] shadow-[4px_4px_3px_rgba(0,0,0,0.5),inset_0px_3px_4px_rgba(255,255,255,1)] dark:shadow-[4px_4px_5px_rgba(0,0,0,0.32),inset_0px_2px_5px_rgba(255,255,255,0.25)]">
           <CardBody 
-            className="py-0 px-0 rounded-[20px] relative items-center w-full shadow-[0px_3px_5px_1px_rgba(255,255,255,0.16),0px_-2px_2.5px_rgba(0,0,0,0.25)]">
+            className="py-0 px-0 rounded-lg relative items-center w-full shadow-[0px_3px_5px_1px_rgba(255,255,255,0.16),0px_-2px_2.5px_rgba(0,0,0,0.25)]">
               
             {/* Image縮放的裁剪框 */}
-            <div className='relative w-full h-[230px] overflow-hidden rounded-[20px] group bg-[#FFFFF4] dark:bg-[#18181B] '>  
+            <div className='relative w-full h-[230px] overflow-hidden rounded-md group bg-[#FFFFF4] dark:bg-[#18181B] '>  
               
               {displayImage ? (
                   <Image

@@ -254,10 +254,10 @@ export default function ProjectsPage() {
                                                 <Building2 size={14} />
                                                 <span>{project.client ? project.client : "未設定"}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-white">
+                                            {/* <div className="flex items-center gap-2 text-sm text-white">
                                                 <FolderUp size={14} />
                                                 <span>{project.createdAt ? new Date(project.createdAt).toLocaleDateString() + " " + new Date(project.createdAt).toLocaleTimeString()  : ""}</span>
-                                            </div>
+                                            </div> */}
                                             <div className="flex items-center gap-2 text-sm text-white">
                                                 <ClipboardPen size={14} />
                                                 <span>{project.updatedAt ? new Date(project.updatedAt).toLocaleDateString() + " " + new Date(project.updatedAt).toLocaleTimeString() : ""}</span>

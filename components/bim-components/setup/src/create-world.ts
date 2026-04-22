@@ -16,6 +16,9 @@ export const createWorld = (components: OBC.Components) => {
     world.scene.setup();
     world.scene.three.background = null;// just to have transparent background
 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    world.scene.three.add(ambientLight);
+
     const viewport = document.createElement("div");
     viewport.className = "w-full h-full"; // 保持 Tailwind class
     viewport.style.display = "block";

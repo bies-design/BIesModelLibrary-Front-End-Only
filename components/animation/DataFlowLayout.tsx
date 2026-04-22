@@ -59,7 +59,7 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
     }, []);
 
     return (
-        <div className={`relative w-full h-screen overflow-hidden flex items-center justify-center font-sans`}>
+        <div className={`relative w-full overflow-hidden flex items-center justify-center font-sans`}>
             {/* 比例容器 */}
             <div className="relative w-full max-w-[1400px] aspect-[1600/650] shrink-0">
                 {/* SVG 背景與動態軌跡 */}
@@ -200,7 +200,15 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
                                 <rect x="-48" y="-120" width="96" height="96" rx="16" fill={node.dotColor} filter="url(#node_color_glow)" opacity="0">
                                     <animate attributeName="opacity" values="0; 0; 0.6; 0; 0" keyTimes={`0; ${baseDelay}; ${peakTime}; ${fadeTime}; 1`} dur={TOTAL_DUR} repeatCount="indefinite" />
                                 </rect>
-                                <image href={node.imgSrc} x="-48" y="-120" width="96" height="96" className="object-contain" />
+                                <image href={node.imgSrc} x="-48" y="-120" width="96" height="96" className="object-contain" opacity="0">
+                                    <animate 
+                                        attributeName="opacity" 
+                                        values="0; 0; 1; 1; 0" 
+                                        keyTimes={`0; ${baseDelay}; ${peakTime}; ${fadeTime}; 1`}
+                                        dur={TOTAL_DUR} 
+                                        repeatCount="indefinite" 
+                                    />
+                                </image>
                             </g>
                         );
                     })}

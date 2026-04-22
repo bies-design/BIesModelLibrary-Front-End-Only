@@ -10,7 +10,6 @@ export const setupFragmentsManager = (components: OBC.Components,world:OBC.Simpl
     //To build the app, the worker file should be set inside the public folder
     //at the root of the project and be referenced as "worker.mjs"
     fragments.init("/worker.mjs");
-
     fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
         const isLod = "isLodMaterial" in material && material.isLodMaterial;
 

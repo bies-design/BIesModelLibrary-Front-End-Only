@@ -506,7 +506,7 @@ const ModelUploadSidebar = ({
 
   if (isCollapsed) {
     return (
-      <div className="relative z-50 flex justify-center items-center w-10 h-10 rounded-xl transition-all duration-300">
+      <div className="relative top-0 z-50 flex justify-center items-center w-10 h-10 rounded-xl">
         <Button
           isIconOnly
           variant="light"

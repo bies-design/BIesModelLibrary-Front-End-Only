@@ -77,9 +77,9 @@ export default function MediaGallery({ post }: { post: any }) {
 
                 await Promise.all(loadPromises);
 
-                setTimeout(() => {
-                    viewerRef.current?.focusAllModel();
-                }, 100);
+                // setTimeout(() => {
+                //     viewerRef.current?.focusAllModel();
+                // }, 100);
 
             } catch (error) {
                 console.error("載入 3D 場景失敗", error);
@@ -187,12 +187,12 @@ export default function MediaGallery({ post }: { post: any }) {
                 {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
             </button>
             
-            <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-none" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-[#18181B] overflow-hidden relative `}>
+            <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-xl" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-[#18181B] overflow-hidden relative `}>
                 
                 {isLoading && (
                     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md">
                         <Loader2 className="w-12 h-12 text-[#D70036] animate-spin mb-3" />
-                        <p className="text-white text-sm font-medium tracking-wider">Downloading files...</p>
+                        <p className="text-white text-sm font-medium tracking-wider"> Loading...</p>
                     </div>
                 )}
                 
