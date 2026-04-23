@@ -5,7 +5,8 @@ const RootLayout = ({children}:{children:ReactNode}) => {
   return (
     <>
       <BackgroundBlobs/>
-      <div className="flex flex-col backdrop-blur-[100px] justify-items-center min-h-screen relative z-20">
+      <div className="fixed inset-0 backdrop-blur-[100px] z-10 pointer-events-none"/>
+      <div className="relative flex flex-col justify-items-center min-h-screen z-20">
           <Navbarhead/>
         <main className='grow'>
           {children}
