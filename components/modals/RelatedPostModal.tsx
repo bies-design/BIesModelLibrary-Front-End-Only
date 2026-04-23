@@ -161,7 +161,8 @@ const RelatedPostsModal = ({
             size="5xl"
             classNames={{
                 wrapper:"z-999",
-                backdrop:"z-998"
+                backdrop:"z-998",
+                closeButton:"p-3 text-2xl"
             }}
             className="dark bg-[#18181B] text-white shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
         >

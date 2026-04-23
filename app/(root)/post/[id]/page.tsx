@@ -7,9 +7,10 @@ import MediaGallery from '@/components/post/MediaGallery';
 import ActionButtons from '@/components/post/ActionButtons';
 import CommentSection from '@/components/post/CommentSection';
 import PostCard from '@/components/cards/PostCard';
-import ProjectAssociationPills from '@/components/post/ProjectAssociationPills';
+import ProjectAssociationButton from '@/components/post/ProjectAssociationButton';
 import Footer from '@/components/Footer';
 import { verifyToken } from '@/app/api/generate-token/verifyToken';
+import RelatedModelsCarousel from '@/components/post/RelatedModelsCarousel';
 
 export default async function PostDetailPage({ 
     params, 
@@ -129,10 +130,12 @@ export default async function PostDetailPage({
                     <CommentSection postId={post.id} postShortId={post.shortId} postAuthorId={post.uploaderId}/>
                     {/* 4.關聯模型區塊 */}
                     <div className="mt-8 pt-8">
-                        <h2 className="flex items-center gap-3 text-xl text-white mb-6">
+                        <h2 className="flex items-center gap-3 text-xl text-white">
                             <p>Related models</p> 
                             <ChevronRight size={20} className='text-[#A1A1AA]'/>
                         </h2>
+                        <RelatedModelsCarousel relatedPosts={relatedPosts || []}/>
+                        {/* 
                         <div className="flex  gap-4 items-center overflow-x-scroll p-5 rounded-2xl">
                             {relatedPosts && relatedPosts.length > 0 ? (
                                 relatedPosts.map((relPost: any) => (
@@ -151,7 +154,7 @@ export default async function PostDetailPage({
                             ):(
                                 <p className="text-[#A1A1AA] text-sm">No related models.</p>
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -222,7 +225,7 @@ export default async function PostDetailPage({
                         </div>
                         {/* 專案連結 */}
                         <div className=''>
-                            <ProjectAssociationPills 
+                            <ProjectAssociationButton 
                                 team={post.team} 
                                 associations={post.projectAssets} 
                             />
