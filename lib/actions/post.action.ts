@@ -16,6 +16,7 @@ interface UpdatePostParams {
     imageKeys: string[];
     fileIds?: string[];
     filesToDelete?: string[]; 
+    teamId: string | null;
 }
 
 interface CreatePostParams {
@@ -51,34 +52,17 @@ export async function createPost(params: CreatePostParams) {
             });
 
             const types = fileRecords.map(record => {
-                // 優先使用 S3 的 fileId，如果沒有再看 name
                 const lowerName = (record.fileId || record.name || "").toLowerCase();
-                
-                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) {
-                    return 'MODEL_3D'; 
-                }
-                if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) {
-                    return 'DOCUMENT';
-                }
-                if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png')) { 
-                    return 'DRAWING';
-                }
-                if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) {
-                    return 'IMAGE';
-                }
+                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) return 'MODEL_3D'; 
+                if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) return 'DOCUMENT';
+                if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png') || lowerName.endsWith('.dxf')) return 'DRAWING';
+                if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) return 'IMAGE';
                 return 'OTHER';
             });
 
             // 萃取出不重複的類別清單
             const uniqueTypes = Array.from(new Set(types));
-
-            if (uniqueTypes.length === 1) {
-                // 只有一種檔案類型
-                postType = uniqueTypes[0];
-            } else if (uniqueTypes.length > 1) {
-                // 超過一種檔案類型，設定為 MIX
-                postType = "MIX";
-            }
+            postType = uniqueTypes.length === 1 ? uniqueTypes[0] : "MIX";
         }
         //  1. 準備基礎資料 (不包含關聯物件)
         const data: any = {
@@ -105,6 +89,15 @@ export async function createPost(params: CreatePostParams) {
                 connect: { id: teamId}
             };
         }
+        // 將關聯的檔案歸檔給團隊
+        if (isTeamPost && fileIds.length > 0) {
+            await prisma.fileRecord.updateMany({
+                where: { id: { in: fileIds } },
+                data: { teamId: teamId } // 將這些檔案的所有權綁定給團隊
+            });
+            console.log(`✅ 已將 ${fileIds.length} 個檔案歸檔至團隊: ${teamId}`);
+        }
+
         // 寫入 PostgreSQL
         const newPost = await prisma.post.create({
             data: data
@@ -146,10 +139,12 @@ export async function updatePost(params: UpdatePostParams) {
         coverImageKey, 
         imageKeys, 
         fileIds = [], 
-        filesToDelete = []
+        filesToDelete = [],
+        teamId
     } = params;
 
     try {
+        const isTeamPost = teamId && teamId !== "none" && teamId !== "";
         const oldPost = await prisma.post.findUnique({
             where: { shortId: shortId },
             include: { team: { include: { members: true } } }
@@ -159,7 +154,7 @@ export async function updatePost(params: UpdatePostParams) {
             return { success: false, error: "Post not found" };
         }
 
-        // 🛡️ 權限二次驗證
+        // 權限二次驗證
         const isOwner = oldPost.uploaderId === session.user.id;
         const isTeamEditor = oldPost.team?.members.some(
             m => m.userId === session.user.id && ['OWNER', 'ADMIN', 'EDITOR'].includes(m.role)
@@ -169,7 +164,7 @@ export async function updatePost(params: UpdatePostParams) {
             return { success: false, error: "Permission denied" };
         }
 
-        // 🚀 1. 自動判斷 Post Type (跟 create 邏輯一模一樣)
+        // 1. 自動判斷 Post Type (跟 create 邏輯一模一樣)
         let postType = "OTHER";
         if (fileIds.length > 0) {
             const fileRecords = await prisma.fileRecord.findMany({
@@ -190,7 +185,7 @@ export async function updatePost(params: UpdatePostParams) {
             postType = uniqueTypes.length === 1 ? uniqueTypes[0] : "MIX";
         }
 
-        // 🚀 2. 處理 S3 垃圾回收 (Images & Files)
+        // 2. 處理 S3 垃圾回收 (Images & Files)
         const s3DeletePromises: Promise<any>[] = [];
         
         // 處理舊封面
@@ -208,9 +203,6 @@ export async function updatePost(params: UpdatePostParams) {
         });
 
         await Promise.all(s3DeletePromises);
-
-        // 🚀 3. 準備更新資料庫的 payload
-        const isTeamPost = metadata.team && metadata.team !== "none" && metadata.team.trim() !== "";
         
         const updateData: any = {
             title: metadata.title,
@@ -229,12 +221,21 @@ export async function updatePost(params: UpdatePostParams) {
         };
 
         // 處理團隊關聯
-        if (isTeamPost) {
-            updateData.teamId = metadata.team;
-        } else {
-            updateData.teamId = null;
+        if(isTeamPost){
+            updateData.team = {
+                connect: { id: teamId}
+            };
         }
 
+        // 將關聯的檔案歸檔給團隊
+        if (isTeamPost && fileIds.length > 0) {
+            await prisma.fileRecord.updateMany({
+                where: { id: { in: fileIds } },
+                data: { teamId: teamId } // 將這些檔案的所有權綁定給團隊
+            });
+            console.log(`✅ 已將 ${fileIds.length} 個檔案歸檔至團隊: ${teamId}`);
+        }
+        
         // 4. 執行 Prisma 更新
         const updatedPost = await prisma.post.update({
             where: { shortId: shortId },

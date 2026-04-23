@@ -70,6 +70,8 @@ interface ModelUploadSidebarProps {
   selectedPublishIds: string[];
   onTogglePublish: (id: string) => void;
   onWorkspaceChange?: (workspaceId: string) => void;
+  mode: 'upload' | 'edit';
+  initialWorkspaceId?: string | null;
 }
 
 const ModelUploadSidebar = ({ 
@@ -86,7 +88,9 @@ const ModelUploadSidebar = ({
   preLoadedModels,
   selectedPublishIds,
   onTogglePublish,
-  onWorkspaceChange
+  onWorkspaceChange,
+  mode,
+  initialWorkspaceId
 }: ModelUploadSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -107,6 +111,12 @@ const ModelUploadSidebar = ({
 
   const [teams, setTeams] = useState<{id: string, name: string, role:string}[]>([]);
   const [currentWorkspace, setCurrentWorkspace] = useState<string>("personal");
+  useEffect(() => {
+    if (initialWorkspaceId) {
+      // 如果貼文有綁定 teamId，就切換到該 teamId，否則就是 personal
+      setCurrentWorkspace(initialWorkspaceId === "none" ? "personal" : initialWorkspaceId);
+    }
+  }, [initialWorkspaceId]);
 
   // 展開狀態管理 (為每種分類準備一個)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -129,25 +139,18 @@ const ModelUploadSidebar = ({
     };
     fetchTeams();
   }, []);
-  // 🚀 撈取所有 FileRecord 資料
+  // 撈取所有 FileRecord 資料
   const fetchUserFilesData = async () => {
     setIsLoading(true);
     try {
-      // 🚀 將當前工作區傳給 API
-      const result = await getUserFiles(currentWorkspace); 
+      // 將當前工作區傳給 API
+      const result = await getUserFiles(currentWorkspace, mode); 
       if (result.success && result.data) {
         setCompletedFiles(result.data);
       }
     } catch (error) { console.error(error); } 
     finally { setIsLoading(false); }
   };
-  useEffect(() => {
-    fetchUserFilesData();
-    console.log(currentWorkspace);
-  }, [currentWorkspace]);
-  // useEffect(() => {
-  //   fetchUserFilesData();
-  // }, []);
   // 當工作區改變時，不僅自己要重新拉取檔案，也要通知父層
   useEffect(() => {
       fetchUserFilesData();
@@ -651,7 +654,7 @@ const ModelUploadSidebar = ({
                     // 點擊整列時，將其設為當前預覽檔案
                     onClick={() => onSelectFile(item)} 
                     className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${
-                      // 🚀 如果是當前選中的檔案，給予高亮樣式
+                      // 如果是當前選中的檔案，給予高亮樣式
                       selectedFileId === item.dbId 
                         ? 'bg-white/10 border-[#10B981] shadow-[0_0_10px_rgba(16,185,129,0.2)]' 
                         : 'bg-[#27272A] border-[#10B981]/30 hover:bg-[#3F3F46]'
@@ -666,7 +669,7 @@ const ModelUploadSidebar = ({
                       />
                     </div>
                     
-                    {/* 🚀 加上小圖示區分 3D 還是 PDF */}
+                    {/* 加上小圖示區分 3D 還是 PDF */}
                     {item.type === '3d' ? <Box size={14} className="text-blue-400 shrink-0"/> : <FileText size={14} className="text-orange-400 shrink-0"/>}
 
                     <Tooltip content={`${item.name}`} placement='bottom' className='bg-black text-white'>
@@ -677,7 +680,7 @@ const ModelUploadSidebar = ({
                     
                     {/* 阻擋冒泡：點擊按鈕時不要觸發整列的選取 */}
                     <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                      {/* 🚀 只有 3D 模型才顯示 Focus 按鈕 */}
+                      {/* 只有 3D 模型才顯示 Focus 按鈕 */}
                       {item.type === '3d' && (
                         <button onClick={(e) => {console.log(item.name.replace(/\.(ifc|frag)$/i, "")); onFocusModel(item.name.replace(/\.(ifc|frag)$/i, ""));}} className="text-gray-400 hover:text-white"><Focus size={16}/></button>
                       )}

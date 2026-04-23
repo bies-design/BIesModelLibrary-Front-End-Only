@@ -74,7 +74,7 @@ const Upload = () => {
     const viewerRef = useRef<Viewer3DRef>(null);
     const pdfRef = useRef<PDFViewerRef>(null);
 
-   
+    
     //for breaking infinite rendering in viewer3D syncModels
     const handleIFCProcessingChange = useCallback((isIFCProcessing:boolean,fileName: string | null, progress?:number) => {
         setIFCProcessingStatus({isIFCProcessing,fileName,progress});
@@ -231,6 +231,7 @@ const Upload = () => {
 
         setStep((prev) => Math.max(prev - 1, 1));
     };
+
     const handleCaptureScreenshot = async () => {
         try {
             let imgData: string | null = null;
@@ -377,6 +378,7 @@ const Upload = () => {
                                         prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
                                     )}
                                     onWorkspaceChange={setCurrentWorkspaceId}
+                                    mode='upload'
                                 />
                             </div>
                             {step === 2 && (isSupported3D || isSupportedPdf) &&

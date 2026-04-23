@@ -9,15 +9,23 @@ import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import axios from "axios";
 
 // 獲取檔案 (根據 workspace 過濾)
-export async function getUserFiles(workspaceId: string) {
+export async function getUserFiles(workspaceId: string, mode: 'upload' | 'edit') {
     const session = await auth();
     if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
     try{
-        const baseCondition: any = {
-            postId: null,
-            status: "completed" //只抓取轉檔成功的檔案
-        };
+
+        let baseCondition: any = {};
+        if(mode === 'upload'){
+            baseCondition = {
+                postId: null,
+                status: "completed" //只抓取轉檔成功的檔案
+            };
+        }else if(mode === 'edit'){
+            baseCondition = {
+                status: "completed" //只抓取轉檔成功的檔案
+            };
+        }
         // 判斷條件：如果是 'personal'，就找 uploaderId 是自己且 teamId 為空的檔案
         // 如果是具體的 teamId，就找該團隊的檔案
         const whereCondition = workspaceId === "personal"
