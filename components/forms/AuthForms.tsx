@@ -121,15 +121,23 @@ const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
             }
             return; // 成功後直接結束，不執行下面的錯誤處理
         }
-        // 失敗
-        // Handle server-side errors (e.g., duplicate email or invalid credentials)
+        // 登入失敗：處理伺服器回傳的錯誤
         if (!result.success && result.error) {
-            const errorMsg = result.error.toLowerCase();
-            if (errorMsg.includes("email")) {
-                setErrors(prev => ({...prev, email: result.error as string}));
-            } else if (errorMsg.includes("username") || errorMsg.includes("user") || errorMsg.includes("credential")) {
-                // Map "user not found", "username", or "credentials" errors to the username field
-                setErrors(prev => ({...prev, username: result.error as string}));
+            if (formType === "SIGN_IN") {
+                // 🚀 登入時：同時讓 username 和 password 亮起紅燈！
+                // 這裡的小訣竅是：把錯誤訊息放在 password 下方顯示，username 只給一個空白字串讓它亮紅框，這樣畫面看起來最乾淨。
+                setErrors({
+                    username: " ", 
+                    password: result.error 
+                });
+            } else {
+                // 註冊時：依照你原本的邏輯，看是 email 還是 username 衝碼
+                const errorMsg = result.error.toLowerCase();
+                if (errorMsg.includes("email")) {
+                    setErrors(prev => ({...prev, email: result.error as string}));
+                } else {
+                    setErrors(prev => ({...prev, username: result.error as string}));
+                }
             }
         }
     } finally {
@@ -167,49 +175,49 @@ return (
     validationErrors={errors}
     onSubmit={handleSubmit}
     >
-    <div className="space-y-4 w-full">
+    <div className="flex flex-col items-center space-y-4 w-full">
 
         {Object.keys(defaultValues).map((name) => {
-        const value = values[name] ?? "";
-        const error = errors[name];
-        const label = getLabelFromName(name);
-        const isPasswordField = name === "password" || name === "confirmPassword";
-        const type = isPasswordField ? "password" : "text";
-        const isRequired = true;
+            const value = values[name] ?? "";
+            const error = errors[name];
+            const label = getLabelFromName(name);
+            const isPasswordField = name === "password" || name === "confirmPassword";
+            const type = isPasswordField ? "password" : "text";
+            const isRequired = true;
 
-        return (
-            <Input
-            fullWidth
-            key={name}
-            name={name}
-            label={label}
-            labelPlacement="inside"
-            isRequired={isRequired}
-            type={type === "password" ? (isVisible ? "text" : "password") : (name === "email" ? "email" : "text")}
-            value={value}
-            onValueChange={(v) => handleChange(name, v)}
-            isInvalid={!!error}
-            errorMessage={error ?? undefined}
-            placeholder={`Enter your ${label}`}
-            classNames={{
-                inputWrapper:
-                "bg-white dark:bg-[#27272A] shadow-[0px_3px_2px_rgba(255,255,255,0.18),0px_0px_4px_rgba(255,255,255,0.24),inset_0px_3px_5px_rgba(0,0,0,0.64),inset_0px_-1px_2px_rgba(0,0,0,0.6)]",
-            }}
-            endContent={
-                isPasswordField ? (
-                <button
-                    type="button"
-                    onClick={toggleVisibility}
-                    aria-label={isVisible ? "Hide password" : "Show password"}
-                    className="focus:outline-none"
-                >
-                    {!isVisible ? <EyeOff className="text-black dark:text-white" size={20} /> : <Eye className="text-black dark:text-white" size={20}/>}
-                </button>
-                ) : null
-            }
-            />
+            return (
+                <Input
+                fullWidth
+                key={name}
+                name={name}
+                label={label}
+                labelPlacement="inside"
+                isRequired={isRequired}
+                type={type === "password" ? (isVisible ? "text" : "password") : (name === "email" ? "email" : "text")}
+                value={value}
+                onValueChange={(v) => handleChange(name, v)}
+                isInvalid={!!error}
+                errorMessage={error ?? undefined}
+                placeholder={`Enter your ${label}`}
+                classNames={{
+                    inputWrapper:
+                    "bg-white dark:bg-[#27272A] shadow-[0px_3px_2px_rgba(255,255,255,0.18),0px_0px_4px_rgba(255,255,255,0.24),inset_0px_3px_5px_rgba(0,0,0,0.64),inset_0px_-1px_2px_rgba(0,0,0,0.6)]",
+                }}
+                endContent={
+                    isPasswordField ? (
+                    <button
+                        type="button"
+                        onClick={toggleVisibility}
+                        aria-label={isVisible ? "Hide password" : "Show password"}
+                        className="focus:outline-none"
+                    >
+                        {!isVisible ? <EyeOff className="text-black dark:text-white" size={20} /> : <Eye className="text-black dark:text-white" size={20}/>}
+                    </button>
+                    ) : null
+                }
+                />
 
-        );
+            );
         })}
 
         <Button
@@ -223,7 +231,7 @@ return (
         
     </div>
 
-    <div className="pl-30 mt-0 text-sm text-default-500">
+    <div className="mt-0 self-end mr-2 text-sm text-default-500">
         {switchText}{" "}
         <button
         type="button"
