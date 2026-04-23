@@ -133,7 +133,7 @@ export default async function PostDetailPage({
                             <p>Related models</p> 
                             <ChevronRight size={20} className='text-[#A1A1AA]'/>
                         </h2>
-                        <div className="flex gap-4 items-center overflow-x-scroll p-5 rounded-2xl">
+                        <div className="flex  gap-4 items-center overflow-x-scroll p-5 rounded-2xl">
                             {relatedPosts && relatedPosts.length > 0 ? (
                                 relatedPosts.map((relPost: any) => (
                                     <PostCard 

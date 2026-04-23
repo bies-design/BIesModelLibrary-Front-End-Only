@@ -186,7 +186,7 @@ export default function Edit() {
             const originalFileIds = preLoadedModels.map(m => m.dbId);
             const filesToDelete = originalFileIds.filter(id => !selectedPublishIds.includes(id));
 
-            console.log("2. 準備更新資料庫 Post...",currentWorkspaceId);
+            console.log("2. 準備更新資料庫 Post...");
             const result = await updatePost({
                 shortId: postShortId,
                 metadata: metadata,
@@ -558,6 +558,7 @@ export default function Edit() {
                                             onAdditionalImagesChange={setAdditionalImages}
                                             metadata={metadata}
                                             onMetadataChange={setMetadata}
+                                            currentPostShortId={postShortId}
                                         />
                                     </div>
                                 </div>

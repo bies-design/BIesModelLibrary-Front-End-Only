@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import RelatedPostsModal from '../modals/RelatedPostModal';
 import { SelectedPost } from '../modals/RelatedPostModal';
-import { getUserTeams } from '@/lib/actions/team.action';
 import { getTeamProjects, getProjectDetails } from '@/lib/actions/project.action';
 export interface ImageFile {
   file?: File;      // 原始檔案 (上傳用)
@@ -40,6 +39,7 @@ interface MetadataFormProps {
   onAdditionalImagesChange: (images: ImageFile[]) => void;
   metadata: Metadata;
   onMetadataChange: (data: Metadata) => void;
+  currentPostShortId?: string;
 }
 
 const MetadataForm = ({ 
@@ -48,7 +48,8 @@ const MetadataForm = ({
   additionalImages = [], 
   onAdditionalImagesChange,
   metadata, 
-  onMetadataChange 
+  onMetadataChange,
+  currentPostShortId
 }: MetadataFormProps) => {
 
   const { data: session } = useSession();
@@ -725,6 +726,7 @@ const MetadataForm = ({
           onOpenChange={onOpenChange}
           currentSelectedPosts={metadata.relatedPosts}
           onConfirm={handleRelatedPostsConfirm}
+          excludePostShortIds={currentPostShortId ? [currentPostShortId] : []}
         />
       </div>
 
