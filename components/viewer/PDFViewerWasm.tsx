@@ -10,7 +10,7 @@ import { Viewport, ViewportPluginPackage } from '@embedpdf/plugin-viewport/react
 import { Scroller, ScrollPluginPackage, useScroll } from '@embedpdf/plugin-scroll/react';
 import { DocumentContent, DocumentManagerPluginPackage } from '@embedpdf/plugin-document-manager/react';
 import { RenderLayer, RenderPluginPackage, useRenderCapability } from '@embedpdf/plugin-render/react';
-import { ZoomPluginPackage, useZoom, ZoomMode } from '@embedpdf/plugin-zoom/react';
+import { ZoomPluginPackage, useZoom, ZoomMode, ZoomGestureWrapper } from '@embedpdf/plugin-zoom/react';
 import { ThumbnailPluginPackage, ThumbnailsPane, ThumbImg } from '@embedpdf/plugin-thumbnail/react';
 import { RotatePluginPackage, useRotate, Rotate } from '@embedpdf/plugin-rotate/react';
 import { RotateCcw, RotateCw, PanelLeft } from 'lucide-react';
@@ -289,24 +289,26 @@ const PDFViewerWasm = forwardRef<PDFViewerWasmRef, PDFViewerWasmProps>(({ file }
                                             )}
                                             
                                             {/* 右側主畫面 */}
-                                            <div id="pdf-main-view" className="flex-1 overflow-hidden relative">
+                                            <div id="pdf-main-view" className="flex-1 overflow-hidden relative" style={{ touchAction: 'pan-x pan-y' }}>
                                                 <Viewport
                                                     documentId={activeDocumentId}
                                                     style={{ backgroundColor: '#18181B', width: '100%', height: '100%' }}
                                                 >
-                                                    <Scroller
-                                                        documentId={activeDocumentId}
-                                                        renderPage={({ width, height, pageIndex }) => (
-                                                            <div style={{ width, height }}>
-                                                                <Rotate documentId={activeDocumentId} pageIndex={pageIndex}>
-                                                                    <RenderLayer
-                                                                        documentId={activeDocumentId}
-                                                                        pageIndex={pageIndex}
-                                                                    />
-                                                                </Rotate>
-                                                            </div>
-                                                        )}
-                                                    />
+                                                    <ZoomGestureWrapper documentId={activeDocumentId} enablePinch={true} enableWheel={true}>
+                                                        <Scroller
+                                                            documentId={activeDocumentId}
+                                                            renderPage={({ width, height, pageIndex }) => (
+                                                                <div style={{ width, height }}>
+                                                                    <Rotate documentId={activeDocumentId} pageIndex={pageIndex}>
+                                                                        <RenderLayer
+                                                                            documentId={activeDocumentId}
+                                                                            pageIndex={pageIndex}
+                                                                        />
+                                                                    </Rotate>
+                                                                </div>
+                                                            )}
+                                                        />
+                                                    </ZoomGestureWrapper>
                                                 </Viewport>
                                             </div>
                                         </div>
