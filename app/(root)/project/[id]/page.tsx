@@ -22,6 +22,7 @@ import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalConten
 import { ProjectStatus } from "@/prisma/generated/prisma";
 import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
 import { checkUserTeamStatus, TeamAccessLevel } from "@/lib/actions/team.action";
+import AssetNode from "@/components/project/AssetNode";
 
 // --- 型別定義 ---
 type AssetType = 'FOLDER' | 'POST' | 'LINK';
@@ -94,100 +95,7 @@ const buildAssetTree = (assets: ProjectAsset[], phaseId: string | null): Project
     return roots;
 };
 
-// --- 遞迴渲染組件：AssetNode ---
-const AssetNode = ({ 
-    node, depth, isEditor, expandedNodes, onToggle, 
-    onAdd, onEdit, onMove, onDelete , onReorder, totalInLevel, currentIndex 
-}: any) => {
-    const isExpanded = expandedNodes[node.id];
-    const hasChildren = node.children && node.children.length > 0;
 
-    return (
-        <div className="flex flex-col">
-            <div 
-                id={`asset-${node.id}`}
-                className="group flex items-center justify-between py-2 pr-4 hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
-                style={{ paddingLeft: `${depth * 1.5 + 1}rem` }}
-                onClick={() => node.type === 'FOLDER' && onToggle(node.id)}
-            >
-                <div className="flex text-md items-center gap-2 overflow-hidden">
-                    {node.type === 'FOLDER' ? (
-                        <Tooltip placement="top" content={`資料夾描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
-                            <div className="flex items-center gap-2 cursor-pointer">
-                                {isExpanded ? <FolderOpen size={16} className="text-amber-400 shrink-0" /> : <Folder size={16} className="text-amber-400 shrink-0" />}
-                                <span className="font-medium text-gray-200 truncate">{node.name}</span>
-                            </div>
-                        </Tooltip>
-                    ) : node.type === 'POST' ? (
-                        <Tooltip placement="top" content={`貼文描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
-                            <div className="flex items-center gap-2 cursor-help">
-                                <Box size={16} className="text-[#8DB2E8] shrink-0" />
-                                <Link href={`/post/${node.post?.shortId}`} className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
-                                    {node.name || node.post?.title}
-                                </Link>
-                            </div>
-                        </Tooltip>
-                    ) : (
-                        <Tooltip placement="top" content={`連結描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
-                            <div className="flex items-center gap-2 cursor-help">
-                                <Globe size={16} className="text-emerald-400 shrink-0" />
-                                <a href={node.url} target="_blank" className="hover:underline text-gray-300 truncate" onClick={(e)=>e.stopPropagation()}>
-                                    {node.name || '外部連結'}
-                                </a>
-                            </div>
-                        </Tooltip>
-                    )}
-                </div>
-
-                <div className="flex items-center gap-2 ">
-                    {isEditor && (
-                        <>
-                            {/* 資產排序 */}
-                            <div className="flex gap-0.5 border-r border-white/10 pr-2 mr-1">
-                                <button disabled={currentIndex === 0} onClick={(e) => { e.stopPropagation(); onReorder(node, 'up'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowUp size={16}/></button>
-                                <button disabled={currentIndex === totalInLevel - 1} onClick={(e) => { e.stopPropagation(); onReorder(node, 'down'); }} className="p-1 text-gray-500 hover:text-white disabled:opacity-10"><ArrowDown size={16}/></button>
-                            </div>
-                            {node.type === 'FOLDER' && (
-                                <button onClick={(e) => { e.stopPropagation(); onAdd(node.phaseId, node.id); }} title="新增至此資料夾">
-                                    <PlusCircle size={16} className="text-emerald-500 hover:text-emerald-400" />
-                                </button>
-                            )}
-                            <button onClick={(e) => { e.stopPropagation(); onEdit(node); }}>
-                                <Edit2 size={16} className="text-blue-400" />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); onMove(node); }} 
-                                title="移動至其他節點/階段"
-                                className="p-1 text-gray-500 hover:text-purple-400 transition-colors"
-                            >
-                                <Share2 size={16} className="rotate-90" /> {/* 使用旋轉後的圖示代表轉向 */}
-                            </button>
-                            <button onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}>
-                                <Trash2 size={16} className="text-red-400" />
-                            </button>
-                        </>
-                    )}
-                </div>
-            </div>
-
-            {node.type === 'FOLDER' && isExpanded && (
-                <div className="flex flex-col">
-                    {node.children.map((child: any, idx: number) => (
-                        <AssetNode 
-                            key={child.id} node={child} depth={depth + 1} isEditor={isEditor}
-                            expandedNodes={expandedNodes} onToggle={onToggle} onAdd={onAdd} 
-                            onEdit={onEdit} onMove={onMove} onDelete={onDelete} onReorder={onReorder} 
-                            totalInLevel={node.children.length} currentIndex={idx} 
-                        />
-                    ))}
-                    {!hasChildren && (
-                        <div className="py-2 text-sm text-gray-600 italic" style={{ paddingLeft: `${(depth + 1) * 1.5 + 1}rem` }}>空的資料夾</div>
-                    )}
-                </div>
-            )}
-        </div>
-    );
-};
 
 export default function ProjectDetailPage() {
     const router = useRouter();
@@ -212,9 +120,6 @@ export default function ProjectDetailPage() {
     const [targetContext, setTargetContext] = useState<{phaseId: string | null, parentId: string | null}>({phaseId: null, parentId: null});
     const [availablePosts, setAvailablePosts] = useState<Post[]>([]);
 
-    const [isMoveModalOpen, setIsMoveModalOpen] = useState<boolean>(false);
-    const [movingAsset, setMovingAsset] = useState<ProjectAsset | null>(null);
-
     const [newFolderName, setNewFolderName] = useState<string>("");
     const [newFolderDescription, setNewFolderDescription] = useState<string>("");
 
@@ -222,6 +127,9 @@ export default function ProjectDetailPage() {
 
     const isFetchingRef = useRef<boolean>(false);
     const isSubmittingRef = useRef<boolean>(false);
+
+    const [draggedNode, setDraggedNode] = useState<ProjectAsset | null>(null);
+    const [dropTarget, setDropTarget] = useState<{ id: string, position: 'before' | 'after' | 'inside' } | null>(null);
 
     // 🚀 關鍵 3：從 URL 解析搜尋與過濾參數
     const searchKeyword = searchParams.get('search') || "";
@@ -256,6 +164,72 @@ export default function ProjectDetailPage() {
     // ==========================================
     // 關鍵 ：(全域快捷搜尋) 的核心邏輯
     // ==========================================
+
+    const handleDropAsset = async (dragged: ProjectAsset, target: ProjectAsset, position: 'before' | 'after' | 'inside') => {
+        if (!project || isSubmittingRef.current || dragged.id === target.id) return;
+        
+        // 預防錯誤：不能將父資料夾拖入自己的子資料夾中
+        let isInvalidMove = false;
+        let currentParent = target.parentId;
+        while (currentParent) {
+            if (currentParent === dragged.id) isInvalidMove = true;
+            const parentNode = project.assets.find(a => a.id === currentParent);
+            currentParent = parentNode?.parentId || null;
+        }
+        if (isInvalidMove) {
+            addToast({ title: "無效的移動", description: "無法將資料夾移入其子目錄中", color: "danger" });
+            return;
+        }
+
+        isSubmittingRef.current = true;
+
+        // 1. 決定新的 phaseId 與 parentId
+        let newPhaseId = target.phaseId;
+        let newParentId = target.parentId;
+        if (position === 'inside' && target.type === 'FOLDER') {
+            newParentId = target.id;
+        }
+
+        // 2. 呼叫 Action：如果結構有改變，先更新資料庫的父節點綁定
+        if (dragged.phaseId !== newPhaseId || dragged.parentId !== newParentId) {
+            await moveAssetStructure(dragged.id, newPhaseId, newParentId);
+        }
+
+        // 3. 重新計算目標層級的排序陣列
+        let siblings = project.assets.filter(a => a.phaseId === newPhaseId && a.parentId === newParentId && a.id !== dragged.id);
+        siblings.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+        let insertIndex = siblings.findIndex(s => s.id === target.id);
+        if (position === 'after') insertIndex += 1;
+        if (position === 'inside') insertIndex = siblings.length; 
+
+        siblings.splice(insertIndex, 0, dragged);
+        const updatedOrders = siblings.map((s, i) => ({ id: s.id, sortOrder: i }));
+
+        // 4. Optimistic UI：先更新前端畫面讓使用者覺得瞬間完成
+        setProject(prev => {
+            if (!prev) return prev;
+            const newAssets = prev.assets.map(a => {
+                if (a.id === dragged.id) return { ...a, phaseId: newPhaseId, parentId: newParentId, sortOrder: updatedOrders.find(o => o.id === a.id)?.sortOrder || 0 };
+                const match = updatedOrders.find(o => o.id === a.id);
+                return match ? { ...a, sortOrder: match.sortOrder } : a;
+            });
+            return { ...prev, assets: newAssets };
+        });
+
+        // 確保目標資料夾是展開的
+        if (position === 'inside') setExpandedNodes(prev => ({ ...prev, [target.id]: true }));
+
+        // 5. 呼叫 Action：背景更新所有影響到的排序
+        await reorderAssets(updatedOrders);
+        isSubmittingRef.current = false;
+        // 拖曳成功後的 Toast 提示
+        addToast({ 
+            title: "移動成功", 
+            description: `已將「${dragged.name || dragged.post?.title || '未命名資源'}」移動至新位置`, 
+            color: "success" 
+        });
+    };
 
     // 1. 取得某個檔案的「完整麵包屑路徑」 (例如：執行階段 > 圖說資料夾)
     const getAssetPath = (asset: ProjectAsset): string => {
@@ -388,31 +362,6 @@ export default function ProjectDetailPage() {
         isSubmittingRef.current = false;
     };
 
-    // 2. Asset 排序
-    const handleReorderAsset = async (targetNode: ProjectAsset, direction: 'up' | 'down') => {
-        if (!project || isSubmittingRef.current) return;
-        const siblings = project.assets
-            .filter(a => a.phaseId === targetNode.phaseId && a.parentId === targetNode.parentId)
-            .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-
-        const currentIndex = siblings.findIndex(s => s.id === targetNode.id);
-        const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-        if (targetIndex < 0 || targetIndex >= siblings.length) return;
-
-        [siblings[currentIndex], siblings[targetIndex]] = [siblings[targetIndex], siblings[currentIndex]];
-        const updatedOrders = siblings.map((s, i) => ({ id: s.id, sortOrder: i }));
-
-        const newAssets = project.assets.map(a => {
-            const match = updatedOrders.find(o => o.id === a.id);
-            return match ? { ...a, sortOrder: match.sortOrder } : a;
-        });
-        setProject({ ...project, assets: newAssets });
-
-        isSubmittingRef.current = true;
-        await reorderAssets(updatedOrders);
-        isSubmittingRef.current = false;
-    };
-
     // 3. 資產編輯
     const handleUpdateAssetInfo = async () => {
         if (!editingAsset || isSubmittingRef.current) return;
@@ -523,24 +472,6 @@ export default function ProjectDetailPage() {
     };
     const bgImageUrl = getImageUrl(project.coverImage);
 
-    // 處理移動提交
-    const handleConfirmMove = async (targetPhaseId: string | null, targetParentId: string | null) => {
-        if (!movingAsset) return;
-        
-        const res = await moveAssetStructure(movingAsset.id, targetPhaseId, targetParentId);
-        if (res.success) {
-            addToast({ title: "移動成功", color: "success" });
-            // 重新獲取專案資料
-            const updated = await getProjectDetails(projectId);
-            if (updated.data) setProject(updated.data as unknown as ProjectData);
-            setIsMoveModalOpen(false);
-        }
-    };
-    // 用來打開移動面板並記錄目標
-    const handleOpenMoveModal = (asset: ProjectAsset) => {
-        setMovingAsset(asset);
-        setIsMoveModalOpen(true);
-    };
 
     return (
         <div className="md:max-w-[90dvw] mx-auto p-6 text-white">
@@ -734,9 +665,14 @@ export default function ProjectDetailPage() {
                                             <AssetNode 
                                                 key={node.id} node={node} depth={0} isEditor={isEditor} 
                                                 expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 
-                                                onMove={handleOpenMoveModal} onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
+                                                draggedNode={draggedNode} 
+                                                setDraggedNode={setDraggedNode}
+                                                dropTarget={dropTarget} 
+                                                setDropTarget={setDropTarget} 
+                                                onDropNode={handleDropAsset}
+                                                onDelete={handleRemoveAsset}
                                                 onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
-                                                totalInLevel={phaseTree.length} currentIndex={idx}
+                                                
                                             />
                                         )) : <div className="py-4 pl-10 text-xs text-gray-600 italic">此階段尚無資源</div>}
                                     </div>
@@ -771,9 +707,14 @@ export default function ProjectDetailPage() {
                                     <AssetNode 
                                         key={node.id} node={node} depth={0} isEditor={isEditor} 
                                         expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 
-                                        onMove={handleOpenMoveModal} onDelete={handleRemoveAsset} onReorder={handleReorderAsset}
-                                        onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} // 🚀 補上這裡！
-                                        totalInLevel={arr.length} currentIndex={idx}
+                                        draggedNode={draggedNode} 
+                                        setDraggedNode={setDraggedNode}
+                                        dropTarget={dropTarget} 
+                                        setDropTarget={setDropTarget} 
+                                        onDropNode={handleDropAsset}
+                                        onDelete={handleRemoveAsset}
+                                        onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
+                                        
                                     />
                                 ))}
                             </div>
@@ -880,73 +821,6 @@ export default function ProjectDetailPage() {
                             </Tab>
                         </Tabs>
                     </ModalBody>
-                </ModalContent>
-            </Modal>
-            {/* 移動資產 Modal */}
-            <Modal 
-                isOpen={isMoveModalOpen} 
-                placement='center' 
-                onOpenChange={() => setIsMoveModalOpen(false)} 
-                classNames={{closeButton:"p-3 text-2xl"}} 
-                className="dark text-white bg-[#18181B] shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
-            >
-                <ModalContent>
-                    <ModalHeader>移動資產：{movingAsset?.name || "未命名"}</ModalHeader>
-                    <ModalBody className="max-h-[60vh] overflow-y-auto">
-                        <p className="text-sm text-gray-400 mb-4">請選擇目標位置（階段或資料夾）：</p>
-                        
-                        {/* 階段清單 */}
-                        {project.phases.map(phase => (
-                            <div key={phase.id} className="mb-4">
-                                <div 
-                                    className="flex items-center justify-between p-2 bg-white/5 hover:bg-purple-500/20 border border-white/10 rounded-lg cursor-pointer transition-all"
-                                    onClick={() => handleConfirmMove(phase.id, null)}
-                                >
-                                    <div className="flex items-center gap-2 text-sm font-bold text-purple-300">
-                                        <Milestone size={14} /> {phase.name} (頂層)
-                                    </div>
-                                    <span className="text-sm bg-purple-500/30 px-2 py-0.5 rounded">選擇</span>
-                                </div>
-                                
-                                {/* 該階段底下的所有資料夾 (遞迴或扁平化列出) */}
-                                <div className="ml-4 mt-2 flex flex-col gap-1">
-                                    {project.assets
-                                        .filter(a => a.phaseId === phase.id && a.type === 'FOLDER' && a.id !== movingAsset?.id)
-                                        .map(folder => (
-                                            <button 
-                                                key={folder.id}
-                                                onClick={() => handleConfirmMove(phase.id, folder.id)}
-                                                className="text-left p-2 text-xs text-gray-300 hover:bg-white/10 rounded border border-transparent hover:border-white/5 flex items-center gap-2"
-                                            >
-                                                <Folder size={12} className="text-amber-400" /> {folder.name}
-                                            </button>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* 未分類區塊 */}
-                        <div className="border-t border-white/10 pt-4">
-                            <div 
-                                className="flex items-center justify-between p-2 bg-white/5 hover:bg-gray-500/20 border border-white/10 rounded-lg cursor-pointer"
-                                onClick={() => handleConfirmMove(null, null)}
-                            >
-                                <div className="flex items-center gap-2 text-sm font-bold text-gray-300">
-                                    <Folder size={14} /> 未分類 (頂層)
-                                </div>
-                            </div>
-                        </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button 
-                            variant="flat" 
-                            onClick={() => setIsMoveModalOpen(false)}
-                            className='bg-black/90 text-white hover-lift shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8)]'
-                        >
-                            Cancel
-                        </Button>
-                    </ModalFooter>
                 </ModalContent>
             </Modal>
         </div>
