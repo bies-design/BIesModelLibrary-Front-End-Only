@@ -44,7 +44,7 @@ export async function createTeam(teamData: {name:string, description?:string, co
             return { success: false, error: "團隊名稱不可為空" };
         }
 
-        // 🚀 關鍵：使用 Prisma Transaction 確保兩筆寫入同時成功
+        // 使用 Prisma Transaction 確保兩筆寫入同時成功
         const newTeam = await prisma.$transaction(async (tx) => {
             // 1. 建立 Team 本體
             const team = await tx.team.create({

@@ -15,6 +15,7 @@ import { deleteFileRecord, getFileDownloadUrl, getUserFilesForDashboard } from '
 import Link from 'next/link';
 import { classifyError } from '@/lib/utils/errorClassifier';
 import { useNativeInView } from '@/hooks/useIntersectionObserver';
+import { checkUserTeamStatus, TeamAccessLevel } from '@/lib/actions/team.action';
 
 type RecordsProps = {
     workspaceId: string;
@@ -51,6 +52,25 @@ const Records = ( { workspaceId } : RecordsProps ) => {
     const [currentErrorFileName, setCurrentErrorFileName] = useState<string>("");
 
     const [isGenerating, setIsGenerating] = useState<string | null>(null);
+
+    const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
+    useEffect(() => {
+        const fetchAccessLevel = async () => {
+            // 如果是個人空間，預設給予最高權限
+            if (workspaceId === 'personal') {
+                setAccessLevel('EDITOR_ACCESS'); // 假設你的團隊有 OWNER 級別，或是這裡只要能通過 isEditor 判斷即可
+                return;
+            }
+            
+            // 如果是團隊空間，則去後端檢查權限
+            setAccessLevel('LOADING');
+            const status = await checkUserTeamStatus(workspaceId);
+            setAccessLevel(status);
+        };
+        
+        fetchAccessLevel();
+    }, [workspaceId]);
+    const isEditor = accessLevel === 'EDITOR_ACCESS';
 
     // 1. 抓取第一頁 (當過濾條件改變時)
     const fetchInitialFiles = async () => {
@@ -334,12 +354,16 @@ const Records = ( { workspaceId } : RecordsProps ) => {
                                             <TriangleAlert className="w-4 h-4" />
                                         </button>
                                     }
-                                    <button onClick={() => handleGetDownloadUrl(file.fileId, file.name)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Download">
-                                        <Download className="w-4 h-4" />
-                                    </button>
-                                    <button onClick={() => openDeleteModal(file.name, file.fileId)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Delete">
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    {isEditor && (
+                                        <>
+                                            <button onClick={() => handleGetDownloadUrl(file.fileId, file.name)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Download">
+                                                <Download className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => openDeleteModal(file.name, file.fileId)} className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white" title="Delete">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         ))}
