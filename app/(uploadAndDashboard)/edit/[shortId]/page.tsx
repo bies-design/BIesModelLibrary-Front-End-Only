@@ -2,8 +2,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import SidebarBlobs from '@/components/blobs/SidebarBlobs';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
-import PDFViewer from '@/components/viewer/PDFViewer';
-import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
 import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
 import { useParams, useRouter } from 'next/navigation';
@@ -13,6 +11,7 @@ import { updatePost, getEditPostDetail } from '@/lib/actions/post.action';
 import SidebarEdit from '@/components/sidebar/SidebarEdit';
 import { FileItem } from '../../upload/page';
 import ImageViewer from '@/components/viewer/ImageViewer';
+import PDFViewerWasm, {PDFViewerWasmRef} from '@/components/viewer/PDFViewerWasm';
 
 export default function Edit() {
     const params = useParams();
@@ -56,7 +55,7 @@ export default function Edit() {
     const [selectedPublishIds, setSelectedPublishIds] = useState<string[]>([]);
 
     const viewerRef = useRef<Viewer3DRef>(null);
-    const pdfRef = useRef<PDFViewerRef>(null);
+    const pdfRef = useRef<PDFViewerWasmRef>(null);
     const router = useRouter();
 
     const getImageUrl = useCallback((imageVal: string | null | undefined) => {
@@ -117,26 +116,24 @@ export default function Edit() {
         }
     };
 
+    useEffect(() => {
+        // 當 Upload 元件被銷毀時，清空最後殘留的封面圖 Blob URL
+        return () => {
+            if (coverImage && coverImage.startsWith('blob:')) {
+                URL.revokeObjectURL(coverImage);
+            }
+        };
+    }, [coverImage]);
+
     const handleNextButton = async () => {
+        if( step === 2 && (isSupported3D || isSupportedPdf) && !forceManualCover){
+            await handleCaptureScreenshot();
+        }
         if (step === 3) {
             handleUpdate();
             return;
         }
         setStep((next) => Math.min(next + 1, 3));
-    };
-
-    // 處理封面圖上傳的邏輯
-    const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            // 如果原本有暫存的預覽圖，先釋放記憶體
-            if (coverImage && coverImage.startsWith('blob:')) {
-                URL.revokeObjectURL(coverImage);
-            }
-            // 產生新的預覽網址
-            const url = URL.createObjectURL(file);
-            setCoverImage(url);
-        }
     };
 
     // 處理最終建立邏輯
@@ -163,8 +160,8 @@ export default function Edit() {
         try {
             console.log("開始上傳封面與展示圖片...");
             let coverKey: string | null = null;
-            // 判斷 coverImage 是否為 Blob URL (代表重新截圖過)
-            if (coverImage && coverImage.startsWith("blob:")) {
+            // 判斷 coverImage 是否為 Blob URL 或 Data URL (代表重新截圖過或重新上傳過)
+            if (coverImage && (coverImage.startsWith("blob:") || coverImage.startsWith("data:"))) {
                 coverKey = await uploadImageToMinIO(coverImage, "cover.png");
             } else if (coverImage) {
                 // 如果是舊的網址，把 Key 抽出來
@@ -209,6 +206,20 @@ export default function Edit() {
             alert(error instanceof Error ? error.message : "更新失敗，請稍後再試");
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    // 處理封面圖上傳的邏輯
+    const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // 如果原本有暫存的預覽圖，先釋放記憶體
+            if (coverImage && coverImage.startsWith('blob:')) {
+                URL.revokeObjectURL(coverImage);
+            }
+            // 產生新的預覽網址
+            const url = URL.createObjectURL(file);
+            setCoverImage(url);
         }
     };
 
@@ -419,50 +430,49 @@ export default function Edit() {
                                 {/* <div className='w-full h-full relative'>
                                     {renderViewer()}
                                 </div>  */}
-                                <div className={`absolute inset-0 ${step === 3 ? "hidden":"block"}`} >
-                                    {/* 1. 如果完全沒有選擇檔案，顯示空狀態 (蓋在最上面) */}
-                                    {!selectedFile && (
-                                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-                                            <Box size={48} className="opacity-20 mb-4" />
-                                            <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
-                                        </div>
-                                    )}
-                                    {/* 2. 🚀 永遠保留的 Viewer3D！只在選擇的是 3D 模型時顯示 */}
-                                    <div className={`absolute inset-0 ${isSupported3D ? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
-                                        <Viewer3D
-                                            ref={viewerRef} 
-                                            allFiles={uploadedFiles} 
-                                            // 這裡很關鍵：就算被隱藏，我們還是傳入 file，讓 useEffect 去處理載入
-                                            file={selectedFile?.type === '3d' ? selectedFile.file : null} 
-                                            onIFCProcessingChange={handleIFCProcessingChange} 
-                                        />
+                                {/* 1. 如果完全沒有選擇檔案，顯示空狀態 (蓋在最上面) */}
+                                {!selectedFile && (
+                                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                                        <Box size={48} className="opacity-20 mb-4" />
+                                        <p className="text-sm">請從左側列表選擇一個檔案來預覽</p>
                                     </div>
-                                    {/* 3. PDF Viewer：只有選擇 PDF 時才渲染 (PDF Viewer 比較輕量，可以重新渲染沒關係) */}
-                                    {isSupportedPdf && (
-                                        <div className="absolute inset-0 z-10 bg-[#18181B]">
-                                            <div className='w-full h-full relative'>
-                                                <PDFViewer 
-                                                    key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
-                                                    ref={pdfRef} 
-                                                    file={selectedFile.file} 
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                    {/* 4. 圖片預覽：只有選擇圖片時才渲染 */}
-                                    {(isSupportedImage && selectedFile) && (
-                                        <div className="absolute inset-0 z-10 bg-[#18181B]">
-                                            <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
-                                        </div>
-                                    )}
-                                    {/* 5. Fallback 畫面：有選擇檔案，但不是 3D、PDF 或圖片時顯示 */}
-                                    {isUnsupported && (
-                                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
-                                            <FileText size={48} className="opacity-20 mb-4" />
-                                            <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
-                                        </div>
-                                    )}
+                                )}
+                                {/* 2. 🚀 永遠保留的 Viewer3D！只在選擇的是 3D 模型時顯示 */}
+                                <div className={`absolute inset-0 ${isSupported3D ? 'z-10 opacity-100 pointer-events-auto' : '-z-10 opacity-0 pointer-events-none'}`}>
+                                    <Viewer3D
+                                        ref={viewerRef} 
+                                        allFiles={uploadedFiles} 
+                                        // 這裡很關鍵：就算被隱藏，我們還是傳入 file，讓 useEffect 去處理載入
+                                        file={selectedFile?.type === '3d' ? selectedFile.file : null} 
+                                        onIFCProcessingChange={handleIFCProcessingChange} 
+                                    />
                                 </div>
+                                {/* 3. PDF Viewer：只有選擇 PDF 時才渲染 (PDF Viewer 比較輕量，可以重新渲染沒關係) */}
+                                {isSupportedPdf && (
+                                    <div className="absolute inset-0 z-10 bg-[#18181B]">
+                                        <div className='w-full h-full relative'>
+                                            <PDFViewerWasm 
+                                                ref={pdfRef}
+                                                key={selectedFile.dbId} 
+                                                file={selectedFile.file} 
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                {/* 4. 圖片預覽：只有選擇圖片時才渲染 */}
+                                {(isSupportedImage && selectedFile) && (
+                                    <div className="absolute inset-0 z-10 bg-[#18181B]">
+                                        <ImageViewer key={selectedFile.dbId} file={selectedFile.file}/>
+                                    </div>
+                                )}
+                                {/* 5. Fallback 畫面：有選擇檔案，但不是 3D、PDF 或圖片時顯示 */}
+                                {isUnsupported && (
+                                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full h-full text-[#A1A1AA] bg-[#18181B]">
+                                        <FileText size={48} className="opacity-20 mb-4" />
+                                        <p className="text-sm">目前不支援預覽此格式檔案 ({selectedFile.name})</p>
+                                    </div>
+                                )}
+                            
                             </div>
 
                             <div className={`absolute left-2 top-2 h-[90%] ${(step === 2 || step === 3 )? "hidden":"block"}`}>

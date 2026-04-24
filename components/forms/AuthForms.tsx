@@ -124,7 +124,7 @@ const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
         // 登入失敗：處理伺服器回傳的錯誤
         if (!result.success && result.error) {
             if (formType === "SIGN_IN") {
-                // 🚀 登入時：同時讓 username 和 password 亮起紅燈！
+                // 登入時：同時讓 username 和 password 亮起紅燈！
                 // 這裡的小訣竅是：把錯誤訊息放在 password 下方顯示，username 只給一個空白字串讓它亮紅框，這樣畫面看起來最乾淨。
                 setErrors({
                     username: " ", 

@@ -60,6 +60,7 @@ const MetadataForm = ({
   const [isCropOpen, setIsCropOpen] = useState<boolean>(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState<number>(0);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   // --- 上傳相關 Ref 與 State ---
@@ -223,10 +224,11 @@ const MetadataForm = ({
   const handleSaveCrop = async () => {
     if (coverImage && croppedAreaPixels) {
       try {
-        const croppedImage = await getCroppedImg(coverImage, croppedAreaPixels);
+        const croppedImage = await getCroppedImg(coverImage, croppedAreaPixels, rotation);
         onCoverChange(croppedImage);
         setIsCropOpen(false);
         setZoom(1);
+        setRotation(0);
       } catch (e) {
         console.error(e);
       }
@@ -468,7 +470,17 @@ const MetadataForm = ({
             )}
           </div>
 
-          <Modal isOpen={isCropOpen} onClose={() => setIsCropOpen(false)} size="2xl">
+          <Modal 
+          isOpen={isCropOpen} 
+          onClose={() => setIsCropOpen(false)} 
+          size="2xl"
+          classNames={{
+              wrapper:"z-999",
+              backdrop:"z-998",
+              closeButton:"p-3 text-2xl"
+          }}
+          className="dark bg-[#18181B] text-white shadow-[inset_0px_2px_4px_rgba(255,255,255,0.4),inset_0px_-1px_2px_rgba(0,0,0,0.8),3px_3px_4px_rgba(0,0,0,0.4)]"
+          >
             <ModalContent className='bg-[#18181B] text-white'>
               <ModalHeader>裁切封面圖片</ModalHeader>
               <ModalBody>
@@ -478,31 +490,53 @@ const MetadataForm = ({
                       image={coverImage}
                       crop={crop}
                       zoom={zoom}
+                      rotation={rotation}
                       aspect={16/12}
                       onCropChange={setCrop}
+                      onRotationChange={setRotation}
                       onCropComplete={onCropComplete}
                       onZoomChange={setZoom}
                     />
                   )}
                 </div>
-                <div className="px-4 py-2">
-                  <p className="text-small text-zinc-400 mb-2">縮放</p>
-                  <Slider
-                    aria-label="Zoom"
-                    step={0.1}
-                    minValue={1}
-                    maxValue={3}
-                    value={zoom}
-                    onChange={(v) => setZoom(v as number)}
-                    className="max-w-md"
-                  />
+                <div className="px-4 py-2 flex flex-col gap-4">
+                  <div>
+                    <p className="text-small text-zinc-400 mb-2">縮放</p>
+                    <Slider
+                      aria-label="Zoom"
+                      step={0.1}
+                      minValue={1}
+                      maxValue={3}
+                      value={zoom}
+                      onChange={(v) => setZoom(v as number)}
+                      className="max-w-md"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-2 max-w-md">
+                      <p className="text-small text-zinc-400">旋轉</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="flat" onPress={() => setRotation((prev) => prev - 90)} className="text-white hover:bg-[#3F3F46] min-w-0 px-3">-90°</Button>
+                        <Button size="sm" variant="flat" onPress={() => setRotation((prev) => prev + 90)} className="text-white hover:bg-[#3F3F46] min-w-0 px-3">+90°</Button>
+                      </div>
+                    </div>
+                    <Slider
+                      aria-label="Rotation"
+                      step={1}
+                      minValue={0}
+                      maxValue={360}
+                      value={rotation}
+                      onChange={(v) => setRotation(v as number)}
+                      className="max-w-md"
+                    />
+                  </div>
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button variant="light" color="danger" onPress={() => setIsCropOpen(false)}>
+                <Button variant="light" color="danger" onPress={() => setIsCropOpen(false)} className="text-white shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]">
                   取消
                 </Button>
-                <Button className="bg-[#D70036] text-white" onPress={handleSaveCrop}>
+                <Button className="bg-[#D70036] text-white shadow-[0_0_2px_#000000B2,inset_0_-4px_4px_#00000040,inset_0_4px_2px_#FFFFFF33]" onPress={handleSaveCrop}>
                   確認裁切
                 </Button>
               </ModalFooter>

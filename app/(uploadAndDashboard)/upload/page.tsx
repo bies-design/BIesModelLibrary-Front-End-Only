@@ -3,8 +3,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import SidebarUpload from '@/components/sidebar/SidebarUpload';
 import SidebarBlobs from '@/components/blobs/SidebarBlobs';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
-import PDFViewer from '@/components/viewer/PDFViewer';
-import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
+
 import ModelUploadSidebar from '@/components/sidebar/ModelUploadSidebar';
 import MetadataForm, { Metadata, ImageFile } from '@/components/forms/MetadataForm';
 import { useRouter } from 'next/navigation';
@@ -13,6 +12,7 @@ import { createPost } from '@/lib/actions/post.action';
 import { addToast } from '@heroui/react';
 import ImageViewer from '@/components/viewer/ImageViewer';
 import { useSession } from 'next-auth/react';
+import PDFViewerWasm,{PDFViewerWasmRef} from '@/components/viewer/PDFViewerWasm';
 // 定義檔案項目介面
 export interface FileItem {
     dbId: string;
@@ -69,8 +69,7 @@ const Upload = () => {
     const [selectedPublishIds, setSelectedPublishIds] = useState<string[]>([]);
 
     const viewerRef = useRef<Viewer3DRef>(null);
-    const pdfRef = useRef<PDFViewerRef>(null);
-
+    const pdfRef = useRef<PDFViewerWasmRef>(null);
     
     //for breaking infinite rendering in viewer3D syncModels
     const handleIFCProcessingChange = useCallback((isIFCProcessing:boolean,fileName: string | null, progress?:number) => {
@@ -105,6 +104,35 @@ const Upload = () => {
             return null;
         }
     };
+        const handleCaptureScreenshot = async () => {
+        try {
+            let imgData: string | null = null;
+            if (selectedFile?.type === '3d' && viewerRef.current) {
+                imgData = await viewerRef.current.takeScreenshot();
+            } else if (selectedFile?.type === 'pdf' && pdfRef.current) {
+                // 假設 PDFViewer 有實作 takeScreenshot，若無可包一層 try-catch 防呆
+                if ('takeScreenshot' in pdfRef.current) {
+                    imgData = await (pdfRef.current as any).takeScreenshot();
+                } else {
+                    addToast({ title: "PDF 截圖暫未支援", description: "請手動上傳", color: "warning" });
+                    setForceManualCover(true);
+                    return;
+                }
+            }
+
+            if (imgData) {
+                setCoverImage(imgData);
+                addToast({ title: "封面擷取成功！", color: "success" });
+            } else {
+                throw new Error("無法產生圖片資料");
+            }
+        } catch (error) {
+            console.error("截圖失敗:", error);
+            addToast({ title: "截圖失敗", description: "請嘗試手動上傳封面", color: "danger" });
+            setForceManualCover(true);
+        }
+    };
+
     useEffect(() => {
         // 當 Upload 元件被銷毀時，清空最後殘留的封面圖 Blob URL
         return () => {
@@ -222,40 +250,7 @@ const Upload = () => {
 
     // 處理上一步按鈕
     const handleBackButton = () => {
-        if(step === 1){
-
-        }
-
         setStep((prev) => Math.max(prev - 1, 1));
-    };
-
-    const handleCaptureScreenshot = async () => {
-        try {
-            let imgData: string | null = null;
-            if (selectedFile?.type === '3d' && viewerRef.current) {
-                imgData = await viewerRef.current.takeScreenshot();
-            } else if (selectedFile?.type === 'pdf' && pdfRef.current) {
-                // 假設 PDFViewer 有實作 takeScreenshot，若無可包一層 try-catch 防呆
-                if ('takeScreenshot' in pdfRef.current) {
-                    imgData = await (pdfRef.current as any).takeScreenshot();
-                } else {
-                    addToast({ title: "PDF 截圖暫未支援", description: "請手動上傳", color: "warning" });
-                    setForceManualCover(true);
-                    return;
-                }
-            }
-
-            if (imgData) {
-                setCoverImage(imgData);
-                addToast({ title: "封面擷取成功！", color: "success" });
-            } else {
-                throw new Error("無法產生圖片資料");
-            }
-        } catch (error) {
-            console.error("截圖失敗:", error);
-            addToast({ title: "截圖失敗", description: "請嘗試手動上傳封面", color: "danger" });
-            setForceManualCover(true);
-        }
     };
 
     useEffect(() => {
@@ -336,9 +331,9 @@ const Upload = () => {
                                 {isSupportedPdf && (
                                     <div className="absolute inset-0 z-10 bg-[#18181B]">
                                         <div className='w-full h-full relative'>
-                                            <PDFViewer 
-                                                key={selectedFile.dbId} // 保留 key，確保切換 PDF 時重新載入
-                                                ref={pdfRef} 
+                                            <PDFViewerWasm 
+                                                ref={pdfRef}
+                                                key={selectedFile.dbId} 
                                                 file={selectedFile.file} 
                                             />
                                         </div>

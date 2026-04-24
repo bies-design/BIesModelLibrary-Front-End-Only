@@ -98,21 +98,21 @@ const PDFViewerInternal = forwardRef<PDFViewerRef, PDFViewerInternalProps>(({ fi
     takeScreenshot: async () => {
       if (!containerRef.current) return null;
       try {
-      // 🌟 改為尋找第一頁的 Canvas 或 Page Container
-      // .rpv-core__page-layer 是 react-pdf-viewer 渲染單頁的預設 class
-      const firstPageElement = containerRef.current.querySelector('.rpv-core__page-layer') as HTMLElement;
-      
-      const targetElement = firstPageElement || containerRef.current; // 如果找不到，退回截整個畫面
+        // 🌟 改為尋找第一頁的 Canvas 或 Page Container
+        // .rpv-core__page-layer 是 react-pdf-viewer 渲染單頁的預設 class
+        const firstPageElement = containerRef.current.querySelector('.rpv-core__page-layer') as HTMLElement;
+        
+        const targetElement = firstPageElement || containerRef.current; // 如果找不到，退回截整個畫面
 
-      const canvas = await domToCanvas(targetElement, {
-        quality: 1,
-        scale: isMobile ? 1 : 2,
-      });
-      return canvas.toDataURL('image/png');
-    } catch (error) {
-      console.error("PDF Screenshot failed:", error);
-      return null;
-    }
+        const canvas = await domToCanvas(targetElement, {
+          quality: 1,
+          scale: isMobile ? 1 : 2,
+        });
+        return canvas.toDataURL('image/png');
+      } catch (error) {
+        console.error("PDF Screenshot failed:", error);
+        return null;
+      }
     }
   }));
 

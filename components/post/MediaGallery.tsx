@@ -3,10 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
-import { PDFViewerRef } from '@/components/viewer/PDFViewerInternal';
-import PDFViewer from '../viewer/PDFViewer';
-import { ImageIcon, Box, FileText, Loader2, Maximize, Minimize, FileBox } from 'lucide-react';
+import { ImageIcon, Box, FileText, Loader2, Maximize, Minimize, FileBox, Expand, Shrink } from 'lucide-react';
 import { getFileDownloadUrl } from '@/lib/actions/file.action';
+import PDFViewerWasm from '../viewer/PDFViewerWasm';
 
 type activeSourceType = 'cover' | '3D' | number | `pdf-${number}`;
 
@@ -23,7 +22,6 @@ export default function MediaGallery({ post }: { post: any }) {
     const [imageUrlCache, setImageUrlCache] = useState<Record<string, string>>({});
 
     const viewerRef = useRef<Viewer3DRef>(null);
-    const pdfRef = useRef<PDFViewerRef>(null);
 
     const getExt = (name: string) => name.split('.').pop()?.toLowerCase() || '';
     
@@ -181,10 +179,10 @@ export default function MediaGallery({ post }: { post: any }) {
         >
             <button
                 onClick={toggleFullscreen}
-                className="absolute z-40 top-2 right-2 p-2 bg-black/50 hover:bg-black/80 text-white rounded-lg transition-opacity backdrop-blur-sm"
+                className={`absolute z-40 ${isFullscreen ? "top-5 right-5" : "top-1 right-1"} p-2 bg-black/50 hover:bg-black/80 text-white rounded-lg transition-opacity backdrop-blur-sm `}
                 title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
             >
-                {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                {isFullscreen ? <Shrink size={20} /> : <Expand size={20} />}
             </button>
             
             <div className={`${isFullscreen ? "flex-1 min-h-0 border-none rounded-xl" : "aspect-video border rounded-xl border-[#3F3F46]"} w-full bg-[#18181B] overflow-hidden relative `}>
@@ -209,7 +207,8 @@ export default function MediaGallery({ post }: { post: any }) {
                 {isShowPdf && currentFileObj && !isLoading && (
                     <div className="absolute inset-0 z-30 bg-[#18181B]">
                         <div className='w-full h-full relative'>
-                            <PDFViewer key={activeSource} ref={pdfRef} file={currentFileObj} />
+                            {/* <PDFViewer key={activeSource} ref={pdfRef} file={currentFileObj} /> */}
+                            <PDFViewerWasm key={activeSource} file={currentFileObj} />
                         </div>
                         
                     </div>
