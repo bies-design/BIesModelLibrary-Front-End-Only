@@ -384,7 +384,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
                 const worlds = componentsRef.current.get(OBC.Worlds);
                 for (const world of worlds.list.values()) {
                     if (world.renderer instanceof OBC.SimpleRenderer) {
-                        // 🌟 官方認證的 DOM 存取：renderer.three.domElement
+                        // 官方認證的 DOM 存取：renderer.three.domElement
                         const canvas = world.renderer.three.domElement;
                         
                         // 移除畫布的父元素 (即我們創建的原生 div viewport)

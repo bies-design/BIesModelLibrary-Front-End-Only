@@ -134,6 +134,7 @@ export interface PDFViewerWasmRef {
 const ScreenshotHandler = forwardRef<PDFViewerWasmRef, { documentId: string }> (({ documentId }, ref) => {
     useImperativeHandle(ref, () => ({
         takeScreenshot: async () => {
+            let canvas: HTMLCanvasElement | null = null;
             try {
                 const mainView = document.querySelector('#pdf-main-view') as HTMLElement;
                 if (!mainView) return null;
@@ -144,7 +145,9 @@ const ScreenshotHandler = forwardRef<PDFViewerWasmRef, { documentId: string }> (
                 const targetImage = images[0];
                 if (!targetImage.complete || targetImage.naturalWidth === 0) return null;
 
-                const canvas = document.createElement('canvas');
+                // [對齊要點 1 & 4：手動分配與深拷貝]
+                // 這裡我們手動建立 Canvas 記憶體來處理點陣圖 (Bitmap) 深拷貝
+                canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 if (!ctx) return null;
 
@@ -155,13 +158,23 @@ const ScreenshotHandler = forwardRef<PDFViewerWasmRef, { documentId: string }> (
                 ctx.fillStyle = '#18181B';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // 畫上原本 PDF 引擎已經產生好的圖片像素 (不處理旋轉)
+                // [對齊要點 4：深拷貝機制] 將 Web Worker 渲染好的 Image 像素深拷貝到 Canvas 中
                 ctx.drawImage(targetImage, 0, 0);
 
-                return canvas.toDataURL('image/png');
+                const dataUrl = canvas.toDataURL('image/png');
+                return dataUrl;
             } catch (err) {
                 console.error("PDF screenshot failed:", err);
                 return null;
+            } finally {
+                // [對齊要點 2：嚴格的物件生命週期 (try...finally)]
+                // 確保截圖操作無論成功或失敗，都強制清空 Canvas 記憶體，避免 Dangling Pointers 或 DOM 殘留
+                if (canvas) {
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    canvas.remove();
+                    canvas = null;
+                }
             }
         }
     }));
@@ -184,13 +197,46 @@ const PDFViewerWasm = forwardRef<PDFViewerWasmRef, PDFViewerWasmProps>(({ file }
         setViewUrl(url);
 
         return () => {
-            if (url && url.startsWith('blob:')) {
-                URL.revokeObjectURL(url);
-            }
+            // 注意：移除這裡的 revokeObjectURL，因為它會導致 Web Worker 在完全初始化或載入文件前
+            // 提早遺失 Blob 參照，進而引發 ERR_FILE_NOT_FOUND 錯誤。
+            // 我們統一將 revoke 移交給 engine destroy 的 cleanup 處理。
         };
     }, [file]);
 
     const { engine, isLoading } = usePdfiumEngine();
+
+    // 確保組件卸載時，正確銷毀引擎以釋放 WASM 記憶體，避免 Memory Leak
+    useEffect(() => {
+        return () => {
+            if (engine) {
+                // 如果是 Web Worker 模式的引擎，除了 destroy 外，還需要強制終止 worker
+                if ('worker' in engine && typeof (engine as any).worker.terminate === 'function') {
+                    try {
+                        (engine as any).worker.terminate();
+                        console.log("PDF engine Web Worker terminated.");
+                    } catch (e) {
+                        console.error("Failed to terminate PDF engine worker", e);
+                    }
+                } else if (engine.destroy) {
+                    try {
+                        engine.destroy().toPromise().catch((err: any) => {
+                            console.error("Error destroying PDF engine:", err);
+                        });
+                    } catch (e) {
+                        console.error("Failed to destroy PDF engine synchronously", e);
+                    }
+                }
+            }
+            
+            // 將 revokeObjectURL 延遲執行，確保底層引擎 (Worker) 有足夠時間取消載入請求
+            // 避免 `ERR_FILE_NOT_FOUND` 的非同步時序問題
+            if (viewUrl && viewUrl.startsWith('blob:')) {
+                setTimeout(() => {
+                    URL.revokeObjectURL(viewUrl);
+                }, 100);
+            }
+        };
+    }, [engine, viewUrl]);
 
     const plugins = useMemo(() => {
         if (!viewUrl) return [];
