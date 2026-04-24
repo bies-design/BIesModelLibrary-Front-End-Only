@@ -31,7 +31,7 @@ const ZoomToolbar = ({
     if (!zoom || !rotate) return null;
 
     return (
-        <div className="flex items-center justify-center gap-4 p-2 bg-[#27272A] border-b border-[#3F3F46] text-white w-full relative">
+        <div className="flex items-center justify-center sm:gap-4 p-2 bg-[#27272A] border-b border-[#3F3F46] text-white w-full relative">
             <div className="absolute left-2 flex items-center">
                 <button
                     onClick={onToggleSidebar}
@@ -81,7 +81,8 @@ const ZoomToolbar = ({
                 className="p-1 hover:bg-[#3F3F46] rounded transition-colors text-sm px-2 flex items-center gap-1"
                 title="適合頁面"
             >
-                <Maximize className="w-4 h-4" /> 填滿畫面
+                <Maximize className="w-4 h-4" /> 
+                <p className='hidden sm:block'>填滿畫面</p>
             </button>
         </div>
     );
