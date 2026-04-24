@@ -35,12 +35,12 @@ export default function Navbarhead() {
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const pathName = usePathname();
   const router = useRouter();
   const { data:session } = useSession();
   // 控制Megamenu是否顯示
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState<boolean>(false);
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -56,17 +56,14 @@ export default function Navbarhead() {
   if (!mounted) return null; // Avoid SSR issues
 
   return (
-    <nav className="sticky top-4 z-50 w-full flex justify-center px-4 mt-4">
+    <nav className={`sticky z-50 w-full flex justify-center top-4`}>
 
       {/* 這是新的外層容器，負責畫邊框 */}
-      <div className={`
-      w-[80vw] 
-      bg-white dark:bg-black 
-      rounded-2xl 
+      <div className={` 
+      bg-white dark:bg-black rounded-2xl w-[87.5%] shadow-[inset_0px_-2px_4px_0px_#00000040,inset_0px_2px_1px_1px_#FFFFFF26,0px_2px_30px_0px_#00000038,0px_0px_15px_0px_#0000000F]
       transition-all duration-300
       flex flex-col
       overflow-hidden 2xl:px-10
-      shadow-[inset_0px_-2px_4px_0px_#00000040,inset_0px_2px_1px_1px_#FFFFFF26,0px_2px_30px_0px_#00000038,0px_0px_15px_0px_#0000000F]
       `}>
 
         <Navbar
@@ -86,7 +83,7 @@ export default function Navbarhead() {
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-3">
               <NavbarItem>
-                <Button as={Link} href="/" radius="none" disableRipple className={`hover-lift font-inter text-[16px] w-[80px] ${isDark ? "text-white bg-black" : "text-black bg-white"} ${(pathName === "/")?"border-b-2 border-b-red-600":"" }`}>Home</Button>
+                <Button as={Link} href="/" radius="none" disableRipple className={`hover-lift font-inter text-[16px] w-[80px] bg-transparent ${isDark ? "text-white" : "text-black"} ${(pathName === "/")?"border-b-2 border-b-red-600":"" }`}>Home</Button>
               </NavbarItem>
               <NavbarItem >
                 <Button
@@ -104,7 +101,7 @@ export default function Navbarhead() {
                   }}
                   radius="none" 
                   disableRipple
-                  className={`hover-lift font-inter text-[16px] w-[80px] ${isDark ? "text-white bg-black" : "text-black bg-white"} ${(pathName === "/upload")?"border-b-2 border-b-red-600":"" }`}
+                  className={`hover-lift font-inter text-[16px] w-[80px] bg-transparent ${isDark ? "text-white" : "text-black "} ${(pathName === "/upload")?"border-b-2 border-b-red-600":"" }`}
                 >
                   Upload
                 </Button>

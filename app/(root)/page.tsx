@@ -152,7 +152,7 @@ const Home = () => {
         </div>
         
         <div className='mx-auto flex flex-col items-center gap-6 mt-10 w-[90%]'>
-            <div className="w-full relative sm:hidden">
+            <div className="w-[97%] relative sm:hidden">
               {/* 觸發下拉的按鈕 */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -193,7 +193,7 @@ const Home = () => {
 
             {/* 💻 電腦版視圖 (大於 sm 時顯示，手機版隱藏) */}
             {/* 注意：我把你原本的 max-sm 相關 class 拿掉了，換成 hidden sm:flex */}
-            <div className='hidden sm:flex gap-10 items-center w-[95%] h-35'>
+            <div className='hidden sm:flex w-[97%] justify-center gap-10 h-35'>
               {itemsQuery.map((item) => {
                 const isSelected = isSelectId === item.id;
                 return (
@@ -219,7 +219,7 @@ const Home = () => {
               })}
           </div>
           {/* Newest Hottest query buttoms */}
-            <div className='flex justify-start text-white w-[95%]'>
+            <div className='flex justify-start text-white w-[97%]'>
               <div className='flex px-[8px] py-[8px] gap-[16px] h-[60px] rounded-lg border-1.5 border-white '>
                 <button key="Newest" onClick={()=>{setIsQueryArrange("Newest")}} 
                   className={`hover-lift px-[16px] py-[8px] rounded-lg text-sm hover:cursor-pointer ${isQueryArrange === "Newest" ? "bg-primary":""}`}><p>Newest</p></button>
@@ -227,9 +227,9 @@ const Home = () => {
                   className={`hover-lift px-[16px] py-[8px] rounded-lg text-sm hover:cursor-pointer ${isQueryArrange === "Hottest" ? "bg-primary":""}`}>Hottest</button>
               </div>
             </div>
-            <div className='w-[95%]'>
+            <div className='w-full'>
               {/* 分割容器成3等份 */}
-              <div className='flex flex-wrap gap-6 max-sm:justify-center items-center'>
+              <div className='flex flex-wrap gap-10 justify-center'>
                 {posts.map((post)=>(
                   <PostCard 
                     key={post.id}
