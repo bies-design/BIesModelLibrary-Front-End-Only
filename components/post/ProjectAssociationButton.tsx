@@ -30,19 +30,19 @@ export default function ProjectAssociationButton({ team, associations }: Associa
             {/* 單一入口按鈕：顯示關聯數量，點擊展開 Modal */}
             <Button 
                 onPress={onOpen}
-                className="hover-lift w-full flex justify-between items-center bg-[#27272A] hover:bg-[#27272A] text-white h-auto px-4 py-3.5 rounded-xl shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33]"
+                className="group hover-lift w-full flex justify-between items-center bg-[#27272A] hover:bg-[#2A2D35] text-white h-auto px-4 py-3.5 rounded-xl shadow-[0px_0px_1px_0px_#000000B2,inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_#FFFFFF33] hover:shadow-[0px_0px_8px_0px_rgba(141,178,232,0.15),inset_0px_-4px_4px_0px_#00000040,inset_0px_4px_2px_0px_rgba(141,178,232,0.3)] transition-all duration-300 hover:border hover:border-[#8DB2E8]/20"
             >
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#3F3F46] rounded-lg shadow-[inset_0px_-1px_4px_rgba(255,255,255,0.2),inset_0px_2px_5px_rgba(0,0,0,0.9)]">
+                    <div className="p-2 bg-[#18181B] group-hover:bg-[#8DB2E8]/10 rounded-lg shadow-[inset_0px_-1px_4px_rgba(255,255,255,0.1),inset_0px_2px_5px_rgba(0,0,0,1)] border border-white/5 group-hover:border-[#8DB2E8]/30 transition-colors duration-300">
                         <FolderKanban size={18} className="text-[#8DB2E8]" />
                     </div>
-                    <span className="font-medium text-base tracking-wide">View Associated Projects</span>
+                    <span className="font-medium text-base tracking-wide text-zinc-200 group-hover:text-white transition-colors">View Associated Projects</span>
                 </div>
-                <div className="flex items-center gap-2 text-zinc-400">
-                    <span className="bg-[#18181B] px-2.5 py-1 shadow-[inset_0px_-1px_4px_rgba(255,255,255,0.2),inset_0px_2px_5px_rgba(0,0,0,1)] rounded-md text-xs font-bold border border-white/5">
+                <div className="flex items-center gap-2 text-zinc-400 group-hover:text-[#8DB2E8] transition-colors duration-300">
+                    <span className="bg-[#18181B] px-2.5 py-1 shadow-[inset_0px_-1px_4px_rgba(255,255,255,0.1),inset_0px_2px_5px_rgba(0,0,0,1)] border border-white/5 group-hover:border-[#8DB2E8]/30 group-hover:text-[#8DB2E8] rounded-md text-xs font-bold transition-colors duration-300">
                         {associations.length}
                     </span>
-                    <ChevronRight size={18} />
+                    <ChevronRight size={18} className="transform group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
             </Button>
 
