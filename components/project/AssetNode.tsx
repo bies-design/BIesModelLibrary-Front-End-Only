@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Folder, FolderOpen, Box, Globe, PlusCircle, Edit2, Trash2 } from "lucide-react";
+import { Folder, FolderOpen, Box, Globe, PlusCircle, Edit2, Trash2, GripVertical } from "lucide-react";
 import { Tooltip } from "@heroui/react";
 
 // 定義 Props 型別，確保 TypeScript 不會報錯
@@ -19,19 +19,22 @@ export interface AssetNodeProps {
     dropTarget: { id: string; position: 'before' | 'after' | 'inside' } | null;
     setDropTarget: React.Dispatch<React.SetStateAction<{ id: string; position: 'before' | 'after' | 'inside' } | null>>;
     onDropNode: (dragged: any, target: any, position: 'before' | 'after' | 'inside') => void;
+    isEditMode: boolean;
 }
 
 export default function AssetNode({
     node, depth, isEditor, expandedNodes, onToggle,
     onAdd, onEdit, onDelete,
-    draggedNode, setDraggedNode, dropTarget, setDropTarget, onDropNode
+    draggedNode, setDraggedNode, dropTarget, setDropTarget, onDropNode,
+    isEditMode
 }: AssetNodeProps) {
     const isExpanded = expandedNodes[node.id];
     const hasChildren = node.children && node.children.length > 0;
+    const canDrag = isEditor && isEditMode;
 
     // --- 拖曳事件處理 ---
     const handleDragStart = (e: React.DragEvent) => {
-        if (!isEditor) return;
+        if (!canDrag) return;
         e.stopPropagation();
         setDraggedNode(node);
         e.dataTransfer.effectAllowed = 'move';
@@ -50,7 +53,7 @@ export default function AssetNode({
     };
 
     const handleDragOver = (e: React.DragEvent) => {
-        if (!isEditor || !draggedNode || draggedNode.id === node.id) return;
+        if (!canDrag || !draggedNode || draggedNode.id === node.id) return;
         e.preventDefault(); 
         e.stopPropagation();
 
@@ -99,29 +102,40 @@ export default function AssetNode({
         <div className="flex flex-col">
             <div 
                 id={`asset-${node.id}`}
-                draggable={isEditor}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`group flex items-center justify-between py-2 pr-4 hover:bg-white/5 rounded-lg transition-colors ${isEditor ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'} ${dropStyles}`}
+                className={`group flex items-center justify-between py-2 pr-4 hover:bg-white/5 rounded-lg transition-colors ${node.type === 'FOLDER' ? 'cursor-pointer' : 'cursor-default'} ${dropStyles}`}
                 style={{ paddingLeft: `${depth * 1.5 + 1}rem` }}
                 onClick={() => node.type === 'FOLDER' && onToggle(node.id)}
             >
-                <div className="flex text-md items-center gap-2 overflow-hidden pointer-events-none">
+                <div className="flex text-md items-center gap-2 overflow-hidden">
+                    {canDrag && (
+                        <button
+                            type="button"
+                            draggable
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex shrink-0 cursor-grab items-center justify-center rounded p-1 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-200 active:cursor-grabbing"
+                            aria-label="拖移資源"
+                            title="拖移資源"
+                        >
+                            <GripVertical size={16} />
+                        </button>
+                    )}
                     {node.type === 'FOLDER' ? (
                         <Tooltip placement="top" content={`資料夾描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
                             <div className="flex items-center gap-2 pointer-events-auto cursor-pointer">
                                 {isExpanded ? <FolderOpen size={16} className="text-amber-400 shrink-0" /> : <Folder size={16} className="text-amber-400 shrink-0" />}
-                                <span className="font-medium text-gray-200 truncate">{node.name}</span>
+                                <span className="font-medium text-black dark:text-gray-200 truncate">{node.name}</span>
                             </div>
                         </Tooltip>
                     ) : node.type === 'POST' ? (
                         <Tooltip placement="top" content={`貼文描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
                             <div className="flex items-center gap-2 pointer-events-auto cursor-help">
                                 <Box size={16} className="text-[#8DB2E8] shrink-0" />
-                                <span className="hover:underline text-gray-300 truncate cursor-pointer" onClick={(e)=>{e.stopPropagation(); window.open(`/post/${node.post?.shortId}`, '_self');}}>
+                                <span className="hover:underline text-black dark:text-gray-300 truncate cursor-pointer" onClick={(e)=>{e.stopPropagation(); window.open(`/post/${node.post?.shortId}`, '_self');}}>
                                     {node.name || node.post?.title}
                                 </span>
                             </div>
@@ -130,7 +144,7 @@ export default function AssetNode({
                         <Tooltip placement="top" content={`連結描述:\n${node.description ? node.description : "無描述"}`} className="whitespace-pre-line text-white bg-black">
                             <div className="flex items-center gap-2 pointer-events-auto cursor-help">
                                 <Globe size={16} className="text-emerald-400 shrink-0" />
-                                <a href={node.url} target="_blank" rel="noreferrer" className="hover:underline text-gray-300 truncate cursor-pointer" onClick={(e)=>e.stopPropagation()}>
+                                <a href={node.url} target="_blank" rel="noreferrer" className="hover:underline text-black dark:text-gray-300 truncate cursor-pointer" onClick={(e)=>e.stopPropagation()}>
                                     {node.name || '外部連結'}
                                 </a>
                             </div>
@@ -139,7 +153,7 @@ export default function AssetNode({
                 </div>
 
                 <div className="flex items-center gap-2 transition-opacity">
-                    {isEditor && (
+                    {isEditor && isEditMode && (
                         <>
                             {node.type === 'FOLDER' && (
                                 <button onClick={(e) => { e.stopPropagation(); onAdd(node.phaseId, node.id); }} title="新增至此資料夾">
@@ -167,6 +181,7 @@ export default function AssetNode({
                             onEdit={onEdit} onDelete={onDelete} 
                             draggedNode={draggedNode} setDraggedNode={setDraggedNode}
                             dropTarget={dropTarget} setDropTarget={setDropTarget} onDropNode={onDropNode}
+                            isEditMode={isEditMode}
                         />
                     ))}
                     {!hasChildren && (

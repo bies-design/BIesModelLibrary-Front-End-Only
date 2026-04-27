@@ -106,6 +106,8 @@ export default function ProjectDetailPage() {
     const searchParams = useSearchParams();
     const searchKey = searchParams.get('search') || '';
 
+    // 開關遍及模式已達到頁面整潔
+    const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [project, setProject] = useState<ProjectData | null>(null);
     const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
     const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
@@ -609,6 +611,15 @@ export default function ProjectDetailPage() {
                         </div>
                     </div>
                 )}
+                <div className="flex w-full justify-end">
+                    <button 
+                        onClick={() => {setIsEditMode(!isEditMode)}}
+                        className={`p-1.5 ${isEditMode ? "text-slate-400 bg-blue-400/60" : "text-white bg-blue-400/50"} flex items-center gap-1 hover:bg-blue-400 hover:text-slate-800 rounded`}
+                    >
+                        <Edit2 size={14}/>
+                        {isEditMode ? "結束編輯" : "編輯"}
+                    </button>
+                </div>
                 <div className={`flex flex-col gap-1 select-none transition-opacity duration-300 ${searchKeyword ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
                     {project.phases.sort((a,b) => a.sortOrder - b.sortOrder).map((phase, phaseIdx) => {
                         const phaseTree = buildAssetTree(project.assets, phase.id);
@@ -620,8 +631,8 @@ export default function ProjectDetailPage() {
                                         <Milestone size={26} className="text-yellow-300" />
                                         {phase.name}
                                     </div>
-                                    {isEditor && (
-                                        <div className="flex gap-1 ">
+                                    {isEditor && isEditMode && (
+                                        <div className="flex gap-1">
                                             {/* Phase 排序按鈕 */}
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleReorderPhase(phaseIdx, 'up'); }}
@@ -672,7 +683,7 @@ export default function ProjectDetailPage() {
                                                 onDropNode={handleDropAsset}
                                                 onDelete={handleRemoveAsset}
                                                 onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
-                                                
+                                                isEditMode={isEditMode}
                                             />
                                         )) : <div className="py-4 pl-10 text-xs text-gray-600 italic">此階段尚無資源</div>}
                                     </div>
@@ -714,7 +725,7 @@ export default function ProjectDetailPage() {
                                         onDropNode={handleDropAsset}
                                         onDelete={handleRemoveAsset}
                                         onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
-                                        
+                                        isEditMode={isEditMode}
                                     />
                                 ))}
                             </div>
