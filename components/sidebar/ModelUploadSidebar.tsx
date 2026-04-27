@@ -531,7 +531,7 @@ const ModelUploadSidebar = ({
               <DropdownTrigger>
                   {/* 這裡改成 button 讓它具備點擊互動效果 */}
                   <button className="font-inter text-[#A1A1AA] flex items-center gap-2 hover:opacity-80 transition-opacity outline-none">
-                      <FileBox size={18} className="shrink-0" />
+                      <span className="text-red-500 text-lg">*</span>
                       <span className="font-bold text-white flex items-center gap-1 text-left line-clamp-1">
                           {currentWorkspace === "personal" 
                               ? "Personal Assets" 
