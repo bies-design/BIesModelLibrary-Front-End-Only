@@ -284,14 +284,14 @@ const Settings = (props: Props) => {
                             variant="flat"
                             isReadOnly
                             classNames={{
-                                label: "text-white",
+                                label: "text-white!",
                                 inputWrapper: [
                                     "bg-[#18181B]",
                                     "data-[hover=true]:bg-[#27272a]", 
                                     "data-[focus=true]:bg-[#27272a]",
                                     "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                                 ].join(" "),
-                                input: "text-white placeholder:text-gray-500"
+                                input: "text-white! placeholder:text-gray-500"
                             }}
                         />
                         <Button 
@@ -330,14 +330,14 @@ const Settings = (props: Props) => {
                         }}
                         variant="flat"
                         classNames={{
-                            label: "text-white",
+                            label: "text-white!",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
                                 "data-[focus=true]:bg-[#27272a]",
                                 "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                             ].join(" "),
-                            input: "text-white placeholder:text-gray-500"
+                            input: "text-white! placeholder:text-gray-500"
                         }}
                     />
                     {name !== session?.user?.name && (
@@ -361,14 +361,14 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
-                            label: "text-white",
+                            label: "text-white!",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
                                 "data-[focus=true]:bg-[#27272a]",
                                 "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                             ].join(" "),
-                            input: "text-white placeholder:text-gray-500"
+                            input: "text-white! placeholder:text-gray-500"
                         }}
                     />
                 </div>
@@ -381,14 +381,14 @@ const Settings = (props: Props) => {
                         defaultValue={userData.email}
                         variant="flat"
                         classNames={{
-                            label: "text-white",
+                            label: "text-white!",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
                                 "data-[focus=true]:bg-[#27272a]",
                                 "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                             ].join(" "),
-                            input: "text-white placeholder:text-gray-500"
+                            input: "text-white! placeholder:text-gray-500"
                         }}
                     />
                 </div>
@@ -421,14 +421,14 @@ const Settings = (props: Props) => {
                         variant="flat"
                         isReadOnly
                         classNames={{
-                            label: "text-white",
+                            label: "text-white!",
                             inputWrapper: [
                                 "bg-[#18181B]",
                                 "data-[hover=true]:bg-[#27272a]", 
                                 "data-[focus=true]:bg-[#27272a]",
                                 "shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]"
                             ].join(" "),
-                            input: "text-white placeholder:text-gray-500"
+                            input: "text-white! placeholder:text-gray-500"
                         }}
                     />
                 </div>

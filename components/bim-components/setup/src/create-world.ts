@@ -1,7 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
 import * as THREE from "three";
-import * as BUI from "@thatopen/ui";
 
 export const createWorld = (components: OBC.Components) => {
     const worlds = components.get(OBC.Worlds);
