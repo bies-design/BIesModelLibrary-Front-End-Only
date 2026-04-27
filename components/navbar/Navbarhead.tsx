@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import MegaMenu from "../MegaMenu";
 import { useSession } from "next-auth/react";
 import { signOut } from 'next-auth/react';
-import { LogIn, LogOut, Upload, UserRoundPen } from "lucide-react";
+import { House, LogIn, LogOut, Upload, UserRoundPen } from "lucide-react";
 
 const getLogoSrc = (isDark: boolean) => {
   return isDark ? "/icons/logowhite.svg" : "/icons/Logo.svg";
@@ -138,9 +138,12 @@ export default function Navbarhead() {
                           base:"text-black dark:text-white",
 
                         }}>
+                  <DropdownItem key="Home" href={`/`}  endContent={<House size={16}/>} >
+                      Home
+                  </DropdownItem>
                   <DropdownItem key="Dashboard" href={`/dashboard/${session.user?.id}`}  endContent={<UserRoundPen size={16}/>} >
                       Dashboard
-                    </DropdownItem>
+                  </DropdownItem>
                   <DropdownItem key="upload" href="/upload" endContent={<Upload size={16}/>}>Upload</DropdownItem>
                   <DropdownItem key="logout" color="danger" endContent={<LogOut size={16}/>} onPress={()=>signOut({redirectTo:"/sign-in"})}>
                     Log out

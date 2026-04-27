@@ -585,10 +585,10 @@ const ModelUploadSidebar = ({
       {/* 🚀 上傳區域 (含分類選擇器) */}
       <div className="p-4">
         <div className="flex justify-between items-center mb-2">
-          <p className="text-[#A1A1AA] font-inter text-xs uppercase">Target Category</p>
+          <p className="text-[#A1A1AA] font-inter text-xs uppercase"><span className="text-red-500 text-lg">*</span> File Category : </p>
           <Dropdown placement="bottom-end" classNames={{ content: "bg-[#27272A] min-w-[150px]" }}>
             <DropdownTrigger>
-              <Button size="sm" variant="flat" className="text-white bg-[#3F3F46]">
+              <Button size="sm" variant="flat" className="text-white bg-[#303033] shadow-[inset_0px_3px_5px_1px_#000000A3,inset_0px_-1px_2px_#00000099,0px_3px_1.8px_#FFFFFF29,0px_-2px_1.9px_#00000040,0px_0px_4px_#FBFBFB3D]">
                 {uploadTargetCategory.replace('MODEL_', '')} <ChevronDown size={14} />
               </Button>
             </DropdownTrigger>
