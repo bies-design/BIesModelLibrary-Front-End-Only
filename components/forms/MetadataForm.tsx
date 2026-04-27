@@ -108,17 +108,24 @@ const MetadataForm = ({
   // 1. 當 Team 改變時：撈取該團隊的專案
   useEffect(() => {
     if (!metadata.team || metadata.team === "none") {
-      setProjectOptions([]);
       return;
     }
+    let isActive = true;
     const fetchProjects = async () => {
       setIsLoadingProjects(true);
       const res = await getTeamProjects(metadata.team);
-      if (res.success && res.data) setProjectOptions(res.data);
+      if (!isActive) return;
+      setProjectOptions(res.success && res.data ? res.data : []);
       setIsLoadingProjects(false);
     };
     fetchProjects();
+    return () => {
+      isActive = false;
+    };
   }, [metadata.team]);
+
+  const visibleProjectOptions =
+    metadata.team && metadata.team !== "none" ? projectOptions : [];
 
   // 2. 切換團隊時，清空所有的專案關聯 (因為專案是綁定團隊的)
   const handleTeamChange = (keys: any) => {
@@ -637,7 +644,7 @@ const MetadataForm = ({
 
             {metadata.associations.map((assoc, index) => {
               // 🌟 核心防呆：過濾掉「已被其他列選中」的專案，確保不重複
-              const availableProjects = projectOptions.filter(p => 
+              const availableProjects = visibleProjectOptions.filter(p => 
                 p.id === assoc.projectId || !metadata.associations.some(a => a.projectId === p.id)
               );
 
@@ -714,7 +721,7 @@ const MetadataForm = ({
             {/* 🌟 新增按鈕：如果關聯數量已達到可選專案數量，則停用按鈕 */}
             <Button 
               onPress={addAssociation}
-              isDisabled={projectOptions.length === 0 || metadata.associations.length >= projectOptions.length}
+              isDisabled={visibleProjectOptions.length === 0 || metadata.associations.length >= visibleProjectOptions.length}
               className="w-full mt-2 bg-transparent border-1 border-dashed border-white/20 text-gray-400 hover:border-white/50 hover:text-white"
             >
               <Plus size={18} /> Add to another project
