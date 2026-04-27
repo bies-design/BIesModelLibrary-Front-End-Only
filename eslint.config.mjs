@@ -14,11 +14,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   {
-    "extends": "next/core-web-vitals",
-    "rules": {
+    rules: {
       // 加入這一行，將 any 的檢查規則關閉
-      "@typescript-eslint/no-explicit-any": "off"
-    }
+      "@typescript-eslint/no-explicit-any": "off",
+    },
   }
 ]);
 

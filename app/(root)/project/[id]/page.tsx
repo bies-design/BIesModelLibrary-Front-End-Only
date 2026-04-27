@@ -108,14 +108,17 @@ export default function ProjectDetailPage() {
     const params = useParams();
     const projectId = params.id as string;
     const teamIdRef = useRef<string | null>(null);
+    const hasSearchOnLoadRef = useRef(false);
 
     const searchParams = useSearchParams();
+    hasSearchOnLoadRef.current = hasSearchOnLoadRef.current || Boolean(searchParams.get('search'));
 
     // 開關遍及模式已達到頁面整潔
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [project, setProject] = useState<ProjectData | null>(null);
     const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
-    const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING'>('LOADING');
+    const [accessLevel, setAccessLevel] = useState<TeamAccessLevel | 'LOADING' | 'ERROR'>('LOADING');
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange } = useDisclosure();
     const [isPhaseModalOpen, setIsPhaseModalOpen] = useState<boolean>(false);
@@ -154,13 +157,31 @@ export default function ProjectDetailPage() {
                     teamIdRef.current = res.data.teamId;
                     const status = await checkUserTeamStatus(res.data.teamId);
                     setAccessLevel(status);
+                    setLoadError(null);
                     // 初始化：如果沒有搜尋，預設展開頂層 Phase
-                    if (!searchKeyword) {
+                    if (!hasSearchOnLoadRef.current) {
                         const initialExpanded: Record<string, boolean> = { unclassified: true };
                         res.data.phases.forEach((p: any) => initialExpanded[p.id] = true);
                         setExpandedNodes(initialExpanded);
                     }
+                } else {
+                    setAccessLevel('ERROR');
+                    setLoadError("專案資料載入失敗，請重新整理後再試一次。");
+                    addToast({
+                        title: "載入失敗",
+                        description: "專案資料無法取得。",
+                        color: "danger",
+                    });
                 }
+            } catch (error) {
+                console.error(error);
+                setAccessLevel('ERROR');
+                setLoadError("專案資料載入失敗，請重新整理後再試一次。");
+                addToast({
+                    title: "載入失敗",
+                    description: "專案或權限資訊無法取得。",
+                    color: "danger",
+                });
             } finally { isFetchingRef.current = false; }
         };
         init();
@@ -205,14 +226,14 @@ export default function ProjectDetailPage() {
         const previousAssets = project.assets.map(asset => ({ ...asset }));
 
         // 1. 決定新的 phaseId 與 parentId
-        let newPhaseId = target.phaseId;
+        const newPhaseId = target.phaseId;
         let newParentId = target.parentId;
         if (position === 'inside' && target.type === 'FOLDER') {
             newParentId = target.id;
         }
 
         // 2. 重新計算目標層級的排序陣列
-        let siblings = project.assets.filter(a => a.phaseId === newPhaseId && a.parentId === newParentId && a.id !== dragged.id);
+        const siblings = project.assets.filter(a => a.phaseId === newPhaseId && a.parentId === newParentId && a.id !== dragged.id);
         siblings.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
         let insertIndex = siblings.findIndex(s => s.id === target.id);
@@ -465,9 +486,14 @@ export default function ProjectDetailPage() {
     
     const handleDeletePhase = async (id: string) => {
         if (!confirm("確定刪除此階段嗎？")) return;
-        await deletePhase(id);
-        const updated = await getProjectDetails(projectId);
-        if (updated.data) setProject(updated.data as unknown as ProjectData);
+        try {
+            await deletePhase(id);
+            const updated = await getProjectDetails(projectId);
+            if (updated.data) setProject(updated.data as unknown as ProjectData);
+        } catch (error) {
+            console.error(error);
+            addToast({ title: "刪除失敗", description: "階段未能成功刪除。", color: "danger" });
+        }
     };
 
     const openAddAssetModal = async (phaseId: string | null, parentId: string | null) => {
@@ -508,9 +534,14 @@ export default function ProjectDetailPage() {
 
     const handleRemoveAsset = async (assetId: string) => {
         if (!confirm("確定移除此資源？")) return;
-        await removeAssetFromProject(assetId);
-        const updated = await getProjectDetails(projectId);
-        if (updated.data) setProject(updated.data as unknown as ProjectData);
+        try {
+            await removeAssetFromProject(assetId);
+            const updated = await getProjectDetails(projectId);
+            if (updated.data) setProject(updated.data as unknown as ProjectData);
+        } catch (error) {
+            console.error(error);
+            addToast({ title: "移除失敗", description: "資源未能成功移除。", color: "danger" });
+        }
     };
 
     const handleDeleteProject = async () => {
@@ -520,6 +551,22 @@ export default function ProjectDetailPage() {
     };
 
     if (accessLevel === 'LOADING') return <div className="h-screen flex items-center justify-center bg-[#18181B]"><Spinner color="danger" /></div>;
+    if (accessLevel === 'ERROR') {
+        return (
+            <div className="min-h-screen bg-[#18181B] px-6 py-16 text-white">
+                <div className="mx-auto max-w-xl rounded-2xl border border-white/10 bg-white/5 p-8 text-center shadow-xl">
+                    <h1 className="text-2xl font-bold">Project Unavailable</h1>
+                    <p className="mt-3 text-sm text-gray-300">{loadError || "Something went wrong while loading this project."}</p>
+                    <Button
+                        className="mt-6 bg-[#D70036] text-white"
+                        onClick={() => window.location.reload()}
+                    >
+                        Retry
+                    </Button>
+                </div>
+            </div>
+        );
+    }
     if (!project) return null;
 
     const getImageUrl = (imageVal: any) => {
@@ -620,7 +667,7 @@ export default function ProjectDetailPage() {
                         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/20">
                             <h2 className="text-lg font-bold flex items-center gap-2">
                                 <Search className="text-[#D70036]" size={20} />
-                                搜尋結果 "{searchKeyword}"
+                                搜尋結果 &quot;{searchKeyword}&quot;
                             </h2>
                             <span className="text-sm text-gray-400">共找到 {searchResults.length} 筆項目</span>
                         </div>
@@ -679,7 +726,7 @@ export default function ProjectDetailPage() {
                 )}
                 
                 <div className={`flex flex-col gap-1 select-none transition-opacity duration-300 ${searchKeyword ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
-                    {project.phases.sort((a,b) => a.sortOrder - b.sortOrder).map((phase, phaseIdx) => {
+                    {[...project.phases].sort((a,b) => a.sortOrder - b.sortOrder).map((phase, phaseIdx) => {
                         const phaseTree = buildAssetTree(project.assets, phase.id);
                         const isExpanded = expandedNodes[phase.id];
                         return (
@@ -730,7 +777,7 @@ export default function ProjectDetailPage() {
                                 </div>
                                 {isExpanded && (
                                     <div className="ml-6 border-l border-white/10 mt-1 pb-2">
-                                        {phaseTree.length > 0 ? phaseTree.map((node, idx) => (
+                                        {phaseTree.length > 0 ? phaseTree.map((node) => (
                                             <AssetNode 
                                                 key={node.id} node={node} depth={0} isEditor={isEditor} 
                                                 expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 
@@ -774,7 +821,7 @@ export default function ProjectDetailPage() {
                         </div>
                         {expandedNodes["unclassified"] && (
                             <div className="ml-6 border-l border-white/10">
-                                {buildAssetTree(project.assets, null).map((node, idx, arr) => (
+                                {buildAssetTree(project.assets, null).map((node) => (
                                     <AssetNode 
                                         key={node.id} node={node} depth={0} isEditor={isEditor} 
                                         expandedNodes={expandedNodes} onToggle={toggleNode} onAdd={openAddAssetModal} 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Folder, FolderOpen, Box, Globe, PlusCircle, Edit2, Trash2, GripVertical } from "lucide-react";
 import { Tooltip } from "@heroui/react";
 
@@ -41,22 +41,22 @@ export default function AssetNode({
     const pointerMoveHandlerRef = useRef<((event: PointerEvent) => void) | null>(null);
     const pointerUpHandlerRef = useRef<((event: PointerEvent) => void) | null>(null);
 
-    const getAssetElement = () => document.getElementById(`asset-${node.id}`);
+    const getAssetElement = useCallback(() => document.getElementById(`asset-${node.id}`), [node.id]);
     const previewLabel = node.name || node.post?.title || '未命名資源';
 
-    const clearLongPressTimer = () => {
+    const clearLongPressTimer = useCallback(() => {
         if (longPressTimerRef.current !== null) {
             window.clearTimeout(longPressTimerRef.current);
             longPressTimerRef.current = null;
         }
-    };
+    }, []);
 
-    const removeDragVisual = () => {
+    const removeDragVisual = useCallback(() => {
         const el = getAssetElement();
         if (el) el.classList.remove('opacity-50');
-    };
+    }, [getAssetElement]);
 
-    const cleanupPointerListeners = () => {
+    const cleanupPointerListeners = useCallback(() => {
         if (pointerMoveHandlerRef.current) {
             window.removeEventListener('pointermove', pointerMoveHandlerRef.current);
             pointerMoveHandlerRef.current = null;
@@ -66,9 +66,9 @@ export default function AssetNode({
             window.removeEventListener('pointercancel', pointerUpHandlerRef.current);
             pointerUpHandlerRef.current = null;
         }
-    };
+    }, []);
 
-    const resetPointerDragState = () => {
+    const resetPointerDragState = useCallback(() => {
         clearLongPressTimer();
         cleanupPointerListeners();
         activePointerIdRef.current = null;
@@ -80,7 +80,7 @@ export default function AssetNode({
             setDragPreview(null);
             removeDragVisual();
         }
-    };
+    }, [clearLongPressTimer, cleanupPointerListeners, removeDragVisual, setDragPreview, setDraggedNode, setDropTarget]);
 
     const getDropPosition = (
         clientY: number,
@@ -296,13 +296,13 @@ export default function AssetNode({
             resetPointerDragState();
             removeDragVisual();
         }
-    }, [canDrag]);
+    }, [canDrag, removeDragVisual, resetPointerDragState]);
 
     useEffect(() => {
         return () => {
             resetPointerDragState();
         };
-    }, []);
+    }, [resetPointerDragState]);
 
     // 視覺回饋樣式 (使用 if 判斷，語法更清晰)
     let dropStyles = 'border-y-2 border-transparent';
