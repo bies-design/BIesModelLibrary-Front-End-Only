@@ -18,6 +18,7 @@ export interface AssetNodeProps {
     setDraggedNode: React.Dispatch<React.SetStateAction<any>>;
     dropTarget: { id: string; position: 'before' | 'after' | 'inside' } | null;
     setDropTarget: React.Dispatch<React.SetStateAction<{ id: string; position: 'before' | 'after' | 'inside' } | null>>;
+    setDragPreview: React.Dispatch<React.SetStateAction<{ x: number; y: number; label: string; type: 'FOLDER' | 'POST' | 'LINK' } | null>>;
     onDropNode: (dragged: any, target: any, position: 'before' | 'after' | 'inside') => void;
     getNodeById: (id: string) => any | null;
     isEditMode: boolean;
@@ -26,7 +27,7 @@ export interface AssetNodeProps {
 export default function AssetNode({
     node, depth, isEditor, expandedNodes, onToggle,
     onAdd, onEdit, onDelete,
-    draggedNode, setDraggedNode, dropTarget, setDropTarget, onDropNode, getNodeById,
+    draggedNode, setDraggedNode, dropTarget, setDropTarget, setDragPreview, onDropNode, getNodeById,
     isEditMode
 }: AssetNodeProps) {
     const isExpanded = expandedNodes[node.id];
@@ -41,6 +42,7 @@ export default function AssetNode({
     const pointerUpHandlerRef = useRef<((event: PointerEvent) => void) | null>(null);
 
     const getAssetElement = () => document.getElementById(`asset-${node.id}`);
+    const previewLabel = node.name || node.post?.title || '未命名資源';
 
     const clearLongPressTimer = () => {
         if (longPressTimerRef.current !== null) {
@@ -75,6 +77,7 @@ export default function AssetNode({
             pointerDraggingRef.current = false;
             setDraggedNode(null);
             setDropTarget(null);
+            setDragPreview(null);
             removeDragVisual();
         }
     };
@@ -139,6 +142,16 @@ export default function AssetNode({
         e.stopPropagation();
         setDraggedNode(node);
         e.dataTransfer.effectAllowed = 'move';
+        const transparentPixel = new Image();
+        transparentPixel.src =
+            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+        e.dataTransfer.setDragImage(transparentPixel, 0, 0);
+        setDragPreview({
+            x: e.clientX,
+            y: e.clientY,
+            label: previewLabel,
+            type: node.type,
+        });
         setTimeout(() => {
             const el = document.getElementById(`asset-${node.id}`);
             if (el) el.classList.add('opacity-50');
@@ -149,14 +162,31 @@ export default function AssetNode({
         e.stopPropagation();
         setDraggedNode(null);
         setDropTarget(null);
+        setDragPreview(null);
         const el = document.getElementById(`asset-${node.id}`);
         if (el) el.classList.remove('opacity-50');
+    };
+
+    const handleDrag = (e: React.DragEvent) => {
+        if (!canDrag) return;
+        if (e.clientX === 0 && e.clientY === 0) return;
+        setDragPreview({
+            x: e.clientX,
+            y: e.clientY,
+            label: previewLabel,
+            type: node.type,
+        });
     };
 
     const handleDragOver = (e: React.DragEvent) => {
         if (!canDrag || !draggedNode || draggedNode.id === node.id) return;
         e.preventDefault(); 
         e.stopPropagation();
+        setDragPreview(prev => prev ? {
+            ...prev,
+            x: e.clientX,
+            y: e.clientY,
+        } : prev);
         const position = getDropPosition(e.clientY, e.currentTarget.getBoundingClientRect(), node.type);
         setDropTarget({ id: node.id, position });
     };
@@ -176,12 +206,15 @@ export default function AssetNode({
         }
         setDropTarget(null);
         setDraggedNode(null);
+        setDragPreview(null);
     };
 
     const handleTouchLikePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
         if (!canDrag || e.pointerType === 'mouse') return;
 
+        e.preventDefault();
         e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
         activePointerIdRef.current = e.pointerId;
         startPointRef.current = { x: e.clientX, y: e.clientY };
         suppressClickRef.current = false;
@@ -203,6 +236,12 @@ export default function AssetNode({
 
             event.preventDefault();
             autoScrollWindow(event.clientY);
+            setDragPreview({
+                x: event.clientX,
+                y: event.clientY,
+                label: previewLabel,
+                type: node.type,
+            });
             updatePointerDropTarget(event.clientX, event.clientY);
         };
 
@@ -231,6 +270,12 @@ export default function AssetNode({
             pointerDraggingRef.current = true;
             suppressClickRef.current = true;
             setDraggedNode(node);
+            setDragPreview({
+                x: startPointRef.current?.x ?? 0,
+                y: startPointRef.current?.y ?? 0,
+                label: previewLabel,
+                type: node.type,
+            });
             const el = getAssetElement();
             if (el) el.classList.add('opacity-50');
         }, 280);
@@ -247,9 +292,15 @@ export default function AssetNode({
     };
 
     useEffect(() => {
+        if (!canDrag) {
+            resetPointerDragState();
+            removeDragVisual();
+        }
+    }, [canDrag]);
+
+    useEffect(() => {
         return () => {
-            clearLongPressTimer();
-            cleanupPointerListeners();
+            resetPointerDragState();
         };
     }, []);
 
@@ -278,13 +329,14 @@ export default function AssetNode({
                             type="button"
                             draggable
                             onDragStart={handleDragStart}
+                            onDrag={handleDrag}
                             onDragEnd={handleDragEnd}
                             onPointerDown={handleTouchLikePointerDown}
                             onClick={handleGripClick}
                             className="flex shrink-0 cursor-grab items-center justify-center rounded p-1 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-200 active:cursor-grabbing"
                             aria-label="拖移資源"
                             title="拖移資源"
-                            style={{ touchAction: 'manipulation' }}
+                            style={{ touchAction: 'none' }}
                         >
                             <GripVertical size={16} />
                         </button>
@@ -345,7 +397,7 @@ export default function AssetNode({
                             expandedNodes={expandedNodes} onToggle={onToggle} onAdd={onAdd} 
                             onEdit={onEdit} onDelete={onDelete} 
                             draggedNode={draggedNode} setDraggedNode={setDraggedNode}
-                            dropTarget={dropTarget} setDropTarget={setDropTarget} onDropNode={onDropNode}
+                            dropTarget={dropTarget} setDropTarget={setDropTarget} setDragPreview={setDragPreview} onDropNode={onDropNode}
                             getNodeById={getNodeById}
                             isEditMode={isEditMode}
                         />

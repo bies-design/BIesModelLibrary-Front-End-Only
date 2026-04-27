@@ -1,24 +1,23 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { 
     ArrowUp, ArrowDown, ArrowLeft, Folder, FolderOpen, Box, 
-    Plus, Edit2, Trash2, Link as LinkIcon, PlusCircle, 
-    Milestone, ChevronRight, Globe,
+    Plus, Edit2, Trash2, PlusCircle, 
+    Milestone, Globe,
     Share2,
     Search,
     File
 } from "lucide-react";
 import { 
     getProjectDetails, createPhase, deletePhase, updatePhase,
-    createProjectAsset, moveAssetToPhase, removeAssetFromProject,
+    createProjectAsset, removeAssetFromProject,
     getAvailablePosts, deleteProject, updateProject,
     reorderPhases, reorderAssets, updateProjectAsset,
     moveAssetStructure
 } from "@/lib/actions/project.action"; 
-import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea, Tooltip } from "@heroui/react";
+import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea } from "@heroui/react";
 import { ProjectStatus } from "@/prisma/generated/prisma";
 import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
 import { checkUserTeamStatus, TeamAccessLevel } from "@/lib/actions/team.action";
@@ -70,6 +69,13 @@ interface ProjectData {
     updatedAt: Date | string; 
 }
 
+interface DragPreviewState {
+    x: number;
+    y: number;
+    label: string;
+    type: AssetType;
+}
+
 // --- 樹狀結構工具 ---
 const buildAssetTree = (assets: ProjectAsset[], phaseId: string | null): ProjectAsset[] => {
 
@@ -104,7 +110,6 @@ export default function ProjectDetailPage() {
     const teamIdRef = useRef<string | null>(null);
 
     const searchParams = useSearchParams();
-    const searchKey = searchParams.get('search') || '';
 
     // 開關遍及模式已達到頁面整潔
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -132,6 +137,7 @@ export default function ProjectDetailPage() {
 
     const [draggedNode, setDraggedNode] = useState<ProjectAsset | null>(null);
     const [dropTarget, setDropTarget] = useState<{ id: string, position: 'before' | 'after' | 'inside' } | null>(null);
+    const [dragPreview, setDragPreview] = useState<DragPreviewState | null>(null);
 
     // 🚀 關鍵 3：從 URL 解析搜尋與過濾參數
     const searchKeyword = searchParams.get('search') || "";
@@ -163,6 +169,17 @@ export default function ProjectDetailPage() {
     const isEditor = accessLevel === 'EDITOR_ACCESS';
     const toggleNode = (nodeId: string) => setExpandedNodes(prev => ({ ...prev, [nodeId]: !prev[nodeId] }));
     const getNodeById = (nodeId: string) => project?.assets.find(asset => asset.id === nodeId) ?? null;
+    const clearDragInteraction = () => {
+        setDraggedNode(null);
+        setDropTarget(null);
+        setDragPreview(null);
+    };
+
+    useEffect(() => {
+        if (!isEditMode) {
+            clearDragInteraction();
+        }
+    }, [isEditMode]);
 
     // ==========================================
     // 關鍵 ：(全域快捷搜尋) 的核心邏輯
@@ -185,6 +202,7 @@ export default function ProjectDetailPage() {
         }
 
         isSubmittingRef.current = true;
+        const previousAssets = project.assets.map(asset => ({ ...asset }));
 
         // 1. 決定新的 phaseId 與 parentId
         let newPhaseId = target.phaseId;
@@ -193,12 +211,7 @@ export default function ProjectDetailPage() {
             newParentId = target.id;
         }
 
-        // 2. 呼叫 Action：如果結構有改變，先更新資料庫的父節點綁定
-        if (dragged.phaseId !== newPhaseId || dragged.parentId !== newParentId) {
-            await moveAssetStructure(dragged.id, newPhaseId, newParentId);
-        }
-
-        // 3. 重新計算目標層級的排序陣列
+        // 2. 重新計算目標層級的排序陣列
         let siblings = project.assets.filter(a => a.phaseId === newPhaseId && a.parentId === newParentId && a.id !== dragged.id);
         siblings.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
@@ -223,15 +236,30 @@ export default function ProjectDetailPage() {
         // 確保目標資料夾是展開的
         if (position === 'inside') setExpandedNodes(prev => ({ ...prev, [target.id]: true }));
 
-        // 5. 呼叫 Action：背景更新所有影響到的排序
-        await reorderAssets(updatedOrders);
-        isSubmittingRef.current = false;
-        // 拖曳成功後的 Toast 提示
-        addToast({ 
-            title: "移動成功", 
-            description: `已將「${dragged.name || dragged.post?.title || '未命名資源'}」移動至新位置`, 
-            color: "success" 
-        });
+        try {
+            // 5. 呼叫 Action：背景更新所有影響到的排序
+            if (dragged.phaseId !== newPhaseId || dragged.parentId !== newParentId) {
+                await moveAssetStructure(dragged.id, newPhaseId, newParentId);
+            }
+            await reorderAssets(updatedOrders);
+
+            addToast({ 
+                title: "移動成功", 
+                description: `已將「${dragged.name || dragged.post?.title || '未命名資源'}」移動至新位置`, 
+                color: "success" 
+            });
+        } catch (error) {
+            console.error(error);
+            setProject(prev => prev ? { ...prev, assets: previousAssets } : prev);
+            addToast({
+                title: "移動失敗",
+                description: "資源位置未能成功更新，已還原畫面。",
+                color: "danger",
+            });
+        } finally {
+            isSubmittingRef.current = false;
+            clearDragInteraction();
+        }
     };
 
     // 1. 取得某個檔案的「完整麵包屑路徑」 (例如：執行階段 > 圖說資料夾)
@@ -358,36 +386,50 @@ export default function ProjectDetailPage() {
 
         [newPhases[currentIndex], newPhases[targetIndex]] = [newPhases[targetIndex], newPhases[currentIndex]];
         const updatedOrders = newPhases.map((p, i) => ({ id: p.id, sortOrder: i }));
+        const previousPhases = project.phases;
         setProject({ ...project, phases: newPhases.map((p, i) => ({ ...p, sortOrder: i })) });
 
         isSubmittingRef.current = true;
-        await reorderPhases(updatedOrders);
-        isSubmittingRef.current = false;
+        try {
+            await reorderPhases(updatedOrders);
+        } catch (error) {
+            console.error(error);
+            setProject(prev => prev ? { ...prev, phases: previousPhases } : prev);
+            addToast({ title: "排序失敗", description: "階段排序未能成功更新。", color: "danger" });
+        } finally {
+            isSubmittingRef.current = false;
+        }
     };
 
     // 3. 資產編輯
     const handleUpdateAssetInfo = async () => {
         if (!editingAsset || isSubmittingRef.current) return;
         isSubmittingRef.current = true;
-        const res = await updateProjectAsset(editingAsset.id, { 
-            name: editingAsset.name, 
-            url: editingAsset.url,
-            description: editingAsset.description,
-        });
-        if (res.success) {
-            setProject(prev => prev ? {
-                ...prev,
-                assets: prev.assets.map(a => a.id === editingAsset.id ? { 
-                    ...a, 
-                    name: editingAsset.name, 
-                    url: editingAsset.url,
-                    description: editingAsset.description
-                } : a)
-            } : null);
-            setIsEditAssetModalOpen(false);
-            addToast({ title: "改動已更新", color: "success" });
+        try {
+            const res = await updateProjectAsset(editingAsset.id, { 
+                name: editingAsset.name, 
+                url: editingAsset.url,
+                description: editingAsset.description,
+            });
+            if (res.success) {
+                setProject(prev => prev ? {
+                    ...prev,
+                    assets: prev.assets.map(a => a.id === editingAsset.id ? { 
+                        ...a, 
+                        name: editingAsset.name, 
+                        url: editingAsset.url,
+                        description: editingAsset.description
+                    } : a)
+                } : null);
+                setIsEditAssetModalOpen(false);
+                addToast({ title: "改動已更新", color: "success" });
+            }
+        } catch (error) {
+            console.error(error);
+            addToast({ title: "更新失敗", description: "資源資訊未能成功更新。", color: "danger" });
+        } finally {
+            isSubmittingRef.current = false;
         }
-        isSubmittingRef.current = false;
     };
 
     const handleUpdateProject = async (formData: any) => {
@@ -404,15 +446,21 @@ export default function ProjectDetailPage() {
         e.preventDefault();
         if (isSubmittingRef.current || !editingPhase?.name || !project) return;
         isSubmittingRef.current = true;
-        const res = editingPhase.id 
-            ? await updatePhase(editingPhase.id, editingPhase.name)
-            : await createPhase(projectId, editingPhase.name, project.phases.length);
-        if (res.success) {
-            const updated = await getProjectDetails(projectId);
-            if (updated.data) setProject(updated.data as unknown as ProjectData);
-            setIsPhaseModalOpen(false);
+        try {
+            const res = editingPhase.id 
+                ? await updatePhase(editingPhase.id, editingPhase.name)
+                : await createPhase(projectId, editingPhase.name, project.phases.length);
+            if (res.success) {
+                const updated = await getProjectDetails(projectId);
+                if (updated.data) setProject(updated.data as unknown as ProjectData);
+                setIsPhaseModalOpen(false);
+            }
+        } catch (error) {
+            console.error(error);
+            addToast({ title: "儲存失敗", description: "階段資料未能成功更新。", color: "danger" });
+        } finally {
+            isSubmittingRef.current = false;
         }
-        isSubmittingRef.current = false;
     };
     
     const handleDeletePhase = async (id: string) => {
@@ -439,17 +487,23 @@ export default function ProjectDetailPage() {
             description: type === 'FOLDER' ? newFolderDescription: newLinkData.description,
             postId: specificPostId, url: newLinkData.url
         };
-        const res = await createProjectAsset(payload);
-        if (res.success) {
-            const updated = await getProjectDetails(projectId);
-            if (updated.data) setProject(updated.data as unknown as ProjectData);
-            
-            setNewFolderName(""); 
-            setNewFolderDescription("");
-            setNewLinkData({ name: "", url: "", description: "" });
-            setIsAddAssetModalOpen(false);
+        try {
+            const res = await createProjectAsset(payload);
+            if (res.success) {
+                const updated = await getProjectDetails(projectId);
+                if (updated.data) setProject(updated.data as unknown as ProjectData);
+                
+                setNewFolderName(""); 
+                setNewFolderDescription("");
+                setNewLinkData({ name: "", url: "", description: "" });
+                setIsAddAssetModalOpen(false);
+            }
+        } catch (error) {
+            console.error(error);
+            addToast({ title: "新增失敗", description: "資源未能成功建立。", color: "danger" });
+        } finally {
+            isSubmittingRef.current = false;
         }
-        isSubmittingRef.current = false;
     };
 
     const handleRemoveAsset = async (assetId: string) => {
@@ -612,15 +666,18 @@ export default function ProjectDetailPage() {
                         </div>
                     </div>
                 )}
-                <div className="flex w-full justify-end">
-                    <button 
-                        onClick={() => {setIsEditMode(!isEditMode)}}
-                        className={`p-1.5 ${isEditMode ? "text-slate-400 bg-blue-400/60" : "text-white bg-blue-400/50"} flex items-center gap-1 hover:bg-blue-400 hover:text-slate-800 rounded`}
-                    >
-                        <Edit2 size={14}/>
-                        {isEditMode ? "結束編輯" : "編輯"}
-                    </button>
-                </div>
+                {isEditor && (
+                    <div className="flex w-full justify-end">
+                        <button 
+                            onClick={() => {setIsEditMode(!isEditMode)}}
+                            className={`py-1.5 px-2 ${isEditMode ? "text-slate-400 bg-blue-400/60" : "text-white bg-blue-400/50"} flex items-center gap-1 hover:bg-blue-400 hover:text-slate-800 rounded-lg shadow-[inset_0px_2px_4px_rgba(255,255,255,0.5),inset_0px_-1px_2px_rgba(0,0,0,0.8)]`}
+                        >
+                            <Edit2 size={14}/>
+                            {isEditMode ? "結束編輯" : "編輯"}
+                        </button>
+                    </div>
+                )}
+                
                 <div className={`flex flex-col gap-1 select-none transition-opacity duration-300 ${searchKeyword ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
                     {project.phases.sort((a,b) => a.sortOrder - b.sortOrder).map((phase, phaseIdx) => {
                         const phaseTree = buildAssetTree(project.assets, phase.id);
@@ -681,6 +738,7 @@ export default function ProjectDetailPage() {
                                                 setDraggedNode={setDraggedNode}
                                                 dropTarget={dropTarget} 
                                                 setDropTarget={setDropTarget} 
+                                                setDragPreview={setDragPreview}
                                                 onDropNode={handleDropAsset}
                                                 getNodeById={getNodeById}
                                                 onDelete={handleRemoveAsset}
@@ -724,6 +782,7 @@ export default function ProjectDetailPage() {
                                         setDraggedNode={setDraggedNode}
                                         dropTarget={dropTarget} 
                                         setDropTarget={setDropTarget} 
+                                        setDragPreview={setDragPreview}
                                         onDropNode={handleDropAsset}
                                         getNodeById={getNodeById}
                                         onDelete={handleRemoveAsset}
@@ -837,6 +896,27 @@ export default function ProjectDetailPage() {
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
+            {dragPreview && (
+                <div
+                    className="pointer-events-none fixed z-[120] w-max max-w-[75vw] rounded-xl border border-white/15 bg-[#18181B]/95 px-3 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.38)] backdrop-blur-md"
+                    style={{
+                        left: `${dragPreview.x + 22}px`,
+                        top: `${dragPreview.y - 18}px`,
+                    }}
+                >
+                    <div className="flex items-center gap-2">
+                        {dragPreview.type === 'FOLDER' ? (
+                            <Folder size={16} className="shrink-0 text-amber-400" />
+                        ) : dragPreview.type === 'POST' ? (
+                            <Box size={16} className="shrink-0 text-[#8DB2E8]" />
+                        ) : (
+                            <Globe size={16} className="shrink-0 text-emerald-400" />
+                        )}
+                        <span className="truncate text-sm font-medium">{dragPreview.label}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
