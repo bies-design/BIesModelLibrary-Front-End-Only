@@ -162,6 +162,7 @@ export default function ProjectDetailPage() {
 
     const isEditor = accessLevel === 'EDITOR_ACCESS';
     const toggleNode = (nodeId: string) => setExpandedNodes(prev => ({ ...prev, [nodeId]: !prev[nodeId] }));
+    const getNodeById = (nodeId: string) => project?.assets.find(asset => asset.id === nodeId) ?? null;
 
     // ==========================================
     // 關鍵 ：(全域快捷搜尋) 的核心邏輯
@@ -681,6 +682,7 @@ export default function ProjectDetailPage() {
                                                 dropTarget={dropTarget} 
                                                 setDropTarget={setDropTarget} 
                                                 onDropNode={handleDropAsset}
+                                                getNodeById={getNodeById}
                                                 onDelete={handleRemoveAsset}
                                                 onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
                                                 isEditMode={isEditMode}
@@ -723,6 +725,7 @@ export default function ProjectDetailPage() {
                                         dropTarget={dropTarget} 
                                         setDropTarget={setDropTarget} 
                                         onDropNode={handleDropAsset}
+                                        getNodeById={getNodeById}
                                         onDelete={handleRemoveAsset}
                                         onEdit={(n: any) => { setEditingAsset(n); setIsEditAssetModalOpen(true); }} 
                                         isEditMode={isEditMode}

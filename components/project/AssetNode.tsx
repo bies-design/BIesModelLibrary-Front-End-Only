@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Folder, FolderOpen, Box, Globe, PlusCircle, Edit2, Trash2, GripVertical } from "lucide-react";
 import { Tooltip } from "@heroui/react";
 
@@ -19,18 +19,119 @@ export interface AssetNodeProps {
     dropTarget: { id: string; position: 'before' | 'after' | 'inside' } | null;
     setDropTarget: React.Dispatch<React.SetStateAction<{ id: string; position: 'before' | 'after' | 'inside' } | null>>;
     onDropNode: (dragged: any, target: any, position: 'before' | 'after' | 'inside') => void;
+    getNodeById: (id: string) => any | null;
     isEditMode: boolean;
 }
 
 export default function AssetNode({
     node, depth, isEditor, expandedNodes, onToggle,
     onAdd, onEdit, onDelete,
-    draggedNode, setDraggedNode, dropTarget, setDropTarget, onDropNode,
+    draggedNode, setDraggedNode, dropTarget, setDropTarget, onDropNode, getNodeById,
     isEditMode
 }: AssetNodeProps) {
     const isExpanded = expandedNodes[node.id];
     const hasChildren = node.children && node.children.length > 0;
     const canDrag = isEditor && isEditMode;
+    const longPressTimerRef = useRef<number | null>(null);
+    const activePointerIdRef = useRef<number | null>(null);
+    const pointerDraggingRef = useRef(false);
+    const suppressClickRef = useRef(false);
+    const startPointRef = useRef<{ x: number; y: number } | null>(null);
+    const pointerMoveHandlerRef = useRef<((event: PointerEvent) => void) | null>(null);
+    const pointerUpHandlerRef = useRef<((event: PointerEvent) => void) | null>(null);
+
+    const getAssetElement = () => document.getElementById(`asset-${node.id}`);
+
+    const clearLongPressTimer = () => {
+        if (longPressTimerRef.current !== null) {
+            window.clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+    };
+
+    const removeDragVisual = () => {
+        const el = getAssetElement();
+        if (el) el.classList.remove('opacity-50');
+    };
+
+    const cleanupPointerListeners = () => {
+        if (pointerMoveHandlerRef.current) {
+            window.removeEventListener('pointermove', pointerMoveHandlerRef.current);
+            pointerMoveHandlerRef.current = null;
+        }
+        if (pointerUpHandlerRef.current) {
+            window.removeEventListener('pointerup', pointerUpHandlerRef.current);
+            window.removeEventListener('pointercancel', pointerUpHandlerRef.current);
+            pointerUpHandlerRef.current = null;
+        }
+    };
+
+    const resetPointerDragState = () => {
+        clearLongPressTimer();
+        cleanupPointerListeners();
+        activePointerIdRef.current = null;
+        startPointRef.current = null;
+        if (pointerDraggingRef.current) {
+            pointerDraggingRef.current = false;
+            setDraggedNode(null);
+            setDropTarget(null);
+            removeDragVisual();
+        }
+    };
+
+    const getDropPosition = (
+        clientY: number,
+        rect: DOMRect,
+        targetType: 'FOLDER' | 'POST' | 'LINK'
+    ): 'before' | 'after' | 'inside' => {
+        const y = clientY - rect.top;
+        const height = rect.height;
+
+        if (y < height * 0.25) return 'before';
+        if (y > height * 0.75) return 'after';
+        return targetType === 'FOLDER' ? 'inside' : 'after';
+    };
+
+    const updatePointerDropTarget = (clientX: number, clientY: number) => {
+        const hoveredElement = document
+            .elementFromPoint(clientX, clientY)
+            ?.closest('[data-asset-node-id]') as HTMLElement | null;
+
+        if (!hoveredElement) {
+            setDropTarget(null);
+            return null;
+        }
+
+        const targetId = hoveredElement.dataset.assetNodeId;
+        if (!targetId || targetId === node.id) {
+            setDropTarget(null);
+            return null;
+        }
+
+        const targetNode = getNodeById(targetId);
+        if (!targetNode) {
+            setDropTarget(null);
+            return null;
+        }
+
+        const position = getDropPosition(clientY, hoveredElement.getBoundingClientRect(), targetNode.type);
+        setDropTarget({ id: targetId, position });
+        return { targetNode, position };
+    };
+
+    const autoScrollWindow = (clientY: number) => {
+        const edgeThreshold = 88;
+        const maxStep = 18;
+        const viewportHeight = window.innerHeight;
+
+        if (clientY < edgeThreshold) {
+            const intensity = (edgeThreshold - clientY) / edgeThreshold;
+            window.scrollBy({ top: -Math.max(6, Math.round(maxStep * intensity)) });
+        } else if (clientY > viewportHeight - edgeThreshold) {
+            const intensity = (clientY - (viewportHeight - edgeThreshold)) / edgeThreshold;
+            window.scrollBy({ top: Math.max(6, Math.round(maxStep * intensity)) });
+        }
+    };
 
     // --- 拖曳事件處理 ---
     const handleDragStart = (e: React.DragEvent) => {
@@ -56,21 +157,7 @@ export default function AssetNode({
         if (!canDrag || !draggedNode || draggedNode.id === node.id) return;
         e.preventDefault(); 
         e.stopPropagation();
-
-        const rect = e.currentTarget.getBoundingClientRect();
-        const y = e.clientY - rect.top;
-        const height = rect.height;
-        
-        let position: 'before' | 'after' | 'inside' = 'inside';
-        
-        if (y < height * 0.25) {
-            position = 'before';
-        } else if (y > height * 0.75) {
-            position = 'after';
-        } else {
-            position = node.type === 'FOLDER' ? 'inside' : 'after';
-        }
-
+        const position = getDropPosition(e.clientY, e.currentTarget.getBoundingClientRect(), node.type);
         setDropTarget({ id: node.id, position });
     };
 
@@ -91,6 +178,81 @@ export default function AssetNode({
         setDraggedNode(null);
     };
 
+    const handleTouchLikePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+        if (!canDrag || e.pointerType === 'mouse') return;
+
+        e.stopPropagation();
+        activePointerIdRef.current = e.pointerId;
+        startPointRef.current = { x: e.clientX, y: e.clientY };
+        suppressClickRef.current = false;
+
+        const handlePointerMove = (event: PointerEvent) => {
+            if (event.pointerId !== activePointerIdRef.current) return;
+
+            if (!pointerDraggingRef.current) {
+                const startPoint = startPointRef.current;
+                if (!startPoint) return;
+
+                const movedX = Math.abs(event.clientX - startPoint.x);
+                const movedY = Math.abs(event.clientY - startPoint.y);
+                if (movedX > 8 || movedY > 8) {
+                    resetPointerDragState();
+                }
+                return;
+            }
+
+            event.preventDefault();
+            autoScrollWindow(event.clientY);
+            updatePointerDropTarget(event.clientX, event.clientY);
+        };
+
+        const handlePointerUp = (event: PointerEvent) => {
+            if (event.pointerId !== activePointerIdRef.current) return;
+
+            const wasDragging = pointerDraggingRef.current;
+            const dropResult = wasDragging
+                ? updatePointerDropTarget(event.clientX, event.clientY)
+                : null;
+
+            resetPointerDragState();
+
+            if (wasDragging && dropResult) {
+                onDropNode(node, dropResult.targetNode, dropResult.position);
+            }
+        };
+
+        pointerMoveHandlerRef.current = handlePointerMove;
+        pointerUpHandlerRef.current = handlePointerUp;
+        window.addEventListener('pointermove', handlePointerMove, { passive: false });
+        window.addEventListener('pointerup', handlePointerUp);
+        window.addEventListener('pointercancel', handlePointerUp);
+
+        longPressTimerRef.current = window.setTimeout(() => {
+            pointerDraggingRef.current = true;
+            suppressClickRef.current = true;
+            setDraggedNode(node);
+            const el = getAssetElement();
+            if (el) el.classList.add('opacity-50');
+        }, 280);
+    };
+
+    const handleGripClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (suppressClickRef.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            suppressClickRef.current = false;
+            return;
+        }
+        e.stopPropagation();
+    };
+
+    useEffect(() => {
+        return () => {
+            clearLongPressTimer();
+            cleanupPointerListeners();
+        };
+    }, []);
+
     // 視覺回饋樣式 (使用 if 判斷，語法更清晰)
     let dropStyles = 'border-y-2 border-transparent';
     if (dropTarget && dropTarget.id === node.id) {
@@ -102,6 +264,7 @@ export default function AssetNode({
         <div className="flex flex-col">
             <div 
                 id={`asset-${node.id}`}
+                data-asset-node-id={node.id}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -116,10 +279,12 @@ export default function AssetNode({
                             draggable
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
-                            onClick={(e) => e.stopPropagation()}
+                            onPointerDown={handleTouchLikePointerDown}
+                            onClick={handleGripClick}
                             className="flex shrink-0 cursor-grab items-center justify-center rounded p-1 text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-200 active:cursor-grabbing"
                             aria-label="拖移資源"
                             title="拖移資源"
+                            style={{ touchAction: 'manipulation' }}
                         >
                             <GripVertical size={16} />
                         </button>
@@ -181,6 +346,7 @@ export default function AssetNode({
                             onEdit={onEdit} onDelete={onDelete} 
                             draggedNode={draggedNode} setDraggedNode={setDraggedNode}
                             dropTarget={dropTarget} setDropTarget={setDropTarget} onDropNode={onDropNode}
+                            getNodeById={getNodeById}
                             isEditMode={isEditMode}
                         />
                     ))}
