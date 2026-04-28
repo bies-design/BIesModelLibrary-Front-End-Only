@@ -8,7 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { addToast } from "@heroui/toast"; // 使用 HeroUI Toast
 import { useSession } from "next-auth/react";
 import axios from 'axios';
-import { retryConvertTask } from "@/lib/actions/file.action";
+import { retryConvertTask, fetchActiveTasksAction } from "@/lib/actions/file.action";
 
 // 定義 TrackedFile 介面 (如上所述)
 export interface TrackedFile {
@@ -77,9 +77,10 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
 
         const fetchActiveTasks = async () => {
             try {
-                // 注意：這裡的 URL 請換成你 Tus Server 的實際網址
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/api/tasks/status?userId=${session.user.id}`);
-                const { data } = response.data;
+                // 🔐 改用 Server Action (Proxy)，不再暴露 API Key 給前端
+                const result = await fetchActiveTasksAction();
+                if (!result.success) throw new Error(result.error);
+                const { data } = result;
 
                 if (data && data.length > 0) {
                     const restoredFiles: Record<string, TrackedFile> = {};

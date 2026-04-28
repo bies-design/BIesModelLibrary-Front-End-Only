@@ -308,13 +308,17 @@ export async function retryConvertTask(tusFileId: string, priority: number = 10)
     if(!session?.user.id) return {success: false, error: "Unauthorized"};
 
     try{
-
         const TUS_SERVER_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
-        const response = await axios.post(`${TUS_SERVER_URL}/api/tasks/retry`,{
+        // 💡 使用 Server-side 的 API Key，不暴露給前端
+        const response = await axios.post(`${TUS_SERVER_URL}/api/tasks/retry`, {
             fileId: tusFileId,
             userId: session.user.id,
             priority: priority,
+        }, {
+            headers: {
+                'x-api-key': process.env.INTERNAL_API_KEY
+            }
         });
 
         if(response.data.success){
@@ -323,9 +327,33 @@ export async function retryConvertTask(tusFileId: string, priority: number = 10)
             return {success: false, error: response.data.error};
         }
     } catch (error: any){
-        // 攔截 Axios 錯誤，並抓取 Tus Server 回傳的 error message
         const errorMessage = error.response?.data.error || error.message || "伺服器無回應";
         console.error("重新轉檔失敗: ", errorMessage);
         return {success: false, error: errorMessage};
+    }
+}
+
+/**
+ * 透過 Server-side Proxy 向 Tus Server 查詢進行中的任務
+ * 這樣 API Key 就不會暴露在瀏覽器
+ */
+export async function fetchActiveTasksAction() {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+    try {
+        const TUS_SERVER_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
+        
+        const response = await axios.get(`${TUS_SERVER_URL}/api/tasks/status?userId=${session.user.id}`, {
+            headers: {
+                'x-api-key': process.env.INTERNAL_API_KEY
+            }
+        });
+
+        return { success: true, data: response.data.data };
+    } catch (error: any) {
+        const errorMessage = error.response?.data.error || error.message || "無法拉取任務狀態";
+        console.error("fetchActiveTasksAction Error:", errorMessage);
+        return { success: false, error: errorMessage };
     }
 }
