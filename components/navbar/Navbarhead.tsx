@@ -42,7 +42,11 @@ export default function Navbarhead() {
   // 控制Megamenu是否顯示
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState<boolean>(false);
   useEffect(() => {
-    setMounted(true);
+    const handleSetMounted = () => {
+      setMounted(true);
+    };
+
+    handleSetMounted();
   }, []);
 
   const getImageUrl = (imageVal: string | null | undefined) => {

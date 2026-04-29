@@ -18,6 +18,7 @@ import {
   useDisclosure, 
   Checkbox
 } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 import { 
   PanelLeftClose, 
   PanelLeftOpen,
@@ -43,6 +44,33 @@ import { getUserTeams } from '@/lib/actions/team.action';
 import * as THREE from 'three';
 import { FileItem } from '@/app/(uploadAndDashboard)/upload/page';
 import { FileCategory } from '@/prisma/generated/prisma';
+
+const CATEGORY_ACCEPT_MAP: Record<FileCategory, string> = {
+  [FileCategory.MODEL_3D]: ".ifc,.frag,.3dm,.gltf,.obj",
+  [FileCategory.DOCUMENT]: ".pdf,.docx,.xlsx",
+  [FileCategory.DRAWING]: ".dwg,.pdf,.png",
+  [FileCategory.IMAGE]: ".jpg,.jpeg,.png,.webp",
+  [FileCategory.OTHER]: "",
+};
+
+const CATEGORY_EXTENSION_MAP: Record<FileCategory, string[]> = {
+  [FileCategory.MODEL_3D]: ["ifc", "frag", "3dm", "gltf", "obj"],
+  [FileCategory.DOCUMENT]: ["pdf", "docx", "xlsx"],
+  [FileCategory.DRAWING]: ["dwg", "pdf", "png"],
+  [FileCategory.IMAGE]: ["jpg", "jpeg", "png", "webp"],
+  [FileCategory.OTHER]: [],
+};
+
+const getFileExtension = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  return ext && ext !== fileName.toLowerCase() ? ext : "";
+};
+
+const isFileAllowedForCategory = (fileName: string, category: FileCategory) => {
+  const allowedExtensions = CATEGORY_EXTENSION_MAP[category];
+  if (allowedExtensions.length === 0) return true;
+  return allowedExtensions.includes(getFileExtension(fileName));
+};
 
 // 擴展 UIModel 型別以包含 category
 export interface UIFileRecord {
@@ -160,7 +188,7 @@ const ModelUploadSidebar = ({
   }, [currentWorkspace]);
 
   const getTechnicalType = (fileName: string): '3d' | 'pdf' | 'other' => {
-      const ext = fileName.split('.').pop()?.toLowerCase();
+      const ext = getFileExtension(fileName);
       if (['ifc', 'obj', 'gltf', '3dm', 'frag'].includes(ext || '')) return '3d';
       if (ext === 'pdf') return 'pdf';
       return 'other';
@@ -170,8 +198,27 @@ const ModelUploadSidebar = ({
   const handleFiles = (uploadedFiles: FileList | null) => {
     if (!uploadedFiles) return;
 
-    const newFiles: FileItem[] = Array.from(uploadedFiles).map(file => {
+    const selectedFiles = Array.from(uploadedFiles);
+    const rejectedFiles = selectedFiles.filter(file => !isFileAllowedForCategory(file.name, uploadTargetCategory));
+    const acceptedFiles = selectedFiles.filter(file => isFileAllowedForCategory(file.name, uploadTargetCategory));
+
+    if (rejectedFiles.length > 0) {
+      addToast({
+        title: "檔案格式不支援",
+        description: `${uploadTargetCategory.replace('MODEL_', '')} 目前只接受 ${CATEGORY_ACCEPT_MAP[uploadTargetCategory] || "所有格式"}`,
+        color: "danger",
+      });
+    }
+
+    if (acceptedFiles.length === 0) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    const newFiles: FileItem[] = acceptedFiles.map(file => {
       const techType = getTechnicalType(file.name);
+      const extension = getFileExtension(file.name);
+      const isDirectFragUpload = uploadTargetCategory === FileCategory.MODEL_3D && extension === 'frag';
       // 把使用者選的分類塞進 Uppy Metadata
       try {
         uppy.addFile({
@@ -181,7 +228,9 @@ const ModelUploadSidebar = ({
           source: 'Local',
           meta: {
             category: uploadTargetCategory, // 傳遞給 Tus Server
-            teamId: currentWorkspace === 'personal' ? null : currentWorkspace 
+            teamId: currentWorkspace === 'personal' ? null : currentWorkspace,
+            skipConversion: isDirectFragUpload ? 'true' : 'false',
+            viewerFileIdStrategy: isDirectFragUpload ? 'same-as-fileId' : 'converted-output',
           }
         });
         console.log(`[Uppy] 檔案已加入佇列，分類為: ${uploadTargetCategory}`);
@@ -371,7 +420,7 @@ const ModelUploadSidebar = ({
 
   const removeFileFromScene = (item: FileItem) => {
       // 1. 如果是 3D 模型，通知父層從 IFC 引擎移除
-      if (item.name.toLowerCase().endsWith('.ifc')) {
+      if (/\.(ifc|frag)$/i.test(item.name)) {
           onDeleteModel(item.name.replace(/\.(ifc|frag)$/i, ""));
       }
       
@@ -433,10 +482,10 @@ const ModelUploadSidebar = ({
             ) : (
               sectionFiles.map((item) => {
                 const lowerName = item.name.toLowerCase();
-                const isIfc = lowerName.endsWith('.ifc');
+                const is3dModel = lowerName.endsWith('.ifc') || lowerName.endsWith('.frag');
                 const isPdf = lowerName.endsWith('.pdf');
                 const isImage = lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.png') || lowerName.endsWith('.webp');
-                const isViewable = isIfc || isPdf || isImage;
+                const isViewable = is3dModel || isPdf || isImage;
                 return(
                   <div 
                     key={item.id}
@@ -460,8 +509,8 @@ const ModelUploadSidebar = ({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (isIfc) {
-                                  // 載入 ifc 模型
+                                if (is3dModel) {
+                                  // 載入 IFC 轉出的 Frag，或直接上傳的 .frag
                                   downloadAndLoadFrag(item.id, item.fileId, item.viewerFileId, item.name, e);
                                 } else if (isPdf) {
                                   // 載入 PDF 
@@ -597,10 +646,10 @@ const ModelUploadSidebar = ({
               onAction={(key) => setUploadTargetCategory(key as FileCategory)}
               itemClasses={{ base: "text-white" }}
             >
-              <DropdownItem key={FileCategory.MODEL_3D} description=".ifc / .3dm / .gltf / .obj">3D Model</DropdownItem>
+              <DropdownItem key={FileCategory.MODEL_3D} description=".ifc / .frag / .3dm / .gltf / .obj">3D Model</DropdownItem>
               <DropdownItem key={FileCategory.DOCUMENT} description=".pdf / .docx / .xlsx">Document</DropdownItem>
               <DropdownItem key={FileCategory.DRAWING} description=".dwg / .pdf / .png">Drawing</DropdownItem>
-              <DropdownItem key={FileCategory.IMAGE} description="..jpg / .png / .webp">Image</DropdownItem>
+              <DropdownItem key={FileCategory.IMAGE} description=".jpg / .png / .webp">Image</DropdownItem>
               <DropdownItem key={FileCategory.OTHER} description="">Other</DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -621,7 +670,8 @@ const ModelUploadSidebar = ({
             type="file"
             ref={fileInputRef}
             className="hidden"
-            multiple // 🚀 拔掉 accept 限制，支援所有格式
+            multiple
+            accept={CATEGORY_ACCEPT_MAP[uploadTargetCategory] || undefined}
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>

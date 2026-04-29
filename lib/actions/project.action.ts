@@ -9,6 +9,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { AssetType } from "../../prisma/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { ProjectSortType } from "@/app/(root)/projects/[teamId]/page";
+import { checkUserTeamStatus } from "./team.action";
 // ==========================================
 // 1. 專案 (Project) 相關
 // ==========================================
@@ -27,6 +28,10 @@ export async function createProject(data: {
         const session = await auth();
         if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
+        const checkUserPermission = await checkUserTeamStatus(data.teamId);
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
         // 1. 建立專案
         const newProject = await prisma.project.create({
             data: {
@@ -56,10 +61,27 @@ export async function updateProject(projectId: string, data:{
     status: ProjectStatus | "ACTIVE";
 }) {
     try{
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
         const oldProject = await prisma.project.findUnique({
             where:{id:projectId},
-            select:{coverImage:true}
+            select:{
+                teamId:true,
+                coverImage:true
+            }
         });
+
+        if(!oldProject){
+            return { success: false, error: "Project not found" };
+        }
+
+        const checkUserPermission = await checkUserTeamStatus(oldProject.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
 
         const updatedProject = await prisma.project.update({
             where:{id:projectId},
@@ -95,6 +117,25 @@ export async function updateProject(projectId: string, data:{
 
 export async function deleteProject(projectId: string) {
     try{    
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const project = await prisma.project.findUnique({
+            where: { id:projectId },
+            select: { 
+                id:true,
+                teamId:true,
+            }
+        });
+        if(!project){
+            return { success: false, error: "Project not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
         const deletedProject = await prisma.project.delete({
             where:{ id: projectId}
         });
@@ -222,6 +263,7 @@ export async function getTeamProjectsByScroll(
 // 取得單一專案詳情 (包含樹狀結構的 Phase 與 綁定的 Post)
 export async function getProjectDetails(projectId: string) {
     try {
+
         const project = await prisma.project.findUnique({
             where: { id: projectId },
             include: {
@@ -258,12 +300,32 @@ export async function getProjectDetails(projectId: string) {
 // 新增階段
 export async function createPhase(projectId: string, name: string, sortOrder: number) {
     try {
-        const newPhase = await prisma.phase.create({
-        data: {
-            name,
-            sortOrder,
-            projectId
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
         }
+        const project = await prisma.project.findUnique({
+            where: { id:projectId },
+            select: { 
+                id:true,
+                teamId:true,
+            }
+        });
+        if(!project){
+            return { success: false, error: "Project not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
+        
+        const newPhase = await prisma.phase.create({
+            data: {
+                name,
+                sortOrder,
+                projectId
+            }
         });
         return { success: true, data: newPhase };
     } catch (error: any) {
@@ -274,8 +336,31 @@ export async function createPhase(projectId: string, name: string, sortOrder: nu
 // 刪除階段 (注意：裡面的資源不會被刪除，會退回「未分類」)
 export async function deletePhase(phaseId: string) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const phase = await prisma.phase.findUnique({
+            where: { id: phaseId},
+            select:{
+                project:{
+                    select:{
+                        teamId:true
+                    }
+                }
+            }
+        });
+        if(!phase){
+            return { success: false, error: "Phase not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(phase.project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
+
         await prisma.phase.delete({
-        where: { id: phaseId }
+            where: { id: phaseId }
         });
         
         return { success: true };
@@ -287,6 +372,29 @@ export async function deletePhase(phaseId: string) {
 // 更新階段名稱
 export async function updatePhase(phaseId: string, newName: string) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const phase = await prisma.phase.findUnique({
+            where: { id: phaseId},
+            select:{
+                project:{
+                    select:{
+                        teamId:true
+                    }
+                }
+            }
+        });
+        if(!phase){
+            return { success: false, error: "Phase not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(phase.project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
+
         const updatedPhase = await prisma.phase.update({
             where: { id: phaseId },
             data: { name: newName }
@@ -301,6 +409,45 @@ export async function updatePhase(phaseId: string, newName: string) {
 // 批次更新階段排序
 export async function reorderPhases(orders: { id: string; sortOrder: number }[]) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        if(orders.length === 0){
+            return { success: true }
+        }
+        const phases = await prisma.phase.findMany({
+            where: { 
+                id: {
+                    in: orders.map(orders => orders.id)
+                }
+            },
+            select: {
+                id: true,
+                projectId: true,
+                project: {
+                    select: {
+                        teamId: true
+                    }
+                }
+            }
+        });
+        if (phases.length !== orders.length) {
+            return { success: false, error: "Phase not found" };
+        }
+        const projectId = phases[0].projectId;
+        const allSameProject = phases.every(phase => phase.projectId === projectId);
+        if (!allSameProject) {
+            return { success: false, error: "Cannot reorder phases across different projects" };
+        }
+
+        const teamId = phases[0].project.teamId;
+        const checkUserPermission = await checkUserTeamStatus(teamId);
+        
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
+
         await prisma.$transaction(
             orders.map(order => 
                 prisma.phase.update({
@@ -332,6 +479,26 @@ export async function createProjectAsset(data: {
 }) {
     try {
         const { projectId, phaseId, parentId, type, name, description, postId, url } = data;
+
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const project = await prisma.project.findUnique({
+            where: { id:projectId },
+            select: { 
+                id:true,
+                teamId:true,
+            }
+        });
+        if(!project){
+            return { success: false, error: "Project not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
 
         // 1. 如果是加入 Post，執行團隊歸屬同步邏輯
         if (type === 'POST' && postId) {
@@ -388,6 +555,30 @@ export async function createProjectAsset(data: {
 }
 export async function updateProjectAsset(id: string, data: { name?: string | null; url?: string | null; description?: string | null}) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const projectAsset = await prisma.projectAsset.findUnique({
+            where: { id: id},
+            select: {
+                project:{
+                    select: {
+                        teamId:true
+                    }
+                }
+            }
+        });
+        if(!projectAsset){
+            return { success: false, error: "ProjectAsset not found" };
+        }
+
+        const checkUserPermission = await checkUserTeamStatus(projectAsset.project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
+
         const updated = await prisma.projectAsset.update({
             where: { id },
             data: {
@@ -404,6 +595,55 @@ export async function updateProjectAsset(id: string, data: { name?: string | nul
 // 在專案內移動資源 (更改資源所屬的階段)
 export async function moveAssetToPhase(projectAssetId: string, newPhaseId: string | null) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        // 1. 先查 asset 屬於哪個 project/team
+        const asset = await prisma.projectAsset.findUnique({
+            where: { id: projectAssetId },
+            select: {
+                id: true,
+                projectId: true,
+                project: {
+                    select: {
+                        teamId: true,
+                    }
+                }
+            }
+        });
+
+        if (!asset) {
+            return { success: false, error: "Asset not found" };
+        }
+
+        // 2. 檢查目前使用者能不能編輯這個 asset 所屬的 project
+        const checkUserPermission = await checkUserTeamStatus(asset.project.teamId);
+
+        if (checkUserPermission !== "EDITOR_ACCESS") {
+            return { success: false, error: "Permission denied" };
+        }
+
+        // 3. 如果 newPhaseId 不是 null，要確認 phase 跟 asset 屬於同一個 project
+        if (newPhaseId) {
+            const phase = await prisma.phase.findUnique({
+                where: { id: newPhaseId },
+                select: {
+                    id: true,
+                    projectId: true,
+                }
+            });
+
+            if (!phase) {
+                return { success: false, error: "Phase not found" };
+            }
+
+            if (phase.projectId !== asset.projectId) {
+                return { success: false, error: "Cannot move asset to another project" };
+            }
+        }
         const updatedAsset = await prisma.projectAsset.update({
             where: { id: projectAssetId },
             data: { phaseId: newPhaseId }
@@ -417,6 +657,41 @@ export async function moveAssetToPhase(projectAssetId: string, newPhaseId: strin
 // 批次更新資源排序
 export async function reorderAssets(orders: { id: string; sortOrder: number }[]) {
     try {
+        const session = await auth();
+
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const projectAssets = await prisma.projectAsset.findMany({
+            where: {
+                id: {
+                    in: orders.map(orders => orders.id)
+                }
+            },
+            select: {
+                id: true,
+                projectId: true,
+                project: {
+                    select: {
+                        teamId: true
+                    }
+                }
+            }
+        });
+        if(projectAssets.length !== orders.length){
+            return { success: false, error: "ProjectAsset not found" };
+        }
+        const projectId = projectAssets[0].projectId;
+        const allSameProject = projectAssets.every(projectAsset => projectAsset.projectId === projectId);
+        if(!allSameProject){
+            return { success: false, error: "Cannot reorder assets across different projects" };
+        }
+        const teamId = projectAssets[0].project.teamId;
+        const checkUserPermission = await checkUserTeamStatus(teamId);
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
         await prisma.$transaction(
             orders.map(order => 
                 prisma.projectAsset.update({
@@ -435,6 +710,28 @@ export async function reorderAssets(orders: { id: string; sortOrder: number }[])
 // 從專案中移除資源關聯 (不刪除 Post 本體與原始檔案)
 export async function removeAssetFromProject(projectAssetId: string) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
+        const projectAsset = await prisma.projectAsset.findUnique({
+            where: { id: projectAssetId},
+            select:{
+                project:{
+                    select:{
+                        teamId:true
+                    }
+                }
+            }
+        });
+        if(!projectAsset){
+            return { success: false, error: "projectAsset not found" };
+        }
+        const checkUserPermission = await checkUserTeamStatus(projectAsset.project.teamId);
+
+        if(checkUserPermission != 'EDITOR_ACCESS'){
+            return { success: false, error: "Permission denied" };
+        }
         await prisma.projectAsset.delete({
             where: { id: projectAssetId }
         });
@@ -482,6 +779,74 @@ export async function moveAssetStructure(
     newParentId: string | null
 ) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        // 1. 先查目前要移動的 asset 屬於哪個 project/team
+        const asset = await prisma.projectAsset.findUnique({
+            where: { id: assetId },
+            select: {
+                id: true,
+                projectId: true,
+                project: {
+                    select: {
+                        teamId: true,
+                    }
+                }
+            }
+        });
+
+        if (!asset) {
+            return { success: false, error: "Asset not found" };
+        }
+
+        // 2. 檢查使用者能不能編輯這個 project
+        const checkUserPermission = await checkUserTeamStatus(asset.project.teamId);
+
+        if (checkUserPermission !== "EDITOR_ACCESS") {
+            return { success: false, error: "Permission denied" };
+        }
+
+        // 3. newPhaseId 有值時，必須屬於同一個 project
+        if (newPhaseId) {
+            const phase = await prisma.phase.findUnique({
+                where: { id: newPhaseId },
+                select: {
+                    id: true,
+                    projectId: true,
+                }
+            });
+
+            if (!phase) {
+                return { success: false, error: "Phase not found" };
+            }
+
+            if (phase.projectId !== asset.projectId) {
+                return { success: false, error: "Cannot move asset to another project" };
+            }
+        }
+
+        // 4. newParentId 有值時，也必須屬於同一個 project
+        if (newParentId) {
+            const parentAsset = await prisma.projectAsset.findUnique({
+                where: { id: newParentId },
+                select: {
+                    id: true,
+                    projectId: true,
+                }
+            });
+
+            if (!parentAsset) {
+                return { success: false, error: "Parent asset not found" };
+            }
+
+            if (parentAsset.projectId !== asset.projectId) {
+                return { success: false, error: "Cannot move asset under another project" };
+            }
+        }
         // 更新目標節點
         await prisma.projectAsset.update({
             where: { id: assetId },

@@ -190,8 +190,9 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
             }
             // 在這裡處理副作用 (Toast)，保證只執行一次
             if (data.status === 'success') {
+                const isConvertedIfc = fileMapping.name.toLowerCase().endsWith('.ifc');
                 addToast({
-                    title: "轉檔完成",
+                    title: isConvertedIfc ? "轉檔完成" : "上傳完成",
                     description: `${data.fileName}已準備就緒`, // 這裡暫時拿不到 file.name，稍後說明
                     color: "success",
                     timeout: Infinity,
@@ -332,8 +333,8 @@ export const UploadProvider = ({ children }: { children: React.ReactNode }) => {
                 [file.id]: { 
                 ...prev[file.id], 
                 tusId: fileid,
-                progress: 0, 
-                status: 'processing' // 切換狀態為轉檔中 (藍色流動條)
+                progress: isIfc ? 0 : 100, 
+                status: isIfc ? 'processing' : 'completed'
                 } as TrackedFile
             }));
         });
