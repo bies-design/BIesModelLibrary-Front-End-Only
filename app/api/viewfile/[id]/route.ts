@@ -29,7 +29,6 @@ export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>
         const headers = new Headers();
         headers.set("Content-Type", "application/octet-stream");
         
-        // @ts-expect-error: AWS SDK v3 的 Body 其實相容於 Web Response，但 TS有時候會報錯
         return new NextResponse(s3Response.Body as BodyInit, {
         status: 200,
         headers,
