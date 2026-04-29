@@ -141,7 +141,7 @@ const Teams = () => {
     const handleUpdateTeam = async(updatedData: any) => {
         if (!currentTeamId || !session?.user?.id) return;
         
-        const result = await updateTeamSettings(currentTeamId, session.user.id, updatedData);
+        const result = await updateTeamSettings(currentTeamId, updatedData);
         
         if (result.success) {
             addToast({ description: "團隊設定已更新", color: "success" });
@@ -242,7 +242,7 @@ const Teams = () => {
     
     const handleUpdateRole = async (userId: string, newRole: string) => {
         if (!currentTeamId || !session?.user?.id) return;
-        const result = await updateTeamMemberRole(currentTeamId, userId, newRole, session.user.id);
+        const result = await updateTeamMemberRole(currentTeamId, userId, newRole);
         if (result.success) {
             addToast({ description: "角色更新成功", color: "success" });
             loadMembers(currentTeamId);
@@ -254,7 +254,7 @@ const Teams = () => {
     const handleRemoveMember = async (userId: string) => {
         if (!currentTeamId || !session?.user?.id) return;
         if (!window.confirm("確定要將此成員移出團隊嗎？")) return;
-        const result = await removeTeamMember(currentTeamId, userId, session.user.id);
+        const result = await removeTeamMember(currentTeamId, userId);
         if (result.success) {
             addToast({ description: "已移除該成員", color: "success" });
             loadMembers(currentTeamId);
@@ -266,7 +266,7 @@ const Teams = () => {
     const handleLeaveTeam = async () => {
         if (!currentTeamId || !session?.user?.id) return;
         if (!window.confirm(`確定要離開「${teamName}」嗎？此操作無法復原。`)) return;
-        const result = await leaveTeam(currentTeamId, session.user.id);
+        const result = await leaveTeam(currentTeamId);
         if (result.success) {
             addToast({ description: "已成功離開團隊", color: "success" });
             router.push(`/dashboard/${session.user.id}?tab=Teams`);
@@ -283,7 +283,7 @@ const Teams = () => {
             if (confirmText !== null) addToast({ description: "團隊名稱輸入錯誤，取消刪除", color: "warning" });
             return;
         }
-        const result = await deleteTeam(currentTeamId, session.user.id);
+        const result = await deleteTeam(currentTeamId);
         if (result.success) {
             addToast({ description: "團隊已成功刪除", color: "success" });
             router.push(`/dashboard/${session.user.id}?tab=Teams`);

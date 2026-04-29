@@ -117,6 +117,12 @@ export async function getTeamDetails(teamId:string, userId:string) {
  * 取得特定團隊的所有成員
  */
 export async function getTeamMembers(teamId: string) {
+    const session = await auth();
+    if(!session?.user.id) return {sucess:false, error:"Unauthorized"};
+    const checkUserPermission = await checkUserTeamStatus(teamId);
+    if (checkUserPermission !== "EDITOR_ACCESS") {
+        return { success: false, error: "Permission denied" };
+    }
     try {
         const members = await prisma.teamMember.findMany({
             where: { 
@@ -301,17 +307,21 @@ export async function searchUsersForTeam(query: string, searchType: "username" |
 /**
  * 更新團隊成員角色
  */
-export async function updateTeamMemberRole(teamId: string, targetUserId: string, newRole: string, updaterId: string) {
+export async function updateTeamMemberRole(teamId: string, targetUserId: string, newRole: string) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
         // 1. 權限檢查：確認執行者是否有權限 (OWNER 或 ADMIN)
         const updater = await prisma.teamMember.findFirst({
-            where: { teamId, userId: updaterId, role: { in: ['OWNER', 'ADMIN'] } }
+            where: { teamId, userId: session.user.id, role: { in: ['OWNER', 'ADMIN'] } }
         });
 
         if (!updater) return { success: false, error: "權限不足，只有管理員可以修改角色" };
 
         // 2. 防呆檢查：不能修改自己的角色 (避免不小心把自己降級導致團隊沒有 Owner)
-        if (targetUserId === updaterId) {
+        if (targetUserId === session.user.id) {
             return { success: false, error: "無法修改自己的角色" };
         }
 
@@ -331,17 +341,21 @@ export async function updateTeamMemberRole(teamId: string, targetUserId: string,
 /**
  * 從團隊中移除成員
  */
-export async function removeTeamMember(teamId: string, targetUserId: string, updaterId: string) {
+export async function removeTeamMember(teamId: string, targetUserId: string) {
     try {
+        const session = await auth();
+        if(!session?.user.id){
+            return { success: false, error: "Unauthorized" };
+        }
         // 1. 權限檢查
         const updater = await prisma.teamMember.findFirst({
-            where: { teamId, userId: updaterId, role: { in: ['OWNER', 'ADMIN'] } }
+            where: { teamId, userId: session.user.id, role: { in: ['OWNER', 'ADMIN'] } }
         });
 
         if (!updater) return { success: false, error: "權限不足，只有管理員可以刪除成員" };
 
         // 2. 防呆檢查：不能踢掉自己
-        if (targetUserId === updaterId) {
+        if (targetUserId === session.user.id) {
             return { success: false, error: "無法將自己移出團隊，請使用離開團隊功能" };
         }
 
@@ -359,11 +373,16 @@ export async function removeTeamMember(teamId: string, targetUserId: string, upd
 /**
  * 自主離開團隊
  */
-export async function leaveTeam(teamId: string, userId: string) {
+export async function leaveTeam(teamId: string) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
         // 1. 檢查使用者是否在團隊中，並取得他的角色
         const member = await prisma.teamMember.findFirst({
-            where: { teamId, userId }
+            where: { teamId, userId: session.user.id }
         });
 
         if (!member) return { success: false, error: "你不在該團隊中" };
@@ -374,7 +393,7 @@ export async function leaveTeam(teamId: string, userId: string) {
                 where: { 
                     teamId, 
                     role: 'OWNER', 
-                    userId: { not: userId } 
+                    userId: { not: session.user.id } 
                 }
             });
 
@@ -388,9 +407,9 @@ export async function leaveTeam(teamId: string, userId: string) {
 
         // 3. 執行離開 (刪除 TeamMember 關聯)
         await prisma.teamMember.deleteMany({
-            where: { teamId, userId }
+            where: { teamId, userId: session.user.id }
         });
-        revalidatePath(`/dashboard/${userId}`);
+        revalidatePath(`/dashboard/${session.user.id}`);
         return { success: true };
     } catch (error) {
         console.error("Failed to leave team:", error);
@@ -400,11 +419,16 @@ export async function leaveTeam(teamId: string, userId: string) {
 /**
  * 刪除團隊
  */
-export async function deleteTeam(teamId: string, userId: string) {
+export async function deleteTeam(teamId: string) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
         // 1. 權限檢查：只有 OWNER 可以刪除團隊
         const member = await prisma.teamMember.findFirst({
-            where: { teamId, userId, role: 'OWNER' }
+            where: { teamId, userId: session.user.id, role: 'OWNER' }
         });
 
         if (!member) return { success: false, error: "權限不足，只有 OWNER 可以刪除團隊" };
@@ -413,7 +437,7 @@ export async function deleteTeam(teamId: string, userId: string) {
             where: { id: teamId }
         });
 
-        revalidatePath(`/dashboard/${userId}`);
+        revalidatePath(`/dashboard/${session.user.id}`);
         return { success: true };
     } catch (error) {
         console.error("Failed to delete team:", error);
@@ -424,14 +448,19 @@ export async function deleteTeam(teamId: string, userId: string) {
  * 更新團隊設定
  */
 export async function updateTeamSettings(
-    teamId: string, 
-    userId: string, 
+    teamId: string,  
     data: { name: string; description?: string; color?: string; avatar?: string }
 ) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
         // 1. 權限檢查：只有 OWNER 或 ADMIN 可以修改設定
         const member = await prisma.teamMember.findFirst({
-            where: { teamId, userId },
+            where: { teamId, userId: session.user.id },
             include: { team:true }
         });
 
