@@ -21,7 +21,7 @@ export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>
             return new NextResponse("File empty", { status: 404 });
         }
 
-        // 🔥 4. 關鍵：直接回傳 Stream (瀏覽器原生的 ReadableStream)
+        // 4. 關鍵：直接回傳 Stream (瀏覽器原生的 ReadableStream)
         // 這裡我們要把 Node.js 的 Stream 轉換成 Web Stream
         // (大多數現代 Next.js 環境可以直接傳 s3Response.Body as any)
         

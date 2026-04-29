@@ -1,6 +1,6 @@
 "use server";
 
-import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../s3";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth"; // 你的 auth 設定
@@ -8,6 +8,7 @@ import { Metadata } from "@/components/forms/MetadataForm";
 import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
 import { PostType } from "@/app/(root)/page";
+import { checkUserTeamStatus } from "./team.action";
 
 interface UpdatePostParams {
     shortId: string;
@@ -29,28 +30,121 @@ interface CreatePostParams {
 // This is for both 3d and 2d post
 export async function createPost(params: CreatePostParams) {
     const shortId = nanoid(10);
-    const session = await auth();
-    if (!session?.user?.id) {
-        return { success: false, error: "Unauthorized" };
-    }
+    
     const { 
         metadata, 
-        coverImageKey, 
-        imageKeys, 
         fileIds = [],
         teamId
     } = params;
-    const isTeamPost = teamId && teamId !== "none" && teamId !== "";
     try {
+        const session = await auth();
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        // 1. teamId 是不是你有權限發文的 team。
+        const isTeamPost = teamId && teamId !== "none" && teamId !== "";
+
+        if (isTeamPost) {
+            const teamStatus = await checkUserTeamStatus(teamId);
+
+            if (teamStatus !== "EDITOR_ACCESS") {
+                return { success: false, error: "Permission denied" };
+            }
+        }
+
+        let fileRecords: { id: string; uploaderId: string; teamId: string | null; fileId: string; name: string }[] = [];
+
+        // 2. fileIds 裡的檔案是不是你本人上傳的，或屬於你有權限的 team。
+        if (fileIds.length > 0) {
+            fileRecords = await prisma.fileRecord.findMany({
+                where: { id: { in: fileIds } },
+                select: {
+                    id: true,
+                    uploaderId: true,
+                    teamId: true,
+                    fileId: true,
+                    name: true,
+                }
+            });
+
+            if (fileRecords.length !== fileIds.length) {
+                return { success: false, error: "Some files were not found" };
+            }
+
+            const hasForbiddenFile = fileRecords.some(file => {
+                if (file.uploaderId === session.user.id) return false;
+
+                if (isTeamPost && file.teamId === teamId) return false;
+
+                return true;
+            });
+
+            if (hasForbiddenFile) {
+                return { success: false, error: "Permission denied for one or more files" };
+            }
+        }
+        // 3. metadata.associations 裡的 projectId / phaseId 是不是屬於你有權限的 project，而且 phase 屬於同一個 project。
+        const validAssociations = metadata.associations?.filter(a => a.projectId) ?? [];
+
+        if (validAssociations.length > 0) {
+            const projectIds = Array.from(new Set(validAssociations.map(a => a.projectId)));
+
+            const projects = await prisma.project.findMany({
+                where: { id: { in: projectIds } },
+                select: {
+                    id: true,
+                    teamId: true,
+                }
+            });
+
+            if (projects.length !== projectIds.length) {
+                return { success: false, error: "Some projects were not found" };
+            }
+
+            for (const project of projects) {
+                const projectAccess = await checkUserTeamStatus(project.teamId);
+                if (projectAccess !== "EDITOR_ACCESS") {
+                    return { success: false, error: "Permission denied for one or more projects" };
+                }
+            }
+
+            const phaseIds = validAssociations
+                .map(a => a.phaseId)
+                .filter((id): id is string => Boolean(id));
+
+            if (phaseIds.length > 0) {
+                const phases = await prisma.phase.findMany({
+                    where: { id: { in: phaseIds } },
+                    select: {
+                        id: true,
+                        projectId: true,
+                    }
+                });
+
+                if (phases.length !== phaseIds.length) {
+                    return { success: false, error: "Some phases were not found" };
+                }
+
+                const associationProjectByPhaseId = new Map(
+                    validAssociations
+                        .filter((assoc): assoc is typeof assoc & { phaseId: string } => Boolean(assoc.phaseId))
+                        .map(assoc => [assoc.phaseId, assoc.projectId])
+                );
+
+                const hasInvalidPhase = phases.some(phase => (
+                    associationProjectByPhaseId.get(phase.id) !== phase.projectId
+                ));
+
+                if (hasInvalidPhase) {
+                    return { success: false, error: "Phase does not belong to selected project" };
+                }
+            }
+        }
+
         let postType = "OTHER";
 
         if (fileIds.length > 0) {
-            // 乖乖去資料庫把這些 ID 的真實檔名或 S3 fileId 撈出來
-            const fileRecords = await prisma.fileRecord.findMany({
-                where: { id: { in: fileIds } },
-                select: { fileId: true, name: true }
-            });
-
             const types = fileRecords.map(record => {
                 const lowerName = (record.fileId || record.name || "").toLowerCase();
                 if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm') || lowerName.endsWith('.frag')) return 'MODEL_3D'; 
@@ -103,20 +197,15 @@ export async function createPost(params: CreatePostParams) {
             data: data
         });
 
-        if (metadata.associations && metadata.associations.length > 0) {
-            // 過濾掉沒有 projectId 的無效資料 (防呆)
-            const validAssociations = metadata.associations.filter(a => a.projectId);
-            
-            if (validAssociations.length > 0) {
-                await prisma.projectAsset.createMany({
-                    data: validAssociations.map(assoc => ({
-                        postId: newPost.id,          // 剛剛建立的 Post ID
-                        projectId: assoc.projectId,  // 關聯的專案 ID
-                        phaseId: assoc.phaseId,      // 關聯的階段 ID (可能為 null，代表未分類)
-                        sortOrder: 0                 // 預設排序
-                    }))
-                });
-            }
+        if (validAssociations.length > 0) {
+            await prisma.projectAsset.createMany({
+                data: validAssociations.map(assoc => ({
+                    postId: newPost.id,          // 剛剛建立的 Post ID
+                    projectId: assoc.projectId,  // 關聯的專案 ID
+                    phaseId: assoc.phaseId,      // 關聯的階段 ID (可能為 null，代表未分類)
+                    sortOrder: 0                 // 預設排序
+                }))
+            });
         }
 
         return { success: true, postId: newPost.id };
@@ -139,7 +228,6 @@ export async function updatePost(params: UpdatePostParams) {
         coverImageKey, 
         imageKeys, 
         fileIds = [], 
-        filesToDelete = [],
         teamId
     } = params;
 
@@ -147,7 +235,14 @@ export async function updatePost(params: UpdatePostParams) {
         const isTeamPost = teamId && teamId !== "none" && teamId !== "";
         const oldPost = await prisma.post.findUnique({
             where: { shortId: shortId },
-            include: { team: { include: { members: true } } }
+            select: {
+                id: true,
+                shortId: true,
+                uploaderId: true,
+                teamId: true,
+                coverImage: true,
+                images: true,
+            }
         });
 
         if (!oldPost) {
@@ -156,25 +251,116 @@ export async function updatePost(params: UpdatePostParams) {
 
         // 權限二次驗證
         const isOwner = oldPost.uploaderId === session.user.id;
-        const isTeamEditor = oldPost.team?.members.some(
-            m => m.userId === session.user.id && ['OWNER', 'ADMIN', 'EDITOR'].includes(m.role)
-        ) || false;
+        let isTeamEditor = false;
+        if (oldPost.teamId) {
+            const oldPostTeamStatus = await checkUserTeamStatus(oldPost.teamId);
+            isTeamEditor = oldPostTeamStatus === "EDITOR_ACCESS";
+        }
 
         if (!isOwner && !isTeamEditor) {
             return { success: false, error: "Permission denied" };
         }
 
+        if (isTeamPost) {
+            const newTeamStatus = await checkUserTeamStatus(teamId);
+            if (newTeamStatus !== "EDITOR_ACCESS") {
+                return { success: false, error: "Permission denied" };
+            }
+        }
+
+        let fileRecords: { id: string; uploaderId: string; teamId: string | null; fileId: string; name: string }[] = [];
+
+        if (fileIds.length > 0) {
+            fileRecords = await prisma.fileRecord.findMany({
+                where: { id: { in: fileIds } },
+                select: {
+                    id: true,
+                    uploaderId: true,
+                    teamId: true,
+                    fileId: true,
+                    name: true,
+                }
+            });
+
+            if (fileRecords.length !== fileIds.length) {
+                return { success: false, error: "Some files were not found" };
+            }
+
+            const hasForbiddenFile = fileRecords.some(file => {
+                if (file.uploaderId === session.user.id) return false;
+                if (isTeamPost && file.teamId === teamId) return false;
+                if (oldPost.teamId && file.teamId === oldPost.teamId && isTeamEditor) return false;
+                return true;
+            });
+
+            if (hasForbiddenFile) {
+                return { success: false, error: "Permission denied for one or more files" };
+            }
+        }
+
+        const validAssociations = metadata.associations?.filter(a => a.projectId) ?? [];
+
+        if (validAssociations.length > 0) {
+            const projectIds = Array.from(new Set(validAssociations.map(a => a.projectId)));
+
+            const projects = await prisma.project.findMany({
+                where: { id: { in: projectIds } },
+                select: {
+                    id: true,
+                    teamId: true,
+                }
+            });
+
+            if (projects.length !== projectIds.length) {
+                return { success: false, error: "Some projects were not found" };
+            }
+
+            for (const project of projects) {
+                const projectAccess = await checkUserTeamStatus(project.teamId);
+                if (projectAccess !== "EDITOR_ACCESS") {
+                    return { success: false, error: "Permission denied for one or more projects" };
+                }
+            }
+
+            const phaseIds = validAssociations
+                .map(a => a.phaseId)
+                .filter((id): id is string => Boolean(id));
+
+            if (phaseIds.length > 0) {
+                const phases = await prisma.phase.findMany({
+                    where: { id: { in: phaseIds } },
+                    select: {
+                        id: true,
+                        projectId: true,
+                    }
+                });
+
+                if (phases.length !== phaseIds.length) {
+                    return { success: false, error: "Some phases were not found" };
+                }
+
+                const associationProjectByPhaseId = new Map(
+                    validAssociations
+                        .filter((assoc): assoc is typeof assoc & { phaseId: string } => Boolean(assoc.phaseId))
+                        .map(assoc => [assoc.phaseId, assoc.projectId])
+                );
+
+                const hasInvalidPhase = phases.some(phase => (
+                    associationProjectByPhaseId.get(phase.id) !== phase.projectId
+                ));
+
+                if (hasInvalidPhase) {
+                    return { success: false, error: "Phase does not belong to selected project" };
+                }
+            }
+        }
+
         // 1. 自動判斷 Post Type (跟 create 邏輯一模一樣)
         let postType = "OTHER";
         if (fileIds.length > 0) {
-            const fileRecords = await prisma.fileRecord.findMany({
-                where: { id: { in: fileIds } },
-                select: { fileId: true, name: true }
-            });
-
             const types = fileRecords.map(record => {
                 const lowerName = (record.fileId || record.name || "").toLowerCase();
-                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) return 'MODEL_3D'; 
+                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm') || lowerName.endsWith('.frag')) return 'MODEL_3D'; 
                 if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) return 'DOCUMENT';
                 if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png') || lowerName.endsWith('.dxf')) return 'DRAWING';
                 if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) return 'IMAGE';
@@ -249,20 +435,16 @@ export async function updatePost(params: UpdatePostParams) {
         });
 
         // 再寫入新的關聯
-        if (metadata.associations && metadata.associations.length > 0) {
-            const validAssociations = metadata.associations.filter(a => a.projectId);
-            
-            if (validAssociations.length > 0) {
-                await prisma.projectAsset.createMany({
-                    data: validAssociations.map(assoc => ({
-                        postId: updatedPost.id,
-                        projectId: assoc.projectId,
-                        phaseId: assoc.phaseId,
-                        sortOrder: 0
-                    }))
-                });
-                console.log(`✅ 已更新 ${validAssociations.length} 筆專案關聯`);
-            }
+        if (validAssociations.length > 0) {
+            await prisma.projectAsset.createMany({
+                data: validAssociations.map(assoc => ({
+                    postId: updatedPost.id,
+                    projectId: assoc.projectId,
+                    phaseId: assoc.phaseId,
+                    sortOrder: 0
+                }))
+            });
+            console.log(`✅ 已更新 ${validAssociations.length} 筆專案關聯`);
         }
 
         revalidatePath("/");
@@ -549,25 +731,24 @@ export const getPostDetail = async (shortId: string) => {
 
 export const getEditPostDetail = async (shortId: string) => {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized" };
+        } 
+
         const post = await prisma.post.findUnique({
             where: { shortId: shortId },
-            // 把 models 和 pdfs 一次全部 include 起來
             include: {
                 files: true,
-                projectAssets:true ,
-                uploader: {   
-                    select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
+                projectAssets: true,
+                uploader: {
+                    select: { id: true, userName: true, image: true }
                 },
-                team:{
-                    select:{
+                team: {
+                    select: {
                         id: true,
                         name: true,
-                        members:{
-                            select: {
-                                userId: true,
-                                role: true
-                            }
-                        }
                     }
                 }
             },
@@ -575,6 +756,16 @@ export const getEditPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
+        const isOwner = post.uploaderId === session.user.id;
+        let isTeamEditor = false;
+        if (post.teamId) {
+            const teamStatus = await checkUserTeamStatus(post.teamId);
+            isTeamEditor = teamStatus === "EDITOR_ACCESS";
+        }
+
+        if (!isOwner && !isTeamEditor) {
+            return { success: false, error: "Permission denied" };
+        }
 
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
@@ -629,14 +820,34 @@ export const getEditPostDetail = async (shortId: string) => {
 
 export async function deletePost(postId: string){
     try{
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+
         // 1. 查詢該貼文，並帶出所有關聯的檔案 (FileRecord)
         const post = await prisma.post.findUnique({
             where: { id: postId },
-            include: { files: true } // 🚀 抓取合併後的新檔案關聯
+            select: {
+                id: true,
+                uploaderId: true,
+                teamId: true,
+                coverImage: true,
+                images: true,
+            }
         });
-
+        
         if (!post) {
             return { success: false, error: "找不到該貼文" };
+        }
+
+        const canDelete =
+            post.uploaderId === session.user.id || 
+            (post.teamId && await checkUserTeamStatus(post.teamId) === 'EDITOR_ACCESS');
+
+        if(!canDelete){
+            return { success:false, error: "Permission denied"};
         }
 
         const s3DeletePromises: Promise<void>[] = [];

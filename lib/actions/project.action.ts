@@ -500,19 +500,69 @@ export async function createProjectAsset(data: {
             return { success: false, error: "Permission denied" };
         }
 
-        // 1. 如果是加入 Post，執行團隊歸屬同步邏輯
-        if (type === 'POST' && postId) {
-            const targetProject = await prisma.project.findUnique({
-                where: { id: projectId },
-                select: { teamId: true }
+        // 1. 如果是加入 Post，只可將屬於該團隊的post加入
+        if (type === "POST") {
+            if (!postId) {
+                return { success: false, error: "Post is required" };
+            }
+
+            const post = await prisma.post.findUnique({
+                where: { id: postId },
+                select: {
+                    id: true,
+                    uploaderId: true,
+                    teamId: true,
+                }
             });
-            if (targetProject) {
+
+            if (!post) {
+                return { success: false, error: "Post not found" };
+            }
+
+            const isOwnPersonalPost =
+                post.uploaderId === session.user.id && post.teamId === null;
+
+            const isSameTeamPost =
+                post.teamId === project.teamId;
+
+            if (!isOwnPersonalPost && !isSameTeamPost) {
+                return {
+                    success: false,
+                    error: "Cannot attach a post from another team"
+                };
+            }
+
+            if (isOwnPersonalPost) {
                 await prisma.post.update({
-                    where: { id: postId },
-                    data: { teamId: targetProject.teamId }
+                    where: { id: post.id },
+                    data: { teamId: project.teamId }
                 });
             }
         }
+
+        // 不能把別的 project 的 phaseId 或 parentId 塞進這個 project 的 asset 裡
+        if (phaseId) {
+            const phase = await prisma.phase.findUnique({
+                where: { id: phaseId },
+                select: { projectId: true }
+            });
+
+            if (!phase || phase.projectId !== projectId) {
+                return { success: false, error: "Invalid phase" };
+            }
+        }
+
+        if (parentId) {
+            const parentAsset = await prisma.projectAsset.findUnique({
+                where: { id: parentId },
+                select: { projectId: true }
+            });
+
+            if (!parentAsset || parentAsset.projectId !== projectId) {
+                return { success: false, error: "Invalid parent asset" };
+            }
+        }
+
         //  2. 尋找當前層級 (同 Phase、同 Parent) 中最大的 sortOrder
         const aggregations = await prisma.projectAsset.aggregate({
             _max: {
@@ -747,20 +797,29 @@ export async function getAvailablePosts(teamId:string | null) {
     try {
         const session = await auth();
         if (!session?.user?.id) return { success: false, error: "Unauthorized" };
-        // 這裡可以根據你的權限邏輯 (例如 teamId 或 uploaderId) 來過濾
-        // 目前先示範抓取所有資源清單
+        
+        const canAccessTeamPosts = teamId
+            ? await checkUserTeamStatus(teamId)
+            : null;
+
+        if (teamId && canAccessTeamPosts !== "EDITOR_ACCESS") {
+            return { success: false, error: "Permission denied" };
+        }
 
         const posts = await prisma.post.findMany({
-            where: { 
-                OR:[
-                    {uploaderId: session.user.id},
-                    ...(teamId ? [{teamId: teamId}] : [])
-                ]    
+            where: {
+                OR: [
+                    {
+                        uploaderId: session.user.id,
+                        teamId: null,
+                    },
+                    ...(teamId ? [{ teamId }] : [])
+                ]
             },
             orderBy: { createdAt: 'desc' },
             select: {
                 id: true,
-                shortId:true,
+                shortId: true,
                 title: true,
                 category: true,
                 type: true,
