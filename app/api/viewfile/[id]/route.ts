@@ -2,6 +2,8 @@
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { auth } from "@/auth";
 
 //get model's binary!!!! data
 export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>}) {
@@ -9,6 +11,60 @@ export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>
 
     try {
         fragDownloadId = decodeURIComponent((await params).id);
+        const fileRecord = await prisma.fileRecord.findFirst({
+            where: {
+                viewerFileId: fragDownloadId,
+            },
+            select: {
+                id: true,
+                uploaderId: true,
+                teamId: true,
+                post: {
+                    select: {
+                        id: true,
+                        uploaderId: true,
+                        teamId: true,
+                        permission: true,
+                    }
+                }
+            }
+        });
+
+        if (!fileRecord) {
+            return new NextResponse("File not found", { status: 404 });
+        }
+        // 公開 post 可看，未發布/私有才檢查登入
+        const isPublicPost = fileRecord.post?.permission === "standard";
+        if (!isPublicPost) {
+            const session = await auth();
+
+            if (!session?.user?.id) {
+                return new NextResponse("Unauthorized", { status: 401 });
+            }
+
+            const isUploader = fileRecord.uploaderId === session.user.id;
+            const isPostOwner = fileRecord.post?.uploaderId === session.user.id;
+
+            const teamId = fileRecord.post?.teamId ?? fileRecord.teamId;
+
+            let isTeamMember = false;
+            if (teamId) {
+                const member = await prisma.teamMember.findFirst({
+                    where: {
+                        teamId,
+                        userId: session.user.id,
+                    },
+                    select: { id: true }
+                });
+
+                isTeamMember = Boolean(member);
+            }
+
+            if (!isUploader && !isPostOwner && !isTeamMember) {
+                return new NextResponse("Forbidden", { status: 403 });
+            }
+        }
+
         // 3. 從 S3 取得資料流
         const command = new GetObjectCommand({
             Bucket: process.env.S3_VIEWER_ASSETS_BUCKET,
