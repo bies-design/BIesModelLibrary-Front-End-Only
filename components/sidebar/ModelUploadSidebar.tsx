@@ -664,7 +664,9 @@ const ModelUploadSidebar = ({
           <div><FileUp size={32} className="text-white" /></div>
           <p className="text-white text-xs text-center leading-relaxed">
             Drop your files here <br/>
-            <span className="text-[#A1A1AA]">Current: {uploadTargetCategory.replace('MODEL_', '')}</span>
+            <span className="text-[#A1A1AA]">
+              Accepts: {CATEGORY_ACCEPT_MAP[uploadTargetCategory].replaceAll(",", " / ") || "Any file"}
+            </span>
           </p>
           <input
             type="file"
