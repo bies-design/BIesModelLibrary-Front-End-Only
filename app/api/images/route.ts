@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { s3Client } from "@/lib/s3"; // 你之前設定好的 s3 client
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
+import { auth } from "@/auth";
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await auth();
+        if (!session?.user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
         const formData = await req.formData();
         const file = formData.get("file") as File;
 

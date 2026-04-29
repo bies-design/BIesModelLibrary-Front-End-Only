@@ -111,7 +111,7 @@ const Teams = () => {
         }
     }, [currentTeamId, session?.user?.id]);
 
-    // 🚀 重新設計的 Create Team 邏輯 (支援接收 Modal 傳來的完整資料)
+    // 重新設計的 Create Team 邏輯 (支援接收 Modal 傳來的完整資料)
     const handleCreateTeamWithData = async (newTeamData: any) => {
         if (!session?.user?.id) {
             addToast({ description: "請先登入後再建立團隊", color: "warning" });
@@ -122,7 +122,7 @@ const Teams = () => {
         try {
             // 注意：這裡假設你已經修改了 createTeam Server Action 以支援接收物件
             // 稍後會提醒你如何修改那一邊
-            const result = await createTeam(newTeamData, session.user.id);
+            const result = await createTeam(newTeamData);
 
             if (result.success && result.data?.id) {
                 addToast({ description: `團隊 ${newTeamData.name} 建立成功！`, color: "success" });

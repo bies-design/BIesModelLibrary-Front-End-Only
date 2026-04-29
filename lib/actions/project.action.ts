@@ -161,6 +161,10 @@ export async function deleteProject(projectId: string) {
 // 取得團隊的所有專案列表 (卡片視圖用)
 export async function getTeamProjects(teamId: string) {
     try {
+        const teamStatus = await checkUserTeamStatus(teamId);
+        if (teamStatus !== "EDITOR_ACCESS") {
+            return { success: false, error: "Permission denied" };
+        }
         const projects = await prisma.project.findMany({
             where: { teamId: teamId },
             orderBy: { updatedAt: 'desc' },

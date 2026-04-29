@@ -38,8 +38,11 @@ export async function checkUserTeamStatus(teamId: string): Promise<TeamAccessLev
 /**
  * 建立一個新團隊，並自動將建立者設為 OWNER
  */
-export async function createTeam(teamData: {name:string, description?:string, color?: string, avatar?: string }, userId: string) {
+export async function createTeam(teamData: {name:string, description?:string, color?: string, avatar?: string }) {
     try {
+        const session = await auth();
+        if(!session?.user.id) return {sucess:false, error:"Unauthorized"};
+
         if (!teamData.name.trim()) {
             return { success: false, error: "團隊名稱不可為空" };
         }
@@ -60,7 +63,7 @@ export async function createTeam(teamData: {name:string, description?:string, co
             await tx.teamMember.create({
                 data: {
                     teamId: team.id,
-                    userId: userId,
+                    userId: session.user.id,
                     role: "OWNER", 
                 }
             });

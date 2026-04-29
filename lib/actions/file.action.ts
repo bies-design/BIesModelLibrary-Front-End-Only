@@ -7,6 +7,7 @@ import { s3Client } from "../s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import axios from "axios";
+import { checkUserTeamStatus } from "./team.action";
 
 // 獲取檔案 (根據 workspace 過濾)
 export async function getUserFiles(workspaceId: string, mode: 'upload' | 'edit') {
@@ -26,6 +27,13 @@ export async function getUserFiles(workspaceId: string, mode: 'upload' | 'edit')
                 status: "completed" //只抓取轉檔成功的檔案
             };
         }
+        if (workspaceId !== "personal") {
+            const teamStatus = await checkUserTeamStatus(workspaceId);
+            if (teamStatus === "GUEST" || teamStatus === "FORBIDDEN") {
+                return { success: false, error: "Permission denied" };
+            }
+        }
+
         // 判斷條件：如果是 'personal'，就找 uploaderId 是自己且 teamId 為空的檔案
         // 如果是具體的 teamId，就找該團隊的檔案
         const whereCondition = workspaceId === "personal"
@@ -78,6 +86,12 @@ export async function getUserFilesForDashboard(
             whereCondition.uploaderId = session.user.id;
             whereCondition.teamId = null;
         } else {
+            const teamStatus = await checkUserTeamStatus(workspaceId);
+
+            if (teamStatus === "GUEST" || teamStatus === "FORBIDDEN") {
+                return { success: false, error: "Permission denied", data: [], hasMore: false };
+            }
+
             whereCondition.teamId = workspaceId;
         }
 
