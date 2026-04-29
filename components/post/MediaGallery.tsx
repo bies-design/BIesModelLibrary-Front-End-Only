@@ -3,11 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Viewer3D, { Viewer3DRef } from '@/components/viewer/Viewer3D';
-import { ImageIcon, Box, FileText, Loader2, Maximize, Minimize, FileBox, Expand, Shrink } from 'lucide-react';
+import { ImageIcon, Box, FileText, Loader2, FileBox, Expand, Shrink } from 'lucide-react';
 import { getFileDownloadUrl } from '@/lib/actions/file.action';
 import PDFViewerWasm from '../viewer/PDFViewerWasm';
 
-type activeSourceType = 'cover' | '3D' | number | `pdf-${number}`;
 
 export default function MediaGallery({ post }: { post: any }) {
     const [scrollOffset, setScrollOffset] = useState<number>(0);
@@ -60,7 +59,10 @@ export default function MediaGallery({ post }: { post: any }) {
                         if (!fileRecord.viewerFileId) throw new Error(`模型 ${fileRecord.name} 尚未產生預覽檔`);
                         
                         const res = await fetch(`/api/viewfile/${fileRecord.viewerFileId}`);
-                        if (!res.ok) throw new Error(`下載 ${fileRecord.name} 失敗`);
+                        if (!res.ok) {
+                            const errorText = await res.text();
+                            throw new Error(errorText || `下載失敗 (${res.status})`);
+                        }
                         
                         buffer = await res.arrayBuffer();
                         const downloadedFile = new File([buffer], fileRecord.name, { type: 'application/octet-stream' });
