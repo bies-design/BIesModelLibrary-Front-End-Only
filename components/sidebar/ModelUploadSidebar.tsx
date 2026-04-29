@@ -283,7 +283,7 @@ const ModelUploadSidebar = ({
     try {
       setLoadingModelId(modelName);
       if(!viewerFileId) throw new Error("該檔案目前不支援預覽!");
-      const response = await fetch(`/api/viewfile/${viewerFileId}`);
+      const response = await fetch(`/api/viewfile/${encodeURIComponent(viewerFileId)}`);
       if (!response.ok) throw new Error("下載失敗");
 
       const buffer = await response.arrayBuffer();

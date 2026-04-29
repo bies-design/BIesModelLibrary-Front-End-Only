@@ -33,10 +33,6 @@ const Upload = () => {
         }
     },[status, router])
 
-    if(status === "loading" || !session){
-        return <div className="min-h-screen flex items-center justify-center">載入中...</div>;
-    }
-
     const coverInputRef = useRef<HTMLInputElement>(null);
     const [isMobileStepNavOpen, setIsMobileStepNavOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -264,6 +260,10 @@ const Upload = () => {
     const isSupportedPdf = (ext === 'pdf' && selectedFile?.type === 'pdf');
     const isSupportedImage = ['jpg', 'jpeg', 'png', 'webp'].includes(ext);
     const isUnsupported = selectedFile && !isSupported3D && !isSupportedPdf && !isSupportedImage;
+
+    if(status === "loading" || !session){
+        return <div className="min-h-screen flex items-center justify-center">載入中...</div>;
+    }
     
     return (
         <div className='min-h-screen bg-[#27272A] relative'>

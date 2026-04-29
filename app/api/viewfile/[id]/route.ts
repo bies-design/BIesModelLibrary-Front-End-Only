@@ -1,15 +1,14 @@
 // src/app/api/viewfile/[id]/route.ts
 import { s3Client } from "@/lib/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import prisma from "@/lib/prisma";
-import { auth } from "@/auth"; // 假設你有 auth
 import { NextRequest, NextResponse } from "next/server";
 
 //get model's binary!!!! data
 export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>}) {
+    let fragDownloadId = "";
 
     try {
-        const fragDownloadId = (await params).id;
+        fragDownloadId = decodeURIComponent((await params).id);
         // 3. 從 S3 取得資料流
         const command = new GetObjectCommand({
             Bucket: process.env.S3_VIEWER_ASSETS_BUCKET,
@@ -30,14 +29,18 @@ export async function GET(req: NextRequest,{params}:{params:Promise<{id:string}>
         const headers = new Headers();
         headers.set("Content-Type", "application/octet-stream");
         
-        // @ts-ignore: AWS SDK v3 的 Body 其實相容於 Web Response，但 TS有時候會報錯
+        // @ts-expect-error: AWS SDK v3 的 Body 其實相容於 Web Response，但 TS有時候會報錯
         return new NextResponse(s3Response.Body as BodyInit, {
         status: 200,
         headers,
         });
 
     } catch (error) {
-        console.error("Download error:", error);
+        console.error("Download error:", {
+            key: fragDownloadId,
+            bucket: process.env.S3_VIEWER_ASSETS_BUCKET,
+            error,
+        });
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

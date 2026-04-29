@@ -53,7 +53,7 @@ export async function createPost(params: CreatePostParams) {
 
             const types = fileRecords.map(record => {
                 const lowerName = (record.fileId || record.name || "").toLowerCase();
-                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm')) return 'MODEL_3D'; 
+                if (lowerName.endsWith('.ifc') || lowerName.endsWith('.obj') || lowerName.endsWith('.gltf') || lowerName.endsWith('.3dm') || lowerName.endsWith('.frag')) return 'MODEL_3D'; 
                 if (lowerName.endsWith('.pdf') || lowerName.endsWith('.docx') || lowerName.endsWith('.xlsx')) return 'DOCUMENT';
                 if (lowerName.endsWith('.dwg') || lowerName.endsWith('.png') || lowerName.endsWith('.dxf')) return 'DRAWING';
                 if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || lowerName.endsWith('.webp')) return 'IMAGE';
