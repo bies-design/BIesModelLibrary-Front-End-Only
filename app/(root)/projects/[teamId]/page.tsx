@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Spinner, useDisclosure, addToast } from "@heroui/react";
-import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen, LoaderCircle, Loader2 } from 'lucide-react';
+import { Plus, Edit2, FolderGit2, MapPin, Building2, ArrowLeft, MessageSquareText, FolderUp, ClipboardPen, LoaderCircle, Loader2, Lock } from 'lucide-react';
 import { createProject, getTeamProjectsByScroll, updateProject } from '@/lib/actions/project.action';
 import CreateProjectModal from '@/components/modals/ProjectSettingsModal';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -247,7 +247,7 @@ export default function ProjectsPage() {
                                                 <span>{project.status ? project.status : "未設定" }</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm text-white">
-                                                <MessageSquareText size={14} />
+                                                <Lock size={14} />
                                                 <span>{project.visibility === "PUBLIC" ? "Public" : "Private"}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm text-white">
