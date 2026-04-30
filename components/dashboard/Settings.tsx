@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import { useSession } from 'next-auth/react';
 import { updateUserName, getAvatarUploadUrl, updateUserImage, updateUserPassword } from '@/lib/actions/user.action';
-import { Input, Button, Avatar, User, Modal, ModalContent, ModalHeader ,ModalBody, ModalFooter, useDisclosure, addToast } from "@heroui/react"; // 如果你是舊版 NextUI，請改為 @nextui-org/react
-import { Check, Copy, Upload, PenLine, RotateCw, Currency } from 'lucide-react'; 
+import { Input, Button, Avatar, Modal, ModalContent, ModalHeader ,ModalBody, ModalFooter, useDisclosure, addToast } from "@heroui/react"; // 如果你是舊版 NextUI，請改為 @nextui-org/react
+import { Check, Copy, Upload, PenLine } from 'lucide-react'; 
 import { UpdatePasswordSchema } from '@/lib/validations';
 
 const GoogleIcon = () => (
@@ -14,14 +14,13 @@ const GoogleIcon = () => (
     </svg>
 );
 
-type Props = {}
 export interface passwordsType {
     currentPassword: string,
     newPassword: string,
     confirmPassword: string,
 };
 
-const Settings = (props: Props) => {
+const Settings = () => {
     const {data:session, update} = useSession();
     const [isCopied, setIsCopied] = useState<boolean>(false);
     // Name State
@@ -166,7 +165,7 @@ const Settings = (props: Props) => {
         setIsUploadingAvatar(true);
         try{
             // get upload url and public image url
-            const urlResult = await getAvatarUploadUrl(file.name, file.type);
+            const urlResult = await getAvatarUploadUrl(file.name, file.type, file.size);
             if(!urlResult.success || ! urlResult.signedUrl || !urlResult.imageKey){
                 throw new Error(urlResult.error);
             }

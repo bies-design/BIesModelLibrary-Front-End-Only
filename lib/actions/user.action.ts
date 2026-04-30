@@ -9,7 +9,22 @@ import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../s3";
 import { nanoid } from "nanoid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import z, { success } from "zod";
+import z from "zod";
+
+const ALLOWED_IMAGE_TYPES = new Set([
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+]);
+
+const ALLOWED_IMAGE_EXTENSIONS = new Set([
+    "png",
+    "jpg",
+    "jpeg",
+    "webp",
+]);
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 export async function updateUserName(newName: string) {
     try{
@@ -43,13 +58,25 @@ export async function updateUserName(newName: string) {
 }
 
 // 產生上傳用的簽名網址 (PUT) 前端直接透過這個url上傳檔案 檔案不經手next.js伺服器
-export async function getAvatarUploadUrl(fileName: string, contentType: string) {
+export async function getAvatarUploadUrl(fileName: string, contentType: string, fileSize: number) {
     const session = await auth();
     if(!session?.user.id) return { success:false, error:"Unauthorized"};
     
-    const fileExtension = fileName.split('.').pop();
+    const fileExtension = fileName.split('.').pop()?.toLowerCase();
+
+    if (fileSize > MAX_IMAGE_SIZE) {
+        return { success: false, error: "File size must be less than 5MB" };
+    }
+
+    if (!fileExtension || !ALLOWED_IMAGE_EXTENSIONS.has(fileExtension)) {
+        return { success: false, error: "Invalid image file extension" };
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
+        return { success: false, error: "Invalid image content type" };
+    }
+
     const fileKey = `${nanoid()}.${fileExtension}`;
-    const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
     try{
         const command = new PutObjectCommand({
             Bucket: process.env.S3_IMAGES_BUCKET,

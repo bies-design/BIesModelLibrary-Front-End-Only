@@ -418,7 +418,9 @@ const Upload = () => {
                                                 onChange={handleCoverUpload} 
                                             />
                                         </div>
-
+                                        <p className="text-[#A1A1AA] text-sm mb-8 text-center">
+                                            <span className='text-red-500'>*</span>照片不可超過5MB
+                                        </p>
                                         {coverImage && (
                                             <button 
                                                 onClick={() => setCoverImage(null)} 

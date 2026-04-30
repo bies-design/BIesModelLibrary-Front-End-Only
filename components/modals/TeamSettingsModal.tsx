@@ -78,7 +78,7 @@ const TeamSettingsModal = ({ isOpen, onOpenChange, teamData, onSubmit, mode = 'e
         try {
             // 如果有新選的圖片，就在這裡執行上傳
             if (pendingFile) {
-                const urlResult = await getAvatarUploadUrl(pendingFile.name, pendingFile.type);
+                const urlResult = await getAvatarUploadUrl(pendingFile.name, pendingFile.type, pendingFile.size);
                 if (!urlResult.success || !urlResult.signedUrl || !urlResult.imageKey) {
                     throw new Error(urlResult.error);
                 }

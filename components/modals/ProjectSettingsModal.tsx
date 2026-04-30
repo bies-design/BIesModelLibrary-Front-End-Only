@@ -112,7 +112,7 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
         try {
             if (pendingFile) {
                 // 獲取上傳 URL
-                const urlResult = await getAvatarUploadUrl(pendingFile.name, pendingFile.type);
+                const urlResult = await getAvatarUploadUrl(pendingFile.name, pendingFile.type, pendingFile.size);
                 if (!urlResult.success || !urlResult.signedUrl || !urlResult.imageKey) {
                     throw new Error(urlResult.error);
                 }

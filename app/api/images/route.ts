@@ -4,6 +4,21 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
 import { auth } from "@/auth";
 
+const ALLOWED_IMAGE_TYPES = new Set([
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+]);
+
+const ALLOWED_IMAGE_EXTENSIONS = new Set([
+    "png",
+    "jpg",
+    "jpeg",
+    "webp",
+]);
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export async function POST(req: NextRequest) {
     try {
         const session = await auth();
@@ -18,11 +33,32 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
         }
 
+        if (file.size > MAX_IMAGE_SIZE) {
+            return NextResponse.json(
+                { error: "File size must be less than 5MB" },
+                { status: 413 }
+            );
+        }
+        if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+            return NextResponse.json(
+                { error: "Only PNG, JPG, JPEG, and WEBP images are allowed" },
+                { status: 415 }
+            );
+        }
+
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+        if (!fileExtension || !ALLOWED_IMAGE_EXTENSIONS.has(fileExtension)) {
+            return NextResponse.json(
+                { error: "Invalid image file extension" },
+                { status: 415 }
+            );
+        }
+
         // 1. 轉換為 Buffer
         const buffer = Buffer.from(await file.arrayBuffer());
         
         // 2. 生成唯一檔名 (Key)
-        const fileExtension = file.name.split('.').pop();
         const fileKey = `${nanoid()}.${fileExtension}`;
 
         // 3. 上傳到 MinIO (Images Bucket)
