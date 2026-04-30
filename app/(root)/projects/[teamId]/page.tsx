@@ -73,7 +73,7 @@ export default function ProjectsPage() {
                 if(isReset){
                     setProjects(result.data);
                 } else {
-                    setProjects(prev => [...prev, result.data]);
+                    setProjects(prev => [...prev, ...result.data]);
                 }
                 setHasMore(result.hasMore || false);
             }
@@ -245,6 +245,10 @@ export default function ProjectsPage() {
                                             <div className="flex items-center gap-2 text-sm text-white">
                                                 <LoaderCircle size={14} />
                                                 <span>{project.status ? project.status : "未設定" }</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-white">
+                                                <MessageSquareText size={14} />
+                                                <span>{project.visibility === "PUBLIC" ? "Public" : "Private"}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm text-white">
                                                 <MapPin size={14} />

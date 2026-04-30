@@ -99,6 +99,14 @@ export const ProjectStatus: {
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
+export const ProjectVisibility: {
+  PRIVATE: 'PRIVATE',
+  PUBLIC: 'PUBLIC'
+};
+
+export type ProjectVisibility = (typeof ProjectVisibility)[keyof typeof ProjectVisibility]
+
+
 export const AssetType: {
   FOLDER: 'FOLDER',
   POST: 'POST',
@@ -138,6 +146,10 @@ export const ProcessStatus: typeof $Enums.ProcessStatus
 export type ProjectStatus = $Enums.ProjectStatus
 
 export const ProjectStatus: typeof $Enums.ProjectStatus
+
+export type ProjectVisibility = $Enums.ProjectVisibility
+
+export const ProjectVisibility: typeof $Enums.ProjectVisibility
 
 export type AssetType = $Enums.AssetType
 
@@ -8034,6 +8046,7 @@ export namespace Prisma {
     location: string | null
     coverImage: string | null
     status: $Enums.ProjectStatus | null
+    visibility: $Enums.ProjectVisibility | null
     teamId: string | null
     creatorId: string | null
     createdAt: Date | null
@@ -8048,6 +8061,7 @@ export namespace Prisma {
     location: string | null
     coverImage: string | null
     status: $Enums.ProjectStatus | null
+    visibility: $Enums.ProjectVisibility | null
     teamId: string | null
     creatorId: string | null
     createdAt: Date | null
@@ -8062,6 +8076,7 @@ export namespace Prisma {
     location: number
     coverImage: number
     status: number
+    visibility: number
     teamId: number
     creatorId: number
     createdAt: number
@@ -8078,6 +8093,7 @@ export namespace Prisma {
     location?: true | $Types.Skip
     coverImage?: true | $Types.Skip
     status?: true | $Types.Skip
+    visibility?: true | $Types.Skip
     teamId?: true | $Types.Skip
     creatorId?: true | $Types.Skip
     createdAt?: true | $Types.Skip
@@ -8092,6 +8108,7 @@ export namespace Prisma {
     location?: true | $Types.Skip
     coverImage?: true | $Types.Skip
     status?: true | $Types.Skip
+    visibility?: true | $Types.Skip
     teamId?: true | $Types.Skip
     creatorId?: true | $Types.Skip
     createdAt?: true | $Types.Skip
@@ -8106,6 +8123,7 @@ export namespace Prisma {
     location?: true | $Types.Skip
     coverImage?: true | $Types.Skip
     status?: true | $Types.Skip
+    visibility?: true | $Types.Skip
     teamId?: true | $Types.Skip
     creatorId?: true | $Types.Skip
     createdAt?: true | $Types.Skip
@@ -8193,6 +8211,7 @@ export namespace Prisma {
     location: string | null
     coverImage: string | null
     status: $Enums.ProjectStatus
+    visibility: $Enums.ProjectVisibility
     teamId: string
     creatorId: string
     createdAt: Date
@@ -8224,6 +8243,7 @@ export namespace Prisma {
     location?: boolean | $Types.Skip
     coverImage?: boolean | $Types.Skip
     status?: boolean | $Types.Skip
+    visibility?: boolean | $Types.Skip
     teamId?: boolean | $Types.Skip
     creatorId?: boolean | $Types.Skip
     createdAt?: boolean | $Types.Skip
@@ -8243,6 +8263,7 @@ export namespace Prisma {
     location?: boolean | $Types.Skip
     coverImage?: boolean | $Types.Skip
     status?: boolean | $Types.Skip
+    visibility?: boolean | $Types.Skip
     teamId?: boolean | $Types.Skip
     creatorId?: boolean | $Types.Skip
     createdAt?: boolean | $Types.Skip
@@ -8259,6 +8280,7 @@ export namespace Prisma {
     location?: boolean | $Types.Skip
     coverImage?: boolean | $Types.Skip
     status?: boolean | $Types.Skip
+    visibility?: boolean | $Types.Skip
     teamId?: boolean | $Types.Skip
     creatorId?: boolean | $Types.Skip
     createdAt?: boolean | $Types.Skip
@@ -8275,13 +8297,14 @@ export namespace Prisma {
     location?: boolean | $Types.Skip
     coverImage?: boolean | $Types.Skip
     status?: boolean | $Types.Skip
+    visibility?: boolean | $Types.Skip
     teamId?: boolean | $Types.Skip
     creatorId?: boolean | $Types.Skip
     createdAt?: boolean | $Types.Skip
     updatedAt?: boolean | $Types.Skip
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "client" | "location" | "coverImage" | "status" | "teamId" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"], $Types.Skip>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "client" | "location" | "coverImage" | "status" | "visibility" | "teamId" | "creatorId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"], $Types.Skip>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs> | $Types.Skip
     creator?: boolean | UserDefaultArgs<ExtArgs> | $Types.Skip
@@ -8314,6 +8337,7 @@ export namespace Prisma {
       location: string | null
       coverImage: string | null
       status: $Enums.ProjectStatus
+      visibility: $Enums.ProjectVisibility
       teamId: string
       creatorId: string
       createdAt: Date
@@ -8752,6 +8776,7 @@ export namespace Prisma {
     readonly location: FieldRef<"Project", 'String'>
     readonly coverImage: FieldRef<"Project", 'String'>
     readonly status: FieldRef<"Project", 'ProjectStatus'>
+    readonly visibility: FieldRef<"Project", 'ProjectVisibility'>
     readonly teamId: FieldRef<"Project", 'String'>
     readonly creatorId: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
@@ -14130,6 +14155,7 @@ export namespace Prisma {
     location: 'location',
     coverImage: 'coverImage',
     status: 'status',
+    visibility: 'visibility',
     teamId: 'teamId',
     creatorId: 'creatorId',
     createdAt: 'createdAt',
@@ -14305,6 +14331,20 @@ export namespace Prisma {
    * Reference to a field of type 'ProjectStatus[]'
    */
   export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectVisibility'
+   */
+  export type EnumProjectVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectVisibility'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectVisibility[]'
+   */
+  export type ListEnumProjectVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectVisibility[]'>
     
 
 
@@ -14811,6 +14851,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFilter<"Project"> | string | $Types.Skip
     creatorId?: StringFilter<"Project"> | string | $Types.Skip
     createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
@@ -14829,6 +14870,7 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder | $Types.Skip
     coverImage?: SortOrderInput | SortOrder | $Types.Skip
     status?: SortOrder | $Types.Skip
+    visibility?: SortOrder | $Types.Skip
     teamId?: SortOrder | $Types.Skip
     creatorId?: SortOrder | $Types.Skip
     createdAt?: SortOrder | $Types.Skip
@@ -14850,6 +14892,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFilter<"Project"> | string | $Types.Skip
     creatorId?: StringFilter<"Project"> | string | $Types.Skip
     createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
@@ -14868,6 +14911,7 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder | $Types.Skip
     coverImage?: SortOrderInput | SortOrder | $Types.Skip
     status?: SortOrder | $Types.Skip
+    visibility?: SortOrder | $Types.Skip
     teamId?: SortOrder | $Types.Skip
     creatorId?: SortOrder | $Types.Skip
     createdAt?: SortOrder | $Types.Skip
@@ -14888,6 +14932,7 @@ export namespace Prisma {
     location?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
     coverImage?: StringNullableWithAggregatesFilter<"Project"> | string | null | $Types.Skip
     status?: EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityWithAggregatesFilter<"Project"> | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
     creatorId?: StringWithAggregatesFilter<"Project"> | string | $Types.Skip
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string | $Types.Skip
@@ -15689,6 +15734,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
@@ -15705,6 +15751,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     creatorId: string
     createdAt?: Date | string | $Types.Skip
@@ -15721,6 +15768,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
@@ -15737,6 +15785,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -15753,6 +15802,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     creatorId: string
     createdAt?: Date | string | $Types.Skip
@@ -15767,6 +15817,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
   }
@@ -15779,6 +15830,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -16565,6 +16617,13 @@ export namespace Prisma {
     not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
   }
 
+  export type EnumProjectVisibilityFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectVisibility | EnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Enums.ProjectVisibility | $Types.Skip
+  }
+
   export type TeamScalarRelationFilter = {
     is?: TeamWhereInput | $Types.Skip
     isNot?: TeamWhereInput | $Types.Skip
@@ -16588,6 +16647,7 @@ export namespace Prisma {
     location?: SortOrder | $Types.Skip
     coverImage?: SortOrder | $Types.Skip
     status?: SortOrder | $Types.Skip
+    visibility?: SortOrder | $Types.Skip
     teamId?: SortOrder | $Types.Skip
     creatorId?: SortOrder | $Types.Skip
     createdAt?: SortOrder | $Types.Skip
@@ -16602,6 +16662,7 @@ export namespace Prisma {
     location?: SortOrder | $Types.Skip
     coverImage?: SortOrder | $Types.Skip
     status?: SortOrder | $Types.Skip
+    visibility?: SortOrder | $Types.Skip
     teamId?: SortOrder | $Types.Skip
     creatorId?: SortOrder | $Types.Skip
     createdAt?: SortOrder | $Types.Skip
@@ -16616,6 +16677,7 @@ export namespace Prisma {
     location?: SortOrder | $Types.Skip
     coverImage?: SortOrder | $Types.Skip
     status?: SortOrder | $Types.Skip
+    visibility?: SortOrder | $Types.Skip
     teamId?: SortOrder | $Types.Skip
     creatorId?: SortOrder | $Types.Skip
     createdAt?: SortOrder | $Types.Skip
@@ -16630,6 +16692,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
     _min?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
     _max?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type EnumProjectVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectVisibility | EnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.ProjectVisibility | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Types.Skip
   }
 
   export type EnumAssetTypeFilter<$PrismaModel = never> = {
@@ -17331,6 +17403,10 @@ export namespace Prisma {
 
   export type EnumProjectStatusFieldUpdateOperationsInput = {
     set?: $Enums.ProjectStatus | $Types.Skip
+  }
+
+  export type EnumProjectVisibilityFieldUpdateOperationsInput = {
+    set?: $Enums.ProjectVisibility | $Types.Skip
   }
 
   export type TeamUpdateOneRequiredWithoutProjectsNestedInput = {
@@ -18155,6 +18231,13 @@ export namespace Prisma {
     not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus | $Types.Skip
   }
 
+  export type NestedEnumProjectVisibilityFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectVisibility | EnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Enums.ProjectVisibility | $Types.Skip
+  }
+
   export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
     in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel> | $Types.Skip
@@ -18163,6 +18246,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
     _min?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
     _max?: NestedEnumProjectStatusFilter<$PrismaModel> | $Types.Skip
+  }
+
+  export type NestedEnumProjectVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectVisibility | EnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    in?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    notIn?: $Enums.ProjectVisibility[] | ListEnumProjectVisibilityFieldRefInput<$PrismaModel> | $Types.Skip
+    not?: NestedEnumProjectVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.ProjectVisibility | $Types.Skip
+    _count?: NestedIntFilter<$PrismaModel> | $Types.Skip
+    _min?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Types.Skip
+    _max?: NestedEnumProjectVisibilityFilter<$PrismaModel> | $Types.Skip
   }
 
   export type NestedEnumAssetTypeFilter<$PrismaModel = never> = {
@@ -18839,6 +18932,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
@@ -18854,6 +18948,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     creatorId: string
     createdAt?: Date | string | $Types.Skip
@@ -18925,6 +19020,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
@@ -18940,6 +19036,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -19655,6 +19752,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
@@ -19670,6 +19768,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     creatorId: string
     createdAt?: Date | string | $Types.Skip
@@ -19826,6 +19925,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
@@ -19841,6 +19941,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -20054,6 +20155,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     creator: UserCreateNestedOneWithoutProjectsInput
@@ -20069,6 +20171,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     creatorId: string
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
@@ -20193,6 +20296,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     coverImage?: StringNullableFilter<"Project"> | string | null | $Types.Skip
     status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFilter<"Project"> | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFilter<"Project"> | string | $Types.Skip
     creatorId?: StringFilter<"Project"> | string | $Types.Skip
     createdAt?: DateTimeFilter<"Project"> | Date | string | $Types.Skip
@@ -20531,6 +20635,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
     team: TeamCreateNestedOneWithoutProjectsInput
@@ -20546,6 +20651,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
@@ -21131,6 +21237,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     creatorId: string
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
@@ -21273,6 +21380,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     creator?: UserUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
@@ -21288,6 +21396,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -21303,6 +21412,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     creatorId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -21375,6 +21485,7 @@ export namespace Prisma {
     location?: string | null | $Types.Skip
     coverImage?: string | null | $Types.Skip
     status?: $Enums.ProjectStatus | $Types.Skip
+    visibility?: $Enums.ProjectVisibility | $Types.Skip
     teamId: string
     createdAt?: Date | string | $Types.Skip
     updatedAt?: Date | string | $Types.Skip
@@ -21573,6 +21684,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     team?: TeamUpdateOneRequiredWithoutProjectsNestedInput | $Types.Skip
@@ -21588,6 +21700,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
@@ -21603,6 +21716,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null | $Types.Skip
     status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus | $Types.Skip
+    visibility?: EnumProjectVisibilityFieldUpdateOperationsInput | $Enums.ProjectVisibility | $Types.Skip
     teamId?: StringFieldUpdateOperationsInput | string | $Types.Skip
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string | $Types.Skip

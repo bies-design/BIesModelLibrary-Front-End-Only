@@ -18,7 +18,7 @@ import {
     moveAssetStructure
 } from "@/lib/actions/project.action"; 
 import { Tabs, Tab, useDisclosure, addToast, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Textarea } from "@heroui/react";
-import { ProjectStatus } from "@/prisma/generated/prisma";
+import { ProjectStatus, ProjectVisibility } from "@/prisma/generated/prisma";
 import ProjectSettingsModal from "@/components/modals/ProjectSettingsModal";
 import { checkUserTeamStatus, TeamAccessLevel } from "@/lib/actions/team.action";
 import AssetNode from "@/components/project/AssetNode";
@@ -63,6 +63,7 @@ interface ProjectData {
     location: string | null;
     coverImage: string | null;
     status: ProjectStatus;
+    visibility: ProjectVisibility;
     phases: Phase[];
     assets: ProjectAsset[];
     createdAt: Date | string; 
@@ -609,6 +610,7 @@ export default function ProjectDetailPage() {
                             📁 {project.name}
                         </h1>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>狀態：{project.status ? project.status : "未設定"}</p>
+                        <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>可見性：{project.visibility === "PUBLIC" ? "公開分享" : "私人"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>業主：{project.client ? project.client : "未設定"}</p>
                         <p className={`ml-9 text-sm ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>地點：{project.location ? project.location : "未設定"}</p>
                         {/* <div className={`ml-9 my-1 text-sm max-w-2xl max-h-24 overflow-y-auto break-all whitespace-pre-wrap pr-2 ${!bgImageUrl ? "text-slate-500 dark:text-slate-300" : "text-slate-300"}`}>

@@ -2,11 +2,9 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { ProjectStatus } from "../../prisma/generated/prisma/client";
-import { connect } from "http2";
+import { ProjectStatus, ProjectVisibility } from "../../prisma/generated/prisma/client";
 import { s3Client } from "../s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { AssetType } from "../../prisma/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { ProjectSortType } from "@/app/(root)/projects/[teamId]/page";
 import { checkUserTeamStatus } from "./team.action";
@@ -23,6 +21,7 @@ export async function createProject(data: {
     coverImage?: string;
     teamId: string; // 記得我們設定過，專案必須綁定團隊
     status: ProjectStatus | 'ACTIVE';
+    visibility?: ProjectVisibility | "PRIVATE";
     }) {
     try {
         const session = await auth();
@@ -42,6 +41,7 @@ export async function createProject(data: {
                 coverImage: data.coverImage,
                 team: { connect: { id: data.teamId } },
                 status: data.status,
+                visibility: data.visibility || "PRIVATE",
                 creator: { connect: { id: session.user.id } }
             }
         });
@@ -59,6 +59,7 @@ export async function updateProject(projectId: string, data:{
     location: string | null;
     coverImage: string | null;
     status: ProjectStatus | "ACTIVE";
+    visibility?: ProjectVisibility | "PRIVATE";
 }) {
     try{
         const session = await auth();
@@ -91,7 +92,8 @@ export async function updateProject(projectId: string, data:{
                 client: data.client,
                 location: data.location,
                 coverImage: data.coverImage,
-                status: data.status
+                status: data.status,
+                visibility: data.visibility || "PRIVATE"
             }
         });
         // 垃圾清理：如果「原本有封面」且「新封面跟舊封面不一樣」(代表換了新圖或移除了圖)
@@ -175,6 +177,7 @@ export async function getTeamProjects(teamId: string) {
                 description: true,
                 client: true,
                 status: true,
+                visibility: true,
                 location: true,
                 coverImage: true,
                 createdAt: true,
@@ -207,9 +210,14 @@ export async function getTeamProjectsByScroll(
 ) {
     try {
         const skip = (page - 1) * limit;
+        const teamStatus = await checkUserTeamStatus(teamId);
 
         const whereCondition: any = {
             teamId: teamId,
+        }
+
+        if (teamStatus === "GUEST" || teamStatus === "FORBIDDEN") {
+            whereCondition.visibility = "PUBLIC";
         }
 
         if (search) {
@@ -240,6 +248,7 @@ export async function getTeamProjectsByScroll(
                 description: true,
                 client: true,
                 status: true,
+                visibility: true,
                 location: true,
                 coverImage: true,
                 createdAt: true,
@@ -267,6 +276,7 @@ export async function getTeamProjectsByScroll(
 // 取得單一專案詳情 (包含樹狀結構的 Phase 與 綁定的 Post)
 export async function getProjectDetails(projectId: string) {
     try {
+        const session = await auth();
 
         const project = await prisma.project.findUnique({
             where: { id: projectId },
@@ -290,6 +300,30 @@ export async function getProjectDetails(projectId: string) {
         });
 
         if (!project) return { success: false, error: "Project not found" };
+
+        const teamStatus = await checkUserTeamStatus(project.teamId);
+        const isTeamMember = teamStatus === "READ_ONLY" || teamStatus === "EDITOR_ACCESS";
+        const isPublicProject = project.visibility === "PUBLIC";
+
+        if (!isPublicProject && !isTeamMember) {
+            return {
+                success: false,
+                error: session?.user?.id ? "Permission denied" : "Unauthorized"
+            };
+        }
+
+        if (!isTeamMember) {
+            return {
+                success: true,
+                data: {
+                    ...project,
+                    assets: project.assets.filter(asset => (
+                        asset.type !== "POST" || asset.post?.permission === "standard"
+                    ))
+                }
+            };
+        }
+
         return { success: true, data: project };
     } catch (error: any) {
         console.error("Get project details error:", error);

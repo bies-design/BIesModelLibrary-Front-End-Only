@@ -161,15 +161,21 @@ enum ProjectStatus {
   ARCHIVED // 封存備查
 }
 
+enum ProjectVisibility {
+  PRIVATE
+  PUBLIC
+}
+
 // 專案與階段架構
 model Project {
-  id          String        @id @default(uuid())
+  id          String            @id @default(uuid())
   name        String
   description String?
   client      String? // 業主
   location    String? // 地點
   coverImage  String?
-  status      ProjectStatus @default(ACTIVE)
+  status      ProjectStatus     @default(ACTIVE)
+  visibility  ProjectVisibility @default(PUBLIC)
 
   teamId    String
   team      Team   @relation(fields: [teamId], references: [id], onDelete: Restrict) //防止手殘

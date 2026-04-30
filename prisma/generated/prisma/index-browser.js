@@ -195,6 +195,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   location: 'location',
   coverImage: 'coverImage',
   status: 'status',
+  visibility: 'visibility',
   teamId: 'teamId',
   creatorId: 'creatorId',
   createdAt: 'createdAt',
@@ -279,6 +280,11 @@ exports.ProjectStatus = exports.$Enums.ProjectStatus = {
   ON_HOLD: 'ON_HOLD',
   COMPLETED: 'COMPLETED',
   ARCHIVED: 'ARCHIVED'
+};
+
+exports.ProjectVisibility = exports.$Enums.ProjectVisibility = {
+  PRIVATE: 'PRIVATE',
+  PUBLIC: 'PUBLIC'
 };
 
 exports.AssetType = exports.$Enums.AssetType = {

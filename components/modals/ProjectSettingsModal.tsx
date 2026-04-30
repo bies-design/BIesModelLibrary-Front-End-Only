@@ -21,7 +21,7 @@ interface ProjectSettingsModalProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     // 將 id 設為可選，因為 create 時沒有 id
-    projectData?: { id?: string; name: string; description: string | null; client: string | null; location: string | null; coverImage: string | null; status: string;};
+    projectData?: { id?: string; name: string; description: string | null; client: string | null; location: string | null; coverImage: string | null; status: string; visibility?: string;};
     teamId: string;
     mode?: 'edit' | 'create';
     // 🌟 將 API 呼叫交給父元件處理，讓這個 Modal 變得純粹且可重用
@@ -30,7 +30,7 @@ interface ProjectSettingsModalProps {
 
 export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData, teamId, mode = 'create', onSubmit }: ProjectSettingsModalProps) {
     // 定義乾淨的初始狀態
-    const defaultData = { id: '', name: '', description: '', client: '', location: '', coverImage: '', status: 'ACTIVE' };
+    const defaultData = { id: '', name: '', description: '', client: '', location: '', coverImage: '', status: 'ACTIVE', visibility: 'PRIVATE' };
     
     const getSafeFormData = () => {
         if (!projectData) return defaultData;
@@ -41,7 +41,8 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
             client: projectData.client || '',
             location: projectData.location || '',
             coverImage: projectData.coverImage || '',
-            status: projectData.status || 'ACTIVE'
+            status: projectData.status || 'ACTIVE',
+            visibility: projectData.visibility || 'PRIVATE'
         };
     };
 
@@ -174,6 +175,28 @@ export default function ProjectSettingsModal({ isOpen, onOpenChange, projectData
                             className="hidden" 
                         />
                         {/* 專案狀態設定 (Tabs) */}
+                        <div className="flex flex-col gap-2 mb-2">
+                            <label className="text-sm text-white/80">Project Visibility</label>
+                            <Tabs 
+                                selectedKey={formData.visibility} 
+                                onSelectionChange={(key) => setFormData(prev => ({ ...prev, visibility: key.toString() }))}
+                                aria-label="Project Visibility"
+                                color="danger"
+                                variant="underlined"
+                                classNames={{
+                                    tabList: "gap-4 w-full relative rounded-none p-0 border-b border-divider",
+                                    cursor: "w-full bg-[#D70036]",
+                                    tab: "max-w-fit px-0 h-10",
+                                    tabContent: "group-data-[selected=true]:text-primary group-data-[selected=true]:font-semibold text-white/80"
+                                }}
+                            >
+                                <Tab key="PRIVATE" title="私人 (Private)" />
+                                <Tab key="PUBLIC" title="公開分享 (Public)" />
+                            </Tabs>
+                            <p className="text-xs text-white/50">
+                                Public projects can be opened by non-team members with the link. Private projects require team access.
+                            </p>
+                        </div>
                         <div className="flex flex-col gap-2 mb-2">
                             <label className="text-sm text-white/80">Project Status</label>
                             <Tabs 
