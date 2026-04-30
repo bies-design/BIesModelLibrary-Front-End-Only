@@ -15,7 +15,7 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
     // 從中心點向右延伸的輸出路徑
     const rightPath = "M800 325.000 L1088.188 325.778 L1643.335 321.634";
 
-    // 右側流程圖示 (已補回隨 theme 動態切換光暈顏色)
+    // 右側流程圖示 (已補回隨 theme 動態切換光暈顏色)s
     const rightNodes = [
         { x: 1000, y: 325, imgSrc: "/icons/3DRealEstateConstruction.png" , dotColor: theme === 'dark' ? "#60A5FA" : "#3B82F6", label: "Step 1" },
         { x: 1160, y: 325, imgSrc: "/icons/3DRealEstateConstruction2.png", dotColor: theme === 'dark' ? "#A78BFA" : "#8B5CF6", label: "Step 2" },
@@ -41,8 +41,14 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
     const syncRef = useRef<any>(null);
 
     useEffect(() => {
-        // 2. Client 端掛載完成後，立刻洗牌一次，產生第一次的隨機結果
-        setActiveIndices([0, 1, 2, 3, 4, 5, 6].sort(() => 0.5 - Math.random()).slice(0, 4));
+        const shuffleActiveIndices = () => {
+            setActiveIndices(
+            [0, 1, 2, 3, 4, 5, 6]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 4)
+            );
+        };
+        shuffleActiveIndices();
 
         const node = syncRef.current;
         if (!node) return;
@@ -83,6 +89,73 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
                             {/* 3. 金屬邊緣暗角 (深銀灰色，營造出微凸的立體厚度) */}
                             <stop offset="100%" stopColor={theme === 'dark' ? "#27272A" : "#94a3b8"} stopOpacity="1" />
                         </radialGradient>
+                        {/* Liquid Metal Logo Gradients */}
+
+                        <radialGradient
+                            id={`liquid_logo_depth_${theme}`}
+                            cx="35%"
+                            cy="20%"
+                            r="85%"
+                        >
+                            <stop offset="0%" stopColor="white" stopOpacity={theme === 'dark' ? "0.5" : "0.75"} />
+                            <stop offset="35%" stopColor={theme === 'dark' ? "#52525b" : "#e2e8f0"} stopOpacity="0.18" />
+                            <stop offset="70%" stopColor={theme === 'dark' ? "#020617" : "#94a3b8"} stopOpacity="0.5" />
+                            <stop offset="100%" stopColor={theme === 'dark' ? "#000000" : "#64748b"} stopOpacity="0.9" />
+                        </radialGradient>
+
+                        <linearGradient
+                            id={`liquid_logo_chrome_stroke_${theme}`}
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="100%"
+                        >
+                            <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+                            <stop offset="15%" stopColor={theme === 'dark' ? "#60a5fa" : "#bae6fd"} stopOpacity="0.9" />
+                            <stop offset="32%" stopColor={theme === 'dark' ? "#111827" : "#cbd5e1"} stopOpacity="1" />
+                            <stop offset="48%" stopColor="#ffffff" stopOpacity="1" />
+                            <stop offset="62%" stopColor={theme === 'dark' ? "#fb923c" : "#f97316"} stopOpacity="0.95" />
+                            <stop offset="76%" stopColor={theme === 'dark' ? "#020617" : "#94a3b8"} stopOpacity="1" />
+                            <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+
+                            <animateTransform
+                                attributeName="gradientTransform"
+                                type="rotate"
+                                from="0 0.5 0.5"
+                                to="360 0.5 0.5"
+                                dur="40s"
+                                repeatCount="indefinite"
+                            />
+                        </linearGradient>
+
+                        <filter id="liquid_logo_filter" x="-60%" y="-60%" width="220%" height="220%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="softShadow" />
+                            <feOffset in="softShadow" dx="0" dy="8" result="offsetShadow" />
+                            <feColorMatrix
+                                in="offsetShadow"
+                                type="matrix"
+                                values="0 0 0 0 0
+                                        0 0 0 0 0
+                                        0 0 0 0 0
+                                        0 0 0 0.55 0"
+                                result="shadow"
+                            />
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="softGraphic" />
+                            <feMerge>
+                                <feMergeNode in="shadow" />
+                                <feMergeNode in="softGraphic" />
+                            </feMerge>
+                        </filter>
+
+                        <filter id="liquid_logo_inner_glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="5" result="blur" />
+                            <feFlood floodColor={theme === 'dark' ? "#ffffff" : "#38bdf8"} floodOpacity={theme === 'dark' ? "0.45" : "0.28"} result="glowColor" />
+                            <feComposite in="glowColor" in2="blur" operator="in" result="coloredGlow" />
+                            <feMerge>
+                                <feMergeNode in="coloredGlow" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="3" result="blur" />
                             <feMerge>
@@ -171,22 +244,99 @@ const DataFlowLayout = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
                     })}
                     
                     {/* === 第 4 層: SVG 內的 Logo 主體 === */}
-                    <g transform="translate(810, 325)">
-                        {/* 1. 動態邊框與陰影：淺色拔掉黑框改用白框，並加上一點通透感 */}
-                        <rect 
-                            x="-64" y="-64" width="128" height="128" rx="24" 
-                            fill={`url(#logo_bg_gradient_${theme})`} 
-                            stroke={theme === 'dark' ? "#303035" : "#ffffff"} 
-                            strokeWidth={theme === 'dark' ? "4" : "4"}
-                        />
-                        <rect x="-64" y="-64" width="128" height="128" rx="24" fill={theme === 'dark' ? "white" : "none"} filter="url(#logo_energy_glow)" opacity="0">
-                            <animate attributeName="opacity" values="0; 0; 0.5; 0; 0" keyTimes="0; 0.48; 0.53; 0.65; 1" dur={TOTAL_DUR} repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.1 0.9 0.2 1; 0.42 0 1 1; 0 0 1 1" />
+                    {/* === 第 4 層: SVG 內的 Liquid Metal Logo 主體 === */}
+                    <g transform="translate(810, 325)" filter="url(#liquid_logo_filter)">
+                        {/* 外層柔和光暈 */}
+                        <rect
+                            x="-68"
+                            y="-68"
+                            width="136"
+                            height="136"
+                            rx="28"
+                            fill={theme === 'dark' ? "#ffffff" : "#38bdf8"}
+                            opacity={theme === 'dark' ? "0.08" : "0.12"}
+                            filter="url(#liquid_logo_inner_glow)"
+                        >
+                            <animate
+                                attributeName="opacity"
+                                values={theme === 'dark' ? "0.06;0.14;0.06" : "0.08;0.18;0.08"}
+                                dur="3.8s"
+                                repeatCount="indefinite"
+                            />
                         </rect>
-                        <image 
-                            href="/icons/LogoSignIn.svg" 
-                            x="-48" y="-48" width="96" height="96" 
-                            className={`object-contain transition-all duration-300 ${theme === 'light' ? 'invert opacity-70' : ''}`} 
+
+                        {/* 金屬主體底色 */}
+                        <rect
+                            x="-64"
+                            y="-64"
+                            width="128"
+                            height="128"
+                            rx="26"
+                            fill={`url(#liquid_logo_base_${theme})`}
+                            stroke={`url(#liquid_logo_chrome_stroke_${theme})`}
+                            strokeWidth="4"
                         />
+
+                        {/* 內層深度：讓它像凸起的液態金屬 */}
+                        <rect
+                            x="-58"
+                            y="-58"
+                            width="116"
+                            height="116"
+                            rx="22"
+                            fill={`url(#liquid_logo_depth_${theme})`}
+                            opacity={theme === 'dark' ? "0.72" : "0.55"}
+                        />
+
+                        {/* 中間 Logo：改成半透明、偏白銀色，讓它融進 liquid metal */}
+                        <image
+                            href="/icons/LogoSignIn.svg"
+                            x="-44"
+                            y="-44"
+                            width="88"
+                            height="88"
+                            opacity={theme === 'dark' ? "0.78" : "0.62"}
+                            filter="url(#liquid_logo_inner_glow)"
+                            className={`object-contain transition-all duration-300 ${theme === 'light' ? 'invert' : ''}`}
+                            style={{
+                                mixBlendMode: theme === 'dark' ? 'screen' : 'multiply',
+                            }}
+                        />
+
+                        {/* Logo 表面的白色薄膜，增加液態玻璃感 */}
+                        <rect
+                            x="-64"
+                            y="-64"
+                            width="128"
+                            height="128"
+                            rx="26"
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="1"
+                            opacity={theme === 'dark' ? "0.35" : "0.65"}
+                        />
+
+                        {/* 原本能量爆閃保留，但變得比較像金屬反射閃光 */}
+                        <rect
+                            x="-64"
+                            y="-64"
+                            width="128"
+                            height="128"
+                            rx="26"
+                            fill="white"
+                            filter="url(#logo_energy_glow)"
+                            opacity="0"
+                        >
+                            <animate
+                                attributeName="opacity"
+                                values="0; 0; 0.45; 0.12; 0"
+                                keyTimes="0; 0.48; 0.53; 0.62; 1"
+                                dur={TOTAL_DUR}
+                                repeatCount="indefinite"
+                                calcMode="spline"
+                                keySplines="0 0 1 1; 0.1 0.9 0.2 1; 0.42 0 1 1; 0 0 1 1"
+                            />
+                        </rect>
                     </g>
 
                     {/* === 第 5 層: 轉移至 SVG 內的右側步驟圖示 === */}
