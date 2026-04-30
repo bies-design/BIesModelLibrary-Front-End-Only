@@ -770,11 +770,10 @@ export const getPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
+        const session = await auth();
         const isPublicPost = post.permission === "standard";
         // 非公開貼文邏輯
         if (!isPublicPost) {
-            const session = await auth();
-
             if (!session?.user?.id) {
                 return { success: false, error: "Unauthorized" };
             }
@@ -798,6 +797,13 @@ export const getPostDetail = async (shortId: string) => {
                 return { success: false, error: "Permission denied" };
             }
         }
+
+        const isOwner = session?.user?.id === post.uploaderId;
+        let isTeamEditor = false;
+        if (session?.user?.id && post.teamId) {
+            const teamStatus = await checkUserTeamStatus(post.teamId);
+            isTeamEditor = teamStatus === "EDITOR_ACCESS";
+        }
         
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
@@ -816,6 +822,7 @@ export const getPostDetail = async (shortId: string) => {
                 ...post,
                 coverImage: publicCoverImageUrls,
                 images: publicImagesArray,
+                canEditPost: isOwner || isTeamEditor,
             }
         };
     } catch (error) {

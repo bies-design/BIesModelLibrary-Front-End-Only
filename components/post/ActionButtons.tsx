@@ -1,6 +1,6 @@
 // components/post/ActionButtons.tsx
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Download, Share2, FileCode, FileText, Loader2,Trash2, Edit2, ImageIcon, FileBox } from 'lucide-react';
 import { 
     Modal, 
@@ -28,16 +28,7 @@ export default function ActionButtons({ post }: { post: any }) {
     const [isGenerating, setIsGenerating] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
-    const isOwner = session?.user.id === post.uploaderId;
-    
-    const isTeamEditor = post.team?.members?.some(
-        (member:any) => {
-            return member.userId === session?.user.id && 
-            ['OWNER', 'ADMIN', 'EDITOR'].includes(member.role);
-        }
-    ) || false;
-
-    const canEditPost = isOwner || isTeamEditor;
+    const canEditPost = Boolean(post.canEditPost);
 
     // 取得副檔名的 Helper
     const getExt = (name: string) => name.split('.').pop()?.toLowerCase() || '';

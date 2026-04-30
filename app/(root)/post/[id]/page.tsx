@@ -255,7 +255,8 @@ export default async function PostDetailPage({
                                     <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Published</span>
                                     <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{formatDate(post.createdAt)}</span>
                                 
-                                
+                                    <span className="w-32 flex-shrink-0 bg-linear-to-b from-white to-[#A1A1AA] bg-clip-text text-transparent">Published</span>
+                                    <span className="bg-linear-to-b from-white to-[#8DB2E8] bg-clip-text text-transparent">{post.permission}</span>
                                     
                             </div>
                         </div>

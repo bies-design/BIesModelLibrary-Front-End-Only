@@ -571,10 +571,19 @@ export async function createProjectAsset(data: {
             }
 
             if (isOwnPersonalPost) {
-                await prisma.post.update({
-                    where: { id: post.id },
-                    data: { teamId: project.teamId }
-                });
+                await prisma.$transaction([
+                    prisma.post.update({
+                        where: { id: post.id },
+                        data: { teamId: project.teamId }
+                    }),
+                    prisma.fileRecord.updateMany({
+                        where: {
+                            postId: post.id,
+                            teamId: null,
+                        },
+                        data: { teamId: project.teamId }
+                    })
+                ]);
             }
         }
 

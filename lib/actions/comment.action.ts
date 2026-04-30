@@ -6,6 +6,47 @@ import { revalidatePath } from "next/cache";
 // 取得某篇貼文的所有留言 (包含發布者資訊與子留言)
 export async function getCommentsByPostId(postId: string) {
     try {
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: {
+                id: true,
+                uploaderId: true,
+                teamId: true,
+                permission: true,
+            }
+        });
+
+        if (!post) {
+            return { success: false, error: "Post not found" };
+        }
+
+        if (post.permission !== "standard") {
+            const session = await auth();
+
+            if (!session?.user?.id) {
+                return { success: false, error: "Unauthorized" };
+            }
+
+            const isOwner = post.uploaderId === session.user.id;
+            let isTeamMember = false;
+
+            if (post.teamId) {
+                const member = await prisma.teamMember.findFirst({
+                    where: {
+                        teamId: post.teamId,
+                        userId: session.user.id,
+                    },
+                    select: { id: true }
+                });
+
+                isTeamMember = Boolean(member);
+            }
+
+            if (!isOwner && !isTeamMember) {
+                return { success: false, error: "Permission denied" };
+            }
+        }
+
         // 1. 一次性抓取該貼文的「所有」留言 (不分層級)
         const allComments = await prisma.comment.findMany({
             where: { 
@@ -70,6 +111,41 @@ export async function createComment(
         const session = await auth();
         if (!session?.user.id) {
             return { success: false, error: "Unauthorized" };
+        }
+
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            select: {
+                id: true,
+                uploaderId: true,
+                teamId: true,
+                permission: true,
+            }
+        });
+
+        if (!post) {
+            return { success: false, error: "Post not found" };
+        }
+
+        if (post.permission !== "standard") {
+            const isOwner = post.uploaderId === session.user.id;
+            let isTeamMember = false;
+
+            if (post.teamId) {
+                const member = await prisma.teamMember.findFirst({
+                    where: {
+                        teamId: post.teamId,
+                        userId: session.user.id,
+                    },
+                    select: { id: true }
+                });
+
+                isTeamMember = Boolean(member);
+            }
+
+            if (!isOwner && !isTeamMember) {
+                return { success: false, error: "Permission denied" };
+            }
         }
         
         if(!content.trim()){

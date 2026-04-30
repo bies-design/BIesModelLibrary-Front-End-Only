@@ -283,16 +283,35 @@ export async function getFileDownloadUrl(fileId: string, fileName: string) {
         // 2. 權限驗證：確認這筆 FileRecord 是他自己上傳的
         // (如果在 Sidebar 階段，檔案還沒發布，只會核對 uploaderId)
         const fileRecord = await prisma.fileRecord.findFirst({
-            where: { fileId: fileId }
+            where: { fileId: fileId },
+            select: {
+                fileId: true,
+                uploaderId: true,
+                teamId: true,
+                post: {
+                    select: {
+                        uploaderId: true,
+                        teamId: true,
+                    }
+                }
+            }
         });
 
         if (!fileRecord) {
             return { success: false, error: "File not found" };
         }
+        // 只有 file uploader post owner 獲是 file or post 所屬team的member可以下載
+        const isUploader = fileRecord.uploaderId === session.user.id;
+        const isPostOwner = fileRecord.post?.uploaderId === session.user.id;
+        const teamId = fileRecord.post?.teamId ?? fileRecord.teamId;
 
-        // 💡 這裡可以依照你的需求加入更複雜的團隊權限檢查
-        // 目前先做最基本的：必須是上傳者本人
-        if (fileRecord.uploaderId !== session.user.id) {
+        let isTeamMember = false;
+        if (teamId) {
+            const teamStatus = await checkUserTeamStatus(teamId);
+            isTeamMember = teamStatus === "READ_ONLY" || teamStatus === "EDITOR_ACCESS";
+        }
+
+        if (!isUploader && !isPostOwner && !isTeamMember) {
             return { success: false, error: "Forbidden" };
         }
 
