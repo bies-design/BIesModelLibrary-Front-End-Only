@@ -1,4 +1,5 @@
 'use server'
+import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -62,11 +63,15 @@ export async function getCommentsByPostId(postId: string) {
 export async function createComment(
     postId: string, 
     postShortId: string,
-    userId: string,
     content: string, 
     parentId?: string
 ) {
     try{
+        const session = await auth();
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+        
         if(!content.trim()){
             return { success: false, error: "留言內容不可空白" };
         }
@@ -75,7 +80,7 @@ export async function createComment(
             data:{
                 content: content.trim(),
                 postId,
-                userId,
+                userId: session.user.id,
                 parentId: parentId || null,// 若有 parentId 就是回覆，否則為獨立主留言
             }
         });
@@ -91,13 +96,17 @@ export async function createComment(
 }
 
 // 編輯留言
-export async function updateComment(commentId: string, userId: string, newContent: string) {
+export async function updateComment(commentId: string, newContent: string) {
     try {
+        const session = await auth();
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
         if (!newContent.trim()) return { success: false, error: "留言內容不可空白" };
 
         // 確認留言存在，且是該使用者發布的
         const existingComment = await prisma.comment.findUnique({ where: { id: commentId } });
-        if (!existingComment || existingComment.userId !== userId) {
+        if (!existingComment || existingComment.userId !== session.user.id) {
             return { success: false, error: "無權限編輯此留言" };
         }
 
@@ -114,11 +123,16 @@ export async function updateComment(commentId: string, userId: string, newConten
 }
 
 // 刪除留言
-export async function deleteComment(commentId: string, userId: string) {
+export async function deleteComment(commentId: string) {
     try {
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
         // 確認留言存在，且是該使用者發布的
         const existingComment = await prisma.comment.findUnique({ where: { id: commentId } });
-        if (!existingComment || existingComment.userId !== userId) {
+        if (!existingComment || existingComment.userId !== session.user.id) {
             return { success: false, error: "無權限刪除此留言" };
         }
 

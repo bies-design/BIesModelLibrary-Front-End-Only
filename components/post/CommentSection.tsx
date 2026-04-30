@@ -82,8 +82,7 @@ export default function CommentSection({postId, postShortId, postAuthorId}:Comme
         try{
             const result = await createComment(
                 postId, 
-                postShortId, 
-                session.user.id, 
+                postShortId,  
                 comment,
                 replyingTo?.parentCommentId
             );

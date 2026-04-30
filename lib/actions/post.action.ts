@@ -473,6 +473,27 @@ export const getPostsByScroll = async (
         const session = await auth();
         let userCollection: string[] = [];
 
+        const getReadablePostFilter = async () => {
+            if (!session?.user?.id) {
+                return { permission: "standard" };
+            }
+
+            const userTeamRecords = await prisma.teamMember.findMany({
+                where: { userId: session.user.id },
+                select: { teamId: true }
+            });
+
+            const userTeamIds = userTeamRecords.map(record => record.teamId);
+
+            return {
+                OR: [
+                    { permission: "standard" },
+                    { uploaderId: session.user.id },
+                    ...(userTeamIds.length > 0 ? [{ teamId: { in: userTeamIds } }] : [])
+                ]
+            };
+        };
+
         if(session?.user.id){
             const currentUser = await prisma.user.findUnique({
                 where: {id: session.user.id},
@@ -497,6 +518,8 @@ export const getPostsByScroll = async (
             whereCondition.type = includeFileType;
         }
         
+        let shouldApplyReadableFilter = scope === "ALL";
+
         if(scope && scope !== "ALL"){
             if(!session?.user.id){
                 return {success:false, error:"Unauthorized", data: [], hasMore: false};
@@ -568,9 +591,22 @@ export const getPostsByScroll = async (
                     }
 
                     whereCondition.id = {in: collectionIds};
+                    shouldApplyReadableFilter = true;
+                    break;
+
+                default:
+                    shouldApplyReadableFilter = true;
                     break;
             }
         }
+
+        if (shouldApplyReadableFilter) {
+            whereCondition.AND = [
+                ...(Array.isArray(whereCondition.AND) ? whereCondition.AND : []),
+                await getReadablePostFilter()
+            ];
+        }
+
         // 動態建立排序條件 (OrderBy)
         // 備註：假設你的 Hottest 是看瀏覽量(views)或按讚數，若無此欄位請自行替換
         const orderByCondition = sortBy === "Hottest" 
@@ -632,6 +668,7 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
     try {
         const session = await auth();
         let userCollection: string[] = [];
+        let userTeamIds: string[] = [];
 
         if(session?.user.id){
             const currentUser = await prisma.user.findUnique({
@@ -639,8 +676,24 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
                 select: {userCollection:true}
             });
             userCollection = currentUser?.userCollection || [];
+
+            const userTeamRecords = await prisma.teamMember.findMany({
+                where: { userId: session.user.id },
+                select: { teamId: true }
+            });
+
+            userTeamIds = userTeamRecords.map(record => record.teamId);
         }
 
+        const readablePostFilter = session?.user?.id
+            ? {
+                OR: [
+                    { permission: "standard" },
+                    { uploaderId: session.user.id },
+                    ...(userTeamIds.length > 0 ? [{ teamId: { in: userTeamIds } }] : [])
+                ]
+            }
+            : { permission: "standard" };
 
         // 1. 從資料庫中一次撈出所有符合 ID 的貼文
         // (只需要拿渲染 PostCard 必備的欄位即可，節省頻寬)
@@ -648,14 +701,21 @@ export const getRelatedPostsByIds = async (postIds: string[]) => {
             where: {
                 id: {
                     in: postIds // 使用 Prisma 的 'in' 操作符
-                }
+                },
+                AND: [readablePostFilter]
             },
             select: {
                 id: true,         
                 shortId: true,   
                 title: true,      
                 coverImage: true, 
-                type: true,       
+                type: true,
+                team: {
+                    select: {
+                        name: true,
+                        color: true
+                    }
+                }
             }
         });
 
@@ -692,7 +752,13 @@ export const getPostDetail = async (shortId: string) => {
                 uploader: {   
                     select: { id: true, userName: true, image: true } // 記得把你 schema 裡的 userName 改成對應的欄位名 (name 或 userName)
                 },
-                team:true,
+                team: {
+                    select: {
+                        id: true,
+                        name: true,
+                        color: true,
+                    }
+                },
                 projectAssets: {
                     include: {
                         project: { select: { id: true, name: true } },
@@ -704,6 +770,35 @@ export const getPostDetail = async (shortId: string) => {
 
         if (!post) return { success: false, error: "Post not found" };
 
+        const isPublicPost = post.permission === "standard";
+        // 非公開貼文邏輯
+        if (!isPublicPost) {
+            const session = await auth();
+
+            if (!session?.user?.id) {
+                return { success: false, error: "Unauthorized" };
+            }
+
+            const isOwner = post.uploaderId === session.user.id;
+
+            let isTeamMember = false;
+            if (post.teamId) {
+                const member = await prisma.teamMember.findFirst({
+                    where: {
+                        teamId: post.teamId,
+                        userId: session.user.id,
+                    },
+                    select: { id: true },
+                });
+
+                isTeamMember = Boolean(member);
+            }
+
+            if (!isOwner && !isTeamMember) {
+                return { success: false, error: "Permission denied" };
+            }
+        }
+        
         const minioEndpoint = process.env.S3_ENDPOINT_SERVER;
         const minioImageBucket = process.env.S3_IMAGES_BUCKET;
         const publicCoverImageUrls = post.coverImage ? `${minioEndpoint}/${minioImageBucket}/${post.coverImage}` : null;

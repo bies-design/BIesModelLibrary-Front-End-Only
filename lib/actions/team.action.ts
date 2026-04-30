@@ -83,10 +83,16 @@ export async function createTeam(teamData: {name:string, description?:string, co
 /**
  * 取得單一團隊的詳細資料 (供 Settings Modal 預設值使用)
  */
-export async function getTeamDetails(teamId:string, userId:string) {
+export async function getTeamDetails(teamId:string) {
     try{
+        const session = await auth();
+
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
+        
         const member = await prisma.teamMember.findFirst({
-            where:{ teamId, userId}
+            where:{ teamId, userId: session.user.id}
         });
         if(!member) {
             return { success: false, error: "無權限查看此團隊或團隊不存在" };        
@@ -202,8 +208,12 @@ export async function getUserTeams() {
 /**
  * 將使用者加入特定團隊 (支援透過 ID 或 Email 搜尋)
  */
-export async function addMemberToTeam(teamId: string, identifier: string, adderId: string) {
+export async function addMemberToTeam(teamId: string, identifier: string) {
     try {
+        const session = await auth();
+        if (!session?.user.id) {
+            return { success: false, error: "Unauthorized" };
+        }
         if (!identifier.trim()) return { success: false, error: "請輸入 User ID 或 Email" };
 
         // 1. 權限檢查：確認執行動作的人 (adderId) 是否為該團隊的 OWNER 或 ADMIN
@@ -211,7 +221,7 @@ export async function addMemberToTeam(teamId: string, identifier: string, adderI
         const adder = await prisma.teamMember.findFirst({
             where: { 
                 teamId: teamId, 
-                userId: adderId, 
+                userId: session.user.id, 
                 role: { in: ['OWNER', 'ADMIN'] } 
             }
         });
@@ -265,13 +275,45 @@ export async function addMemberToTeam(teamId: string, identifier: string, adderI
 /**
  * 根據指定條件 (ID 或 Username) 搜尋使用者
  */
-export async function searchUsersForTeam(query: string, searchType: "username" | "id", excludeTeamId: string) {
+export async function searchUsersForTeam(
+    query: string, 
+    searchType: "username" | "id", 
+    excludeTeamId: string
+) {
     try {
+        const session = await auth();
+
+        if (!session?.user?.id) {
+            return { success: false, error: "Unauthorized", data: [] };
+        }
+
+        if (!excludeTeamId) {
+            return { success: false, error: "Missing teamId", data: [] };
+        }
+
+        const operator = await prisma.teamMember.findFirst({
+            where: {
+                teamId: excludeTeamId,
+                userId: session.user.id,
+                role: { in: ["OWNER", "ADMIN"] }
+            },
+            select: { id: true }
+        });
+
+        if (!operator) {
+            return { success: false, error: "權限不足，只有管理員可以搜尋並新增成員", data: [] };
+        }
+        
         if (!query || query.trim() === "") {
             return { success: true, data: [] }; // 如果是空的，直接回傳空陣列
         }
 
         const searchTerm = query.trim();
+
+        if (searchTerm.length < 2) {
+            return { success: true, data: [] };
+        }
+
         let whereClause: any = {};
 
         // 根據選擇的條件設定查詢邏輯
@@ -280,6 +322,8 @@ export async function searchUsersForTeam(query: string, searchType: "username" |
         } else if (searchType === "id") {
             // ID 通常比較精確，但這裡依然用 contains 支援部分輸入 (前提是你的 ID 在 Prisma 是 String 型別)
             whereClause = { id: { contains: searchTerm, mode: 'insensitive' } };
+        } else {
+            return { success: false, error: "Invalid search type", data: [] };
         }
 
         // 排除已經在團隊中的人
@@ -295,13 +339,13 @@ export async function searchUsersForTeam(query: string, searchType: "username" |
         const users = await prisma.user.findMany({
             where: whereClause,
             select: { id: true, userName: true, email: true, image: true },
-            // 這裡移除了 take: 5，所以會「列出所有符合條件的使用者」
+            take: 12,
         });
 
         return { success: true, data: users };
     } catch (error) {
         console.error("Failed to search users:", error);
-        return { success: false, error: "搜尋失敗" };
+        return { success: false, error: "搜尋失敗", data: [] };
     }
 }
 /**

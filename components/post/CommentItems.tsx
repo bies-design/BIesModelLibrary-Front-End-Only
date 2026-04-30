@@ -6,6 +6,7 @@ import { zhTW } from 'date-fns/locale';
 import { MessageSquare, Edit2, Trash2, Check, X } from 'lucide-react';
 import { ReplyingToUser } from './CommentSection';
 import { updateComment, deleteComment } from '@/lib/actions/comment.action';
+import { useSession } from 'next-auth/react';
 
 interface CommentItemProps {
     comment: any; // 建議之後定義完整的 Comment Type
@@ -19,7 +20,7 @@ interface CommentItemProps {
 export default function CommentItem({ comment, depth = 0, postAuthorId, onReplyClick, currentUserId, onRefresh }: CommentItemProps) {
     // 限制巢狀深度，避免 UI 縮進過頭（例如最多縮排 3 層，之後就不再縮排）
     const canIndent = depth < 3;
-
+    const { data:session } = useSession();
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editContent, setEditContent] = useState<string>(comment.content);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,12 +45,19 @@ export default function CommentItem({ comment, depth = 0, postAuthorId, onReplyC
     };
 
     const handleSaveEdit = async () => {
+        if(!session?.user.id){
+            addToast({
+                description:"請先登入後再修改留言",
+                color:"warning",
+            });
+            return;
+        }
         if (!editContent.trim() || editContent === comment.content) {
             setIsEditing(false);
             return;
         }
         setIsLoading(true);
-        const res = await updateComment(comment.id, currentUserId!, editContent);
+        const res = await updateComment(comment.id, editContent);
         if (res.success) {
             addToast({ description: "編輯成功", color: "success" });
             setIsEditing(false);
@@ -61,10 +69,17 @@ export default function CommentItem({ comment, depth = 0, postAuthorId, onReplyC
     };
 
     const handleDelete = async () => {
+        if(!session?.user.id){
+            addToast({
+                description:"請先登入後再刪除留言",
+                color:"warning",
+            });
+            return;
+        }
         if (!confirm("確定要刪除這則留言嗎？(底下的回覆也會一併刪除!)")) return;
         
         setIsLoading(true);
-        const res = await deleteComment(comment.id, currentUserId!);
+        const res = await deleteComment(comment.id);
         if (res.success) {
             addToast({ description: "刪除成功", color: "success" });
             onRefresh(); // 刷新畫面

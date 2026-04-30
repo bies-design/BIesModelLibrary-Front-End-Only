@@ -83,8 +83,14 @@ const Teams = () => {
     };
     
     const loadTeamDetails = async (teamId:string) => {
-        if (!session?.user?.id) return;
-        const result = await getTeamDetails(teamId, session.user.id);
+        if(!session?.user.id){
+            addToast({
+                description:"請先登入後再進行操作",
+                color:"warning",
+            });
+            return;
+        }
+        const result = await getTeamDetails(teamId);
         if (result.success && result.data) {
             setTeamDetails(result.data);
             setTeamName(result.data.name);
@@ -189,11 +195,6 @@ const Teams = () => {
     const halfLength = Math.ceil(paginatedMembers.length / 2);
     const leftColumnData = paginatedMembers.slice(0, halfLength);
     const rightColumnData = paginatedMembers.slice(halfLength);
-
-    // --- 互動邏輯 (保持不變) ---
-    const handleToggleSelect = (id: string) => { /* ... */ };
-    const handleSelectAll = () => { /* ... */ };
-    const isCurrentPageAllSelected = paginatedMembers.length > 0 && paginatedMembers.every(m => selectedIds.has(m.id));
     
     useEffect(() => {
         const fetchResults = async () => {
@@ -202,13 +203,25 @@ const Teams = () => {
                 setSelectedUserId("");
                 return;
             }
-            if(!currentTeamId) return;
+            if(!currentTeamId || currentTeamId === "create") return;
             setIsSearching(true);
-            const result = await searchUsersForTeam(searchInput, searchType, currentTeamId);
-            if (result.success && result.data) {
-                setSearchResults(result.data);
+            try {
+                const result = await searchUsersForTeam(searchInput, searchType, currentTeamId);
+                if (result.success && result.data) {
+                    setSearchResults(result.data);
+                    return;
+                }
+
+                setSearchResults([]);
+                setSelectedUserId("");
+                addToast({ description: result.error || "搜尋失敗", color: "danger" });
+            } catch {
+                setSearchResults([]);
+                setSelectedUserId("");
+                addToast({ description: "搜尋使用者時發生錯誤", color: "danger" });
+            } finally {
+                setIsSearching(false);
             }
-            setIsSearching(false);
         };
 
         const delayDebounceFn = setTimeout(() => { fetchResults(); }, 300);
@@ -216,6 +229,13 @@ const Teams = () => {
     }, [searchInput, searchType, currentTeamId]);
 
     const handleAddMember = async (onClose: () => void) => {
+        if(!session?.user.id){
+            addToast({
+                description:"請先登入後再進行操作",
+                color:"warning",
+            });
+            return;
+        }
         if (!selectedUserId) {
             addToast({ description: "請先從列表中選擇一名使用者", color: "warning" });
             return;
@@ -223,7 +243,7 @@ const Teams = () => {
 
         setIsAddingMember(true);
         try {
-            const result = await addMemberToTeam(currentTeamId!, selectedUserId, session!.user.id);
+            const result = await addMemberToTeam(currentTeamId!, selectedUserId);
             if (result.success) {
                 addToast({ description: "新增成員成功！", color: "success" });
                 setSearchInput(""); 
