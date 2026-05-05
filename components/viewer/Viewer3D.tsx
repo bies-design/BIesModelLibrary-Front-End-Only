@@ -331,19 +331,19 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             return null;
         },
         //delete the model
-        deleteModel:(modelId: string)=> {
-            if (!componentsRef.current) return;
+        deleteModel: async (modelId: string) => {
+            if (!componentsRef.current) return
 
-            const fragments = componentsRef.current.get(OBC.FragmentsManager);
-            
-            const model = fragments.list.get(modelId);
+            const fragments = componentsRef.current.get(OBC.FragmentsManager)
+            if (!fragments.list.has(modelId)) return
 
-            if(model){
-                //release the memory and remove from the scene and list
-                model.dispose();
-                console.log(`模型${modelId} 已從場景與記憶體中完全移除`);
-            }
-        },
+            // fragments.core.abort(modelId)
+            await fragments.core.disposeModel(modelId)
+            await fragments.core.update(true)
+
+            setLoadingModelsCount(fragments.list.size)
+            console.log(`模型 ${modelId} 已從 Fragments manager 移除`)
+        }
     }));
 
     // Initialize BIM Engine (only on client side)
