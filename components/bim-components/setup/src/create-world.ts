@@ -79,7 +79,6 @@ export const createWorld = (components: OBC.Components) => {
     aoPass.updateGtaoMaterial(aoParameters);
     aoPass.updatePdMaterial(pdParameters);
     aoPass.needsSwap = true;
-    components.init();
     
     const resizeWorld = () => {
         try{
