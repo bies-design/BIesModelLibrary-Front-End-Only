@@ -12,7 +12,7 @@ import * as WEBIFC from 'web-ifc';
 
 export interface Viewer3DRef {
     getComponents: () => OBC.Components | null;
-    loadModel:(buffer:ArrayBuffer, modelName:string) => void;
+    loadModel:(buffer:ArrayBuffer, modelName:string) => Promise<void>;
     focusAllModel: () => void;
     focusModel: (modelId:string) => void;
     takeScreenshot: () => Promise<string | null>;
@@ -41,7 +41,7 @@ export const extractMaterialsFromIFC = (webIfc: WEBIFC.IfcAPI, modelID: number):
             console.log("expressID: ",materialNodeID);
             const materialNode = webIfc.GetLine(modelID, materialNodeID);
             
-            let materialNames: string[] = [];
+            const materialNames: string[] = [];
 
             // 3. 判斷材質節點類型並提取名稱 (處理你用 Python 發現的巢狀結構)
             if (materialNode.type === WEBIFC.IFCMATERIAL) {
@@ -176,7 +176,7 @@ const Viewer3D = forwardRef<Viewer3DRef, Viewer3DProps>(({ allFiles, file, onIFC
             for (const material of materials) {
                 if (material.userData.customId) continue;
                 if (!originalColors.current.has(material as Frags.BIMMaterial)) {
-                    let color = 'color' in material ? material.color.getHex() : material.lodColor.getHex();
+                    const color = 'color' in material ? material.color.getHex() : material.lodColor.getHex();
                     originalColors.current.set(material as Frags.BIMMaterial, { color, transparent: material.transparent, opacity: material.opacity });
                 }
                 material.transparent = true;

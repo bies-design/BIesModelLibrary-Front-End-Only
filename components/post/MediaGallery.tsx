@@ -19,6 +19,7 @@ export default function MediaGallery({ post }: { post: any }) {
     // 檔案快取
     const [fileCache, setFileCache] = useState<Record<string, File>>({});
     const [imageUrlCache, setImageUrlCache] = useState<Record<string, string>>({});
+    const [loadedThreeDIds, setLoadedThreeDIds] = useState<Set<string>>(new Set());
 
     const viewerRef = useRef<Viewer3DRef>(null);
 
@@ -45,37 +46,28 @@ export default function MediaGallery({ post }: { post: any }) {
         if (sourceKey === '3d-scene') {
             setIsLoading(true);
             try {
-                const loadPromises = threeDFiles.map(async (fileRecord: any) => {
+                for (const fileRecord of threeDFiles) {
                     const fileId = fileRecord.id;
                     const modelId = fileRecord.name.replace(/\.(ifc|frag)$/i, "");
                     // 如果有，直接跳過這一個檔案的所有處理！(省去 Buffer 解析，也不會觸發紅字)
                     if (viewerRef.current?.hasModel(modelId)) {
-                        return;
+                        setLoadedThreeDIds(prev => new Set(prev).add(fileId));
+                        continue;
                     }
 
-                    let buffer: ArrayBuffer;
-
-                    if (!fileCache[fileId]) {
-                        if (!fileRecord.viewerFileId) throw new Error(`模型 ${fileRecord.name} 尚未產生預覽檔`);
-                        
-                        const res = await fetch(`/api/viewfile/${fileRecord.viewerFileId}`);
-                        if (!res.ok) {
-                            const errorText = await res.text();
-                            throw new Error(errorText || `下載失敗 (${res.status})`);
-                        }
-                        
-                        buffer = await res.arrayBuffer();
-                        const downloadedFile = new File([buffer], fileRecord.name, { type: 'application/octet-stream' });
-                        
-                        setFileCache(prev => ({ ...prev, [fileId]: downloadedFile }));
-                    } else {
-                        buffer = await fileCache[fileId].arrayBuffer();
+                    if (!fileRecord.viewerFileId) throw new Error(`模型 ${fileRecord.name} 尚未產生預覽檔`);
+                    
+                    const res = await fetch(`/api/viewfile/${fileRecord.viewerFileId}`);
+                    if (!res.ok) {
+                        const errorText = await res.text();
+                        throw new Error(errorText || `下載失敗 (${res.status})`);
                     }
+                    
+                    const buffer = await res.arrayBuffer();
 
-                    viewerRef.current?.loadModel(buffer, modelId);
-                });
-
-                await Promise.all(loadPromises);
+                    await viewerRef.current?.loadModel(buffer, modelId);
+                    setLoadedThreeDIds(prev => new Set(prev).add(fileId));
+                }
 
                 // setTimeout(() => {
                 //     viewerRef.current?.focusAllModel();
@@ -272,7 +264,7 @@ export default function MediaGallery({ post }: { post: any }) {
                         <span className="text-[10px] text-white/70 truncate w-full px-2 text-center">3D Scene ({threeDFiles.length})</span>
                         
                         {/* 當所有 3D 模型皆已下載，顯示綠燈 */}
-                        {threeDFiles.every((f:any) => fileCache[f.id]) && (
+                        {threeDFiles.every((f:any) => loadedThreeDIds.has(f.id)) && (
                             <div className="absolute top-1 right-1 w-2 h-2 bg-[#10B981] rounded-full shadow-[0_0_5px_#10B981]" title="場景已載入緩存"></div>
                         )}
                     </div>
